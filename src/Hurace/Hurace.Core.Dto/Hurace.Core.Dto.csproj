@@ -4,8 +4,4 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Hurace.Core\Hurace.Core.Common\Hurace.Core.Common.csproj" />
-    </ItemGroup>
-
 </Project>

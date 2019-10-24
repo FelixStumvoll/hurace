@@ -20,17 +20,16 @@ namespace Hurace.TestClient
             };
             var mapperconfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<IDataReader, Country>();
-                cfg.CreateMap<IDataReader, Skier>().ForMember(s => s.Country,
-                                                              opt => opt.MapFrom(countryMapper));
+//                cfg.CreateMap<IDataReader, Country>();
+                cfg.CreateMap<IDataRecord, Skier>();
             });
-            var mapper = mapperconfig.CreateMapper();
+            var mapper = MapperConfig.GetMapper();
             var providername = "Microsoft.Data.SqlClient";
             var cstring = "Data Source=localhost;Initial Catalog=testdb;Integrated Security=True";
             var skierDao =
-                new SkierDao(
+                new CountryDao(
                     new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providername), cstring, providername),
-                    mapper, "hurace.skier");
+                    mapper);
             var res = await skierDao.FindAllAsync();
             Console.WriteLine("Hello World!");
         }

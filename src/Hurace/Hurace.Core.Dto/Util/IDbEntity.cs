@@ -1,4 +1,4 @@
-namespace Hurace.Core.Dto
+namespace Hurace.Core.Dto.Util
 {
     public interface IDbEntity
     {

@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hurace.Core.Common;
 using Hurace.Core.Dto;
+using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SkierDao : BaseDao<Skier>
+    public class SkierDao : BaseDao<Skier>, ISkierDao
     {
-        public SkierDao(IConnectionFactory connectionFactory, Mapper mapper) : base(
+        public SkierDao(IConnectionFactory connectionFactory, IMapper mapper) : base(
             connectionFactory, mapper, "Skier")
         {
             

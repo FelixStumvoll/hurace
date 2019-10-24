@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hurace.Core.Common;
 using Hurace.Core.Dto;
+using Hurace.Core.Dto.Util;
 using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
@@ -14,10 +15,10 @@ namespace Hurace.Core.Dal.Dao
     public abstract class BaseDao<T> : IBaseDao<T> where T : class, IDbEntity
     {
         protected IConnectionFactory ConnectionFactory { get; }
-        protected Mapper Mapper { get; }
+        protected IMapper Mapper { get; }
         protected string TableName { get; }
 
-        public BaseDao(IConnectionFactory connectionFactory, Mapper mapper, string tableName)
+        public BaseDao(IConnectionFactory connectionFactory, IMapper mapper, string tableName)
         {
             ConnectionFactory = connectionFactory;
             Mapper = mapper;
@@ -34,14 +35,18 @@ namespace Hurace.Core.Dal.Dao
             {
                 var items = new List<T>();
                 await using var reader = await command.ExecuteReaderAsync();
-                while (reader.Read()) items.Add(Mapper.Map<T>(reader));
+                while (reader.Read())
+                {
+                    items.Add(Mapper.Map<T>(reader));
+                }
+
                 return items;
             });
 
-    public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync($"select * from {_tableName}");
+        public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync($"select * from {TableName}");
 
-    public virtual Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
-        QueryAsync($"select * from {_tableName} where {condition}", queryParams);
+        public virtual Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
+            QueryAsync($"select * from {TableName} where {condition}", queryParams);
 
         public virtual async Task<T?> FindByIdAsync(int id) =>
             (await QueryAsync($"select * from {TableName} where id=@id",

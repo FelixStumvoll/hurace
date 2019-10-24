@@ -1,4 +1,5 @@
 using System;
+using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dto
 {
