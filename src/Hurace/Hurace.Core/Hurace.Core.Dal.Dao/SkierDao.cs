@@ -7,8 +7,8 @@ namespace Hurace.Core.Dal.Dao
 {
     public class SkierDao : BaseDao<Skier>
     {
-        public SkierDao(IConnectionFactory connectionFactory, Mapper mapper, string tableName) : base(
-            connectionFactory, mapper, tableName)
+        public SkierDao(IConnectionFactory connectionFactory, Mapper mapper) : base(
+            connectionFactory, mapper, "Skier")
         {
         }
     }

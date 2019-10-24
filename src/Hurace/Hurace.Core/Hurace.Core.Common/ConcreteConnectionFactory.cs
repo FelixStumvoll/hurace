@@ -21,7 +21,8 @@ namespace Hurace.Core.Common
         public string ConnectionString { get; set; }
         public string ProviderName { get; set; }
 
-        public async Task<T> UseConnection<T>(string statement, IEnumerable<QueryParam> queryParams, Func<DbCommand, Task<T>> connectionFunc)
+        public async Task<T> UseConnection<T>(string statement, IEnumerable<QueryParam> queryParams,
+            Func<DbCommand, Task<T>> connectionFunc)
         {
             await using var connection = _dbProviderFactory.CreateConnection();
             if (connection == null) throw new NullReferenceException("Could not create connection");
