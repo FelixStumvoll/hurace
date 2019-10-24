@@ -38,10 +38,10 @@ namespace Hurace.Core.Dal.Dao
                 return items;
             });
 
-        public Task<IEnumerable<T>> FindAllAsync() => QueryAsync($"select * from {TableName}");
+    public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync($"select * from {_tableName}");
 
-        public Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
-            QueryAsync($"select * from {TableName} where {condition}", queryParams);
+    public virtual Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
+        QueryAsync($"select * from {_tableName} where {condition}", queryParams);
 
         public virtual async Task<T?> FindByIdAsync(int id) =>
             (await QueryAsync($"select * from {TableName} where id=@id",
