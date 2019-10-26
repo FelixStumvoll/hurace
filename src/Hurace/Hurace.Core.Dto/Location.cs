@@ -2,7 +2,7 @@ using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dto
 {
-    public class Location : IDbEntity
+    public class Location
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -11,5 +11,6 @@ namespace Hurace.Core.Dto
         [Navigational]
         public Skier Skier { get; set; }
         public int RaceDataId { get; set; }
+        public int RaceId { get; set; }
     }
 }

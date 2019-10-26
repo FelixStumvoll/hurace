@@ -3,7 +3,7 @@ using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dto
 {
-    public class Skier : IDbEntity
+    public class Skier 
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -12,5 +12,8 @@ namespace Hurace.Core.Dto
         public int CountryId { get; set; }
         [Navigational]
         public Country Country { get; set; }
+        public int GenderId { get; set; }
+        [Navigational]
+        public Gender Gender { get; set; }
     }
 }
