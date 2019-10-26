@@ -8,14 +8,14 @@ namespace Hurace.Core.Common.Mapper
 {
     public class Mapper
     {
-        private Dictionary<Type, Dictionary<string, string>> _mappingConfig = new
+        private readonly Dictionary<Type, Dictionary<string, string>> _mappingConfig = new
             Dictionary<Type, Dictionary<string, string>>();
 
-        private bool loadNavigationals;
+        private readonly bool _loadNavigationProps;
 
-        public Mapper(bool loadNavigationals = true)
+        public Mapper(bool loadNavigationProps = true)
         {
-            this.loadNavigationals = loadNavigationals;
+            this._loadNavigationProps = loadNavigationProps;
         }
 
         public Mapper AddMapping<T>(params (string srcName, string destName)[] config) where T : new()
@@ -31,7 +31,7 @@ namespace Hurace.Core.Common.Mapper
             var ret = new T();
             foreach (var pi in typeof(T).GetProperties())
             {
-                if (loadNavigationals && Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
+                if (_loadNavigationProps && Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
                 {
                     var res = typeof(Mapper).GetMethod(nameof(Map))?.MakeGenericMethod(pi.PropertyType)
                         .Invoke(this, new object[] {record});
