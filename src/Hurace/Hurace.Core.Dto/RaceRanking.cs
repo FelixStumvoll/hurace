@@ -6,7 +6,7 @@ namespace Hurace.Core.Dto
     public class RaceRanking
     {
         [Navigational]
-        public Skier Skier { get; set; }
+        public Skier? Skier { get; set; }
         public DateTime RaceTime { get; set; }
     }
 }

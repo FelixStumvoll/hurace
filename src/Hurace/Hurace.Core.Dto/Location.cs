@@ -8,6 +8,6 @@ namespace Hurace.Core.Dto
         public string Name { get; set; }
         public int CountryId { get; set; }
         [Navigational]
-        public Country Country { get; set; }
+        public Country? Country { get; set; }
     }
 }

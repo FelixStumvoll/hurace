@@ -13,6 +13,7 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
+        //todo load in country
         public async Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId) =>
             await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
                                          queryParams: ("@id", locationId));

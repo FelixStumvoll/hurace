@@ -9,10 +9,10 @@ namespace Hurace.Core.Dto
         public DateTime Time { get; set; }
         public int SkierId { get; set; }
         [Navigational]
-        public Skier Skier { get; set; }
+        public Skier? Skier { get; set; }
         public int RaceDataId { get; set; }
         public int RaceId { get; set; }
         [Navigational]
-        public Race Race { get; set; }
+        public Race? Race { get; set; }
     }
 }

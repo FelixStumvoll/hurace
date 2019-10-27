@@ -11,9 +11,9 @@ namespace Hurace.Core.Dto
         public DateTime DateOfBirth { get; set; }
         public int CountryId { get; set; }
         [Navigational]
-        public Country Country { get; set; }
+        public Country? Country { get; set; }
         public int GenderId { get; set; }
         [Navigational]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
     }
 }

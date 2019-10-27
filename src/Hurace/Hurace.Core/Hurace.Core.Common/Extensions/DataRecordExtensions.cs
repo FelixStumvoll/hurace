@@ -7,16 +7,17 @@ namespace Hurace.Core.Common.Extensions
 {
     public static class DataRecordExtensions
     {
-        public static T MapTo<T>(this IDataRecord record, MapperConfig config = null, bool mapNavigational = true)
-            where T : new()
+        public static T MapTo<T>(this IDataRecord record, MapperConfig config = null)
+            where T : class, new()
         {
             var ret = new T();
             foreach (var pi in typeof(T).GetProperties())
             {
-                if (mapNavigational && Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
+                if (config != null && Attribute.IsDefined(pi, typeof(NavigationalAttribute)) &&
+                    !config.exclusions.Contains(typeof(T)))
                 {
                     var res = typeof(DataRecordExtensions).GetMethod(nameof(MapTo))?.MakeGenericMethod(pi.PropertyType)
-                        .Invoke(null, new object[] {record, config, mapNavigational});
+                        .Invoke(null, new object[] {record, config});
                     pi.SetValue(ret, res);
                     continue;
                 }

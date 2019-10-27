@@ -8,6 +8,6 @@ namespace Hurace.Core.Dto
         public int RaceId { get; set; }
         public int EventTypeId { get; set; }
         [Navigational]
-        public EventType EventType { get; set; }
+        public EventType? EventType { get; set; }
     }
 }

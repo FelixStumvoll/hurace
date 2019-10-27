@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
-using Hurace.Core.Dto;
 using Hurace.Core.Dto.Util;
 using Hurace.Dal.Interface;
 
@@ -32,7 +29,7 @@ namespace Hurace.Core.Dal.Dao
 
         protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement,
             MapperConfig mapperConfig = null,
-            params QueryParam[] queryParams) where TResult : new()
+            params QueryParam[] queryParams) where TResult : class, new()
         {
             return await ConnectionFactory.UseConnection(statement, queryParams, async command =>
             {
@@ -54,24 +51,26 @@ namespace Hurace.Core.Dal.Dao
                                  ("@id", id))).FirstOrDefault();
 
 
-        private IEnumerable<(string name, object value)> GetMapProperties(object o) =>
-            o.GetType()
-                .GetProperties().Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
-                .Select(pi => (pi.Name, pi.GetValue(o)));
+        private static IEnumerable<(string name, object value)> GetMapProperties(object obj) =>
+            obj.GetType()
+                .GetProperties()
+                .Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
+                .Select(pi => (pi.Name, pi.GetValue(obj)));
 
         private (string statement, IEnumerable<QueryParam> queryParams) GetUpdateData(T obj)
         {
             var strBuilder = new StringBuilder($"update {TableName} set ");
             var queryParams = new List<QueryParam>();
             var properties = GetMapProperties(obj).ToList();
-            properties.Take(properties.Count-1).ToList().ForEach(data =>
+            properties.Take(properties.Count - 1).ToList().ForEach(data =>
             {
-                strBuilder.Append($"{data.name}=@{data.name},");
-                queryParams.Add(($"@{data.name}", data.value));
+                var (propName, propVal) = data;
+                strBuilder.Append($"{propName}=@{propName},");
+                queryParams.Add(($"@{propName}", propVal));
             });
             var (name, value) = properties.Last();
             strBuilder.Append($"{name}=@{name} where id=@id");
-            
+
             queryParams.Add(($"@{name}", value));
             queryParams.Add(("@id", typeof(T).GetProperty("Id")?.GetValue(obj)));
             return (strBuilder.ToString(), queryParams);
@@ -83,13 +82,14 @@ namespace Hurace.Core.Dal.Dao
             var valueStrBuilder = new StringBuilder("values(");
             var queryParams = new List<QueryParam>();
             var properties = GetMapProperties(obj).ToList();
-            properties.Take(properties.Count-1)
+            properties.Take(properties.Count - 1)
                 .ToList()
                 .ForEach(data =>
                 {
-                    strBuilder.Append($"{data.name},");
-                    valueStrBuilder.Append($"@{data.name},");
-                    queryParams.Add(($"@{data.name}", data.value));
+                    var (propName, propVal) = data;
+                    strBuilder.Append($"{propName},");
+                    valueStrBuilder.Append($"@{propName},");
+                    queryParams.Add(($"@{propName}", propVal));
                 });
             var (name, value) = properties.Last();
             strBuilder.Append($"{name})");
@@ -112,7 +112,6 @@ namespace Hurace.Core.Dal.Dao
         {
             var (statement, queryParams) = GetInsertData(obj);
             return (await ExecuteAsync(statement, queryParams.ToArray()) == 1);
-
         }
     }
 }
