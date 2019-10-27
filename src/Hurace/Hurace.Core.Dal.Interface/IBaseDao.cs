@@ -14,5 +14,6 @@ namespace Hurace.Dal.Interface
         Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams);
         Task<bool> DeleteAsync(int id);
         Task<bool> UpdateAsync(T obj);
+        Task<bool> InsertAsync(T obj);
     }
 }

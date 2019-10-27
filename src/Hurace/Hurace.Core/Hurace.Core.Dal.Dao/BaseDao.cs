@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
+using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dto;
 using Hurace.Core.Dto.Util;
@@ -14,7 +15,7 @@ namespace Hurace.Core.Dal.Dao
 {
     public abstract class BaseDao<T> : IBaseDao<T> where T : class, new()
     {
-        protected IConnectionFactory ConnectionFactory { get; }
+        private IConnectionFactory ConnectionFactory { get; }
         protected string TableName { get; }
 
         protected BaseDao(IConnectionFactory connectionFactory, string tableName)
@@ -23,36 +24,32 @@ namespace Hurace.Core.Dal.Dao
             TableName = tableName;
         }
 
-        public async Task<int> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
+        protected async Task<int> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
             await ConnectionFactory.UseConnection(statement, queryParams,
                                                   async command =>
                                                       await command.ExecuteNonQueryAsync());
 
-        protected async Task<IEnumerable<T>> QueryAsync(string statement , Mapper mapper = null, params QueryParam[] queryParams)
+        protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement, MapperConfig mapperConfig = null,
+            params QueryParam[] queryParams) where TResult : new()
         {
-            mapper ??= new Mapper();
-            
             return await ConnectionFactory.UseConnection(statement, queryParams, async command =>
             {
-                var items = new List<T>();
+                var items = new List<TResult>();
                 await using var reader = await command.ExecuteReaderAsync();
-                while (reader.Read())
-                {
-                    items.Add(mapper.Map<T>(reader));
-                }
+                while (reader.Read()) items.Add(reader.MapTo<TResult>(mapperConfig));
 
                 return items;
             });
         }
 
-        public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync($"select * from {TableName}");
+        public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync<T>($"select * from {TableName}");
 
         public virtual Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
-            QueryAsync($"select * from {TableName} where {condition}", queryParams:queryParams);
+            QueryAsync<T>($"select * from {TableName} where {condition}", queryParams: queryParams);
 
         public virtual async Task<T?> FindByIdAsync(int id) =>
-            (await QueryAsync($"select * from {TableName} where id=@id", queryParams:
-                              ("@id", id))).FirstOrDefault();
+            (await QueryAsync<T>($"select * from {TableName} where id=@id", queryParams:
+                                 ("@id", id))).FirstOrDefault();
 
 
         /*private (string statement, IEnumerable<QueryParam> queryParams) GetUpdateData(T obj)
@@ -84,5 +81,6 @@ namespace Hurace.Core.Dal.Dao
             (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;
 
         public abstract Task<bool> UpdateAsync(T obj);
+        public abstract Task<bool> InsertAsync(T obj);
     }
 }

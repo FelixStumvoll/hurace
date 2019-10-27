@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using Hurace.Core.Common.Extensions;
+using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dto.Util;
 
-namespace Hurace.Core.Common.Mapper
+namespace Hurace.Core.Common.Extensions
 {
-    public static class Mapper
+    public static class DataRecordExtensions
     {
-        public static T Map<T>(IDataRecord record, MapperConfig config = null, bool mapNavigational = true)
+        public static T MapTo<T>(this IDataRecord record, MapperConfig config = null, bool mapNavigational = true)
             where T : new()
         {
             var ret = new T();
@@ -17,7 +15,7 @@ namespace Hurace.Core.Common.Mapper
             {
                 if (mapNavigational && Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
                 {
-                    var res = typeof(Mapper).GetMethod(nameof(Map))?.MakeGenericMethod(pi.PropertyType)
+                    var res = typeof(DataRecordExtensions).GetMethod(nameof(MapTo))?.MakeGenericMethod(pi.PropertyType)
                         .Invoke(null, new object[] {record, config, mapNavigational});
                     pi.SetValue(ret, res);
                     continue;

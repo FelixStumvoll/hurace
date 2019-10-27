@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
+using Hurace.Core.Common.Extensions;
 
 namespace Hurace.Core.Common
 {
     public class ConcreteConnectionFactory : IConnectionFactory
     {
+        public string ConnectionString { get; set; }
+        public string ProviderName { get; set; }
+        
         private readonly DbProviderFactory _dbProviderFactory;
-
+        
         public ConcreteConnectionFactory(DbProviderFactory dbProviderFactory, string connectionString,
             string providerName)
         {
@@ -17,10 +20,7 @@ namespace Hurace.Core.Common
             ConnectionString = connectionString;
             ProviderName = providerName;
         }
-
-        public string ConnectionString { get; set; }
-        public string ProviderName { get; set; }
-
+        
         public async Task<T> UseConnection<T>(string statement, IEnumerable<QueryParam> queryParams,
             Func<DbCommand, Task<T>> connectionFunc)
         {

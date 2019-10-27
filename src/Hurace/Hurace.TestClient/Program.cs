@@ -18,8 +18,7 @@ namespace Hurace.TestClient
             {
                 Id = (int) src["countryId"], Name = (string) src["countryName"]
             };
-
-            var mapper = new Mapper();
+            
             var providername = "Microsoft.Data.SqlClient";
             var cstring = "Data Source=localhost;Initial Catalog=huraceDB;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q";
             var skierDao =

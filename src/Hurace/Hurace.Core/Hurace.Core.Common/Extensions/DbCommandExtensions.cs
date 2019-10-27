@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Common;
-using Hurace.Core.Common;
 
-namespace Hurace.Core.Dal.Dao
+namespace Hurace.Core.Common.Extensions
 {
     public static class DbCommandExtensions
     {

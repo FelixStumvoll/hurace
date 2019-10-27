@@ -1,6 +1,6 @@
-﻿namespace Hurace.Core.Common
+﻿namespace Hurace.Core.Common.Extensions
 {
-    public static class Extensions
+    public static class StringExtensions
     {
         public static string ToLowerFirstChar(this string str)
         {

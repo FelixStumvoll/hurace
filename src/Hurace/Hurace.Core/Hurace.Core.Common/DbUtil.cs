@@ -10,7 +10,7 @@ namespace Hurace.Core.Common
             {
                 "Microsoft.Data.SqlClient" => (DbProviderFactory) Microsoft.Data.SqlClient.SqlClientFactory.Instance,
                 "MySql.Data.MySqlClient" => MySql.Data.MySqlClient.MySqlClientFactory.Instance,
-                _ => throw new ArgumentException("Invalid provider name \"{providerName}\"")
+                _ => throw new ArgumentException($"Invalid provider name \"{providerName}\"")
             };
     }
 }

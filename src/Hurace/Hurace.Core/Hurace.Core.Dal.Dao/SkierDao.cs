@@ -10,12 +10,12 @@ namespace Hurace.Core.Dal.Dao
     public class SkierDao : BaseDao<Skier>, ISkierDao
     {
         public SkierDao(IConnectionFactory connectionFactory) : base(
-            connectionFactory, "hurace.Skier")
+            connectionFactory, "hurace.skier")
         {
         }
 
         public override Task<IEnumerable<Skier>> FindAllAsync() =>
-            QueryAsync(
+            QueryAsync<Skier>(
                 @"select s.id, s.firstName,
                                         s.lastName,
                                         s.genderId,
@@ -26,11 +26,25 @@ namespace Hurace.Core.Dal.Dao
                                         g.description
                                         from hurace.Skier as s
                                     join hurace.Country as c on c.id = s.countryId
-                                    join hurace.Gender as g on g.id = s.genderId", new Mapper()
+                                    join hurace.Gender as g on g.id = s.genderId", new MapperConfig()
                     .AddMapping<Gender>(("genderId", "id")).AddMapping<Country>(
                         ("countryId", "id"), ("countryName", "name")));
 
-        public override Task<bool> UpdateAsync(Skier obj)
+        public override async Task<bool> UpdateAsync(Skier obj) =>
+            (await ExecuteAsync(
+                $"update {TableName} set " +
+                "firstName=@fn," +
+                "lastName=@ln," +
+                "dateOfBirth=@dob," +
+                "countryId=@ci,genderId=@gi " +
+                "where id=@id",
+                ("@fn", obj.FirstName),
+                ("@ln", obj.LastName),
+                ("@dob", obj.DateOfBirth),
+                ("@ci", obj.CountryId),
+                ("@gi", obj.GenderId))) == 1;
+
+        public override Task<bool> InsertAsync(Skier obj)
         {
             throw new System.NotImplementedException();
         }

@@ -17,5 +17,10 @@ namespace Hurace.Core.Dal.Dao
         {
             throw new System.NotImplementedException();
         }
+
+        public override Task<bool> InsertAsync(Country obj)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

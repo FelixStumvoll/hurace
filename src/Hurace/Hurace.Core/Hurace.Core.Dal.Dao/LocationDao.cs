@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -14,12 +13,20 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
-        public Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId) =>
+            await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
+                                         queryParams: ("@id", locationId));
 
-        public override Task<bool> UpdateAsync(Location obj)
+        public override async Task<bool> UpdateAsync(Location obj) =>
+            (await ExecuteAsync($"update {TableName} set " +
+                                "name=@n," +
+                                "countryId=@ci," +
+                                "where id=@id", 
+                                ("@id", obj.Id),
+                                ("@n", obj.Name),
+                                ("@ci", obj.CountryId))) == 1;
+
+        public override Task<bool> InsertAsync(Location obj)
         {
             throw new System.NotImplementedException();
         }

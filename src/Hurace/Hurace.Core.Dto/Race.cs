@@ -13,9 +13,13 @@ namespace Hurace.Core.Dto
         public int LocationId { get; set; }
         [Navigational]
         public Location Location { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime Date { get; set; }
         public int GenderId { get; set; }
         [Navigational]
         public Gender Gender { get; set; }
+
+        public int RaceStateId { get; set; }
+        [Navigational]
+        public RaceState RaceState { get; set; }
     }
 }
