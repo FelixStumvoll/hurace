@@ -2,7 +2,7 @@
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISeasonDao : IBaseDao<Season>
+    public interface ISensorDao : IBaseDao<Sensor>
     {
         
     }

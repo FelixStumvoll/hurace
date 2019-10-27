@@ -30,23 +30,18 @@ namespace Hurace.Core.Dal.Dao
                     .AddMapping<Gender>(("genderId", "id")).AddMapping<Country>(
                         ("countryId", "id"), ("countryName", "name")));
 
-        public override async Task<bool> UpdateAsync(Skier obj) =>
-            (await ExecuteAsync(
-                $"update {TableName} set " +
-                "firstName=@fn," +
-                "lastName=@ln," +
-                "dateOfBirth=@dob," +
-                "countryId=@ci,genderId=@gi " +
-                "where id=@id",
-                ("@fn", obj.FirstName),
-                ("@ln", obj.LastName),
-                ("@dob", obj.DateOfBirth),
-                ("@ci", obj.CountryId),
-                ("@gi", obj.GenderId))) == 1;
-
-        public override Task<bool> InsertAsync(Skier obj)
-        {
-            throw new System.NotImplementedException();
-        }
+//        public override async Task<bool> UpdateAsync(Skier obj) =>
+//            (await ExecuteAsync(
+//                $"update {TableName} set " +
+//                "firstName=@fn," +
+//                "lastName=@ln," +
+//                "dateOfBirth=@dob," +
+//                "countryId=@ci,genderId=@gi " +
+//                "where id=@id",
+//                ("@fn", obj.FirstName),
+//                ("@ln", obj.LastName),
+//                ("@dob", obj.DateOfBirth),
+//                ("@ci", obj.CountryId),
+//                ("@gi", obj.GenderId))) == 1;
     }
 }

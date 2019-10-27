@@ -13,24 +13,24 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
-        public override async Task<bool> UpdateAsync(Race obj)
-        {
-            return (await ExecuteAsync($"update {TableName} set " +
-                                       "seasonId=@si," +
-                                       "disciplineId=@di," +
-                                       "locationId=@li," +
-                                       "date=@d," +
-                                       "genderId=@gi " +
-                                       "raceStateId=@rs" +
-                                       "where id=@id",
-                                       ("@id", obj.Id),
-                                       ("@si", obj.SeasonId),
-                                       ("@di", obj.DisciplineId),
-                                       ("@li", obj.LocationId),
-                                       ("@d", obj.Date),
-                                       ("@gi", obj.GenderId),
-                                       ("@rs", obj.RaceStateId))) == 1;
-        }
+//        public override async Task<bool> UpdateAsync(Race obj)
+//        {
+//            return (await ExecuteAsync($"update {TableName} set " +
+//                                       "seasonId=@si," +
+//                                       "disciplineId=@di," +
+//                                       "locationId=@li," +
+//                                       "date=@d," +
+//                                       "genderId=@gi " +
+//                                       "raceStateId=@rs" +
+//                                       "where id=@id",
+//                                       ("@id", obj.Id),
+//                                       ("@si", obj.SeasonId),
+//                                       ("@di", obj.DisciplineId),
+//                                       ("@li", obj.LocationId),
+//                                       ("@d", obj.Date),
+//                                       ("@gi", obj.GenderId),
+//                                       ("@rs", obj.RaceStateId))) == 1;
+//        }
 
         public override Task<bool> InsertAsync(Race obj)
         {

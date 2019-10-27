@@ -17,18 +17,15 @@ namespace Hurace.Core.Dal.Dao
             await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
                                          queryParams: ("@id", locationId));
 
-        public override async Task<bool> UpdateAsync(Location obj) =>
-            (await ExecuteAsync($"update {TableName} set " +
-                                "name=@n," +
-                                "countryId=@ci," +
-                                "where id=@id", 
-                                ("@id", obj.Id),
-                                ("@n", obj.Name),
-                                ("@ci", obj.CountryId))) == 1;
+//        public override async Task<bool> UpdateAsync(Location obj) =>
+//            (await ExecuteAsync($"update {TableName} set " +
+//                                "name=@n," +
+//                                "countryId=@ci," +
+//                                "where id=@id", 
+//                                ("@id", obj.Id),
+//                                ("@n", obj.Name),
+//                                ("@ci", obj.CountryId))) == 1;
 
-        public override Task<bool> InsertAsync(Location obj)
-        {
-            throw new System.NotImplementedException();
-        }
+        
     }
 }

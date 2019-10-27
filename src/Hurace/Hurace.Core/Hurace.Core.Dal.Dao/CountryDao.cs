@@ -12,15 +12,5 @@ namespace Hurace.Core.Dal.Dao
             connectionFactory, "hurace.country")
         {
         }
-
-        public override Task<bool> UpdateAsync(Country obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Task<bool> InsertAsync(Country obj)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

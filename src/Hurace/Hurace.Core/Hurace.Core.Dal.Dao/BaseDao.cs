@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
@@ -29,7 +30,8 @@ namespace Hurace.Core.Dal.Dao
                                                   async command =>
                                                       await command.ExecuteNonQueryAsync());
 
-        protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement, MapperConfig mapperConfig = null,
+        protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement,
+            MapperConfig mapperConfig = null,
             params QueryParam[] queryParams) where TResult : new()
         {
             return await ConnectionFactory.UseConnection(statement, queryParams, async command =>
@@ -52,35 +54,65 @@ namespace Hurace.Core.Dal.Dao
                                  ("@id", id))).FirstOrDefault();
 
 
-        /*private (string statement, IEnumerable<QueryParam> queryParams) GetUpdateData(T obj)
+        private IEnumerable<(string name, object value)> GetMapProperties(object o) =>
+            o.GetType()
+                .GetProperties().Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
+                .Select(pi => (pi.Name, pi.GetValue(o)));
+
+        private (string statement, IEnumerable<QueryParam> queryParams) GetUpdateData(T obj)
         {
-            var strBuilder = new StringBuilder($"update {TableName} set");
+            var strBuilder = new StringBuilder($"update {TableName} set ");
             var queryParams = new List<QueryParam>();
-            obj.GetType().GetProperties()
-                .Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(IncludedAttribute)))
-                .Select(pi => (pi.Name, pi.GetValue(obj)))
+            var properties = GetMapProperties(obj).ToList();
+            properties.Take(properties.Count-1).ToList().ForEach(data =>
+            {
+                strBuilder.Append($"{data.name}=@{data.name},");
+                queryParams.Add(($"@{data.name}", data.value));
+            });
+            var (name, value) = properties.Last();
+            strBuilder.Append($"{name}=@{name} where id=@id");
+            
+            queryParams.Add(($"@{name}", value));
+            queryParams.Add(("@id", typeof(T).GetProperty("Id")?.GetValue(obj)));
+            return (strBuilder.ToString(), queryParams);
+        }
+
+        private (string statement, IEnumerable<QueryParam> queryParams) GetInsertData(T obj)
+        {
+            var strBuilder = new StringBuilder($"insert into {TableName} (");
+            var valueStrBuilder = new StringBuilder("values(");
+            var queryParams = new List<QueryParam>();
+            var properties = GetMapProperties(obj).ToList();
+            properties.Take(properties.Count-1)
                 .ToList()
                 .ForEach(data =>
                 {
-                    var (name, item2) = data;
-                    strBuilder.Append($" {name}=@{name}");
-                    queryParams.Add(($"@{name}", item2));
+                    strBuilder.Append($"{data.name},");
+                    valueStrBuilder.Append($"@{data.name},");
+                    queryParams.Add(($"@{data.name}", data.value));
                 });
-            strBuilder.Append(" where id=@id");
-            queryParams.Add(("@id", obj.Id));
-            return (strBuilder.ToString(), queryParams);
+            var (name, value) = properties.Last();
+            strBuilder.Append($"{name})");
+            valueStrBuilder.Append($"@{value})");
+            queryParams.Add(($"@{name}", value));
+
+            return (strBuilder.Append(valueStrBuilder.ToString()).ToString(), queryParams);
         }
 
         public virtual async Task<bool> UpdateAsync(T obj)
         {
             var (statement, queryParams) = GetUpdateData(obj);
             return (await ExecuteAsync(statement, queryParams.ToArray()) == 1);
-        }*/
+        }
 
         public virtual async Task<bool> DeleteAsync(int id) =>
             (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;
 
-        public abstract Task<bool> UpdateAsync(T obj);
-        public abstract Task<bool> InsertAsync(T obj);
+        public virtual async Task<bool> InsertAsync(T obj)
+        {
+            var (statement, queryParams) = GetInsertData(obj);
+            return (await ExecuteAsync(statement, queryParams.ToArray()) == 1);
+
+        }
     }
 }
