@@ -24,8 +24,8 @@ namespace Hurace.DataGenerator
             _providerName = providerName;
             _connectionString = connectionString;
             _connectionFactory = new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providerName), connectionString, providerName);
-            _countryDao = new CountryDao(_connectionFactory);
-            _locationDao = new LocationDao(_connectionFactory);
+//            _countryDao = new CountryDao(_connectionFactory);
+//            _locationDao = new LocationDao(_connectionFactory);
         }
 
         private async Task LoadFixedData()

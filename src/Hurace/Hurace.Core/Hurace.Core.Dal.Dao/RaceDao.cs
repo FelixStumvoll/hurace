@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
+using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -11,30 +12,22 @@ namespace Hurace.Core.Dal.Dao
 {
     public class RaceDao : BaseDao<Race>, IRaceDao
     {
-        public RaceDao(IConnectionFactory connectionFactory) : base(connectionFactory, "hurace.race")
+        public RaceDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) :
+            base(connectionFactory, "hurace.race", queryFactory)
         {
         }
 
-//        public override async Task<bool> UpdateAsync(Race obj)
-//        {
-//            return (await ExecuteAsync($"update {TableName} set " +
-//                                       "seasonId=@si," +
-//                                       "disciplineId=@di," +
-//                                       "locationId=@li," +
-//                                       "date=@d," +
-//                                       "genderId=@gi " +
-//                                       "raceStateId=@rs" +
-//                                       "where id=@id",
-//                                       ("@id", obj.Id),
-//                                       ("@si", obj.SeasonId),
-//                                       ("@di", obj.DisciplineId),
-//                                       ("@li", obj.LocationId),
-//                                       ("@d", obj.Date),
-//                                       ("@gi", obj.GenderId),
-//                                       ("@rs", obj.RaceStateId))) == 1;
-//        }
+        public override async Task<bool> UpdateAsync(Race obj) =>
+            await GeneratedExecutionAsync(_queryFactory.Update<Race>()
+                            .Where(("Id", obj.Id))
+                            .Build(obj));
+        
+        public override Task<IEnumerable<Race>> FindAllAsync()
+        {
+            throw new System.NotImplementedException();
+        }
 
-        public override Task<bool> InsertAsync(Race obj)
+        public override Task<Race> FindByIdAsync(int id)
         {
             throw new System.NotImplementedException();
         }
@@ -116,14 +109,14 @@ namespace Hurace.Core.Dal.Dao
                                                 from hurace.StartList as sl
                                                 join hurace.skier as s on s.id = sl.skierId 
                                                 join hurace.country as c on c.id = s.countryId
-                                                where sl.startStateId = @sls and sl.raceId = @id", 
+                                                where sl.startStateId = @sls and sl.raceId = @id",
                                                 new MapperConfig()
                                                     .AddExclusion<Gender>()
                                                     .AddExclusion<Race>()
                                                     .AddExclusion<StartState>(),
                                                 ("@id", raceId), ("@sls", startListState)));
         }
-        
+
         public async Task<StartList?> GetNextSkier(int raceId) =>
             (await GetStartListEntriesByState(raceId, 1)).FirstOrDefault();
     }

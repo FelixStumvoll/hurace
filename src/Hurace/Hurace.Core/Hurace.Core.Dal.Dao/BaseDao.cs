@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
+using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto.Util;
 using Hurace.Dal.Interface;
 
@@ -17,11 +18,13 @@ namespace Hurace.Core.Dal.Dao
     {
         private IConnectionFactory ConnectionFactory { get; }
         protected string TableName { get; }
+        protected readonly QueryFactory _queryFactory;
 
-        protected BaseDao(IConnectionFactory connectionFactory, string tableName)
+        protected BaseDao(IConnectionFactory connectionFactory, string tableName, QueryFactory queryFactory)
         {
             ConnectionFactory = connectionFactory;
             TableName = tableName;
+            _queryFactory = queryFactory;
         }
 
         protected async Task<int> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
@@ -43,109 +46,25 @@ namespace Hurace.Core.Dal.Dao
             });
         }
 
-        public virtual Task<IEnumerable<T>> FindAllAsync() => QueryAsync<T>($"select * from {TableName}");
+        protected async Task<bool>
+            GeneratedExecutionAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
+            (await ExecuteAsync(data.statement, data.queryParams.ToArray())) == 1;
 
-        public virtual Task<IEnumerable<T>> FindAllWhereAsync(string condition, params QueryParam[] queryParams) =>
-            QueryAsync<T>($"select * from {TableName} where {condition}", queryParams: queryParams);
+        protected async Task<IEnumerable<T>> GeneratedQueryAsync(
+            (string statement, MapperConfig config, IEnumerable<QueryParam> queryParams) data) =>
+            await QueryAsync<T>(data.statement, data.config, data.queryParams.ToArray());
 
-        public virtual async Task<T?> FindByIdAsync(int id) =>
-            (await QueryAsync<T>($"select * from {TableName} where id=@id", queryParams:
-                                 ("@id", id))).FirstOrDefault();
+        public abstract Task<bool> UpdateAsync(T obj);
 
-        private static IEnumerable<(string name, object value)> GetMapProperties(object obj) =>
-            obj.GetType()
-                .GetProperties()
-                .Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
-                .Select(pi => (pi.Name, pi.GetValue(obj)));
+        public async Task<bool> InsertAsync(T obj) =>
+            await GeneratedExecutionAsync(_queryFactory.Insert<T>().Build(obj));
 
-        private (string statement, IEnumerable<QueryParam> queryParams) GetUpdateData(T obj)
-        {
-            var strBuilder = new StringBuilder($"update {TableName} set ");
-            var queryParams = new List<QueryParam>();
-            var properties = GetMapProperties(obj).ToList();
-            properties.Take(properties.Count - 1).ToList().ForEach(data =>
-            {
-                var (propName, propVal) = data;
-                strBuilder.Append($"{propName}=@{propName},");
-                queryParams.Add(($"@{propName}", propVal));
-            });
-            var (name, value) = properties.Last();
-            strBuilder.Append($"{name}=@{name} where id=@id");
+        public virtual async Task<IEnumerable<T>> FindAllAsync() =>
+            await GeneratedQueryAsync(_queryFactory.Select<T>().Build());
 
-            queryParams.Add(($"@{name}", value));
-            queryParams.Add(("@id", typeof(T).GetProperty("Id")?.GetValue(obj)));
-            return (strBuilder.ToString(), queryParams);
-        }
-
-        private (string statement, IEnumerable<QueryParam> queryParams) GetInsertData(T obj)
-        {
-            var strBuilder = new StringBuilder($"insert into {TableName} (");
-            var valueStrBuilder = new StringBuilder("values(");
-            var queryParams = new List<QueryParam>();
-            var properties = GetMapProperties(obj).ToList();
-            properties.Take(properties.Count - 1)
-                .ToList()
-                .ForEach(data =>
-                {
-                    var (propName, propVal) = data;
-                    strBuilder.Append($"{propName},");
-                    valueStrBuilder.Append($"@{propName},");
-                    queryParams.Add(($"@{propName}", propVal));
-                });
-            var (name, value) = properties.Last();
-            strBuilder.Append($"{name})");
-            valueStrBuilder.Append($"@{value})");
-            queryParams.Add(($"@{name}", value));
-
-            return (strBuilder.Append(valueStrBuilder.ToString()).ToString(), queryParams);
-        }
-//        private void GetFieldsFromEntity<TEntity>(TEntity obj, List<string> member, List<string> joins,
-//            HashSet<Type> excluded, MapperConfig outgoing)
-//        {
-//            var tableName = typeof(T).Name;
-//            var props = typeof(T).GetProperties().ToList();
-//
-//            foreach (var propertyInfo in props)
-//            {
-//                if (Attribute.IsDefined(propertyInfo, typeof(NavigationalAttribute)) &&
-//                    !excluded.Contains(propertyInfo.PropertyType))
-//                {
-//                    var nestedProps = (IEnumerable<string>) typeof(BaseDao<T>).GetMethod(nameof(GetFieldsFromEntity))?
-//                        .MakeGenericMethod(typeof(BaseDao<T>), propertyInfo.PropertyType)
-//                        .Invoke(this, new[] {propertyInfo.GetValue(obj), member, joins, excluded, outgoing});
-//                    if (nestedProps == null) continue;
-//                    member.AddRange(nestedProps);
-//                    continue;
-//                }
-//
-//                var columnName = $"{tableName}.{propertyInfo.Name.ToLowerFirstChar()}";
-//                if (incoming != null &&
-//                    incoming.MappingConfig.TryGetValue(propertyInfo.PropertyType, out var mappings) &&
-//                    mappings.TryGetValue(propertyInfo.Name, out var alias))
-//                    columnName += $"as {alias}";
-//                member.Add(columnName);
-//            }
-//        }
-
-//        protected (string statement, IEnumerable<QueryParam> queryParams) GetSelectData(T obj)
-//        {
-//            var paramBuilder = new StringBuilder("select");
-//            var from = $"from {TableName}";
-//        }
-
-        public virtual async Task<bool> UpdateAsync(T obj)
-        {
-            var (statement, queryParams) = GetUpdateData(obj);
-            return (await ExecuteAsync(statement, queryParams.ToArray()) == 1);
-        }
+        public abstract Task<T?> FindByIdAsync(int id);
 
         public virtual async Task<bool> DeleteAsync(int id) =>
             (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;
-
-        public virtual async Task<bool> InsertAsync(T obj)
-        {
-            var (statement, queryParams) = GetInsertData(obj);
-            return (await ExecuteAsync(statement, queryParams.ToArray()) == 1);
-        }
     }
 }
