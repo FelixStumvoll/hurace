@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Common", "Hurac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.TestClient", "Hurace.TestClient\Hurace.TestClient.csproj", "{19998BC6-F8AD-459B-ACCC-47AF35A7414B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.DataGenerator", "Hurace.DataGenerator\Hurace.DataGenerator.csproj", "{15EA6B62-492F-4481-879D-17ABB30ABE1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8807DE68-68AF-4BAA-8317-4FBA38DDE7D2} = {CE6F9445-D544-43B5-AAFF-8BB3BF6F44B7}

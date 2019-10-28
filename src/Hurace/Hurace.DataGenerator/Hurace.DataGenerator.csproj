@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Hurace.Core.Dal.Interface\Hurace.Core.Dal.Interface.csproj" />
+      <ProjectReference Include="..\Hurace.Core\Hurace.Core.Common\Hurace.Core.Common.csproj" />
+      <ProjectReference Include="..\Hurace.Core\Hurace.Core.Dal.Dao\Hurace.Core.Dal.Dao.csproj" />
+    </ItemGroup>
+
+</Project>

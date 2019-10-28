@@ -9,7 +9,7 @@ namespace Hurace.Core.Common.Mapper
         public readonly Dictionary<Type, Dictionary<string, string>> MappingConfig = new
             Dictionary<Type, Dictionary<string, string>>();
 
-        public readonly HashSet<Type> exclusions = new HashSet<Type>();
+        public readonly HashSet<Type> Exclusions = new HashSet<Type>();
 
         public MapperConfig AddMapping<T>(params (string srcName, string destName)[] config) where T : class, new()
         {
@@ -21,7 +21,7 @@ namespace Hurace.Core.Common.Mapper
 
         public MapperConfig AddExclusion<T>() where T : class, new()
         {
-            exclusions.Add(typeof(T));
+            Exclusions.Add(typeof(T));
             return this;
         }
     }

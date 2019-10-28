@@ -13,12 +13,6 @@ namespace Hurace.TestClient
     {
         static async Task Main(string[] args)
         {
-
-            Expression<Func<IDataReader, Country>> countryMapper = src => new Country
-            {
-                Id = (int) src["countryId"], Name = (string) src["countryName"]
-            };
-            
             var providername = "Microsoft.Data.SqlClient";
             var cstring = "Data Source=localhost;Initial Catalog=huraceDB;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q";
             var skierDao =

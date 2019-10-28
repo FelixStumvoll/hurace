@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
+using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -18,15 +19,15 @@ namespace Hurace.Core.Dal.Dao
             await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
                                          queryParams: ("@id", locationId));
 
-//        public override async Task<bool> UpdateAsync(Location obj) =>
-//            (await ExecuteAsync($"update {TableName} set " +
-//                                "name=@n," +
-//                                "countryId=@ci," +
-//                                "where id=@id", 
-//                                ("@id", obj.Id),
-//                                ("@n", obj.Name),
-//                                ("@ci", obj.CountryId))) == 1;
-
-        
+        public override async Task<IEnumerable<Location>> FindAllAsync() =>
+            await QueryAsync<Location>(@"select l.id,
+                                                       l.countryId,
+                                                       l.locationName,
+                                                       c.countryCode,
+                                                       c.countryName 
+                                                       from hurace.Location as l
+                                                       join hurace.Country as c on c.id = l.countryId",
+                                       new MapperConfig().AddMapping<Country>(
+                                           ("countryId", "Id"), ("countryName", "Name")));
     }
 }

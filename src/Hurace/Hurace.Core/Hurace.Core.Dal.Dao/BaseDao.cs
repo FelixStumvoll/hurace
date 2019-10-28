@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
@@ -50,7 +52,6 @@ namespace Hurace.Core.Dal.Dao
             (await QueryAsync<T>($"select * from {TableName} where id=@id", queryParams:
                                  ("@id", id))).FirstOrDefault();
 
-
         private static IEnumerable<(string name, object value)> GetMapProperties(object obj) =>
             obj.GetType()
                 .GetProperties()
@@ -98,6 +99,39 @@ namespace Hurace.Core.Dal.Dao
 
             return (strBuilder.Append(valueStrBuilder.ToString()).ToString(), queryParams);
         }
+//        private void GetFieldsFromEntity<TEntity>(TEntity obj, List<string> member, List<string> joins,
+//            HashSet<Type> excluded, MapperConfig outgoing)
+//        {
+//            var tableName = typeof(T).Name;
+//            var props = typeof(T).GetProperties().ToList();
+//
+//            foreach (var propertyInfo in props)
+//            {
+//                if (Attribute.IsDefined(propertyInfo, typeof(NavigationalAttribute)) &&
+//                    !excluded.Contains(propertyInfo.PropertyType))
+//                {
+//                    var nestedProps = (IEnumerable<string>) typeof(BaseDao<T>).GetMethod(nameof(GetFieldsFromEntity))?
+//                        .MakeGenericMethod(typeof(BaseDao<T>), propertyInfo.PropertyType)
+//                        .Invoke(this, new[] {propertyInfo.GetValue(obj), member, joins, excluded, outgoing});
+//                    if (nestedProps == null) continue;
+//                    member.AddRange(nestedProps);
+//                    continue;
+//                }
+//
+//                var columnName = $"{tableName}.{propertyInfo.Name.ToLowerFirstChar()}";
+//                if (incoming != null &&
+//                    incoming.MappingConfig.TryGetValue(propertyInfo.PropertyType, out var mappings) &&
+//                    mappings.TryGetValue(propertyInfo.Name, out var alias))
+//                    columnName += $"as {alias}";
+//                member.Add(columnName);
+//            }
+//        }
+
+//        protected (string statement, IEnumerable<QueryParam> queryParams) GetSelectData(T obj)
+//        {
+//            var paramBuilder = new StringBuilder("select");
+//            var from = $"from {TableName}";
+//        }
 
         public virtual async Task<bool> UpdateAsync(T obj)
         {

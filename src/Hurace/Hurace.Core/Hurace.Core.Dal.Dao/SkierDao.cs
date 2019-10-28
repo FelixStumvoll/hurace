@@ -21,14 +21,15 @@ namespace Hurace.Core.Dal.Dao
                                         s.genderId,
                                         s.dateOfBirth,
                                         s.countryId,
-                                        c.name as countryName,
+                                        c.countryName,
                                         c.countryCode,
-                                        g.description
+                                        g.genderDescription
                                         from hurace.Skier as s
                                     join hurace.Country as c on c.id = s.countryId
-                                    join hurace.Gender as g on g.id = s.genderId", new MapperConfig()
-                    .AddMapping<Gender>(("genderId", "id")).AddMapping<Country>(
-                        ("countryId", "id"), ("countryName", "name")));
+                                    join hurace.Gender as g on g.id = s.genderId", 
+                new MapperConfig()
+                    .AddMapping<Gender>(("genderId", "id"))
+                    .AddMapping<Country>(("countryId", "id"), ("countryName", "name")));
 
 //        public override async Task<bool> UpdateAsync(Skier obj) =>
 //            (await ExecuteAsync(
