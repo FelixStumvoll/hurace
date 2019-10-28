@@ -13,20 +13,19 @@ namespace Hurace.Core.Common.Mapper
             var ret = new T();
             foreach (var pi in typeof(T).GetProperties())
             {
-                if (config != null && Attribute.IsDefined(pi, typeof(NavigationalAttribute)) &&
-                    !config.Exclusions.Contains(typeof(T)))
+                if (Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
                 {
-                    var res = typeof(Mapper).GetMethod(nameof(MapTo))?.MakeGenericMethod(pi.PropertyType)
-                        .Invoke(null, new object[] {record, config});
-                    pi.SetValue(ret, res);
+                    if (config?.IsIncluded(pi.PropertyType) ?? false)
+                    {
+                        var res = typeof(Mapper).GetMethod(nameof(MapTo))?.MakeGenericMethod(pi.PropertyType)
+                            .Invoke(null, new object[] {record, config});
+                        pi.SetValue(ret, res);
+                    }
                     continue;
                 }
-
+                
                 var propName = pi.Name.ToLowerFirstChar();
-                if (config != null && config.MappingConfig.TryGetValue(typeof(T), out var configDict) &&
-                    configDict.TryGetValue(propName, out var srcName))
-                    propName = srcName;
-
+                config?.MappingExists(typeof(T), propName, out propName);
                 pi.SetValue(ret, record[propName]);
             }
 

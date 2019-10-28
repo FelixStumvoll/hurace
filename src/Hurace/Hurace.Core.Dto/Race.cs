@@ -13,7 +13,7 @@ namespace Hurace.Core.Dto
         public int LocationId { get; set; }
         [Navigational]
         public Location? Location { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime RaceDate { get; set; }
         public int GenderId { get; set; }
         [Navigational]
         public Gender? Gender { get; set; }

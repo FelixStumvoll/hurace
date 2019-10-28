@@ -10,6 +10,7 @@ namespace Hurace.Core.Common.Mapper
             Dictionary<Type, Dictionary<string, string>>();
 
         public readonly HashSet<Type> Exclusions = new HashSet<Type>();
+        private readonly HashSet<Type> _inclusions = new HashSet<Type>();
 
         public MapperConfig AddMapping<T>(params (string srcName, string destName)[] config) where T : class, new()
         {
@@ -23,6 +24,22 @@ namespace Hurace.Core.Common.Mapper
         {
             Exclusions.Add(typeof(T));
             return this;
+        }
+
+        public MapperConfig Include<T>() where T : class, new()
+        {
+            _inclusions.Add(typeof(T));
+            return this;
+        }
+
+        public bool IsIncluded(Type t) => _inclusions.Contains(t);
+
+        public bool MappingExists(Type t, string propName, out string srcName)
+        {
+            if (MappingConfig.TryGetValue(t, out var propertyMappings) &&
+                propertyMappings.TryGetValue(propName, out srcName)) return true;
+            srcName = default;
+            return false;
         }
     }
 }

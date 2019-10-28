@@ -3,6 +3,6 @@
     public class RaceState
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string RaceStateDescription { get; set; }
     }
 }
