@@ -16,10 +16,5 @@ namespace Hurace.Core.Dal.Dao
 
         public override async Task<bool> UpdateAsync(Country obj) =>
             await GeneratedExecutionAsync(_queryFactory.Update<Country>().Where(("Id", obj.Id)).Build(obj));
-        
-        public override Task<Country> FindByIdAsync(int id)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

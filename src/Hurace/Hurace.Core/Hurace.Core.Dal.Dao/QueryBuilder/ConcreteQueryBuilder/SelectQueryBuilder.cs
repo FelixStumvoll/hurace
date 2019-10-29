@@ -12,10 +12,15 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
     public class SelectQueryBuilder<T> : QueryBuilder where T : class, new()
     {
-        private readonly Dictionary<(Type, Type), List<JoinParam>> _joinMappings = new
-            Dictionary<(Type, Type), List<JoinParam>>();
+        private JoinConfig JoinCfg { get; set; }
 
-        private readonly HashSet<Type> _inclusion = new HashSet<Type>();
+        private class JoinConfig
+        {
+            public Dictionary<(Type selfType, Type foreignType), List<JoinParam>> JoinMappings { get; set; } = 
+                new Dictionary<(Type selfType, Type foreignType), List<JoinParam>>();
+
+            public MapperConfig MapperConfig { get; set; } = new MapperConfig();
+        }
 
         private readonly List<(string tableName, IEnumerable<QueryParam> param)> _whereConditions =
             new List<(string tabelName, IEnumerable<QueryParam> param)>();
@@ -24,16 +29,17 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-        public SelectQueryBuilder<T> Join<TSelf, TRef>(params JoinParam[] mappings)
+        public SelectQueryBuilder<T> Join<TSelf, TRef>(params JoinParam[] mappings) where TRef : class, new()
         {
-            if (!_joinMappings.TryGetValue((typeof(TSelf), typeof(TRef)), out var list))
+            JoinCfg ??= new JoinConfig();
+            if (!JoinCfg.JoinMappings.TryGetValue((typeof(TSelf), typeof(TRef)), out var list))
             {
                 list = new List<JoinParam>();
-                _joinMappings.Add((typeof(TSelf), typeof(TRef)), list);
+                JoinCfg.JoinMappings.Add((typeof(TSelf), typeof(TRef)), list);
             }
 
             list.AddRange(mappings);
-            _inclusion.Add(typeof(TRef));
+            JoinCfg.MapperConfig.Include<TRef>();
             return this;
         }
 
@@ -45,7 +51,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
         public (string statement, MapperConfig mapperConfig, IEnumerable<QueryParam> queryParams) Build()
         {
-            var config = new MapperConfig();
+            var config = JoinCfg?.MapperConfig ?? new MapperConfig();
             var strBuilder = new StringBuilder("Select ");
             HandleColumns(strBuilder, config);
             HandleJoins(strBuilder);
@@ -54,12 +60,12 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
         private void AppendColumns<TSelect>(ICollection<string> list, MapperConfig config) where TSelect : class, new()
         {
-            var tableName = $"hurace.{typeof(TSelect).Name}";
+            var tableName = WithSchema(typeof(TSelect).Name);
             foreach (var propertyInfo in typeof(TSelect).GetProperties())
             {
                 if (Attribute.IsDefined(propertyInfo, typeof(NavigationalAttribute)))
                 {
-                    if (_inclusion.Contains(propertyInfo.PropertyType))
+                    if (config.IsIncluded(propertyInfo.PropertyType))
                         typeof(SelectQueryBuilder<T>)
                             .GetMethod(nameof(AppendColumns), BindingFlags.NonPublic | BindingFlags.Instance)
                             ?.MakeGenericMethod(propertyInfo.PropertyType)
@@ -84,13 +90,14 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
         private void HandleJoins(StringBuilder strBuilder)
         {
-            foreach (var ((selfTable, refTable), joinConstraints) in _joinMappings)
+            if (JoinCfg == null) return;
+            foreach (var ((selfTable, refTable), joinConstraints) in JoinCfg.JoinMappings)
             {
                 var joinList = new List<string>();
                 var selfTableName = WithSchema(selfTable.Name);
                 var refTableName = WithSchema(refTable.Name);
                 strBuilder.Append($" join {refTableName} on ");
-                
+
                 joinConstraints.ForEach(cm => joinList.Add(
                                             $"{selfTableName}.{cm.SelfColumn} = {refTableName}.{cm.ForeignColumn}"));
 
@@ -108,7 +115,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             foreach (var whereQueryParam in whereColumns)
             {
                 whereList.Add($"{tableName}.{whereQueryParam.Name}=@{whereQueryParam.Name}");
-                queryParams.Add(new QueryParam {Name = $@"{whereQueryParam.Name}", Value = whereQueryParam.Value});
+                queryParams.Add(($"@{whereQueryParam.Name}",whereQueryParam.Value));
             }
 
             stringBuilder.Append(string.Join(" and ", whereList));

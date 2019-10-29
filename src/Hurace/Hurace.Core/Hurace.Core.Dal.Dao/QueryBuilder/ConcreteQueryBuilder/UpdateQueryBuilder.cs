@@ -35,7 +35,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
             var whereSection =
                 string.Join(
-                    "and",
+                    " and ",
                     _whereProperties
                         .Select(prop => $"{WithSchema(typeof(T).Name)}.{prop.Name}=@{prop.Name}"));
             return ($"update {WithSchema(typeof(T).Name)} set {string.Join(',', updateProps)} where" +

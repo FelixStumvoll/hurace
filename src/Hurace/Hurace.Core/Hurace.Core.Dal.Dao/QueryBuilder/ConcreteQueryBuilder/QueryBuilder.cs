@@ -6,7 +6,7 @@ using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class QueryBuilder
+    public abstract class QueryBuilder
     {
         private readonly string _schemaName;
 

@@ -10,8 +10,6 @@ namespace Hurace.Core.Dal.Dao
 {
     public class LocationDao : BaseDao<Location>, ILocationDao
     {
-        
-
         //todo load in country
         public async Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId) =>
             await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
@@ -23,15 +21,8 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<IEnumerable<Location>> FindAllAsync() =>
-            await QueryAsync<Location>(@"select l.id,
-                                                       l.countryId,
-                                                       l.locationName,
-                                                       c.countryCode,
-                                                       c.countryName 
-                                                       from hurace.Location as l
-                                                       join hurace.Country as c on c.id = l.countryId",
-                                       new MapperConfig().AddMapping<Country>(
-                                           ("countryId", "Id"), ("countryName", "Name")));
+            await GeneratedQueryAsync(_queryFactory.Select<Location>().Join<Location, Country>(("countryId", "id"))
+                                          .Build());
 
         public override Task<Location> FindByIdAsync(int id)
         {

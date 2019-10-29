@@ -18,7 +18,7 @@ namespace Hurace.Core.Dal.Dao
     {
         private IConnectionFactory ConnectionFactory { get; }
         protected string TableName { get; }
-        protected readonly QueryFactory _queryFactory;
+        protected  readonly QueryFactory _queryFactory;
 
         protected BaseDao(IConnectionFactory connectionFactory, string tableName, QueryFactory queryFactory)
         {
@@ -56,13 +56,14 @@ namespace Hurace.Core.Dal.Dao
 
         public abstract Task<bool> UpdateAsync(T obj);
 
-        public async Task<bool> InsertAsync(T obj) =>
-            await GeneratedExecutionAsync(_queryFactory.Insert<T>().Build(obj));
+        public virtual async Task<bool> InsertAsync(T obj) =>
+            await GeneratedExecutionAsync(_queryFactory.Insert<T>().Build(obj,"Id"));
 
         public virtual async Task<IEnumerable<T>> FindAllAsync() =>
             await GeneratedQueryAsync(_queryFactory.Select<T>().Build());
 
-        public abstract Task<T?> FindByIdAsync(int id);
+        public virtual async Task<T?> FindByIdAsync(int id) =>
+            (await GeneratedQueryAsync(_queryFactory.Select<T>().Where<T>(("id", id)).Build())).SingleOrDefault();
 
         public virtual async Task<bool> DeleteAsync(int id) =>
             (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;

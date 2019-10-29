@@ -10,14 +10,14 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-        public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj)
+        public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj, params string[] excludedProperties)
         {
             var queryParams = new List<QueryParam>();
             var columnNames = new List<string>();
             var columnValues = new List<string>();
             var properties = GetCrudProperties(obj).ToList();
 
-            properties.ForEach(pi =>
+            properties.Where(pi => !excludedProperties.Contains(pi.name)).ToList().ForEach(pi =>
             {
                 var (name, value) = pi;
                 columnNames.Add(name);

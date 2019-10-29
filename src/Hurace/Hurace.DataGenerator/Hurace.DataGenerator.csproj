@@ -11,4 +11,14 @@
       <ProjectReference Include="..\Hurace.Core\Hurace.Core.Dal.Dao\Hurace.Core.Dal.Dao.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Data.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
