@@ -4,7 +4,7 @@ using Hurace.Core.Common;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class InsertQueryBuilder<T> : QueryBuilder
+    public class InsertQueryBuilder<T> : AbstractQueryBuilder
     {
         public InsertQueryBuilder(string schemaName) : base(schemaName)
         {

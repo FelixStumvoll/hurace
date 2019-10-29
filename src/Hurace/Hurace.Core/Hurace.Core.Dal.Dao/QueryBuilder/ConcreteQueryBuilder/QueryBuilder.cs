@@ -1,29 +1,47 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Hurace.Core.Common;
-using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public abstract class QueryBuilder
+    public abstract class QueryBuilder<T> : AbstractQueryBuilder where T : class, new()
     {
-        private readonly string _schemaName;
+        protected WhereConfig WhereCfg { get; private set; }
 
-        internal QueryBuilder(string schemaName) => _schemaName = schemaName;
+        protected class WhereConfig
+        {
+            public List<(string tableName, IEnumerable<QueryParam>)> WhereConditions { get; } =
+                new List<(string tableName, IEnumerable<QueryParam>)>();
+        }
 
-        protected string WithSchema(string append) => $"{_schemaName}.{append}";
+        protected QueryBuilder(string schemaName) : base(schemaName)
+        {
+        }
 
-        protected IEnumerable<QueryParam> AddParamSymbol(IEnumerable<QueryParam> list) =>
-            list.Select(queryParam => new QueryParam
+        private static QueryParam AddParamSymbol(QueryParam queryParam)
+        {
+            queryParam.Name = $"@{queryParam.Name}";
+            return queryParam;
+        }
+
+        protected void AddWhere<TWhere>(params QueryParam[] whereParams)
+        {
+            WhereCfg ??= new WhereConfig();
+            WhereCfg.WhereConditions.Add((WithSchema(typeof(TWhere).Name), whereParams));
+        }
+
+        protected (string statement, IEnumerable<QueryParam> queryParams) HandleWhere()
+        {
+            var queryParams = new List<QueryParam>();
+            if (WhereCfg == null) return ("", queryParams);
+            var whereConditions = new List<string>();
+            foreach (var (tableName, whereQueryParams) in WhereCfg.WhereConditions)
+            foreach (var whereQueryParam in whereQueryParams)
             {
-                Name = $"@{queryParam.Name}", Value = queryParam.Value
-            });
+                whereConditions.Add($"{tableName}.{whereQueryParam.Name}=@{whereQueryParam.Name}");
+                queryParams.Add(AddParamSymbol(whereQueryParam));
+            }
 
-        protected static IEnumerable<(string name, object value)> GetCrudProperties(object obj) =>
-            obj.GetType()
-                .GetProperties()
-                .Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
-                .Select(pi => (pi.Name, pi.GetValue(obj)));
+            return ($" where {string.Join(" and ", whereConditions)}", queryParams);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder
         public SelectQueryBuilder<T> Select<T>() where T : class, new() =>
             new SelectQueryBuilder<T>(_schemaName);
 
-        public UpdateQueryBuilder<T> Update<T>() => new UpdateQueryBuilder<T>(_schemaName);
+        public UpdateQueryBuilder<T> Update<T>() where T : class, new() => new UpdateQueryBuilder<T>(_schemaName);
         public InsertQueryBuilder<T> Insert<T>() => new InsertQueryBuilder<T>(_schemaName);
     }
 }

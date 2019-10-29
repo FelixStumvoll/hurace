@@ -4,20 +4,12 @@ using Hurace.Core.Common;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class UpdateQueryBuilder<T> : QueryBuilder
+    public class UpdateQueryBuilder<T> : QueryBuilder<T> where T : class, new()
     {
-        private readonly List<QueryParam> _whereProperties = new List<QueryParam>();
-
         public UpdateQueryBuilder(string schemaName) : base(schemaName)
         {
         }
-
-        public UpdateQueryBuilder<T> Where(params QueryParam[] whereProperties)
-        {
-            _whereProperties.AddRange(whereProperties);
-            return this;
-        }
-
+        
         public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj)
         {
             var queryParams = new List<QueryParam>();
@@ -31,15 +23,16 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
                 queryParams.Add(($"@{name}", value));
             });
 
-            queryParams.AddRange(AddParamSymbol(_whereProperties));
-
-            var whereSection =
-                string.Join(
-                    " and ",
-                    _whereProperties
-                        .Select(prop => $"{WithSchema(typeof(T).Name)}.{prop.Name}=@{prop.Name}"));
+            var (whereSection, whereQueryParams) = HandleWhere();
+            queryParams.AddRange(whereQueryParams);
             return ($"update {WithSchema(typeof(T).Name)} set {string.Join(',', updateProps)} where" +
                     $" {whereSection}", queryParams);
+        }
+
+        public UpdateQueryBuilder<T> Where(params QueryParam[] whereParams)
+        {
+             AddWhere<T>(whereParams);
+             return this;
         }
     }
 }
