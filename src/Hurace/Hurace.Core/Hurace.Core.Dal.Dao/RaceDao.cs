@@ -110,9 +110,8 @@ namespace Hurace.Core.Dal.Dao
                                                 join hurace.country as c on c.id = s.countryId
                                                 where sl.startStateId = @sls and sl.raceId = @id",
                                                 new MapperConfig()
-                                                    .AddExclusion<Gender>()
-                                                    .AddExclusion<Race>()
-                                                    .AddExclusion<StartState>(),
+                                                    .Include<Skier>()
+                                                    .Include<Country>(),
                                                 ("@id", raceId), ("@sls", startListState)));
         }
 
