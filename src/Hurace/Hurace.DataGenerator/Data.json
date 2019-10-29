@@ -1,0 +1,379 @@
+{
+  "Skier": [
+    {
+      "Name": "Aksel Lund Svindal",
+      "Gender": "m",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Kjetil Jansrud",
+      "Gender": "m",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Beat Feuz",
+      "Gender": "m",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Dominik Paris",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Thomas Dreßen",
+      "Gender": "m",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Peter Fill",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Vincent Kriechmayr",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Brice Roger",
+      "Gender": "m",
+      "Country": "France"
+    },
+    {
+      "Name": "Matthias Mayer",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Andreas Sander",
+      "Gender": "m",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Max Franz",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Hannes Reichelt",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Mauro Caviezel",
+      "Gender": "m",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Manuel Osborne-Paradis",
+      "Gender": "m",
+      "Country": "Canada"
+    },
+    {
+      "Name": "Aleksander Aamodt Kilde",
+      "Gender": "m",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Bryce Bennett",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Christof Innerhofer",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Johan Clarey",
+      "Gender": "m",
+      "Country": "France"
+    },
+    {
+      "Name": "Josef Ferstl",
+      "Gender": "m",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Clément Noël",
+      "Gender": "m",
+      "Country": "France"
+    },
+    {
+      "Name": "Daniel Yule",
+      "Gender": "m",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Ramon Zenhäusern",
+      "Gender": "m",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Henrik Kristoffersen",
+      "Gender": "m",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Alexis Pinturault",
+      "Gender": "m",
+      "Country": "France"
+    },
+    {
+      "Name": "Marco Schwarz",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Manuel Feller",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Dave Ryding",
+      "Gender": "m",
+      "Country": "Great Britain"
+    },
+    {
+      "Name": "André Myhrer",
+      "Gender": "m",
+      "Country": "Sweden"
+    },
+    {
+      "Name": "Michael Matt",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Manfred Mölgg",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Christian Hirschbühl",
+      "Gender": "m",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Felix Neureuther",
+      "Gender": "m",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Victor Muffat-Jeandet",
+      "Gender": "m",
+      "Country": "France"
+    },
+    {
+      "Name": "Loïc Meillard",
+      "Gender": "m",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Giuliano Razzoli",
+      "Gender": "m",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Mikaela Shiffrin",
+      "Gender": "f",
+      "Country": "United States"
+    },
+    {
+      "Name": "Wendy Holdener",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Viktoria Rebensburg",
+      "Gender": "f",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Nicole Schmidhofer",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Federica Brignone",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Ragnhild Mowinckel",
+      "Gender": "f",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Frida Hansdotter",
+      "Gender": "f",
+      "Country": "Sweden"
+    },
+    {
+      "Name": "Stephanie Venier",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": " Anna Swenn-Larsson",
+      "Gender": "f",
+      "Country": "Sweden"
+    },
+    {
+      "Name": "Katharina Liensberger",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Katharina Truppe",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Tessa Worley",
+      "Gender": "f",
+      "Country": "France"
+    },
+    {
+      "Name": "Ramona Siebenhofer",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Michelle Gisin",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Corinne Suter",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Bernadette Schild",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Kristin Lysdahl",
+      "Gender": "f",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Lara Gut-Behrami",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Sofia Goggia",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Romane Miradoli",
+      "Gender": "f",
+      "Country": "France"
+    },
+    {
+      "Name": "Ricarda Haaser",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Kira Weidle",
+      "Gender": "f",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Tamara Tippler",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Marta Bassino",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Nadia Fanchini",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Jasmine Flury",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Christina Geiger",
+      "Gender": "f",
+      "Country": "Germany"
+    },
+    {
+      "Name": "Nicol Delago",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Irene Curtoni",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Stephanie Brunner",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Joana Hählen",
+      "Gender": "f",
+      "Country": "Swiss"
+    },
+    {
+      "Name": "Cornelia Hütter",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Mirjam Puchner",
+      "Gender": "f",
+      "Country": "Austria"
+    },
+    {
+      "Name": "Erin Mielzynski",
+      "Gender": "f",
+      "Country": "Canada"
+    },
+    {
+      "Name": "Francesca Marsaglia",
+      "Gender": "f",
+      "Country": "Italy"
+    },
+    {
+      "Name": "Anna Veith",
+      "Gender": "f",
+      "Country": ""
+    },
+    {
+      "Name": "Roni Remme",
+      "Gender": "f",
+      "Country": "Canada"
+    },
+    {
+      "Name": "Laurence St-Germain",
+      "Gender": "f",
+      "Country": "Canada"
+    },
+    {
+      "Name": "Mina Fürst Holtmann",
+      "Gender": "f",
+      "Country": "Norway"
+    },
+    {
+      "Name": "Nina Haver-Løseth",
+      "Gender": "f",
+      "Country": "Norway"
+    }
+  ]
+}
