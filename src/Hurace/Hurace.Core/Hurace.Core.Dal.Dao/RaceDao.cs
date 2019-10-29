@@ -22,10 +22,13 @@ namespace Hurace.Core.Dal.Dao
                             .Where(("Id", obj.Id))
                             .Build(obj));
         
-        public override Task<IEnumerable<Race>> FindAllAsync()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override async Task<IEnumerable<Race>> FindAllAsync() =>
+            await GeneratedQueryAsync(_queryFactory.Select<Race>()
+                                          .Join<Race,Location>(("locationId", "id"))
+                                          .Join<Race,Season>(("seasonId", "id"))
+                                          .Join<Race, Discipline>(("disciplineId", "id"))
+                                          .Join<Race, RaceState>(("raceStateId", "id"))
+                                          .Build());
 
         public override Task<Race> FindByIdAsync(int id)
         {
@@ -41,7 +44,7 @@ namespace Hurace.Core.Dal.Dao
                                                 s.genderId,
                                                 s.firstName,
                                                 c.countryCode,
-                                                c.name as countryName,
+                                                c.countryName,
                                                 max(td.time) as raceTime
                                                 from hurace.TimeData as td
                                                     join hurace.Skier as s on td.skierId = s.id
@@ -56,13 +59,11 @@ namespace Hurace.Core.Dal.Dao
                                                 s.genderId,
                                                 s.dateOfBirth,
                                                 c.countryCode,
-                                                c.name,
+                                                c.countryName
                                                 order by raceTime desc",
                                         new MapperConfig()
-                                            .AddMapping<Country>(("countryId", "Id"))
-                                            .AddExclusion<Gender>()
-                                            .AddExclusion<Race>(),
-                                        ("@id", raceId));
+                                            .AddMapping<Country>(("countryId", "Id")),
+                                            ("@id", raceId));
         }
 
         public async Task<IEnumerable<StartList>> GetStartList(int raceId) =>
@@ -72,12 +73,13 @@ namespace Hurace.Core.Dal.Dao
                                                 s.firstName,
                                                 s.lastName,
                                                 s.dateOfBirth,
+                                                s.genderId,
                                                 s.countryId,
-                                                c.name,
+                                                c.countryName,
                                                 c.countryCode,
                                                 sl.startNumber,
                                                 sl.startStateId,
-                                                ss.description as startStateDescription
+                                                ss.startStateDescription
                                                 from hurace.StartList as sl
                                                 join hurace.skier as s on s.id = sl.skierId
                                                 join hurace.country as c on c.id = s.countryId
@@ -86,14 +88,11 @@ namespace Hurace.Core.Dal.Dao
                                                 where sl.raceId = @id
                                                 order by sl.startNumber asc",
                                         new MapperConfig()
+                                            .Include<Skier>()
+                                            .Include<Country>()
                                             .AddMapping<Country>(("countryId", "Id"))
-                                            .AddMapping<Skier>(("skierId", "Id"))
-                                            .AddExclusion<Gender>()
-                                            .AddExclusion<Race>(),
+                                            .AddMapping<Skier>(("skierId", "Id")),
                                         ("@id", raceId));
-
-        public async Task<StartList?> GetCurrentSkier(int raceId) =>
-            (await GetStartListEntriesByState(raceId, 2)).SingleOrDefault();
 
         private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId, int startListState)
         {
@@ -119,5 +118,8 @@ namespace Hurace.Core.Dal.Dao
 
         public async Task<StartList?> GetNextSkier(int raceId) =>
             (await GetStartListEntriesByState(raceId, 1)).FirstOrDefault();
+
+        public async Task<StartList?> GetCurrentSkier(int raceId) =>
+            (await GetStartListEntriesByState(raceId, 2)).SingleOrDefault();
     }
 }

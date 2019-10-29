@@ -52,7 +52,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             return (strBuilder.ToString(), config, HandleWhere(strBuilder));
         }
 
-        private void AppendColumns<TSelect>(List<string> list, MapperConfig config) where TSelect : class, new()
+        private void AppendColumns<TSelect>(ICollection<string> list, MapperConfig config) where TSelect : class, new()
         {
             var tableName = $"hurace.{typeof(TSelect).Name}";
             foreach (var propertyInfo in typeof(TSelect).GetProperties())
@@ -100,16 +100,15 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
         private IEnumerable<QueryParam> HandleWhere(StringBuilder stringBuilder)
         {
+            var queryParams = new List<QueryParam>();
+            if (_whereConditions.Count == 0) return queryParams;
             stringBuilder.Append(" where ");
             var whereList = new List<string>();
-            var queryParams = new List<QueryParam>();
             foreach (var (tableName, whereColumns) in _whereConditions)
+            foreach (var whereQueryParam in whereColumns)
             {
-                foreach (var whereQueryParam in whereColumns)
-                {
-                    whereList.Add($"{tableName}.{whereQueryParam.Name}=@{whereQueryParam.Name}");
-                    queryParams.Add(new QueryParam{Name = $@"{whereQueryParam.Name}", Value = whereQueryParam.Value});
-                }
+                whereList.Add($"{tableName}.{whereQueryParam.Name}=@{whereQueryParam.Name}");
+                queryParams.Add(new QueryParam {Name = $@"{whereQueryParam.Name}", Value = whereQueryParam.Value});
             }
 
             stringBuilder.Append(string.Join(" and ", whereList));

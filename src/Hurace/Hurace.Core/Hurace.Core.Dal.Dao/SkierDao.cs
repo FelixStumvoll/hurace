@@ -20,22 +20,30 @@ namespace Hurace.Core.Dal.Dao
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<Skier>> FindAllAsync() =>
-            QueryAsync<Skier>(
-                @"select s.id, s.firstName,
-                                        s.lastName,
-                                        s.genderId,
-                                        s.dateOfBirth,
-                                        s.countryId,
-                                        c.countryName,
-                                        c.countryCode,
-                                        g.genderDescription
-                                        from hurace.Skier as s
-                                    join hurace.Country as c on c.id = s.countryId
-                                    join hurace.Gender as g on g.id = s.genderId",
-                new MapperConfig()
-                    .AddMapping<Gender>(("genderId", "id"))
-                    .AddMapping<Country>(("countryId", "id"), ("countryName", "name")));
+
+        public override async Task<IEnumerable<Skier>> FindAllAsync() =>
+            await GeneratedQueryAsync(_queryFactory
+                                          .Select<Skier>()
+                                          .Join<Skier, Country>(("countryId", "id"))
+                                          .Join<Skier, Gender>(("genderId", "id"))
+                                          .Build());
+
+//        public override Task<IEnumerable<Skier>> FindAllAsync() =>
+//            QueryAsync<Skier>(
+//                @"select s.id, s.firstName,
+//                                        s.lastName,
+//                                        s.genderId,
+//                                        s.dateOfBirth,
+//                                        s.countryId,
+//                                        c.countryName,
+//                                        c.countryCode,
+//                                        g.genderDescription
+//                                        from hurace.Skier as s
+//                                    join hurace.Country as c on c.id = s.countryId
+//                                    join hurace.Gender as g on g.id = s.genderId",
+//                new MapperConfig()
+//                    .AddMapping<Gender>(("genderId", "id"))
+//                    .AddMapping<Country>(("countryId", "id"), ("countryName", "name")));
 
         public override Task<Skier> FindByIdAsync(int id)
         {

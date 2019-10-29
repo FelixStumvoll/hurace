@@ -23,10 +23,12 @@ namespace Hurace.Core.Common.Mapper
                     }
                     continue;
                 }
-                
-                var propName = pi.Name.ToLowerFirstChar();
-                config?.MappingExists(typeof(T), propName, out propName);
-                pi.SetValue(ret, record[propName]);
+
+                string mappedName = null;
+                var propName = config?.MappingExists(typeof(T), pi.Name, out mappedName) ?? false
+                    ? mappedName
+                    : pi.Name.ToLowerFirstChar();
+                    pi.SetValue(ret, record[propName]);
             }
 
             return ret;

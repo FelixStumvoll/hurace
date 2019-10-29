@@ -15,18 +15,21 @@ namespace Hurace.TestClient
     {
         static async Task Main(string[] args)
         {
-            var res = new QueryFactory("hurace").Select<Skier>().Join<Skier, Country>(("countryId", "id")).Where<Skier>(("id", 1)).Build();
+            var res = new QueryFactory("hurace").Select<Skier>().Join<Skier, Country>(("countryId", "id"))
+                .Where<Skier>(("id", 1)).Build();
 //            var res = QueryBuilder.SelectAll<TimeData>("hurace").Join<TimeData,Skier>(("skierId", "id")).Join<Skier, Country>(("countryId", "id")).Build();
-            
+
 
             //
 //
-// var providername = "Microsoft.Data.SqlClient";
-//            var cstring = "Data Source=huracedbserver.database.windows.net;Initial Catalog=huraceDB;Persist Security Info=True;User ID=FelixStumvoll;Password=EHq(iT|$@A4q";
-//            var skierDao =
-//                new SkierDao(
-//                    new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providername), cstring, providername));
-//            var res = await skierDao.FindAllAsync();
+            var providername = "Microsoft.Data.SqlClient";
+            var cstring =
+                "Data Source=huracedbserver.database.windows.net;Initial Catalog=huraceDB;Persist Security Info=True;User ID=FelixStumvoll;Password=EHq(iT|$@A4q";
+            var skierDao =
+                new RaceDao(
+                    new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providername), cstring, providername),
+                    new QueryFactory("hurace"));
+            var resx = await skierDao.GetStartList(1);
 //            Console.WriteLine("Hello World!");
         }
     }
