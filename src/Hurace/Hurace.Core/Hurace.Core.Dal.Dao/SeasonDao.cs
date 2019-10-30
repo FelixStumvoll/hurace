@@ -14,6 +14,9 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<bool> UpdateAsync(Season obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Update<Season>().Where(("id", obj.Id)).Build(obj));
+            await GeneratedExecutionAsync(QueryFactory
+                                              .Update<Season>()
+                                              .Where(("id", obj.Id))
+                                              .Build(obj, "Id"));
     }
 }

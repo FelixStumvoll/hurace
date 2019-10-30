@@ -13,9 +13,10 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
-        public override Task<bool> UpdateAsync(Sensor obj)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override async Task<bool> UpdateAsync(Sensor obj) =>
+            await GeneratedExecutionAsync(QueryFactory
+                                              .Update<Sensor>()
+                                              .Where(("id", obj.Id))
+                                              .Build(obj, "Id"));
     }
 }
