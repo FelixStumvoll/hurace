@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
@@ -21,7 +20,7 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<IEnumerable<Location>> FindAllAsync() =>
-            await GeneratedQueryAsync(_queryFactory.Select<Location>().Join<Location, Country>(("countryId", "id"))
+            await GeneratedQueryAsync(QueryFactory.Select<Location>().Join<Location, Country>(("countryId", "id"))
                                           .Build());
 
         public override Task<Location> FindByIdAsync(int id)

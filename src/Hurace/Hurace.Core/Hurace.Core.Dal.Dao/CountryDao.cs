@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Dal.Dao.QueryBuilder;
@@ -15,6 +14,6 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<bool> UpdateAsync(Country obj) =>
-            await GeneratedExecutionAsync(_queryFactory.Update<Country>().Where(("Id", obj.Id)).Build(obj));
+            await GeneratedExecutionAsync(QueryFactory.Update<Country>().Where(("Id", obj.Id)).Build(obj));
     }
 }

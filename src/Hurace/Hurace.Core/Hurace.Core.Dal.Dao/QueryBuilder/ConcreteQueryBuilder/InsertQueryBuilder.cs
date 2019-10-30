@@ -15,7 +15,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             var queryParams = new List<QueryParam>();
             var columnNames = new List<string>();
             var columnValues = new List<string>();
-            var properties = GetCrudProperties(obj).ToList();
+            var properties = GetNonNavigationalProps(obj).ToList();
 
             properties.Where(pi => !excludedProperties.Contains(pi.name)).ToList().ForEach(pi =>
             {

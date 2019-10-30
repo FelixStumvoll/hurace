@@ -17,9 +17,10 @@ namespace Hurace.Core.Dto
         public int GenderId { get; set; }
         [Navigational]
         public Gender? Gender { get; set; }
-
         public int RaceStateId { get; set; }
         [Navigational]
         public RaceState? RaceState { get; set; }
+
+        public string RaceDescription { get; set; }
     }
 }

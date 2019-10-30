@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hurace.Core.Common;
 using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
@@ -14,10 +13,10 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 
         protected string WithSchema(string append) => $"{_schemaName}.{append}";
         
-        protected static IEnumerable<(string name, object value)> GetCrudProperties(object obj) =>
+        protected static IEnumerable<(string name, object value)> GetNonNavigationalProps(object obj) =>
             obj.GetType()
                 .GetProperties()
-                .Where(pi => pi.Name != "Id" && !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
+                .Where(pi => !Attribute.IsDefined(pi, typeof(NavigationalAttribute)))
                 .Select(pi => (pi.Name, pi.GetValue(obj)));
     }
 }

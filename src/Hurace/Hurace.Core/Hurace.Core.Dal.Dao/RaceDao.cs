@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dal.Dao.QueryBuilder;
+using Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -18,26 +18,29 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<bool> UpdateAsync(Race obj) =>
-            await GeneratedExecutionAsync(_queryFactory.Update<Race>()
-                            .Where(("Id", obj.Id))
-                            .Build(obj));
-        
+            await GeneratedExecutionAsync(QueryFactory.Update<Race>()
+                                              .Where(("Id", obj.Id))
+                                              .Build(obj));
+
+
+        private SelectQueryBuilder<Race> RaceDefaultQuery() =>
+            QueryFactory.Select<Race>()
+                .Join<Race, Location>(("locationId", "id"))
+                .Join<Race, Season>(("seasonId", "id"))
+                .Join<Race, Discipline>(("disciplineId", "id"))
+                .Join<Race, RaceState>(("raceStateId", "id"));
+
         public override async Task<IEnumerable<Race>> FindAllAsync() =>
-            await GeneratedQueryAsync(_queryFactory.Select<Race>()
-                                          .Join<Race,Location>(("locationId", "id"))
-                                          .Join<Race,Season>(("seasonId", "id"))
-                                          .Join<Race, Discipline>(("disciplineId", "id"))
-                                          .Join<Race, RaceState>(("raceStateId", "id"))
-                                          .Build());
+            await GeneratedQueryAsync(RaceDefaultQuery().Build());
 
-        public override Task<Race> FindByIdAsync(int id)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override async Task<Race> FindByIdAsync(int id) =>
+            (await GeneratedQueryAsync(RaceDefaultQuery()
+                                           .Where<Race>(("id", id))
+                                           .Build()))
+            .SingleOrDefault();
 
-        public Task<IEnumerable<TimeData>> GetRanking(int raceId)
-        {
-            return QueryAsync<TimeData>(@"select	s.id,
+        public Task<IEnumerable<TimeData>> GetRanking(int raceId) =>
+            QueryAsync<TimeData>(@"select	s.id,
                                                 s.lastName,
                                                 s.dateOfBirth,
                                                 s.countryId,
@@ -47,7 +50,7 @@ namespace Hurace.Core.Dal.Dao
                                                 c.countryName,
                                                 max(td.time) as raceTime
                                                 from hurace.TimeData as td
-                                                    join hurace.Skier as s on td.skierId = s.id
+                                                join hurace.Skier as s on td.skierId = s.id
                                                 join hurace.Country as c on s.countryId = c.id
                                                 join hurace.StartList as sl on sl.raceId = @id and sl.skierId = s.id
                                                 where td.raceId = @id and sl.startStateId = 3
@@ -61,10 +64,11 @@ namespace Hurace.Core.Dal.Dao
                                                 c.countryCode,
                                                 c.countryName
                                                 order by raceTime desc",
-                                        new MapperConfig()
-                                            .AddMapping<Country>(("countryId", "Id")),
-                                            ("@id", raceId));
-        }
+                                 new MapperConfig()
+                                     .AddMapping<Country>(("countryId", "Id"))
+                                     .Include<Skier>()
+                                     .Include<Country>(),
+                                 ("@id", raceId));
 
         public async Task<IEnumerable<StartList>> GetStartList(int raceId) =>
             await QueryAsync<StartList>(@"select
@@ -94,9 +98,8 @@ namespace Hurace.Core.Dal.Dao
                                             .AddMapping<Skier>(("skierId", "Id")),
                                         ("@id", raceId));
 
-        private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId, int startListState)
-        {
-            return (await QueryAsync<StartList>(@"select s.id,
+        private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId, int startListState) =>
+            (await QueryAsync<StartList>(@"select s.id,
                                                 s.firstName,
                                                 s.lastName,
                                                 s.dateOfBirth,
@@ -109,11 +112,10 @@ namespace Hurace.Core.Dal.Dao
                                                 join hurace.skier as s on s.id = sl.skierId 
                                                 join hurace.country as c on c.id = s.countryId
                                                 where sl.startStateId = @sls and sl.raceId = @id",
-                                                new MapperConfig()
-                                                    .Include<Skier>()
-                                                    .Include<Country>(),
-                                                ("@id", raceId), ("@sls", startListState)));
-        }
+                                         new MapperConfig()
+                                             .Include<Skier>()
+                                             .Include<Country>(),
+                                         ("@id", raceId), ("@sls", startListState)));
 
         public async Task<StartList?> GetNextSkier(int raceId) =>
             (await GetStartListEntriesByState(raceId, 1)).FirstOrDefault();

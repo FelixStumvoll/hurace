@@ -3,9 +3,9 @@ using Hurace.Core.Common;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public abstract class QueryBuilder<T> : AbstractQueryBuilder where T : class, new()
+    public abstract class QueryBuilder : AbstractQueryBuilder
     {
-        protected WhereConfig WhereCfg { get; private set; }
+        protected WhereConfig? WhereCfg { get; private set; }
 
         protected class WhereConfig
         {

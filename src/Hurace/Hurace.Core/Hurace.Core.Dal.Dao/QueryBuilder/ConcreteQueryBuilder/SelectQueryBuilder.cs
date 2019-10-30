@@ -9,9 +9,9 @@ using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class SelectQueryBuilder<T> : QueryBuilder<T> where T : class, new()
+    public class SelectQueryBuilder<T> : QueryBuilder where T : class, new()
     {
-        private JoinConfig JoinCfg { get; set; }
+        private JoinConfig? JoinCfg { get; set; }
 
         private class JoinConfig
         {
@@ -95,7 +95,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
                         joinConstraints.Select(
                             jp => $"{selfTableName}.{jp.SelfColumn} = {refTableName}.{jp.ForeignColumn}"));
                 joins.Add(
-                    $"join {refTable} on {constraints}");
+                    $"join {WithSchema(refTable.Name)} on {constraints}");
             }
 
             return $" {string.Join(" ", joins)}";

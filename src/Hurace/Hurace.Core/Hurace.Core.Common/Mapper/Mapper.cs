@@ -7,7 +7,7 @@ namespace Hurace.Core.Common.Mapper
 {
     public static class Mapper
     {
-        public static T MapTo<T>(IDataRecord record, MapperConfig config = null)
+        public static T MapTo<T>(IDataRecord record, MapperConfig? config)
             where T : class, new()
         {
             var ret = new T();
