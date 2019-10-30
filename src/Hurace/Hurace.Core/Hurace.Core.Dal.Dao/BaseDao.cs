@@ -32,10 +32,7 @@ namespace Hurace.Core.Dal.Dao
 
         public virtual async Task<bool> InsertAsync(T obj) =>
             await GeneratedExecutionAsync(QueryFactory.Insert<T>().Build(obj, "Id"));
-
-
-        public virtual async Task<bool> DeleteAsync(int id) =>
-            (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;
+        
 
         public async Task DeleteAllAsync() => await ExecuteAsync($"delete from {TableName}");
     }

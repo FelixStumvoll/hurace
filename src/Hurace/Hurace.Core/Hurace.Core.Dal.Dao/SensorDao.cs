@@ -6,7 +6,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SensorDao : BaseDao<Sensor>, ISensorDao
+    public class SensorDao : DefaultDeleteBaseDao<Sensor>, ISensorDao
     {
         public SensorDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
             connectionFactory, "hurace.sensor", queryFactory)

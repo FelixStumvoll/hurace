@@ -6,7 +6,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SeasonDao : BaseDao<Season>, ISeasonDao
+    public class SeasonDao : DefaultDeleteBaseDao<Season>, ISeasonDao
     {
         public SeasonDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
             connectionFactory, "hurace.season", queryFactory)

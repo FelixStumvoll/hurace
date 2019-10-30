@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SkierDao : BaseDao<Skier>, ISkierDao
+    public class SkierDao : DefaultDeleteBaseDao<Skier>, ISkierDao
     {
         public SkierDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
             connectionFactory, "hurace.skier", queryFactory)

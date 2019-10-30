@@ -9,7 +9,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class LocationDao : BaseDao<Location>, ILocationDao
+    public class LocationDao : DefaultDeleteBaseDao<Location>, ILocationDao
     {
         //todo load in country
         public async Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId) =>

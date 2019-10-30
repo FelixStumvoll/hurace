@@ -7,5 +7,6 @@ namespace Hurace.Dal.Interface
     public interface ITimeDataDao : IBaseDao<TimeData>
     {
         Task<IEnumerable<TimeData>> GetRankingForRace(int raceId);
+        Task<bool> DeleteAsync(int skierId, int raceId, int sensorId);
     }
 }

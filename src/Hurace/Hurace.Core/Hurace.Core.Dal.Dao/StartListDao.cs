@@ -21,7 +21,7 @@ namespace Hurace.Core.Dal.Dao
                                               .Where(("skierId", obj.RaceId), ("raceId", obj.RaceId))
                                               .Build(obj, "SkierId", "RaceId"));
 
-        public async Task<IEnumerable<StartList>> GetStartListForRace(int raceId)=>
+        public async Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             await QueryAsync<StartList>(@"select
                                                 sl.raceId,
                                                 s.id as skierId,
@@ -67,9 +67,14 @@ namespace Hurace.Core.Dal.Dao
                                              .Include<Skier>()
                                              .Include<Country>(),
                                          ("@id", raceId), ("@sls", startListState)));
-        
+
         public async Task<StartList?> GetNextSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, 1)).FirstOrDefault();
+
+        public async Task<bool> DeleteAsync(int raceId, int skierId) =>
+            (await ExecuteAsync(
+                $"delete from {TableName} where raceId=@ri, skierId=@si",
+                ("@ri", raceId), ("@si", skierId))) == 1;
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, 2)).SingleOrDefault();

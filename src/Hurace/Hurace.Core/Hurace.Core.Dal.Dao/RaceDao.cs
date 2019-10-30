@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class RaceDao : BaseDao<Race>, IRaceDao
+    public class RaceDao : DefaultDeleteBaseDao<Race>, IRaceDao
     {
         public RaceDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) :
             base(connectionFactory, "hurace.race", queryFactory)

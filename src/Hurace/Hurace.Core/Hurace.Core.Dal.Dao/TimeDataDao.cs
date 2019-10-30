@@ -50,5 +50,9 @@ namespace Hurace.Core.Dal.Dao
                                      .Include<Skier>()
                                      .Include<Country>(),
                                  ("@id", raceId));
+
+        public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
+            (await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
+                                ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId))) == 1;
     }
 }
