@@ -11,9 +11,17 @@ namespace Hurace.Core.Dal.Dao
 {
     public abstract class BaseDao<T> : ReadonlyBaseDao<T>, IBaseDao<T> where T : class, new()
     {
-        protected BaseDao(IConnectionFactory connectionFactory, string tableName,QueryFactory queryFactory) : base(
+        protected BaseDao(IConnectionFactory connectionFactory, string tableName, QueryFactory queryFactory) : base(
             queryFactory, tableName, connectionFactory)
         {
+        }
+
+        protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams)
+        {
+            statement = $"{statement};SELECT CAST(scope_identity() AS int)";
+            return await ConnectionFactory.UseConnection(statement, queryParams,
+                                                         async command =>
+                                                             (int) await command.ExecuteScalarAsync());
         }
 
         protected async Task<int> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
@@ -26,14 +34,20 @@ namespace Hurace.Core.Dal.Dao
             GeneratedExecutionAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
             (await ExecuteAsync(data.statement, data.queryParams.ToArray())) == 1;
 
-        
 
+        protected async Task<int>
+            GeneratedExecutionWithIdAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
+            await ExecuteGetIdAsync(data.statement, data.queryParams.ToArray());
+        
         public abstract Task<bool> UpdateAsync(T obj);
 
         public virtual async Task<bool> InsertAsync(T obj) =>
             await GeneratedExecutionAsync(QueryFactory.Insert<T>().Build(obj, "Id"));
-        
 
+
+        public virtual async Task<int> InsertGetIdAsync(T obj) =>
+            await GeneratedExecutionWithIdAsync(QueryFactory.Insert<T>().Build(obj, "Id"));
+        
         public async Task DeleteAllAsync() => await ExecuteAsync($"delete from {TableName}");
     }
 }

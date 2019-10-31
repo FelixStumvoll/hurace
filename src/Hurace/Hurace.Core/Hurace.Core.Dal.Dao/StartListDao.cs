@@ -78,5 +78,8 @@ namespace Hurace.Core.Dal.Dao
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, 2)).SingleOrDefault();
+
+        public override async Task<bool> InsertAsync(StartList obj) => 
+            await GeneratedExecutionAsync(QueryFactory.Insert<StartList>().Build(obj));
     }
 }

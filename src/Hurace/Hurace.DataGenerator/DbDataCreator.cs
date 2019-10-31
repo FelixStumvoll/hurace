@@ -25,6 +25,8 @@ namespace Hurace.DataGenerator
         private readonly ISkierDao _skierDao;
         private readonly IDisciplineDao _disciplineDao;
         private readonly IRaceDao _raceDao;
+        private readonly IStartListDao _startListDao;
+        private readonly IRaceDataDao _raceDataDao;
 
         private readonly ISeasonDao _seasonDao;
         private QueryFactory _queryFactory;
@@ -40,6 +42,8 @@ namespace Hurace.DataGenerator
             _disciplineDao = new DisciplineDao(connectionFactory, _queryFactory);
             _seasonDao = new SeasonDao(connectionFactory, _queryFactory);
             _raceDao = new RaceDao(connectionFactory, _queryFactory);
+            _startListDao = new StartListDao(connectionFactory, _queryFactory);
+            _raceDataDao = new RaceDataDao(connectionFactory, _queryFactory);
         }
 
         private async Task LoadFixedData()
@@ -67,9 +71,9 @@ namespace Hurace.DataGenerator
                 _ => -1,
             };
 
-        private (string firstname, string lastname) GetName(string name)
+        private static (string firstname, string lastname) GetName(string name)
         {
-            var spaceIndex = name.IndexOf(" ", StringComparison.Ordinal);
+            var spaceIndex = name.IndexOf(" ", StringComparison.CurrentCulture);
             return (name.Substring(0, spaceIndex), name.Substring(spaceIndex + 1));
         }
 
@@ -113,7 +117,35 @@ namespace Hurace.DataGenerator
                                       RaceDescription =
                                           $"{location.LocationName} {discipline.DisciplineName}"
                                   });
+
+        private static IEnumerable<StartList> GenerateStartList(Race race, IEnumerable<Skier> skier)
+        {
+            var startNumber = 1;
+            return skier.Where(s => s.GenderId == race.GenderId)
+                .Select(s => new StartList
+                {
+                    RaceId = race.Id,
+                    SkierId = s.Id,
+                    StartNumber = startNumber++
+                });
+        }
         
+        private async Task GenerateRaceData(IEnumerable<Race> races, IEnumerable<Skier> skier)
+        {
+            var skierList = skier.ToList();
+            foreach (var race in races)
+            {
+                foreach (var startList in GenerateStartList(race, skierList))
+                    await _startListDao.InsertAsync(startList);
+
+                await _raceDataDao.InsertAsync(new RaceData
+                {
+                    RaceId = race.Id,
+                    EventTypeId = 1
+                });
+            }
+        }
+
         private static async Task PersistEntity<T>(IEnumerable<T> entities, IBaseDao<T> dao) where T : class
         {
             foreach (var dto in entities) await dao.InsertAsync(dto);
@@ -127,12 +159,12 @@ namespace Hurace.DataGenerator
 
         public async Task FillDatabase()
         {
-            await LoadFixedData();
-            var skier = GenerateSkier();
-            var races = GenerateRaces().ToList();
-            await PersistEntity(skier, _skierDao);
-            await PersistEntity(races, _raceDao);
-            await Cleanup();
+//            await LoadFixedData();
+//            var skier = GenerateSkier();
+//            var races = GenerateRaces();
+//            await PersistEntity(skier, _skierDao);
+//            await PersistEntity(races, _raceDao);
+//            await Cleanup();
         }
     }
 }
