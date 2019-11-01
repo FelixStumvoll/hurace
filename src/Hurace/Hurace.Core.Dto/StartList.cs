@@ -4,9 +4,11 @@ namespace Hurace.Core.Dto
 {
     public class StartList
     {
+        [Key]
         public int RaceId { get; set; }
         [Navigational]
         public Race? Race { get; set; }
+        [Key]
         public int SkierId { get; set; }
         [Navigational]
         public Skier? Skier { get; set; }

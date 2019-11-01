@@ -10,17 +10,18 @@ namespace Hurace.Core.Dal.Dao
 {
     public class TimeDataDao : BaseDao<TimeData>, ITimeDataDao
     {
-        public TimeDataDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.timedata", queryFactory)
+        public TimeDataDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.timedata", statementFactory)
         {
         }
 
-        public override async Task<bool> UpdateAsync(TimeData obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Update<TimeData>()
-                                              .Where(("skierId", obj.SkierId), ("raceId", obj.RaceId))
-                                              .Build(obj, "SkierId", "RaceId"));
+        public override async Task<bool> InsertAsync(TimeData obj) =>
+            await GeneratedExecutionAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
-        public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) => 
+        public override async Task<int> InsertGetIdAsync(TimeData obj) =>
+            await GeneratedExecutionWithIdAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
+
+        public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
             QueryAsync<TimeData>(@"select	s.id,
                                                 s.lastName,
                                                 s.dateOfBirth,
@@ -44,7 +45,7 @@ namespace Hurace.Core.Dal.Dao
                                                 s.dateOfBirth,
                                                 c.countryCode,
                                                 c.countryName
-                                                order by raceTime desc",
+                                                order by raceTime asc",
                                  new MapperConfig()
                                      .AddMapping<Country>(("countryId", "Id"))
                                      .Include<Skier>()
@@ -52,7 +53,7 @@ namespace Hurace.Core.Dal.Dao
                                  ("@id", raceId));
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
-            (await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
-                                ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId))) == 1;
+            await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
+                                ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
     }
 }

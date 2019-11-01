@@ -7,8 +7,8 @@ namespace Hurace.Core.Dal.Dao
 {
     public class RaceStateDao : ReadonlyBaseDao<RaceState>, IRaceStateDao
     {
-        public RaceStateDao(QueryFactory queryFactory, IConnectionFactory connectionFactory) : base(
-            queryFactory, "hurace.RaceState", connectionFactory)
+        public RaceStateDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
+            statementFactory, "hurace.RaceState", connectionFactory)
         {
         }
     }

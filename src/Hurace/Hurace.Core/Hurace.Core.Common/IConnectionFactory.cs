@@ -8,7 +8,7 @@ namespace Hurace.Core.Common
     public interface IConnectionFactory
     {
         string ConnectionString { get; set; }
-        string ProviderName { get; set; }
+        //string ProviderName { get; set; }
 
         Task<T> UseConnection<T>(string statement, IEnumerable<QueryParam> queryParams,
             Func<DbCommand, Task<T>> connectionFunc);

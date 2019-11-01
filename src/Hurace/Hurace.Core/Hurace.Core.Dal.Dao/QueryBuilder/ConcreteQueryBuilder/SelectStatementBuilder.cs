@@ -9,7 +9,7 @@ using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class SelectQueryBuilder<T> : QueryBuilder where T : class, new()
+    public class SelectStatementBuilder<T> : QueryBuilder<T> where T : class, new()
     {
         private JoinConfig? JoinCfg { get; set; }
 
@@ -21,11 +21,11 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             public MapperConfig MapperConfig { get; set; } = new MapperConfig();
         }
 
-        public SelectQueryBuilder(string schemaName) : base(schemaName)
+        public SelectStatementBuilder(string schemaName) : base(schemaName)
         {
         }
 
-        public SelectQueryBuilder<T> Join<TSelf, TRef>(params JoinParam[] mappings) where TRef : class, new()
+        public SelectStatementBuilder<T> Join<TSelf, TRef>(params JoinParam[] mappings) where TRef : class, new()
         {
             JoinCfg ??= new JoinConfig();
             if (!JoinCfg.JoinMappings.TryGetValue((typeof(TSelf), typeof(TRef)), out var list))
@@ -39,7 +39,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             return this;
         }
 
-        public SelectQueryBuilder<T> Where<TWhere>(params QueryParam[] where)
+        public SelectStatementBuilder<T> Where<TWhere>(params QueryParam[] where)
         {
             AddWhere<TWhere>(where);
             return this;
@@ -60,7 +60,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
                 if (Attribute.IsDefined(propertyInfo, typeof(NavigationalAttribute)))
                 {
                     if (config.IsIncluded(propertyInfo.PropertyType))
-                        typeof(SelectQueryBuilder<T>)
+                        typeof(SelectStatementBuilder<T>)
                             .GetMethod(nameof(AppendColumns), BindingFlags.NonPublic | BindingFlags.Instance)
                             ?.MakeGenericMethod(propertyInfo.PropertyType)
                             .Invoke(this, new object[] {list, config});

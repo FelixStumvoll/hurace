@@ -7,8 +7,8 @@ namespace Hurace.Core.Dal.Dao
 {
     public class GenderDao : ReadonlyBaseDao<Gender>, IGenderDao
     {
-        public GenderDao(QueryFactory queryFactory, IConnectionFactory connectionFactory) : base(
-            queryFactory, "hurace.Gender", connectionFactory)
+        public GenderDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
+            statementFactory, "hurace.Gender", connectionFactory)
         {
         }
     }

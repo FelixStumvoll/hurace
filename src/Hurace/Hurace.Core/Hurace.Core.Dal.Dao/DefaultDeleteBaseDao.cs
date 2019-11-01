@@ -8,12 +8,12 @@ namespace Hurace.Core.Dal.Dao
     public abstract class DefaultDeleteBaseDao<T> : BaseDao<T>, IDefaultDeleteBaseDao<T> where T : class, new()
     {
         protected DefaultDeleteBaseDao(IConnectionFactory connectionFactory, string tableName,
-            QueryFactory queryFactory) :
-            base(connectionFactory, tableName, queryFactory)
+            StatementFactory statementFactory) :
+            base(connectionFactory, tableName, statementFactory)
         {
         }
 
-        public virtual async Task<bool> DeleteAsync(int id) =>
-            (await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id))) == 1;
+        public async Task<bool> DeleteAsync(int id) =>
+            await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id));
     }
 }

@@ -11,16 +11,11 @@ namespace Hurace.Core.Dal.Dao
 {
     public class StartListDao : BaseDao<StartList>, IStartListDao
     {
-        public StartListDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.StartList", queryFactory)
+        public StartListDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.StartList", statementFactory)
         {
         }
-
-        public override async Task<bool> UpdateAsync(StartList obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Update<StartList>()
-                                              .Where(("skierId", obj.RaceId), ("raceId", obj.RaceId))
-                                              .Build(obj, "SkierId", "RaceId"));
-
+        
         public async Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             await QueryAsync<StartList>(@"select
                                                 sl.raceId,
@@ -72,14 +67,17 @@ namespace Hurace.Core.Dal.Dao
             (await GetStartListEntriesByState(raceId, 1)).FirstOrDefault();
 
         public async Task<bool> DeleteAsync(int raceId, int skierId) =>
-            (await ExecuteAsync(
+            await ExecuteAsync(
                 $"delete from {TableName} where raceId=@ri, skierId=@si",
-                ("@ri", raceId), ("@si", skierId))) == 1;
+                ("@ri", raceId), ("@si", skierId));
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, 2)).SingleOrDefault();
 
         public override async Task<bool> InsertAsync(StartList obj) => 
-            await GeneratedExecutionAsync(QueryFactory.Insert<StartList>().Build(obj));
+            await GeneratedExecutionAsync(StatementFactory.Insert<StartList>().WithKey().Build(obj));
+
+        public override async Task<int> InsertGetIdAsync(StartList obj) => 
+            await GeneratedExecutionWithIdAsync(StatementFactory.Insert<StartList>().WithKey().Build(obj));
     }
 }

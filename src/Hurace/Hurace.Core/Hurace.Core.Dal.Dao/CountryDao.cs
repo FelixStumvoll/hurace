@@ -8,15 +8,9 @@ namespace Hurace.Core.Dal.Dao
 {
     public class CountryDao : DefaultDeleteBaseDao<Country>, ICountryDao
     {
-        public CountryDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.country", queryFactory)
+        public CountryDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.country", statementFactory)
         {
         }
-
-        public override async Task<bool> UpdateAsync(Country obj) =>
-            await GeneratedExecutionAsync(QueryFactory
-                                              .Update<Country>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
     }
 }

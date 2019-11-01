@@ -8,15 +8,9 @@ namespace Hurace.Core.Dal.Dao
 {
     public class DisciplineDao : DefaultDeleteBaseDao<Discipline>, IDisciplineDao
     {
-        public DisciplineDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.discipline", queryFactory)
+        public DisciplineDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.discipline", statementFactory)
         {
         }
-
-        public override async Task<bool> UpdateAsync(Discipline obj) => 
-            await GeneratedExecutionAsync(QueryFactory
-                                              .Update<Discipline>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
     }
 }

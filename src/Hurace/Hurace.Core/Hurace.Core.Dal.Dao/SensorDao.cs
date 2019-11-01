@@ -8,15 +8,9 @@ namespace Hurace.Core.Dal.Dao
 {
     public class SensorDao : DefaultDeleteBaseDao<Sensor>, ISensorDao
     {
-        public SensorDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.sensor", queryFactory)
+        public SensorDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.sensor", statementFactory)
         {
         }
-
-        public override async Task<bool> UpdateAsync(Sensor obj) =>
-            await GeneratedExecutionAsync(QueryFactory
-                                              .Update<Sensor>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
     }
 }

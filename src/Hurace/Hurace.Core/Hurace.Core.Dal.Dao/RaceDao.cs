@@ -12,35 +12,16 @@ namespace Hurace.Core.Dal.Dao
 {
     public class RaceDao : DefaultDeleteBaseDao<Race>, IRaceDao
     {
-        public RaceDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) :
-            base(connectionFactory, "hurace.race", queryFactory)
+        public RaceDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) :
+            base(connectionFactory, "hurace.race", statementFactory)
         {
         }
 
-        public override async Task<bool> UpdateAsync(Race obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Update<Race>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
-
-
-        private SelectQueryBuilder<Race> RaceDefaultQuery() =>
-            QueryFactory.Select<Race>()
-                .Join<Race, Location>(("locationId", "id"))
-                .Join<Race, Season>(("seasonId", "id"))
-                .Join<Race, Discipline>(("disciplineId", "id"))
-                .Join<Race, RaceState>(("raceStateId", "id"));
-
         public override async Task<IEnumerable<Race>> FindAllAsync() =>
-            await GeneratedQueryAsync(RaceDefaultQuery().Build());
-
-        public override async Task<Race> FindByIdAsync(int id) =>
-            (await GeneratedQueryAsync(RaceDefaultQuery()
-                                           .Where<Race>(("id", id))
-                                           .Build()))
-            .SingleOrDefault();
-        
-        
-
-       
+            await GeneratedQueryAsync(StatementFactory.Select<Race>()
+                                                      .Join<Race, Location>(("locationId", "id"))
+                                                      .Join<Race, Season>(("seasonId", "id"))
+                                                      .Join<Race, Discipline>(("disciplineId", "id"))
+                                                      .Join<Race, RaceState>(("raceStateId", "id")).Build());
     }
 }

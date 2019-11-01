@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
@@ -11,32 +12,42 @@ namespace Hurace.Core.Dal.Dao
 {
     public class LocationDao : DefaultDeleteBaseDao<Location>, ILocationDao
     {
-        //todo load in country
+        public LocationDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) :
+            base(connectionFactory, "hurace.location", statementFactory)
+        {
+        }
+
         public async Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId) =>
-            await QueryAsync<Discipline>("select * from hurace.PossibleDiscipline where locationId = @id",
+            await QueryAsync<Discipline>(@"select 
+            d.id, d.disciplineName
+            from hurace.PossibleDiscipline as pd
+            join hurace.Discipline as d on d.id = pd.disciplineId
+            where locationId = @id",
                                          queryParams: ("@id", locationId));
 
-        public override async Task<bool> UpdateAsync(Location obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Update<Location>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
+        public async Task<bool> AddPossibleDisciplineForLocation(int locationId, int disciplineId)
+        {
+            return await ExecuteAsync("insert into hurace.PossibleDiscipline values(@li, @di)", ("@di", disciplineId),
+                                      ("@li", locationId));
+        }
 
-        private SelectQueryBuilder<Location> DefaultLocationQuery() =>
-            QueryFactory.Select<Location>().Join<Location, Country>(("countryId", "id"));
+        public async Task<bool> RemovePossibleDisciplineForLocation(int locationId, int disciplineId) =>
+            await ExecuteAsync(
+                @"delete pd 
+                           from hurace.PossibleDiscipline as pd
+                           where pd.disciplineId=@di and pd.locationId=@li", 
+                ("@di", disciplineId), ("@li", locationId));
 
         public override async Task<IEnumerable<Location>> FindAllAsync() =>
-            await GeneratedQueryAsync(DefaultLocationQuery()
-                                          .Build());
+            await GeneratedQueryAsync(StatementFactory
+                                      .Select<Location>()
+                                      .Join<Location, Country>(("countryId", "id"))
+                                      .Build());
 
-        public override async Task<Location> FindByIdAsync(int id) =>
-            (await GeneratedQueryAsync(DefaultLocationQuery()
-                                           .Where<Location>(("id", id))
-                                           .Build()))
-            .SingleOrDefault();
-
-        public LocationDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) :
-            base(connectionFactory, "hurace.location", queryFactory)
+        public override async Task DeleteAllAsync()
         {
+            await ExecuteAsync("delete from hurace.PossibleDiscipline");
+            await base.DeleteAllAsync();
         }
     }
 }

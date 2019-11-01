@@ -11,8 +11,8 @@ namespace Hurace.Core.Dal.Dao
 {
     public abstract class BaseDao<T> : ReadonlyBaseDao<T>, IBaseDao<T> where T : class, new()
     {
-        protected BaseDao(IConnectionFactory connectionFactory, string tableName, QueryFactory queryFactory) : base(
-            queryFactory, tableName, connectionFactory)
+        protected BaseDao(IConnectionFactory connectionFactory, string tableName, StatementFactory statementFactory) : base(
+            statementFactory, tableName, connectionFactory)
         {
         }
 
@@ -24,30 +24,34 @@ namespace Hurace.Core.Dal.Dao
                                                              (int) await command.ExecuteScalarAsync());
         }
 
-        protected async Task<int> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
-            await ConnectionFactory.UseConnection(statement, queryParams,
-                                                  async command =>
-                                                      await command.ExecuteNonQueryAsync());
+        protected async Task<bool> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
+            (await ConnectionFactory.UseConnection(statement, queryParams,
+                                                   async command =>
+                                                       await command.ExecuteNonQueryAsync())) ==1;
 
 
         protected async Task<bool>
             GeneratedExecutionAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
-            (await ExecuteAsync(data.statement, data.queryParams.ToArray())) == 1;
+            await ExecuteAsync(data.statement, data.queryParams.ToArray());
 
 
         protected async Task<int>
             GeneratedExecutionWithIdAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
             await ExecuteGetIdAsync(data.statement, data.queryParams.ToArray());
-        
-        public abstract Task<bool> UpdateAsync(T obj);
+
+        public virtual async Task<bool> UpdateAsync(T obj) =>
+            await GeneratedExecutionAsync(StatementFactory
+                                          .Update<T>()
+                                          .WhereId(obj)
+                                          .Build(obj));
 
         public virtual async Task<bool> InsertAsync(T obj) =>
-            await GeneratedExecutionAsync(QueryFactory.Insert<T>().Build(obj, "Id"));
+            await GeneratedExecutionAsync(StatementFactory.Insert<T>().Build(obj));
 
 
         public virtual async Task<int> InsertGetIdAsync(T obj) =>
-            await GeneratedExecutionWithIdAsync(QueryFactory.Insert<T>().Build(obj, "Id"));
+            await GeneratedExecutionWithIdAsync(StatementFactory.Insert<T>().Build(obj));
         
-        public async Task DeleteAllAsync() => await ExecuteAsync($"delete from {TableName}");
+        public virtual async Task DeleteAllAsync() => await ExecuteAsync($"delete from {TableName}");
     }
 }

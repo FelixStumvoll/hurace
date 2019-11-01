@@ -13,11 +13,11 @@ namespace Hurace.Core.Dal.Dao
     {
         protected IConnectionFactory ConnectionFactory { get; }
         protected string TableName { get; }
-        protected  readonly QueryFactory QueryFactory;
+        protected  readonly StatementFactory StatementFactory;
 
-        protected ReadonlyBaseDao(QueryFactory queryFactory, string tableName, IConnectionFactory connectionFactory)
+        protected ReadonlyBaseDao(StatementFactory statementFactory, string tableName, IConnectionFactory connectionFactory)
         {
-            QueryFactory = queryFactory;
+            StatementFactory = statementFactory;
             TableName = tableName;
             ConnectionFactory = connectionFactory;
         }
@@ -41,9 +41,9 @@ namespace Hurace.Core.Dal.Dao
             await QueryAsync<T>(data.statement, data.config, data.queryParams.ToArray());
         
         public virtual async Task<IEnumerable<T>> FindAllAsync() =>
-            await GeneratedQueryAsync(QueryFactory.Select<T>().Build());
+            await GeneratedQueryAsync(StatementFactory.Select<T>().Build());
         
         public virtual async Task<T?> FindByIdAsync(int id) =>
-            (await GeneratedQueryAsync(QueryFactory.Select<T>().Where<T>(("id", id)).Build())).SingleOrDefault();
+            (await GeneratedQueryAsync(StatementFactory.Select<T>().Where<T>(("id", id)).Build())).SingleOrDefault();
     }
 }

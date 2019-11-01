@@ -9,8 +9,7 @@ namespace Hurace.Core.Common
     public class ConcreteConnectionFactory : IConnectionFactory
     {
         public string ConnectionString { get; set; }
-        public string ProviderName { get; set; }
-        
+
         private readonly DbProviderFactory _dbProviderFactory;
         
         public ConcreteConnectionFactory(DbProviderFactory dbProviderFactory, string connectionString,
@@ -18,7 +17,6 @@ namespace Hurace.Core.Common
         {
             _dbProviderFactory = dbProviderFactory;
             ConnectionString = connectionString;
-            ProviderName = providerName;
         }
         
         public async Task<T> UseConnection<T>(string statement, IEnumerable<QueryParam> queryParams,

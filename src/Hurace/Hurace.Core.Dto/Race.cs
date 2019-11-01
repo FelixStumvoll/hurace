@@ -5,6 +5,7 @@ namespace Hurace.Core.Dto
 {
     public class Race
     {
+        [Key]
         public int Id { get; set; }
         public int SeasonId { get; set; }
         [Navigational]

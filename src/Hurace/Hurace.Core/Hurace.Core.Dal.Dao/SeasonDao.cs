@@ -8,15 +8,9 @@ namespace Hurace.Core.Dal.Dao
 {
     public class SeasonDao : DefaultDeleteBaseDao<Season>, ISeasonDao
     {
-        public SeasonDao(IConnectionFactory connectionFactory, QueryFactory queryFactory) : base(
-            connectionFactory, "hurace.season", queryFactory)
+        public SeasonDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
+            connectionFactory, "hurace.season", statementFactory)
         {
         }
-
-        public override async Task<bool> UpdateAsync(Season obj) =>
-            await GeneratedExecutionAsync(QueryFactory
-                                              .Update<Season>()
-                                              .Where(("id", obj.Id))
-                                              .Build(obj, "Id"));
     }
 }

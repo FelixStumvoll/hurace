@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Hurace.Core.Common;
+using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public abstract class QueryBuilder : AbstractQueryBuilder
+    public abstract class QueryBuilder<T> : AbstractStatementBuilder where T : class, new()
     {
         protected WhereConfig? WhereCfg { get; private set; }
 
@@ -27,6 +30,21 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
         {
             WhereCfg ??= new WhereConfig();
             WhereCfg.WhereConditions.Add((WithSchema(typeof(TWhere).Name), whereParams));
+        }
+
+        protected void AddWhereId(T obj)
+        {
+            WhereCfg ??= new WhereConfig();
+            WhereCfg
+                .WhereConditions
+                .Add((WithSchema(typeof(T).Name), typeof(T)
+                                                  .GetProperties()
+                                                  .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)))
+                                                  .Select(pi => new QueryParam
+                                                  {
+                                                      Name = pi.Name,
+                                                      Value = pi.GetValue(obj)
+                                                  })));
         }
 
         protected (string statement, IEnumerable<QueryParam> queryParams) HandleWhere()

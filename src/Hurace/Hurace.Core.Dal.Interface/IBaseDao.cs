@@ -7,6 +7,7 @@ namespace Hurace.Dal.Interface
     {
         Task<bool> UpdateAsync(T obj);
         Task<bool> InsertAsync(T obj);
+        Task<int> InsertGetIdAsync(T obj);
         Task DeleteAllAsync();
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator
 {
+    [ExcludeFromCodeCoverage]
     public class DbDataCreator
     {
         private IEnumerable<Country> _countries;
@@ -20,6 +23,13 @@ namespace Hurace.DataGenerator
         private IEnumerable<Race> _races;
         private Season _season;
 
+        private readonly Random _random = new Random();
+        private readonly HashSet<DateTime> _usedRaceDates = new HashSet<DateTime>();
+        private readonly DateTime _raceBaseDate = new DateTime(2018, 10, 28, 12, 0, 0);
+        private readonly DateTime _skierBaseDate = new DateTime(1985, 1, 1);
+        private const int BaseSplitTime = 20000;
+        private const int SplitTimeVariation = 1000;
+
         private readonly ICountryDao _countryDao;
         private readonly ILocationDao _locationDao;
         private readonly ISkierDao _skierDao;
@@ -27,23 +37,27 @@ namespace Hurace.DataGenerator
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
         private readonly IRaceDataDao _raceDataDao;
+        private readonly ISensorDao _sensorDao;
+        private readonly ITimeDataDao _timeDataDao;
 
         private readonly ISeasonDao _seasonDao;
-        private QueryFactory _queryFactory;
+        private StatementFactory _statementFactory;
 
         public DbDataCreator(string providerName, string connectionString)
         {
             var connectionFactory =
                 new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providerName), connectionString, providerName);
-            _queryFactory = new QueryFactory("hurace");
-            _countryDao = new CountryDao(connectionFactory, _queryFactory);
-            _locationDao = new LocationDao(connectionFactory, _queryFactory);
-            _skierDao = new SkierDao(connectionFactory, _queryFactory);
-            _disciplineDao = new DisciplineDao(connectionFactory, _queryFactory);
-            _seasonDao = new SeasonDao(connectionFactory, _queryFactory);
-            _raceDao = new RaceDao(connectionFactory, _queryFactory);
-            _startListDao = new StartListDao(connectionFactory, _queryFactory);
-            _raceDataDao = new RaceDataDao(connectionFactory, _queryFactory);
+            _statementFactory = new StatementFactory("hurace");
+            _countryDao = new CountryDao(connectionFactory, _statementFactory);
+            _locationDao = new LocationDao(connectionFactory, _statementFactory);
+            _skierDao = new SkierDao(connectionFactory, _statementFactory);
+            _disciplineDao = new DisciplineDao(connectionFactory, _statementFactory);
+            _seasonDao = new SeasonDao(connectionFactory, _statementFactory);
+            _raceDao = new RaceDao(connectionFactory, _statementFactory);
+            _startListDao = new StartListDao(connectionFactory, _statementFactory);
+            _raceDataDao = new RaceDataDao(connectionFactory, _statementFactory);
+            _sensorDao = new SensorDao(connectionFactory, _statementFactory);
+            _timeDataDao = new TimeDataDao(connectionFactory, _statementFactory);
         }
 
         private async Task LoadFixedData()
@@ -53,11 +67,9 @@ namespace Hurace.DataGenerator
             _disciplines = await _disciplineDao.FindAllAsync();
         }
 
-        private static DateTime GetRandomBirthDate()
+        private DateTime GetRandomBirthDate()
         {
-            var baseDate = new DateTime(1985, 1, 1);
-            var rand = new Random();
-            return baseDate.AddDays(rand.Next(-300, 300));
+            return _skierBaseDate.AddDays(_random.Next(-300, 300));
         }
 
         private int GetCountryId(string country) =>
@@ -83,13 +95,13 @@ namespace Hurace.DataGenerator
             var json = streamReader.ReadToEnd();
             var skier = JsonConvert.DeserializeObject<List<JsonData>>(json);
 
-            return skier.Select(jdata =>
+            return skier.Select(jsonData =>
             {
-                var (firstname, lastname) = GetName(jdata.Name);
+                var (firstname, lastname) = GetName(jsonData.Name);
                 return new Skier
                 {
-                    CountryId = GetCountryId(jdata.Country),
-                    GenderId = GetGenderId(jdata.Gender),
+                    CountryId = GetCountryId(jsonData.Country),
+                    GenderId = GetGenderId(jsonData.Gender),
                     FirstName = firstname,
                     LastName = lastname,
                     DateOfBirth = GetRandomBirthDate()
@@ -97,12 +109,17 @@ namespace Hurace.DataGenerator
             });
         }
 
-        private static DateTime GetRandomRaceDate()
+
+        private DateTime GetRandomRaceDate()
         {
-            var baseDate = new DateTime(2018, 10, 28);
-            var rand = new Random();
-            return baseDate.AddDays(rand.Next(160));
+            var newDate = _raceBaseDate.AddDays(_random.Next(160));
+            if (_usedRaceDates.Contains(newDate)) GetRandomRaceDate();
+            _usedRaceDates.Add(newDate);
+            return newDate;
         }
+
+        private int GetRandomSplitTime() =>
+            _random.Next(-SplitTimeVariation, SplitTimeVariation) + BaseSplitTime;
 
         private IEnumerable<Race> GenerateRaces() =>
             _locations.SelectMany(location => _disciplines,
@@ -122,27 +139,74 @@ namespace Hurace.DataGenerator
         {
             var startNumber = 1;
             return skier.Where(s => s.GenderId == race.GenderId)
-                .Select(s => new StartList
-                {
-                    RaceId = race.Id,
-                    SkierId = s.Id,
-                    StartNumber = startNumber++
-                });
+                        .Select(s => new StartList
+                        {
+                            RaceId = race.Id,
+                            SkierId = s.Id,
+                            StartNumber = startNumber++,
+                            StartStateId = 3
+                        });
         }
-        
-        private async Task GenerateRaceData(IEnumerable<Race> races, IEnumerable<Skier> skier)
+
+        private static IEnumerable<Sensor> GenerateSensors(IEnumerable<Race> races)
         {
-            var skierList = skier.ToList();
             foreach (var race in races)
             {
-                foreach (var startList in GenerateStartList(race, skierList))
-                    await _startListDao.InsertAsync(startList);
+                for (var i = 0; i < 5; i++)
+                {
+                    yield return new Sensor
+                    {
+                        RaceId = race.Id,
+                        SensorDescription = $"{race.RaceDescription} - Sensor:{i}"
+                    };
+                }
+            }
+        }
 
+        private async Task GenerateRaceData(IEnumerable<Race> races, IEnumerable<StartList> startList,
+            IEnumerable<Sensor> sensors)
+        {
+            startList = startList.ToList();
+            sensors = sensors.ToList();
+            foreach (var race in races)
+            {
                 await _raceDataDao.InsertAsync(new RaceData
                 {
                     RaceId = race.Id,
-                    EventTypeId = 1
+                    EventTypeId = (int) Constants.RaceEvent.Started,
+                    EventDateTime = race.RaceDate
                 });
+                var raceTime = race.RaceDate;
+                foreach (var startListSkier in startList.Where(sl => sl.RaceId == race.Id).OrderBy(s => s.StartNumber))
+                {
+                    await _raceDataDao.InsertSkierEventAsync(race.Id, startListSkier.SkierId,
+                                                             Constants.SkierEvent.Started, raceTime);
+
+                    var splitTime = race.RaceDate.AddMinutes(-race.RaceDate.Minute).AddHours(-race.RaceDate.Hour);
+                    foreach (var sensor in sensors.Where(s => s.RaceId == race.Id))
+                    {
+                        var raceDataId = await _raceDataDao.InsertSkierEventGetIdAsync(race.Id, startListSkier.SkierId,
+                                                                                       Constants.SkierEvent.SplitTime,
+                                                                                       raceTime);
+                        await _timeDataDao.InsertAsync(new TimeData
+                        {
+                            Time = splitTime,
+                            RaceId = race.Id,
+                            SensorId = sensor.Id,
+                            SkierId = startListSkier.SkierId,
+                            RaceDataId = raceDataId
+                        });
+
+                        var splitSeconds = GetRandomSplitTime();
+                        splitTime = splitTime.AddMilliseconds(splitSeconds);
+                        raceTime = raceTime.AddMilliseconds(splitSeconds);
+                    }
+
+                    await _raceDataDao.InsertSkierEventAsync(race.Id, startListSkier.SkierId,
+                                                             Constants.SkierEvent.Finished, raceTime);
+                }
+
+                await _raceDataDao.InsertRaceEventAsync(race.Id, Constants.RaceEvent.Finished, raceTime);
             }
         }
 
@@ -151,20 +215,35 @@ namespace Hurace.DataGenerator
             foreach (var dto in entities) await dao.InsertAsync(dto);
         }
 
-        private async Task Cleanup()
+        public async Task Cleanup()
         {
-            await _skierDao.DeleteAllAsync();
+            await _timeDataDao.DeleteAllAsync();
+            await _raceDataDao.DeleteAllAsync();
+            await _sensorDao.DeleteAllAsync();
+            await _startListDao.DeleteAllAsync();
             await _raceDao.DeleteAllAsync();
+            await _skierDao.DeleteAllAsync();
         }
 
         public async Task FillDatabase()
         {
-//            await LoadFixedData();
-//            var skier = GenerateSkier();
-//            var races = GenerateRaces();
-//            await PersistEntity(skier, _skierDao);
-//            await PersistEntity(races, _raceDao);
-//            await Cleanup();
+            await LoadFixedData();
+            var skiers = GenerateSkier();
+            await PersistEntity(skiers, _skierDao);
+            skiers = await _skierDao.FindAllAsync();
+
+            var races = GenerateRaces();
+            await PersistEntity(races, _raceDao);
+            races = await _raceDao.FindAllAsync();
+
+            var sensors = GenerateSensors(races);
+            await PersistEntity(sensors, _sensorDao);
+            sensors = await _sensorDao.FindAllAsync();
+
+            var startList = races.SelectMany(r => GenerateStartList(r, skiers)).ToList();
+            await PersistEntity(startList, _startListDao);
+
+            await GenerateRaceData(races, startList, sensors);
         }
     }
 }

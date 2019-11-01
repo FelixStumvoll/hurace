@@ -5,7 +5,7 @@ using Hurace.Core.Dto;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISkierDao : IBaseDao<Skier>
+    public interface ISkierDao : IDefaultDeleteBaseDao<Skier>
     {
         Task<IEnumerable<Discipline>> GetPossibleDisciplinesForSkier(int skierId);
     }

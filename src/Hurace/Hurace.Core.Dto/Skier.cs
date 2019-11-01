@@ -5,6 +5,7 @@ namespace Hurace.Core.Dto
 {
     public class Skier 
     {
+        [Key]
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

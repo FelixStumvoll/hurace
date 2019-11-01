@@ -1,23 +1,34 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hurace.Core.Common;
+using Hurace.Core.Dto.Util;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {
-    public class InsertQueryBuilder<T> : AbstractQueryBuilder
+    public class InsertStatementBuilder<T> : AbstractStatementBuilder
     {
-        public InsertQueryBuilder(string schemaName) : base(schemaName)
+        public InsertStatementBuilder(string schemaName) : base(schemaName)
         {
         }
 
-        public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj, params string[] excludedProperties)
+        private bool _withKey = false;
+
+        public InsertStatementBuilder<T> WithKey()
+        {
+            _withKey = true;
+            return this;
+        }
+
+        public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj)
         {
             var queryParams = new List<QueryParam>();
             var columnNames = new List<string>();
             var columnValues = new List<string>();
-            var properties = GetNonNavigationalProps(obj).ToList();
+            var properties = GetNonNavigationalProps(obj,_withKey).ToList();
 
-            properties.Where(pi => !excludedProperties.Contains(pi.name)).ToList().ForEach(pi =>
+            properties
+                .ToList().ForEach(pi =>
             {
                 var (name, value) = pi;
                 columnNames.Add(name);
