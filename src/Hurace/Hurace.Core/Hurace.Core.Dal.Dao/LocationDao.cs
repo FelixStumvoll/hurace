@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class LocationDao : DefaultDeleteBaseDao<Location>, ILocationDao
+    public class LocationDao : BaseDao<Location>, ILocationDao
     {
         public LocationDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) :
             base(connectionFactory, "hurace.location", statementFactory)
@@ -22,32 +22,34 @@ namespace Hurace.Core.Dal.Dao
             d.id, d.disciplineName
             from hurace.PossibleDiscipline as pd
             join hurace.Discipline as d on d.id = pd.disciplineId
-            where locationId = @id",
-                                         queryParams: ("@id", locationId));
+            where locationId = @id", queryParams: ("@id", locationId));
 
-        public async Task<bool> AddPossibleDisciplineForLocation(int locationId, int disciplineId)
-        {
-            return await ExecuteAsync("insert into hurace.PossibleDiscipline values(@li, @di)", ("@di", disciplineId),
-                                      ("@li", locationId));
-        }
+        public async Task<bool> InsertPossibleDisciplineForLocation(int locationId, int disciplineId) =>
+            await ExecuteAsync("insert into hurace.PossibleDiscipline values(@li, @di)", 
+                               ("@di", disciplineId), ("@li", locationId));
 
-        public async Task<bool> RemovePossibleDisciplineForLocation(int locationId, int disciplineId) =>
+        public async Task<bool> DeletePossibleDisciplineForLocation(int locationId, int disciplineId) =>
             await ExecuteAsync(
                 @"delete pd 
                            from hurace.PossibleDiscipline as pd
                            where pd.disciplineId=@di and pd.locationId=@li", 
                 ("@di", disciplineId), ("@li", locationId));
 
-        public override async Task<IEnumerable<Location>> FindAllAsync() =>
-            await GeneratedQueryAsync(StatementFactory
-                                      .Select<Location>()
-                                      .Join<Location, Country>(("countryId", "id"))
-                                      .Build());
-
+        protected override SelectStatementBuilder<Location> DefaultSelectQuery() =>
+            StatementFactory
+                .Select<Location>()
+                .Join<Location, Country>(("countryId", "id"));
+        
         public override async Task DeleteAllAsync()
         {
             await ExecuteAsync("delete from hurace.PossibleDiscipline");
             await base.DeleteAllAsync();
+        }
+
+        public override async Task<bool> DeleteAsync(int id)
+        {
+            await ExecuteAsync("delete from hurace.PossibleDiscipline where locationId = @id", ("@id", id));
+            return await base.DeleteAsync(id);
         }
     }
 }

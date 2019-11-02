@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SkierDao : DefaultDeleteBaseDao<Skier>, ISkierDao
+    public class SkierDao : BaseDao<Skier>, ISkierDao
     {
         public SkierDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.skier", statementFactory)
@@ -21,18 +21,31 @@ namespace Hurace.Core.Dal.Dao
             await QueryAsync<Discipline>("select * from hurace.discipline where skierId = @skierId",
                                          queryParams: ("@skierId", skierId));
 
+        public async Task<bool> InsertPossibleDisciplineForSkier(int skierId, int disciplineId) =>
+            await ExecuteAsync("insert into hurace.SkierDiscipline values(@si, @di)", ("@si", skierId),
+                               ("@di", disciplineId));
 
-        private SelectStatementBuilder<Skier> DefaultSkierQuery() =>
+        public async Task<bool> DeletePossibleDisciplineForSkier(int skierId, int disciplineId) =>
+            await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si and disciplineId=@di",
+                               ("@si", skierId), ("@di", disciplineId));
+
+
+        protected override SelectStatementBuilder<Skier> DefaultSelectQuery() =>
             StatementFactory
                 .Select<Skier>()
                 .Join<Skier, Country>(("countryId", "id"))
                 .Join<Skier, Gender>(("genderId", "id"));
 
-        public override async Task<IEnumerable<Skier>> FindAllAsync() =>
-            await GeneratedQueryAsync(DefaultSkierQuery().Build());
+        public override async Task<bool> DeleteAsync(int id)
+        {
+            await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si", ("@si", id));
+            return await base.DeleteAsync(id);
+        }
 
-
-        public override async Task<Skier> FindByIdAsync(int id) =>
-            (await GeneratedQueryAsync(DefaultSkierQuery().Where<Skier>(("id", id)).Build())).SingleOrDefault();
+        public override async Task DeleteAllAsync()
+        {
+            await ExecuteAsync("delete from hurace.SkierDiscipline");
+            await base.DeleteAllAsync();
+        }
     }
 }

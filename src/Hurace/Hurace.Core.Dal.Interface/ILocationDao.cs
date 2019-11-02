@@ -4,10 +4,10 @@ using Hurace.Core.Dto;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ILocationDao : IDefaultDeleteBaseDao<Location>
+    public interface ILocationDao : IDefaultDeleteBaseDao<Location>, IBaseDao<Location>, ISelectBaseDao<Location>
     {
         Task<IEnumerable<Discipline>> GetPossibleDisciplinesForLocation(int locationId);
-        Task<bool> AddPossibleDisciplineForLocation(int locationId, int disciplineId);
-        Task<bool> RemovePossibleDisciplineForLocation(int locationId, int disciplineId);
+        Task<bool> InsertPossibleDisciplineForLocation(int locationId, int disciplineId);
+        Task<bool> DeletePossibleDisciplineForLocation(int locationId, int disciplineId);
     }
 }

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dal.Dao.QueryBuilder;
+using Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -11,7 +13,7 @@ namespace Hurace.Core.Dal.Dao
     public class TimeDataDao : BaseDao<TimeData>, ITimeDataDao
     {
         public TimeDataDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
-            connectionFactory, "hurace.timedata", statementFactory)
+            connectionFactory, "hurace.TimeData", statementFactory)
         {
         }
 
@@ -19,7 +21,7 @@ namespace Hurace.Core.Dal.Dao
             await GeneratedExecutionAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
         public override async Task<int> InsertGetIdAsync(TimeData obj) =>
-            await GeneratedExecutionWithIdAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
+            await GeneratedExecutionGetIdAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
         public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
             QueryAsync<TimeData>(@"select	s.id,
@@ -55,5 +57,19 @@ namespace Hurace.Core.Dal.Dao
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
                                 ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
+
+        protected override SelectStatementBuilder<TimeData> DefaultSelectQuery() =>
+            StatementFactory
+                .Select<TimeData>()
+                .Join<TimeData, StartList>(("skierId", "skierId"), ("raceId", "raceId"))
+                .Join<TimeData, Sensor>(("sensorId", "id"));
+
+        public async Task<TimeData> FindByIdAsync(int skierId, int raceId, int sensorId) =>
+            (await GeneratedQueryAsync(DefaultSelectQuery()
+                                       .Where<TimeData>(("skierId", skierId), 
+                                                        ("raceId", raceId),
+                                                        ("sensorId", sensorId))
+                                       .Build()))
+            .SingleOrDefault();
     }
 }

@@ -12,7 +12,7 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-        private bool _withKey = false;
+        private bool _withKey;
 
         public InsertStatementBuilder<T> WithKey()
         {

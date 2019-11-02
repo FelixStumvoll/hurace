@@ -39,6 +39,8 @@ namespace Hurace.DataGenerator
         private readonly IRaceDataDao _raceDataDao;
         private readonly ISensorDao _sensorDao;
         private readonly ITimeDataDao _timeDataDao;
+        private readonly IRaceEventDao _raceEventDao;
+        private readonly ISkierEventDao _skierEventDao;
 
         private readonly ISeasonDao _seasonDao;
         private StatementFactory _statementFactory;
@@ -58,6 +60,9 @@ namespace Hurace.DataGenerator
             _raceDataDao = new RaceDataDao(connectionFactory, _statementFactory);
             _sensorDao = new SensorDao(connectionFactory, _statementFactory);
             _timeDataDao = new TimeDataDao(connectionFactory, _statementFactory);
+            _raceDataDao = new RaceDataDao(connectionFactory, _statementFactory);
+            _raceEventDao = new RaceEventDao(connectionFactory, _statementFactory);
+            _skierEventDao = new SkierEventDao(connectionFactory, _statementFactory);
         }
 
         private async Task LoadFixedData()
@@ -170,31 +175,49 @@ namespace Hurace.DataGenerator
             sensors = sensors.ToList();
             foreach (var race in races)
             {
-                await _raceDataDao.InsertAsync(new RaceData
+                var raceTime = race.RaceDate;
+                var raceEventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                 {
                     RaceId = race.Id,
                     EventTypeId = (int) Constants.RaceEvent.Started,
                     EventDateTime = race.RaceDate
                 });
-                var raceTime = race.RaceDate;
+
+                await _raceEventDao.InsertAsync(new RaceEvent
+                {
+                    RaceDataId = raceEventId
+                });
                 foreach (var startListSkier in startList.Where(sl => sl.RaceId == race.Id).OrderBy(s => s.StartNumber))
                 {
-                    await _raceDataDao.InsertSkierEventAsync(race.Id, startListSkier.SkierId,
-                                                             Constants.SkierEvent.Started, raceTime);
+                    var eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
+                    {
+                        RaceId = race.Id, EventDateTime = raceTime, EventTypeId = (int)Constants.SkierEvent.Started
+                    });
+
+                    await _skierEventDao.InsertAsync(new SkierEvent
+                    {
+                        RaceId = startListSkier.RaceId,
+                        SkierId = startListSkier.SkierId,
+                        RaceDataId = eventId
+                    });
 
                     var splitTime = race.RaceDate.AddMinutes(-race.RaceDate.Minute).AddHours(-race.RaceDate.Hour);
                     foreach (var sensor in sensors.Where(s => s.RaceId == race.Id))
                     {
-                        var raceDataId = await _raceDataDao.InsertSkierEventGetIdAsync(race.Id, startListSkier.SkierId,
-                                                                                       Constants.SkierEvent.SplitTime,
-                                                                                       raceTime);
+                        var raceDataId = await _raceDataDao.InsertGetIdAsync(new RaceData
+                        {
+                            RaceId = race.Id,
+                            EventDateTime = raceTime,
+                            EventTypeId = (int) Constants.SkierEvent.SplitTime
+                        });
+                        
                         await _timeDataDao.InsertAsync(new TimeData
                         {
                             Time = splitTime,
                             RaceId = race.Id,
                             SensorId = sensor.Id,
                             SkierId = startListSkier.SkierId,
-                            RaceDataId = raceDataId
+                            SkierEventId = raceDataId
                         });
 
                         var splitSeconds = GetRandomSplitTime();
@@ -202,11 +225,31 @@ namespace Hurace.DataGenerator
                         raceTime = raceTime.AddMilliseconds(splitSeconds);
                     }
 
-                    await _raceDataDao.InsertSkierEventAsync(race.Id, startListSkier.SkierId,
-                                                             Constants.SkierEvent.Finished, raceTime);
+                    eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
+                    {
+                        RaceId = race.Id, 
+                        EventTypeId = (int) Constants.SkierEvent.Finished,
+                        EventDateTime = raceTime
+                    });
+
+                    await _skierEventDao.InsertAsync(new SkierEvent
+                    {
+                        RaceId = startListSkier.RaceId,
+                        SkierId =  startListSkier.SkierId,
+                        RaceDataId = eventId
+                    });
                 }
 
-                await _raceDataDao.InsertRaceEventAsync(race.Id, Constants.RaceEvent.Finished, raceTime);
+                raceEventId = await _raceDataDao.InsertGetIdAsync(new RaceData
+                {
+                    RaceId = race.Id, 
+                    EventTypeId = (int) Constants.RaceEvent.Finished,
+                    EventDateTime = raceTime
+                });
+                await _raceEventDao.InsertAsync(new RaceEvent
+                {
+                    RaceDataId = raceEventId
+                });
             }
         }
 

@@ -5,19 +5,14 @@ namespace Hurace.Core.Dto
 {
     public class TimeData
     {
+        [Key] public int SkierId { get; set; }
+        [Key] public int RaceId { get; set; }
+        [Key] public int SensorId { get; set; }
         public DateTime Time { get; set; }
-        [Key]
-        public int SkierId { get; set; }
-        [Navigational]
-        public Skier? Skier { get; set; }
-        public int RaceDataId { get; set; }
-        [Key]
-        public int RaceId { get; set; }
-        [Navigational]
-        public Race? Race { get; set; }
-        [Key]
-        public int SensorId { get; set; }
-        [Navigational]
-        public Sensor? Sensor { get; set; }
+        public int SkierEventId { get; set; }
+        [Navigational] public Skier? Skier { get; set; }
+        [Navigational] public SkierEvent? SkierEvent { get; set; }
+        [Navigational] public Race? Race { get; set; }
+        [Navigational] public Sensor? Sensor { get; set; }
     }
 }

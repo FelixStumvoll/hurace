@@ -2,7 +2,7 @@
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISeasonDao : IDefaultDeleteBaseDao<Season>
+    public interface ISeasonDao : IBaseDao<Season>, IDefaultDeleteBaseDao<Season>
     {
         
     }

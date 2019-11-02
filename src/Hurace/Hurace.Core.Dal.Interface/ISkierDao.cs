@@ -5,8 +5,10 @@ using Hurace.Core.Dto;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISkierDao : IDefaultDeleteBaseDao<Skier>
+    public interface ISkierDao : IBaseDao<Skier>,IDefaultDeleteBaseDao<Skier>, ISelectBaseDao<Skier>
     {
         Task<IEnumerable<Discipline>> GetPossibleDisciplinesForSkier(int skierId);
+        Task<bool> InsertPossibleDisciplineForSkier(int skierId, int disciplineId);
+        Task<bool> DeletePossibleDisciplineForSkier(int skierId, int disciplineId);
     }
 }

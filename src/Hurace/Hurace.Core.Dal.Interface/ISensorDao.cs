@@ -2,7 +2,7 @@
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISensorDao : IDefaultDeleteBaseDao<Sensor>
+    public interface ISensorDao : IBaseDao<Sensor>,IDefaultDeleteBaseDao<Sensor>, ISelectBaseDao<Sensor>
     {
         
     }

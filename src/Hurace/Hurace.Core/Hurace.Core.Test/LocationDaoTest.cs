@@ -48,7 +48,7 @@ namespace Hurace.Core.Test
                     LocationName = $"Gröden {i}"
                 });
 
-                await _locationDao.AddPossibleDisciplineForLocation(locationId, _superGId);
+                await _locationDao.InsertPossibleDisciplineForLocation(locationId, _superGId);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Hurace.Core.Test
         public async Task AddPossibleDisciplineTest()
         {
             var location = (await _locationDao.FindAllAsync()).First();
-            await _locationDao.AddPossibleDisciplineForLocation(location.Id, _downhillId);
+            await _locationDao.InsertPossibleDisciplineForLocation(location.Id, _downhillId);
             Assert.AreEqual(2,(await _locationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
         
@@ -74,7 +74,7 @@ namespace Hurace.Core.Test
         public async Task RemovePossibleDisciplineTest()
         {
             var location = (await _locationDao.FindAllAsync()).First();
-            await _locationDao.RemovePossibleDisciplineForLocation(location.Id, _superGId);
+            await _locationDao.DeletePossibleDisciplineForLocation(location.Id, _superGId);
             Assert.AreEqual(0,(await _locationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
 

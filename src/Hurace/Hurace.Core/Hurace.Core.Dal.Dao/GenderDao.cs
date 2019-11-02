@@ -5,10 +5,10 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class GenderDao : ReadonlyBaseDao<Gender>, IGenderDao
+    public class GenderDao : BaseDao<Gender>, IGenderDao
     {
         public GenderDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
-            statementFactory, "hurace.Gender", connectionFactory)
+            connectionFactory,"hurace.Gender", statementFactory)
         {
         }
     }

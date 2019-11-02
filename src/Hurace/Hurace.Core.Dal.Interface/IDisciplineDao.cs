@@ -2,8 +2,8 @@
 
 namespace Hurace.Dal.Interface
 {
-    public interface IDisciplineDao : IDefaultDeleteBaseDao<Discipline>
+    public interface IDisciplineDao : IBaseDao<Discipline>, IDefaultDeleteBaseDao<Discipline>,
+        ISelectBaseDao<Discipline>
     {
-        
     }
 }

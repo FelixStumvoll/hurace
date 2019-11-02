@@ -5,10 +5,10 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class StartStateDao : ReadonlyBaseDao<StartState>, IStartStateDao
+    public class StartStateDao : BaseDao<StartState>, IStartStateDao
     {
-        public StartStateDao(StatementFactory statementFactory, string tableName, IConnectionFactory connectionFactory) : base(
-            statementFactory, tableName, connectionFactory)
+        public StartStateDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
+           connectionFactory , "hurace.StartState", statementFactory)
         {
         }
     }

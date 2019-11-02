@@ -1,5 +1,8 @@
-﻿namespace Hurace.DataGenerator
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Hurace.DataGenerator
 {
+    [ExcludeFromCodeCoverage]
     public class JsonData
     {
         public string Name { get; set; }

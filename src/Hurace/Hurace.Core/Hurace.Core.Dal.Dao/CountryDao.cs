@@ -6,7 +6,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class CountryDao : DefaultDeleteBaseDao<Country>, ICountryDao
+    public class CountryDao : BaseDao<Country>, ICountryDao
     {
         public CountryDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.country", statementFactory)

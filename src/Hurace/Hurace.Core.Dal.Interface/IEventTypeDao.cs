@@ -2,7 +2,7 @@ using Hurace.Core.Dto;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IEventTypeDao : IReadonlyBaseDao<EventType>
+    public interface IEventTypeDao : ISelectBaseDao<EventType>
     {
         
     }

@@ -5,10 +5,10 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class RaceStateDao : ReadonlyBaseDao<RaceState>, IRaceStateDao
+    public class RaceStateDao : BaseDao<RaceState>, IRaceStateDao
     {
         public RaceStateDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
-            statementFactory, "hurace.RaceState", connectionFactory)
+            connectionFactory, "hurace.RaceState", statementFactory)
         {
         }
     }
