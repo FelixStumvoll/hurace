@@ -45,7 +45,7 @@ namespace Hurace.Core.Test
                 var locationId = await _locationDao.InsertGetIdAsync(new Location
                 {
                     CountryId = _countryId,
-                    LocationName = $"Gröden {i}"
+                    LocationName = $"Location {i}"
                 });
 
                 await _locationDao.InsertPossibleDisciplineForLocation(locationId, _superGId);
@@ -83,6 +83,21 @@ namespace Hurace.Core.Test
         {
             var location = (await _locationDao.FindAllAsync()).First();
             Assert.AreEqual("XX", location.Country.CountryCode);
+        }
+
+        [Test]
+        public async Task DeleteAllTest()
+        {
+            await _locationDao.DeleteAllAsync();
+            Assert.AreEqual(0, (await _locationDao.FindAllAsync()).Count());
+        }
+        
+        [Test]
+        public async Task DeleteTest()
+        {
+            var id = (await _locationDao.FindAllAsync()).First().Id;
+            await _locationDao.DeleteAsync(id);
+            Assert.AreEqual(2, (await _locationDao.FindAllAsync()).Count());
         }
     }
 }
