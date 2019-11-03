@@ -14,9 +14,6 @@ namespace Hurace.Core.Test
         [SetUp]
         public async Task BeforeEach() => await SetupDiscipline();
 
-        [TearDown]
-        public async Task AfterEach() => await Teardown();
-
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await DisciplineDao.FindAllAsync()).Count());
 

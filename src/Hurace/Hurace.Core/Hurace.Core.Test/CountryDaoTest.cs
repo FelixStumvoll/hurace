@@ -14,9 +14,6 @@ namespace Hurace.Core.Test
         [SetUp]
         public async Task BeforeEach() => await SetupCountry();
 
-        [TearDown]
-        public async Task AfterEach() => await Teardown();
-
         [Test]
         public async Task FindAllTest()
         {
@@ -70,6 +67,7 @@ namespace Hurace.Core.Test
         [Test]
         public async Task DeleteAllTest()
         {
+            await LocationDao.DeleteAllAsync();
             await CountryDao.DeleteAllAsync();
             Assert.AreEqual(0, (await CountryDao.FindAllAsync()).Count());
         }

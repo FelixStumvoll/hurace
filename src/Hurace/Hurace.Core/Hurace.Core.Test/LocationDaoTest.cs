@@ -11,23 +11,9 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class LocationDaoTest : TestBase
     {
-
-        [OneTimeSetUp]
-        public async Task BeforeAll() => await SetupLocation();
-
-        [OneTimeTearDown]
-        public async Task AfterAll()
-        {
-            await CountryDao.DeleteAllAsync();
-            await DisciplineDao.DeleteAllAsync();
-        }
-
         [SetUp]
         public async Task BeforeEach() => await SetupLocation();
-
-        [TearDown]
-        public async Task AfterEach() => await Teardown();
-
+        
         [Test]
         public async Task GetPossibleDisciplinesTest()
         {

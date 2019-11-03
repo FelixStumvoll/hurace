@@ -15,10 +15,6 @@ namespace Hurace.Core.Test
 
         [SetUp]
         public async Task BeforeEach() => await SetupRace();
-
-        [TearDown]
-        public async Task AfterAll() => await Teardown();
-        
         
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await RaceDao.FindAllAsync()).Count());

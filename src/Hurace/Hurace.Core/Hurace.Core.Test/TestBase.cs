@@ -32,7 +32,7 @@ namespace Hurace.Core.Test
         public ITimeDataDao TimeDataDao { get; set; }
         public IGenderDao GenderDao { get; set; }
         public ISensorDao SensorDao { get; set; }
-        
+
 
         protected TestBase()
         {
@@ -51,9 +51,26 @@ namespace Hurace.Core.Test
             TimeDataDao = new TimeDataDao(ConnectionFactory, StatementFactory);
             GenderDao = new GenderDao(ConnectionFactory, StatementFactory);
             SensorDao = new SensorDao(ConnectionFactory, StatementFactory);
+            RaceDataDao = new RaceDataDao(ConnectionFactory, StatementFactory);
         }
 
 
+        protected async Task<int> SetupSeason()
+        {
+            return await InsertSeason();
+        }
+        
+        protected async Task<int> SetupRaceData()
+        {
+            var raceId = await SetupRace();
+            return await RaceDataDao.InsertGetIdAsync(new RaceData
+            {
+                EventTypeId = (int) Constants.RaceEvent.Finished,
+                RaceId = raceId,
+                EventDateTime = DateTime.Now
+            });
+        }
+        
         protected async Task SetupLocation()
         {
             var countryId = await InsertCountry();
@@ -82,20 +99,22 @@ namespace Hurace.Core.Test
         private async Task<int> InsertDiscipline(string disciplineName = "Super-G") => 
             await DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = disciplineName});
         
-        protected async Task SetupRace()
+        private async Task<int> InsertSeason() => await SeasonDao.InsertGetIdAsync(new Season
         {
-            var seasonId = await SeasonDao.InsertGetIdAsync(new Season
-            {
-                EndDate = DateTime.Now.AddDays(1),
-                StartDate = DateTime.Now
-            });
+            EndDate = DateTime.Now.AddDays(1),
+            StartDate = DateTime.Now
+        });
+        
+        protected async Task<int> SetupRace()
+        {
+            var seasonId = await InsertSeason();
 
             var countryId = await InsertCountry();
 
             var locationId = await InsertLocation(countryId);
 
             var disciplineId = await InsertDiscipline();
-            await RaceDao.InsertGetIdAsync(new Race
+            return await RaceDao.InsertGetIdAsync(new Race
             {
                 DisciplineId = disciplineId,
                 GenderId = (int) Constants.Gender.Male,
@@ -114,12 +133,13 @@ namespace Hurace.Core.Test
             await InsertCountry("FR", "France");
         }
 
+        [TearDown]
         protected async Task Teardown()
         {
             await RaceEventDao.DeleteAllAsync();
             await TimeDataDao.DeleteAllAsync();
             await SkierEventDao.DeleteAllAsync();
-            await RaceEventDao.DeleteAllAsync();
+            await RaceDataDao.DeleteAllAsync();
             await SensorDao.DeleteAllAsync();
             await StartListDao.DeleteAllAsync();
             await RaceDao.DeleteAllAsync();
