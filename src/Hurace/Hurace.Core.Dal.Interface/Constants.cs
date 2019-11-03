@@ -27,8 +27,18 @@ namespace Hurace.Dal.Interface
             Canceled = 4
         }
 
+        public enum Gender
+        {
+            Male = 1,
+            Female = 2
+        }
+
         public enum RaceState
         {
+            Upcoming = 1, 
+            Started = 2,
+            Finished = 3,
+            Canceled = 4
         }
     }
 }

@@ -12,69 +12,67 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class RaceDaoTest : TestBase
     {
-        private IRaceDao _raceDao;
-        private ISeasonDao _seasonDao;
-        private ILocationDao _locationDao;
-        private ICountryDao _countryDao;
-        private IDisciplineDao _disciplineDao;
-        private int _seasonId;
-        private int _locationId;
-        private int _disciplineId;
-
-        [OneTimeSetUp]
-        public async Task BeforeAll()
-        {
-            _raceDao = new RaceDao(ConnectionFactory, StatementFactory);
-            _seasonDao = new SeasonDao(ConnectionFactory, StatementFactory);
-            _locationDao = new LocationDao(ConnectionFactory, StatementFactory);
-            _countryDao = new CountryDao(ConnectionFactory, StatementFactory);
-            _disciplineDao = new DisciplineDao(ConnectionFactory, StatementFactory);
-
-            _seasonId = await _seasonDao.InsertGetIdAsync(new Season
-            {
-                EndDate = DateTime.Now.AddDays(1),
-                StartDate = DateTime.Now
-            });
-
-            var countryId = await _countryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
-
-            _locationId = await _locationDao.InsertGetIdAsync(new Location
-            {
-                CountryId = countryId,
-                LocationName = "Lname"
-            });
-
-            _disciplineId = await _disciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = "Super-G"});
-        }
-
-        [OneTimeTearDown]
-        public async Task AfterAll()
-        {
-            await _raceDao.DeleteAllAsync();
-            await _locationDao.DeleteAllAsync();
-            await _countryDao.DeleteAllAsync();
-            await _disciplineDao.DeleteAllAsync();
-        }
 
         [SetUp]
-        public async Task BeforeEach()
+        public async Task BeforeEach() => await SetupRace();
+
+        [TearDown]
+        public async Task AfterAll() => await Teardown();
+        
+        
+        [Test]
+        public async Task FindAllTest() => Assert.AreEqual(1, (await RaceDao.FindAllAsync()).Count());
+
+        [Test]
+        public async Task FindByIdTest()
         {
-            await _raceDao.InsertAsync(new Race
+            var race = (await RaceDao.FindAllAsync()).First();
+            Assert.AreEqual(race.RaceDescription, (await RaceDao.FindByIdAsync(race.Id)).RaceDescription);
+        }
+
+        [Test]
+        public async Task InsertTest()
+        {
+            var disciplineId = (await DisciplineDao.FindAllAsync()).First().Id;
+            var locationId = (await LocationDao.FindAllAsync()).First().Id;
+            var seasonId = (await SeasonDao.FindAllAsync()).First().Id;
+            
+            await RaceDao.InsertAsync(new Race
             {
-                DisciplineId = _disciplineId,
+                DisciplineId = disciplineId,
                 GenderId = 1,
-                LocationId = _locationId,
+                LocationId = locationId,
                 RaceDescription = "Description",
-                SeasonId = _seasonId,
+                SeasonId = seasonId,
                 RaceStateId = (int) Constants.RaceEvent.Finished,
                 RaceDate = DateTime.Now
             });
+
+            Assert.AreEqual(2, (await RaceDao.FindAllAsync()).Count());
         }
 
-        [TearDown]
-        public async Task AfterEach() => await _raceDao.DeleteAllAsync();
+        [Test]
+        public async Task UpdateTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            race.RaceDescription = "Test123";
+            await RaceDao.UpdateAsync(race);
+            Assert.AreEqual(race.RaceDescription, (await RaceDao.FindByIdAsync(race.Id)).RaceDescription);
+        }
 
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(1, (await _raceDao.FindAllAsync()).Count());
+        public async Task DeleteTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            await RaceDao.DeleteAsync(race.Id);
+            Assert.IsNull(await RaceDao.FindByIdAsync(race.Id));
+        }
+        
+        [Test]
+        public async Task DeleteAllTest()
+        {
+            await RaceDao.DeleteAllAsync();
+            Assert.AreEqual(0, (await RaceDao.FindAllAsync()).Count());
+        }
     }
 }

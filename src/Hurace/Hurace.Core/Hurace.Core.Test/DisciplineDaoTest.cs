@@ -11,18 +11,21 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class DisciplineDaoTest : TestBase
     {
-        private IDisciplineDao _disciplineDao;
-
-        [OneTimeSetUp]
-        public void BeforeAll() => _disciplineDao = new DisciplineDao(ConnectionFactory, StatementFactory);
-
         [SetUp]
-        public async Task BeforeEach() => await _disciplineDao.InsertAsync(new Discipline {DisciplineName = "Super-G"});
+        public async Task BeforeEach() => await SetupDiscipline();
 
         [TearDown]
-        public async Task AfterEach() => await _disciplineDao.DeleteAllAsync();
+        public async Task AfterEach() => await Teardown();
 
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(1, (await _disciplineDao.FindAllAsync()).Count());
+        public async Task FindAllTest() => Assert.AreEqual(1, (await DisciplineDao.FindAllAsync()).Count());
+
+        [Test]
+        public async Task FindById()
+        {
+            var discipline = (await DisciplineDao.FindAllAsync()).First();
+            Assert.AreEqual(discipline.DisciplineName,
+                            (await DisciplineDao.FindByIdAsync(discipline.Id)).DisciplineName);
+        }
     }
 }

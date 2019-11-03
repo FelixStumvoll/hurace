@@ -10,12 +10,7 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class GenderDaoTest : TestBase
     {
-        private IGenderDao _genderDao;
-
-        [OneTimeSetUp]
-        public void BeforeAll() => _genderDao = new GenderDao(StatementFactory, ConnectionFactory);
-
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(2, (await _genderDao.FindAllAsync()).Count());
+        public async Task FindAllTest() => Assert.AreEqual(2, (await GenderDao.FindAllAsync()).Count());
     }
 }

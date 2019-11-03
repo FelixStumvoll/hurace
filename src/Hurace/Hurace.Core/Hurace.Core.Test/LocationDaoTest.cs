@@ -11,93 +11,106 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class LocationDaoTest : TestBase
     {
-        private ILocationDao _locationDao;
-        private ICountryDao _countryDao;
-        private IDisciplineDao _disciplineDao;
-        private int _countryId;
-        private int _superGId;
-        private int _downhillId;
-        
-        [OneTimeSetUp]
-        public async Task BeforeAll()
-        {
-            _locationDao = new LocationDao(ConnectionFactory, StatementFactory);
-            _countryDao = new CountryDao(ConnectionFactory, StatementFactory);
-            _countryId = await _countryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
-            _disciplineDao = new DisciplineDao(ConnectionFactory, StatementFactory);
 
-            _superGId = await _disciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = "Super-G"});
-            _downhillId = await _disciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = "Downhill"});
-        }
+        [OneTimeSetUp]
+        public async Task BeforeAll() => await SetupLocation();
 
         [OneTimeTearDown]
         public async Task AfterAll()
         {
-            await _countryDao.DeleteAllAsync();
-            await _disciplineDao.DeleteAllAsync();
+            await CountryDao.DeleteAllAsync();
+            await DisciplineDao.DeleteAllAsync();
         }
 
         [SetUp]
-        public async Task BeforeEach()
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var locationId = await _locationDao.InsertGetIdAsync(new Location
-                {
-                    CountryId = _countryId,
-                    LocationName = $"Location {i}"
-                });
-
-                await _locationDao.InsertPossibleDisciplineForLocation(locationId, _superGId);
-            }
-        }
+        public async Task BeforeEach() => await SetupLocation();
 
         [TearDown]
-        public async Task AfterEach() => await _locationDao.DeleteAllAsync();
+        public async Task AfterEach() => await Teardown();
 
         [Test]
         public async Task GetPossibleDisciplinesTest()
         {
-            var location = (await _locationDao.FindAllAsync()).First();
-            Assert.AreEqual(1, (await _locationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
+            var location = (await LocationDao.FindAllAsync()).First();
+            Assert.AreEqual(1, (await LocationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
 
         [Test]
         public async Task AddPossibleDisciplineTest()
         {
-            var location = (await _locationDao.FindAllAsync()).First();
-            await _locationDao.InsertPossibleDisciplineForLocation(location.Id, _downhillId);
-            Assert.AreEqual(2,(await _locationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
+            var location = (await LocationDao.FindAllAsync()).First();
+            var disciplineId = await DisciplineDao.InsertGetIdAsync(new Discipline
+            {
+                DisciplineName = "XYZ"
+            });
+            await LocationDao.InsertPossibleDisciplineForLocation(location.Id, disciplineId);
+            Assert.AreEqual(2, (await LocationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
-        
+
         [Test]
         public async Task RemovePossibleDisciplineTest()
         {
-            var location = (await _locationDao.FindAllAsync()).First();
-            await _locationDao.DeletePossibleDisciplineForLocation(location.Id, _superGId);
-            Assert.AreEqual(0,(await _locationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
+            var location = (await LocationDao.FindAllAsync()).First();
+            var disciplineId = (await DisciplineDao.FindAllAsync()).First().Id;
+            await LocationDao.DeletePossibleDisciplineForLocation(location.Id, disciplineId);
+            Assert.AreEqual(0, (await LocationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
 
         [Test]
         public async Task GetCountryFromLocation()
         {
-            var location = (await _locationDao.FindAllAsync()).First();
+            var location = (await LocationDao.FindAllAsync()).First();
             Assert.AreEqual("XX", location.Country.CountryCode);
         }
 
         [Test]
         public async Task DeleteAllTest()
         {
-            await _locationDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await _locationDao.FindAllAsync()).Count());
+            await LocationDao.DeleteAllAsync();
+            Assert.AreEqual(0, (await LocationDao.FindAllAsync()).Count());
         }
-        
+
         [Test]
         public async Task DeleteTest()
         {
-            var id = (await _locationDao.FindAllAsync()).First().Id;
-            await _locationDao.DeleteAsync(id);
-            Assert.AreEqual(2, (await _locationDao.FindAllAsync()).Count());
+            var id = (await LocationDao.FindAllAsync()).First().Id;
+            await LocationDao.DeleteAsync(id);
+            Assert.AreEqual(2, (await LocationDao.FindAllAsync()).Count());
+        }
+
+        [Test]
+        public async Task FindAllTest()
+        {
+            Assert.AreEqual(3, (await LocationDao.FindAllAsync()).Count());
+        }
+
+        [Test]
+        public async Task FindByIdTest()
+        {
+            var location = (await LocationDao.FindAllAsync()).First();
+            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id)).LocationName);
+        }
+
+        [Test]
+        public async Task InsertTest()
+        {
+            var countryId = (await CountryDao.FindAllAsync()).First().Id;
+            await LocationDao.InsertAsync(new Location
+            {
+                CountryId = countryId,
+                LocationName = "Name"
+            });
+
+            Assert.AreEqual(4, (await LocationDao.FindAllAsync()).Count());
+        }
+
+        [Test]
+        public async Task UpdateTest()
+        {
+            var location = (await LocationDao.FindAllAsync()).First();
+            location.LocationName = "Test123";
+            await LocationDao.UpdateAsync(location);
+            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id)).LocationName);
         }
     }
 }
