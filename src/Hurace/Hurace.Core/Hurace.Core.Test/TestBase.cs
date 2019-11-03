@@ -55,6 +55,12 @@ namespace Hurace.Core.Test
         }
 
 
+        protected async Task<int> SetupSensor()
+        {
+            var raceId = await SetupRace();
+            return await InsertSensor(raceId);
+        }
+        
         protected async Task<int> SetupSeason()
         {
             return await InsertSeason();
@@ -103,6 +109,12 @@ namespace Hurace.Core.Test
         {
             EndDate = DateTime.Now.AddDays(1),
             StartDate = DateTime.Now
+        });
+        
+        private async Task<int> InsertSensor(int raceId) => await SensorDao.InsertGetIdAsync(new Sensor
+        {
+            RaceId = raceId,
+            SensorDescription = "Description"
         });
         
         protected async Task<int> SetupRace()

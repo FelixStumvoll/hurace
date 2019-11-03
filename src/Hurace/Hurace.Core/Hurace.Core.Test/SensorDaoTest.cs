@@ -1,0 +1,61 @@
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
+using Hurace.Core.Dto;
+using NUnit.Framework;
+
+namespace Hurace.Core.Test
+{
+    [ExcludeFromCodeCoverage]
+    public class SensorDaoTest : TestBase
+    {
+        [SetUp]
+        public async Task BeforeEach() => await SetupSensor();
+
+        [Test]
+        public async Task FindAllTest() => Assert.AreEqual(1, (await SensorDao.FindAllAsync()).Count());
+
+        [Test]
+        public async Task FindByIdTest()
+        {
+            var id = (await SensorDao.FindAllAsync()).First().Id;
+            Assert.NotNull(await SensorDao.FindByIdAsync(id));
+        }
+
+        [Test]
+        public async Task UpdateTest()
+        {
+            var sensor = (await SensorDao.FindAllAsync()).First();
+            sensor.SensorDescription = "Test123";
+            await SensorDao.UpdateAsync(sensor);
+            Assert.AreEqual(sensor.SensorDescription, (await SensorDao.FindByIdAsync(sensor.Id)).SensorDescription);
+        }
+
+        [Test]
+        public async Task InsertTest()
+        {
+            var raceId = (await RaceDao.FindAllAsync()).First().Id;
+            await SensorDao.InsertAsync(new Sensor
+            {
+                RaceId = raceId,
+                SensorDescription = "Description123"
+            });
+            Assert.AreEqual(2, (await SensorDao.FindAllAsync()).Count());
+        }
+        
+        [Test]
+        public async Task DeleteTest()
+        {
+            var id = (await SensorDao.FindAllAsync()).First().Id;
+            await SensorDao.DeleteAsync(id);
+            Assert.IsNull(await SensorDao.FindByIdAsync(id));
+        }
+
+        [Test]
+        public async Task DeleteAllTest()
+        {
+            await SensorDao.DeleteAllAsync();
+            Assert.AreEqual(0, (await SensorDao.FindAllAsync()).Count());
+        }
+    }
+}
