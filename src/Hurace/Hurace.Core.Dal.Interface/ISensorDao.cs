@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISensorDao : IBaseDao<Sensor>,IDefaultDeleteBaseDao, ISelectBaseDao<Sensor>
+    public interface ISensorDao : IBaseDao<Sensor>,ISingleIdBaseDao<Sensor>
     {
         
     }

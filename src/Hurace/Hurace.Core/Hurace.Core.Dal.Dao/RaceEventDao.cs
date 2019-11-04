@@ -16,10 +16,16 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
-        protected override SelectStatementBuilder<RaceEvent> DefaultSelectQuery() =>
+        private protected override SelectStatementBuilder<RaceEvent> DefaultSelectQuery() =>
             StatementFactory
                 .Select<RaceEvent>()
                 .Join<RaceData, EventType>(("eventTypeId", "id"))
                 .Join<RaceEvent, RaceData>(("raceDataId", "id"));
+
+        public override async Task<bool> InsertAsync(RaceEvent obj) =>
+            await GeneratedExecutionAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
+        
+        public override async Task<int> InsertGetIdAsync(RaceEvent obj) =>
+            await GeneratedExecutionGetIdAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
     }
 }

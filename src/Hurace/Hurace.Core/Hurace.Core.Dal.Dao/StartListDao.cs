@@ -45,29 +45,37 @@ namespace Hurace.Core.Dal.Dao
                                             .AddMapping<Skier>(("skierId", "Id")),
                                         ("@id", raceId));
 
-        private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId, Constants.StartState startListState) =>
-            await QueryAsync<StartList>(@"select s.id,
-                                                s.firstName,
-                                                s.lastName,
-                                                s.dateOfBirth,
-                                                s.countryId,
-                                                c.name,
-                                                c.countryCode, 
-                                                sl.startNumber,
-                                                sl.startStateId
-                                                from hurace.StartList as sl
-                                                join hurace.skier as s on s.id = sl.skierId 
-                                                join hurace.country as c on c.id = s.countryId
-                                                where sl.startStateId = @sls and sl.raceId = @id",
-                                         new MapperConfig()
-                                             .Include<Skier>()
-                                             .Include<Country>(),
-                                         ("@id", raceId), ("@sls", (int)startListState));
+        private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId,
+            Constants.StartState startListState) =>
+            await GeneratedQueryAsync(StatementFactory.Select<StartList>()
+                                                      .Join<StartList, Skier>(("skierId", "id"))
+                                                      .Join<Skier, Country>(("countryId", "id"))
+                                                      .Where<StartList>(
+                                                          ("startStateId", (int) startListState), ("raceId", raceId))
+                                                      .Build());
+            
+//            await QueryAsync<StartList>(@"select s.id,
+//                                                s.firstName,
+//                                                s.lastName,
+//                                                s.dateOfBirth,
+//                                                s.countryId,
+//                                                c.countryName,
+//                                                c.countryCode, 
+//                                                sl.startNumber,
+//                                                sl.startStateId
+//                                                from hurace.StartList as sl
+//                                                join hurace.skier as s on s.id = sl.skierId 
+//                                                join hurace.country as c on c.id = s.countryId
+//                                                where sl.startStateId = @sls and sl.raceId = @id",
+//                                         new MapperConfig()
+//                                             .Include<Skier>()
+//                                             .Include<Country>(),
+//                                         ("@id", raceId), ("@sls", (int)startListState));
 
         public async Task<StartList?> GetNextSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Upcoming)).FirstOrDefault();
 
-        protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
+        private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()
                             .Join<StartList, Skier>(("skierId", "id"))
                             .Join<StartList, StartState>(("startStateId", "id"))
@@ -91,11 +99,5 @@ namespace Hurace.Core.Dal.Dao
                                           .Insert<StartList>()
                                           .WithKey()
                                           .Build(obj));
-
-        public override async Task<int> InsertGetIdAsync(StartList obj) => 
-            await GeneratedExecutionGetIdAsync(StatementFactory
-                                               .Insert<StartList>()
-                                               .WithKey()
-                                               .Build(obj));
     }
 }

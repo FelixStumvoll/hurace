@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IEventTypeDao : ISelectBaseDao<EventType>
+    public interface IEventTypeDao : ISingleIdReadonlyDao<EventType>
     {
         
     }

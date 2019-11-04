@@ -40,6 +40,7 @@ namespace Hurace.Core.Test
             ConnectionFactory =
                 new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString, ProviderName);
 
+            var x = new GenderDao(ConnectionFactory, StatementFactory);
             RaceDao = new RaceDao(ConnectionFactory, StatementFactory);
             SeasonDao = new SeasonDao(ConnectionFactory, StatementFactory);
             LocationDao = new LocationDao(ConnectionFactory, StatementFactory);
@@ -58,6 +59,13 @@ namespace Hurace.Core.Test
 
         #region Setup
 
+        protected async Task<int> SetupRaceEvent()
+        {
+            var raceId = await SetupRace();
+            var raceDataId = await InsertRaceData(raceId, (int) Constants.RaceEvent.Started);
+            return await InsertRaceEvent(raceDataId);
+        }
+        
         protected async Task<int> SetupSkier()
         {
             var countryId = await InsertCountry();
@@ -89,12 +97,7 @@ namespace Hurace.Core.Test
         protected async Task<int> SetupRaceData()
         {
             var raceId = await SetupRace();
-            return await RaceDataDao.InsertGetIdAsync(new RaceData
-            {
-                EventTypeId = (int) Constants.RaceEvent.Finished,
-                RaceId = raceId,
-                EventDateTime = DateTime.Now
-            });
+            return await InsertRaceData(raceId, (int) Constants.RaceEvent.Finished);
         }
 
         protected async Task SetupLocation()
@@ -148,6 +151,16 @@ namespace Hurace.Core.Test
 
         #region Insert
 
+        private async Task<int> InsertRaceData(int raceId, int type)
+        {
+            return await RaceDataDao.InsertGetIdAsync(new RaceData
+            {
+                EventTypeId = type,
+                RaceId = raceId,
+                EventDateTime = DateTime.Now
+            });
+        }
+        
         private Task<int> InsertCountry(string code = "AT", string name = "Austria") =>
             CountryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
 
@@ -182,6 +195,13 @@ namespace Hurace.Core.Test
                 StartStateId = (int) Constants.StartState.Finished
             });
 
+
+        private Task<int> InsertRaceEvent(int raceDataId) =>
+            RaceEventDao.InsertGetIdAsync(new RaceEvent
+            {
+                RaceDataId = raceDataId
+            });
+        
         #endregion
 
         [TearDown]

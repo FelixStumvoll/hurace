@@ -17,8 +17,8 @@ namespace Hurace.Core.Dal.Dao
             base(connectionFactory, "hurace.race", statementFactory)
         {
         }
-        
-        protected override SelectStatementBuilder<Race> DefaultSelectQuery() =>
+
+        private protected override SelectStatementBuilder<Race> DefaultSelectQuery() =>
             StatementFactory.Select<Race>()
                             .Join<Race, Location>(("locationId", "id"))
                             .Join<Race, Season>(("seasonId", "id"))

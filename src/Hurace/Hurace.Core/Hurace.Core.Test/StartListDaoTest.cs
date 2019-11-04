@@ -68,5 +68,23 @@ namespace Hurace.Core.Test
             var raceId = (await RaceDao.FindAllAsync()).First().Id;
             Assert.AreEqual(1, (await StartListDao.GetStartListForRace(raceId)).Count());
         }
+        
+        [Test]
+        public async Task GetCurrentSkierTest()
+        {
+            var startList = (await StartListDao.FindAllAsync()).First();
+            startList.StartStateId = (int) Constants.StartState.Running;
+            await StartListDao.UpdateAsync(startList);
+            Assert.AreEqual(startList.SkierId, (await StartListDao.GetCurrentSkierForRace(startList.RaceId)).SkierId);
+        }
+        
+        [Test]
+        public async Task GetNextSkierTest()
+        {
+            var startList = (await StartListDao.FindAllAsync()).First();
+            startList.StartStateId = (int) Constants.StartState.Upcoming;
+            await StartListDao.UpdateAsync(startList);
+            Assert.AreEqual(startList.SkierId, (await StartListDao.GetNextSkierForRace(startList.RaceId)).SkierId);
+        }
     }
 }

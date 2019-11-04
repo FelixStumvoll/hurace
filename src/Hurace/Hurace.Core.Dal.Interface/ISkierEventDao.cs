@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISkierEventDao : IBaseDao<SkierEvent>, ISelectBaseDao<SkierEvent>,IDefaultDeleteBaseDao
+    public interface ISkierEventDao : IBaseDao<SkierEvent>, ISingleIdBaseDao<SkierEvent>
     {
         
     }

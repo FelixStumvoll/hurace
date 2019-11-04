@@ -3,8 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IDisciplineDao : IBaseDao<Discipline>, IDefaultDeleteBaseDao,
-        ISelectBaseDao<Discipline>
+    public interface IDisciplineDao : IBaseDao<Discipline>, ISingleIdBaseDao<Discipline>
     {
     }
 }

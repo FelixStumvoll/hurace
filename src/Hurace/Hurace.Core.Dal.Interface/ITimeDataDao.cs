@@ -6,11 +6,10 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ITimeDataDao : IBaseDao<TimeData>
+    public interface ITimeDataDao : IBaseDao<TimeData>, IReadonlyBaseDao<TimeData>
     {
         Task<IEnumerable<TimeData>> GetRankingForRace(int raceId);
         Task<bool> DeleteAsync(int skierId, int raceId, int sensorId);
-        Task<IEnumerable<TimeData>> FindAllAsync();
         Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId);
     }
 }

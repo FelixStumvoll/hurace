@@ -33,7 +33,7 @@ namespace Hurace.Core.Dal.Dao
                                ("@si", skierId), ("@di", disciplineId));
 
 
-        protected override SelectStatementBuilder<Skier> DefaultSelectQuery() =>
+        private protected override SelectStatementBuilder<Skier> DefaultSelectQuery() =>
             StatementFactory
                 .Select<Skier>()
                 .Join<Skier, Country>(("countryId", "id"))
@@ -42,13 +42,13 @@ namespace Hurace.Core.Dal.Dao
         public override async Task<bool> DeleteAsync(int id)
         {
             await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si", ("@si", id));
-            return await base.DeleteAsync(id);
+            return await base.DefaultDelete(id);
         }
 
         public override async Task DeleteAllAsync()
         {
             await ExecuteAsync("delete from hurace.SkierDiscipline");
-            await base.DeleteAllAsync();
+            await base.DefaultDeleteAll();
         }
     }
 }

@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IRaceEventDao : IDefaultDeleteBaseDao, IBaseDao<RaceEvent>, ISelectBaseDao<RaceEvent>
+    public interface IRaceEventDao : IBaseDao<RaceEvent>, ISingleIdBaseDao<RaceEvent>
     {
         
     }

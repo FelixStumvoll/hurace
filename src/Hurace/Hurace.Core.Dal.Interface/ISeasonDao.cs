@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISeasonDao : IBaseDao<Season>, IDefaultDeleteBaseDao, ISelectBaseDao<Season>
+    public interface ISeasonDao : IBaseDao<Season>, ISingleIdBaseDao<Season>
     {
         
     }

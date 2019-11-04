@@ -5,7 +5,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IRaceDao : IBaseDao<Race>,IDefaultDeleteBaseDao, ISelectBaseDao<Race>
+    public interface IRaceDao : IBaseDao<Race>,ISingleIdBaseDao<Race>
     {
     }
 }

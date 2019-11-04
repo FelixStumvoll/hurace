@@ -12,9 +12,9 @@ namespace Hurace.Core.Dal.Dao
 {
     public abstract class BaseDao<T> where T : class, new()
     {
-        protected IConnectionFactory ConnectionFactory { get; }
-        protected string TableName { get; }
-        protected readonly StatementFactory StatementFactory;
+        private protected IConnectionFactory ConnectionFactory { get; }
+        private protected string TableName { get; }
+        private protected readonly StatementFactory StatementFactory;
 
         protected BaseDao(IConnectionFactory connectionFactory, string tableName, StatementFactory statementFactory)
         {
@@ -25,7 +25,7 @@ namespace Hurace.Core.Dal.Dao
 
         #region Select
 
-        protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement,
+        private protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement,
             MapperConfig? mapperConfig = null,
             params QueryParam[] queryParams) where TResult : class, new()
         {
@@ -39,66 +39,65 @@ namespace Hurace.Core.Dal.Dao
             });
         }
 
-        protected async Task<IEnumerable<T>> GeneratedQueryAsync(
+        private protected async Task<IEnumerable<T>> GeneratedQueryAsync(
             (string statement, MapperConfig config, IEnumerable<QueryParam> queryParams) data) =>
             await QueryAsync<T>(data.statement, data.config, data.queryParams.ToArray());
 
-        protected virtual SelectStatementBuilder<T> DefaultSelectQuery() => StatementFactory.Select<T>();
+        private protected virtual SelectStatementBuilder<T> DefaultSelectQuery() => StatementFactory.Select<T>();
         
         public virtual async Task<IEnumerable<T>> FindAllAsync() =>
             await GeneratedQueryAsync(DefaultSelectQuery().Build());
 
-        public virtual async Task<T?> FindByIdAsync(int id) =>
+        private protected async Task<T?> DefaultFindById(int id) =>
             (await GeneratedQueryAsync(DefaultSelectQuery().Where<T>(("id", id)).Build())).SingleOrDefault();
 
         #endregion
 
         #region Update
 
-        public virtual async Task<bool> UpdateAsync(T obj) =>
+        private protected async Task<bool> DefaultUpdate(T obj) =>
             await GeneratedExecutionAsync(StatementFactory
                                           .Update<T>()
                                           .WhereId(obj)
                                           .Build(obj));
-
         #endregion
 
         #region Delete
 
-        public virtual async Task<bool> DeleteAsync(int id) =>
+        private protected async Task<bool> DefaultDelete(int id) =>
             await ExecuteAsync($"delete from {TableName} where id=@id", ("@id", id));
 
-        public virtual async Task DeleteAllAsync() => await ExecuteAsync($"delete from {TableName}");
+        private protected async Task DefaultDeleteAll() => await ExecuteAsync($"delete from {TableName}");
 
         #endregion
 
         #region Insert
 
-        public virtual async Task<bool> InsertAsync(T obj) =>
+        private protected async Task<bool> DefaultInsert(T obj) =>
             await GeneratedExecutionAsync(StatementFactory.Insert<T>().Build(obj));
         
-        public virtual async Task<int> InsertGetIdAsync(T obj) =>
+        private protected async Task<int> DefaultInsertGetId(T obj) =>
             await GeneratedExecutionGetIdAsync(StatementFactory.Insert<T>().Build(obj));
 
         #endregion
         
-        protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
+        private protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
             await ConnectionFactory.UseConnection($"{statement};SELECT CAST(scope_identity() AS int)", 
                                                   queryParams,
                                                   async command =>
                                                       (int) await command.ExecuteScalarAsync());
 
-        protected async Task<bool> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
+        private protected async Task<bool> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
             (await ConnectionFactory.UseConnection(statement, queryParams,
                                                    async command =>
                                                        await command.ExecuteNonQueryAsync())) == 1;
         
-        protected async Task<bool>
+        private protected async Task<bool>
             GeneratedExecutionAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
             await ExecuteAsync(data.statement, data.queryParams.ToArray());
 
 
-        protected async Task<int>
+        private protected async Task<int>
             GeneratedExecutionGetIdAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
             await ExecuteGetIdAsync(data.statement, data.queryParams.ToArray());
     }

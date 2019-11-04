@@ -6,12 +6,11 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IStartListDao : IBaseDao<StartList>
+    public interface IStartListDao : IBaseDao<StartList>, IReadonlyBaseDao<StartList>
     {
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
         Task<StartList?> GetCurrentSkierForRace(int raceId);
         Task<StartList?> GetNextSkierForRace(int raceId);
-        Task<IEnumerable<StartList>> FindAllAsync();
         Task<StartList?> FindByIdAsync(int skierId, int raceId);
         Task<bool> DeleteAsync(int raceId, int skierId);
     }

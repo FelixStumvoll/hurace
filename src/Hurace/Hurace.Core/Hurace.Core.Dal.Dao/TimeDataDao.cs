@@ -58,7 +58,7 @@ namespace Hurace.Core.Dal.Dao
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
                                 ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
 
-        protected override SelectStatementBuilder<TimeData> DefaultSelectQuery() =>
+        private protected override SelectStatementBuilder<TimeData> DefaultSelectQuery() =>
             StatementFactory
                 .Select<TimeData>()
                 .Join<TimeData, StartList>(("skierId", "skierId"), ("raceId", "raceId"))
