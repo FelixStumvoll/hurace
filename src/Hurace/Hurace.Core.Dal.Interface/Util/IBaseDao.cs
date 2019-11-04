@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Hurace.Dal.Interface
+namespace Hurace.Dal.Interface.Util
 {
     public interface IBaseDao<T> where T : class
     {

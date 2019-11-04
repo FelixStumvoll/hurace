@@ -24,7 +24,9 @@ namespace Hurace.Dal.Interface
             Upcoming = 1,
             Running = 2,
             Finished = 3,
-            Canceled = 4
+            Disqualified = 4,
+            Canceled = 5, 
+            DrawReady = 6
         }
 
         public enum Gender

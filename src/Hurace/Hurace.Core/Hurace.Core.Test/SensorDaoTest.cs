@@ -10,7 +10,7 @@ namespace Hurace.Core.Test
     public class SensorDaoTest : TestBase
     {
         [SetUp]
-        public async Task BeforeEach() => await SetupSensor();
+        public Task BeforeEach() => SetupSensor();
 
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await SensorDao.FindAllAsync()).Count());

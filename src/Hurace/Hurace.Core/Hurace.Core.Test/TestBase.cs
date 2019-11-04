@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
@@ -38,7 +39,7 @@ namespace Hurace.Core.Test
         {
             ConnectionFactory =
                 new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString, ProviderName);
-            
+
             RaceDao = new RaceDao(ConnectionFactory, StatementFactory);
             SeasonDao = new SeasonDao(ConnectionFactory, StatementFactory);
             LocationDao = new LocationDao(ConnectionFactory, StatementFactory);
@@ -55,17 +56,36 @@ namespace Hurace.Core.Test
         }
 
 
+        #region Setup
+
+        protected async Task<int> SetupSkier()
+        {
+            var countryId = await InsertCountry();
+            var disciplineId = await InsertDiscipline();
+            var skierId = await SkierDao.InsertGetIdAsync(new Skier
+            {
+                CountryId = countryId,
+                GenderId = (int) Constants.Gender.Male,
+                FirstName = "Random",
+                LastName = "Name",
+                DateOfBirth = DateTime.Now
+            });
+
+            await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId);
+            return skierId;
+        }
+
         protected async Task<int> SetupSensor()
         {
             var raceId = await SetupRace();
             return await InsertSensor(raceId);
         }
-        
+
         protected async Task<int> SetupSeason()
         {
             return await InsertSeason();
         }
-        
+
         protected async Task<int> SetupRaceData()
         {
             var raceId = await SetupRace();
@@ -76,7 +96,7 @@ namespace Hurace.Core.Test
                 EventDateTime = DateTime.Now
             });
         }
-        
+
         protected async Task SetupLocation()
         {
             var countryId = await InsertCountry();
@@ -92,39 +112,18 @@ namespace Hurace.Core.Test
         protected async Task SetupDiscipline() =>
             await InsertDiscipline();
 
-        private async Task<int> InsertCountry(string code = "AT", string name = "Austria") => 
-            await CountryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
-
-        private async Task<int> InsertLocation(int countryId, string locationName = "Kitzbühl") => 
-            await LocationDao.InsertGetIdAsync(new Location
-            {
-                CountryId = countryId,
-                LocationName = locationName
-            });
-
-        private async Task<int> InsertDiscipline(string disciplineName = "Super-G") => 
-            await DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = disciplineName});
-        
-        private async Task<int> InsertSeason() => await SeasonDao.InsertGetIdAsync(new Season
+        protected async Task SetupCountry()
         {
-            EndDate = DateTime.Now.AddDays(1),
-            StartDate = DateTime.Now
-        });
-        
-        private async Task<int> InsertSensor(int raceId) => await SensorDao.InsertGetIdAsync(new Sensor
-        {
-            RaceId = raceId,
-            SensorDescription = "Description"
-        });
-        
+            await InsertCountry();
+            await InsertCountry("DE", "Germany");
+            await InsertCountry("FR", "France");
+        }
+
         protected async Task<int> SetupRace()
         {
             var seasonId = await InsertSeason();
-
             var countryId = await InsertCountry();
-
             var locationId = await InsertLocation(countryId);
-
             var disciplineId = await InsertDiscipline();
             return await RaceDao.InsertGetIdAsync(new Race
             {
@@ -138,14 +137,55 @@ namespace Hurace.Core.Test
             });
         }
 
-        protected async Task SetupCountry()
+        protected async Task SetupStartList()
         {
-            await InsertCountry();
-            await InsertCountry("DE", "Germany");
-            await InsertCountry("FR", "France");
+            var skierId = await SetupSkier();
+            var raceId = await SetupRace();
+            await InsertStartList(skierId, raceId);
         }
 
+        #endregion
+
+        #region Insert
+
+        private Task<int> InsertCountry(string code = "AT", string name = "Austria") =>
+            CountryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
+
+        private Task<int> InsertLocation(int countryId, string locationName = "Kitzbühl") =>
+            LocationDao.InsertGetIdAsync(new Location
+            {
+                CountryId = countryId,
+                LocationName = locationName
+            });
+
+        private Task<int> InsertDiscipline(string disciplineName = "Super-G") =>
+            DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = disciplineName});
+
+        private Task<int> InsertSeason() => SeasonDao.InsertGetIdAsync(new Season
+        {
+            EndDate = DateTime.Now.AddDays(1),
+            StartDate = DateTime.Now
+        });
+
+        private Task<int> InsertSensor(int raceId) => SensorDao.InsertGetIdAsync(new Sensor
+        {
+            RaceId = raceId,
+            SensorDescription = "Description"
+        });
+
+        private Task InsertStartList(int skierId, int raceId) =>
+            StartListDao.InsertAsync(new StartList
+            {
+                RaceId = raceId,
+                SkierId = skierId,
+                StartNumber = 1,
+                StartStateId = (int) Constants.StartState.Finished
+            });
+
+        #endregion
+
         [TearDown]
+        [OneTimeSetUp]
         protected async Task Teardown()
         {
             await RaceEventDao.DeleteAllAsync();
@@ -155,58 +195,11 @@ namespace Hurace.Core.Test
             await SensorDao.DeleteAllAsync();
             await StartListDao.DeleteAllAsync();
             await RaceDao.DeleteAllAsync();
+            await SkierDao.DeleteAllAsync();
             await LocationDao.DeleteAllAsync();
             await DisciplineDao.DeleteAllAsync();
-            await SkierDao.DeleteAllAsync();
             await CountryDao.DeleteAllAsync();
             await SeasonDao.DeleteAllAsync();
         }
-//        [SetUp]
-//        public async Task BeforeEach()
-//        {
-//            var countryId = await CountryDao.InsertGetIdAsync(new Country{CountryCode = "AT", CountryName = "Austria"});
-//            await CountryDao.InsertAsync(new Country{CountryCode = "DE", CountryName = "Germany"});
-//            await CountryDao.InsertAsync(new Country{CountryCode = "FR", CountryName = "France"});
-//            
-//            var disciplineId = await DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = "Super-G"});
-//            var locationId = await LocationDao.InsertGetIdAsync(new Location
-//            {
-//                CountryId = countryId,
-//                LocationName = "Location"
-//            });
-//            var seasonId = await SeasonDao.InsertGetIdAsync(new Season
-//            {
-//                StartDate = DateTime.Now.AddDays(-1),
-//                EndDate = DateTime.Now.AddDays(1)
-//                
-//            });
-//            await LocationDao.InsertPossibleDisciplineForLocation(locationId, disciplineId);
-//            await RaceDao.InsertAsync(new Race
-//            {
-//                DisciplineId = disciplineId,
-//                GenderId = (int)Constants.Gender.Male,
-//                LocationId = locationId,
-//                RaceDescription = "Description",
-//                RaceStateId = (int)Constants.RaceState.Finished,
-//                SeasonId = seasonId,
-//                RaceDate = DateTime.Now
-//            });
-//        }
-//
-//        [TearDown]
-//        public async Task AfterEach()
-//        {
-//            await RaceEventDao.DeleteAllAsync();
-//            await TimeDataDao.DeleteAllAsync();
-//            await SkierEventDao.DeleteAllAsync();
-//            await RaceDataDao.DeleteAllAsync();
-//            await SensorDao.DeleteAllAsync();
-//            await StartListDao.DeleteAllAsync();
-//            await RaceDao.DeleteAllAsync();
-//            await SeasonDao.DeleteAllAsync();
-//            await LocationDao.DeleteAllAsync();
-//            await SkierDao.DeleteAllAsync();
-//            await CountryDao.DeleteAllAsync();
-//        }
     }
 }

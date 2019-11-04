@@ -12,7 +12,7 @@ namespace Hurace.Core.Test
     public class DisciplineDaoTest : TestBase
     {
         [SetUp]
-        public async Task BeforeEach() => await SetupDiscipline();
+        public Task BeforeEach() => SetupDiscipline();
 
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await DisciplineDao.FindAllAsync()).Count());

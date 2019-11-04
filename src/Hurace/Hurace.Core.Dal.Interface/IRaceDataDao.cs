@@ -1,8 +1,9 @@
 ﻿using Hurace.Core.Dto;
+using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IRaceDataDao : IBaseDao<RaceData>, IDefaultDeleteBaseDao<RaceData>, ISelectBaseDao<RaceData>
+    public interface IRaceDataDao : IBaseDao<RaceData>, IDefaultDeleteBaseDao, ISelectBaseDao<RaceData>
     {
         
     }

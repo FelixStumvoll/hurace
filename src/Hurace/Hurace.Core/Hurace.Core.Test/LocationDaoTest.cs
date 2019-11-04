@@ -12,7 +12,7 @@ namespace Hurace.Core.Test
     public class LocationDaoTest : TestBase
     {
         [SetUp]
-        public async Task BeforeEach() => await SetupLocation();
+        public Task BeforeEach() => SetupLocation();
         
         [Test]
         public async Task GetPossibleDisciplinesTest()

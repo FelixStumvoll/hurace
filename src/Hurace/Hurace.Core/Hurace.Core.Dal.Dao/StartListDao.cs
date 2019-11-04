@@ -80,7 +80,7 @@ namespace Hurace.Core.Dal.Dao
 
         public async Task<bool> DeleteAsync(int raceId, int skierId) =>
             await ExecuteAsync(
-                $"delete from {TableName} where raceId=@ri, skierId=@si",
+                $"delete from {TableName} where raceId=@ri and skierId=@si",
                 ("@ri", raceId), ("@si", skierId));
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>

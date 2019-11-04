@@ -11,7 +11,7 @@ namespace Hurace.Core.Test
     public class SeasonDaoTest : TestBase
     {
         [SetUp]
-        public async Task BeforeEach() => await SetupSeason();
+        public Task BeforeEach() => SetupSeason();
         
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await SeasonDao.FindAllAsync()).Count());

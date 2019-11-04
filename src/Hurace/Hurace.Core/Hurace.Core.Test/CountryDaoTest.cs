@@ -12,7 +12,7 @@ namespace Hurace.Core.Test
     public class CountryDaoTest : TestBase
     {
         [SetUp]
-        public async Task BeforeEach() => await SetupCountry();
+        public Task BeforeEach() => SetupCountry();
 
         [Test]
         public async Task FindAllTest()

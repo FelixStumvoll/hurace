@@ -10,6 +10,7 @@ using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
+using Hurace.Dal.Interface.Util;
 using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator

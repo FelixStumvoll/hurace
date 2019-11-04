@@ -82,13 +82,11 @@ namespace Hurace.Core.Dal.Dao
 
         #endregion
         
-        protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams)
-        {
-            statement = $"{statement};SELECT CAST(scope_identity() AS int)";
-            return await ConnectionFactory.UseConnection(statement, queryParams,
-                                                         async command =>
-                                                             (int) await command.ExecuteScalarAsync());
-        }
+        protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
+            await ConnectionFactory.UseConnection($"{statement};SELECT CAST(scope_identity() AS int)", 
+                                                  queryParams,
+                                                  async command =>
+                                                      (int) await command.ExecuteScalarAsync());
 
         protected async Task<bool> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
             (await ConnectionFactory.UseConnection(statement, queryParams,

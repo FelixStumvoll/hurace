@@ -14,7 +14,7 @@ namespace Hurace.Core.Test
     {
 
         [SetUp]
-        public async Task BeforeEach() => await SetupRaceData();
+        public Task BeforeEach() => SetupRaceData();
 
         [Test]
         public async Task FindAllTest() => 
