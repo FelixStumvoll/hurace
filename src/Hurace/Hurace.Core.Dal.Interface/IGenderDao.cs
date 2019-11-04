@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IGenderDao : ISingleIdReadonlyDao<Gender>
+    public interface IGenderDao : IDefaultReadonlyDao<Gender>
     {
         
     }

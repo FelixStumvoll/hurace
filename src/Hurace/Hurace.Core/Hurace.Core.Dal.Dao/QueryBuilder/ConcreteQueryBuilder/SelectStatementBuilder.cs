@@ -5,7 +5,8 @@ using System.Reflection;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
-using Hurace.Core.Dto.Util;
+using Hurace.Core.Dto.Attributes;
+
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
 {

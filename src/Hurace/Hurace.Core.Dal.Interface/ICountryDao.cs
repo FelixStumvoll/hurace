@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ICountryDao :IBaseDao<Country>, ISingleIdBaseDao<Country>
+    public interface ICountryDao : IDefaultCrudDao<Country>
     {
     }
 }

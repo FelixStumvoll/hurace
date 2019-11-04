@@ -11,7 +11,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class RaceDao : BaseDao<Race>, IRaceDao
+    public class RaceDao : DefaultCrudDao<Race>, IRaceDao
     {
         public RaceDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) :
             base(connectionFactory, "hurace.race", statementFactory)

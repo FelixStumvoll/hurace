@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class StartListDao : BaseDao<StartList>, IStartListDao
+    public class StartListDao : CrudDao<StartList>, IStartListDao
     {
         public StartListDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.StartList", statementFactory)
@@ -53,25 +53,7 @@ namespace Hurace.Core.Dal.Dao
                                                       .Where<StartList>(
                                                           ("startStateId", (int) startListState), ("raceId", raceId))
                                                       .Build());
-            
-//            await QueryAsync<StartList>(@"select s.id,
-//                                                s.firstName,
-//                                                s.lastName,
-//                                                s.dateOfBirth,
-//                                                s.countryId,
-//                                                c.countryName,
-//                                                c.countryCode, 
-//                                                sl.startNumber,
-//                                                sl.startStateId
-//                                                from hurace.StartList as sl
-//                                                join hurace.skier as s on s.id = sl.skierId 
-//                                                join hurace.country as c on c.id = s.countryId
-//                                                where sl.startStateId = @sls and sl.raceId = @id",
-//                                         new MapperConfig()
-//                                             .Include<Skier>()
-//                                             .Include<Country>(),
-//                                         ("@id", raceId), ("@sls", (int)startListState));
-
+        
         public async Task<StartList?> GetNextSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Upcoming)).FirstOrDefault();
 
@@ -95,7 +77,7 @@ namespace Hurace.Core.Dal.Dao
             (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
 
         public override async Task<bool> InsertAsync(StartList obj) => 
-            await GeneratedExecutionAsync(StatementFactory
+            await GeneratedNonQueryAsync(StatementFactory
                                           .Insert<StartList>()
                                           .WithKey()
                                           .Build(obj));

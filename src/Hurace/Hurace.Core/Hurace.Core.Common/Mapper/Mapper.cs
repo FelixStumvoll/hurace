@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using Hurace.Core.Common.Extensions;
-using Hurace.Core.Dto.Util;
+using Hurace.Core.Dto.Attributes;
 
 namespace Hurace.Core.Common.Mapper
 {

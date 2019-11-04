@@ -6,7 +6,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface ISkierDao : IBaseDao<Skier>, ISingleIdBaseDao<Skier>
+    public interface ISkierDao : IDefaultCrudDao<Skier>
     {
         Task<IEnumerable<Discipline>> GetPossibleDisciplinesForSkier(int skierId);
         Task<bool> InsertPossibleDisciplineForSkier(int skierId, int disciplineId);

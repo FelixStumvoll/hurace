@@ -9,7 +9,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class RaceEventDao : BaseDao<RaceEvent>, IRaceEventDao
+    public class RaceEventDao : DefaultCrudDao<RaceEvent>, IRaceEventDao
     {
         public RaceEventDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.RaceEvent", statementFactory)
@@ -19,13 +19,13 @@ namespace Hurace.Core.Dal.Dao
         private protected override SelectStatementBuilder<RaceEvent> DefaultSelectQuery() =>
             StatementFactory
                 .Select<RaceEvent>()
-                .Join<RaceData, EventType>(("eventTypeId", "id"))
-                .Join<RaceEvent, RaceData>(("raceDataId", "id"));
+                .Join<RaceEvent, RaceData>(("raceDataId", "id"))
+                .Join<RaceData, EventType>(("eventTypeId", "id"));
 
-        public override async Task<bool> InsertAsync(RaceEvent obj) =>
-            await GeneratedExecutionAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
-        
-        public override async Task<int> InsertGetIdAsync(RaceEvent obj) =>
-            await GeneratedExecutionGetIdAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
+//        public override async Task<bool> InsertAsync(RaceEvent obj) =>
+//            await GeneratedNonQueryAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
+//        
+//        public override async Task<int> InsertGetIdAsync(RaceEvent obj) =>
+//            await GeneratedNonQueryGetIdAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
     }
 }

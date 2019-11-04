@@ -3,7 +3,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IStartStateDao : ISingleIdReadonlyDao<StartState>
+    public interface IStartStateDao : IDefaultReadonlyDao<StartState>
     {
         
     }

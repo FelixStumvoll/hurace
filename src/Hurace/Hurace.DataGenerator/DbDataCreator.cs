@@ -254,7 +254,7 @@ namespace Hurace.DataGenerator
             }
         }
 
-        private static async Task PersistEntity<T>(IEnumerable<T> entities, IBaseDao<T> dao) where T : class
+        private static async Task PersistEntity<T>(IEnumerable<T> entities, ICrudDao<T> dao) where T : class, new()
         {
             foreach (var dto in entities) await dao.InsertAsync(dto);
         }

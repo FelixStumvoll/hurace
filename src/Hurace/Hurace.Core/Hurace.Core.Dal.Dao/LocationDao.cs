@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class LocationDao : DefaultBaseDao<Location>, ILocationDao
+    public class LocationDao : DefaultCrudDao<Location>, ILocationDao
     {
         public LocationDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) :
             base(connectionFactory, "hurace.location", statementFactory)
@@ -43,13 +43,13 @@ namespace Hurace.Core.Dal.Dao
         public override async Task DeleteAllAsync()
         {
             await ExecuteAsync("delete from hurace.PossibleDiscipline");
-            await base.DefaultDeleteAll();
+            await base.DeleteAllAsync();
         }
 
         public override async Task<bool> DeleteAsync(int id)
         {
             await ExecuteAsync("delete from hurace.PossibleDiscipline where locationId = @id", ("@id", id));
-            return await base.DefaultDelete(id);
+            return await base.DeleteAsync(id);
         }
     }
 }

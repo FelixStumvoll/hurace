@@ -9,7 +9,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SkierEventDao : BaseDao<SkierEvent>, ISkierEventDao
+    public class SkierEventDao : DefaultCrudDao<SkierEvent>, ISkierEventDao
     {
         public SkierEventDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.SkierEvent", statementFactory)

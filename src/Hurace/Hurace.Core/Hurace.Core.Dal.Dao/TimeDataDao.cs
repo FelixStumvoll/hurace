@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class TimeDataDao : BaseDao<TimeData>, ITimeDataDao
+    public class TimeDataDao : CrudDao<TimeData>, ITimeDataDao
     {
         public TimeDataDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.TimeData", statementFactory)
@@ -18,11 +18,8 @@ namespace Hurace.Core.Dal.Dao
         }
 
         public override async Task<bool> InsertAsync(TimeData obj) =>
-            await GeneratedExecutionAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
-
-        public override async Task<int> InsertGetIdAsync(TimeData obj) =>
-            await GeneratedExecutionGetIdAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
-
+            await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
+        
         public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
             QueryAsync<TimeData>(@"select	s.id,
                                                 s.lastName,

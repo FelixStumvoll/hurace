@@ -2,7 +2,7 @@
 
 namespace Hurace.Dal.Interface.Util
 {
-    public interface ISingleIdBaseDao<T> : ISingleIdReadonlyDao<T> where T : class, new()
+    public interface IDefaultCrudDao<T> : ICrudDao<T>, IDefaultReadonlyDao<T> where T : class, new()
     {
         Task<int> InsertGetIdAsync(T obj);
         Task<bool> DeleteAsync(int id);

@@ -6,7 +6,7 @@ using Hurace.Dal.Interface.Util;
 
 namespace Hurace.Dal.Interface
 {
-    public interface IStartListDao : IBaseDao<StartList>, IReadonlyBaseDao<StartList>
+    public interface IStartListDao : ICrudDao<StartList>
     {
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
         Task<StartList?> GetCurrentSkierForRace(int raceId);

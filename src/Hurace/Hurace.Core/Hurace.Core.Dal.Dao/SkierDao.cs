@@ -10,7 +10,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class SkierDao : BaseDao<Skier>, ISkierDao
+    public class SkierDao : DefaultCrudDao<Skier>, ISkierDao
     {
         public SkierDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.skier", statementFactory)
@@ -42,13 +42,13 @@ namespace Hurace.Core.Dal.Dao
         public override async Task<bool> DeleteAsync(int id)
         {
             await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si", ("@si", id));
-            return await base.DefaultDelete(id);
+            return await base.DeleteAsync(id);
         }
 
         public override async Task DeleteAllAsync()
         {
             await ExecuteAsync("delete from hurace.SkierDiscipline");
-            await base.DefaultDeleteAll();
+            await base.DeleteAllAsync();
         }
     }
 }

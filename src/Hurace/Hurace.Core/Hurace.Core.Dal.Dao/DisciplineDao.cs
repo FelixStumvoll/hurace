@@ -6,7 +6,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class DisciplineDao : DefaultBaseDao<Discipline>, IDisciplineDao
+    public class DisciplineDao : DefaultCrudDao<Discipline>, IDisciplineDao
     {
         public DisciplineDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.discipline", statementFactory)

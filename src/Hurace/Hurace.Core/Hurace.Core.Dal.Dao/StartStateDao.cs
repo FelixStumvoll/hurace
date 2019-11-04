@@ -5,7 +5,7 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Dal.Dao
 {
-    public class StartStateDao : BaseDao<StartState>, IStartStateDao
+    public class StartStateDao : DefaultReadonlyDao<StartState>, IStartStateDao
     {
         public StartStateDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
            connectionFactory , "hurace.StartState", statementFactory)

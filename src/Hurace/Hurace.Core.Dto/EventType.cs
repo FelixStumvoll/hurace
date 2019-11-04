@@ -1,4 +1,5 @@
-using Hurace.Core.Dto.Util;
+using Hurace.Core.Dto.Attributes;
+
 
 namespace Hurace.Core.Dto
 {
