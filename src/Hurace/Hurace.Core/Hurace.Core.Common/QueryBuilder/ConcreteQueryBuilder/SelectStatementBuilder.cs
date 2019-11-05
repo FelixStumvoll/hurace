@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Hurace.Core.Common;
 using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
+using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto.Attributes;
 
-
-namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
 {
     public class SelectStatementBuilder<T> : QueryBuilder<T> where T : class, new()
     {

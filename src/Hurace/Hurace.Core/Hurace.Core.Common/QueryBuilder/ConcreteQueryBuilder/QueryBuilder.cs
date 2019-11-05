@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hurace.Core.Common;
 using Hurace.Core.Dto.Attributes;
 
-
-namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
 {
     public abstract class QueryBuilder<T> : AbstractStatementBuilder where T : class, new()
     {
@@ -56,7 +54,8 @@ namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
             foreach (var (tableName, whereQueryParams) in WhereCfg.WhereConditions)
             foreach (var whereQueryParam in whereQueryParams)
             {
-                whereConditions.Add($"{tableName}.{whereQueryParam.Name}=@{whereQueryParam.Name}");
+                whereConditions.Add($"{tableName}.{whereQueryParam.Name}=@WHERE{whereQueryParam.Name}");
+                whereQueryParam.Name = $"WHERE{whereQueryParam.Name}";
                 queryParams.Add(AddParamSymbol(whereQueryParam));
             }
 

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Hurace.Core.Common;
 
-namespace Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
 {
     public class UpdateStatementBuilder<T> : QueryBuilder<T> where T : class, new()
     {

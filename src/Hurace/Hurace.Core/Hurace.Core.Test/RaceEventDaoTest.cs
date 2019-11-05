@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
+    [ExcludeFromCodeCoverage]
     public class RaceEventDaoTest : TestBase
     {
         [SetUp]

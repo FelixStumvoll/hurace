@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
+using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dal.Dao.QueryBuilder;
-using Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 

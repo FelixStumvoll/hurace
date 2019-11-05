@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
@@ -6,6 +7,7 @@ using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
+    [ExcludeFromCodeCoverage]
     public class StartListDaoTest : TestBase
     {
         [SetUp]

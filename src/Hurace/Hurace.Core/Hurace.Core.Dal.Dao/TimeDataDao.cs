@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
+using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dal.Dao.QueryBuilder;
-using Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -19,7 +19,7 @@ namespace Hurace.Core.Dal.Dao
 
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
-        
+
         public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
             QueryAsync<TimeData>(@"select	s.id,
                                                 s.lastName,
@@ -53,7 +53,7 @@ namespace Hurace.Core.Dal.Dao
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
-                                ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
+                               ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
 
         private protected override SelectStatementBuilder<TimeData> DefaultSelectQuery() =>
             StatementFactory
@@ -63,10 +63,13 @@ namespace Hurace.Core.Dal.Dao
 
         public async Task<TimeData> FindByIdAsync(int skierId, int raceId, int sensorId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
-                                       .Where<TimeData>(("skierId", skierId), 
+                                       .Where<TimeData>(("skierId", skierId),
                                                         ("raceId", raceId),
                                                         ("sensorId", sensorId))
                                        .Build()))
             .SingleOrDefault();
+
+        public override async Task<bool> UpdateAsync(TimeData obj) => 
+            await GeneratedNonQueryAsync(StatementFactory.Update<TimeData>().WithKey().WhereId(obj).Build(obj));
     }
 }

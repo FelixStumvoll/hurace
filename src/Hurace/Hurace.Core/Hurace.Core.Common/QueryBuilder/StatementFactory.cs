@@ -1,4 +1,4 @@
-using Hurace.Core.Dal.Dao.QueryBuilder.ConcreteQueryBuilder;
+using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
 
 namespace Hurace.Core.Dal.Dao.QueryBuilder
 {
