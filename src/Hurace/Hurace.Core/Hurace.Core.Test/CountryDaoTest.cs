@@ -24,36 +24,34 @@ namespace Hurace.Core.Test
         [Test]
         public async Task InsertTest()
         {
-            await CountryDao.InsertAsync(new Country
+            var id = await CountryDao.InsertGetIdAsync(new Country
             {
                 CountryCode = "XY",
                 CountryName = "TestCountry"
             });
 
-            var countries = await CountryDao.FindAllAsync();
-            Assert.AreEqual(1, countries.Count(c => c.CountryCode.Equals("XY")));
+            var country = await CountryDao.FindByIdAsync(id);
+            Assert.AreEqual("XY", country.CountryCode);
+            Assert.AreEqual("TestCountry", country.CountryName);
         }
         
         [Test]
         public async Task UpdateTest()
         {
             var country = (await CountryDao.FindAllAsync()).First();
-            await CountryDao.UpdateAsync(new Country
-            {
-                Id = country.Id,
-                CountryCode = "XX",
-                CountryName = "Abcd"
-            });
+            country.CountryName = "TestABC";
+            await CountryDao.UpdateAsync(country);
             var updatedCountry = (await CountryDao.FindByIdAsync(country.Id));
-            Assert.AreNotEqual(country.CountryName, updatedCountry.CountryName);
+            Assert.AreEqual(country.CountryName, updatedCountry.CountryName);
         }
 
         [Test]
         public async Task FindByIdTest()
         {
-            var countries = (await CountryDao.FindAllAsync()).ToList();
-            var country = await CountryDao.FindByIdAsync(countries.First().Id);
-            Assert.AreEqual(countries.First().Id, country.Id);
+            var country = (await CountryDao.FindAllAsync()).First();
+            var countryById = await CountryDao.FindByIdAsync(country.Id);
+            Assert.AreEqual(country.CountryCode, countryById.CountryCode);
+            Assert.AreEqual(country.CountryName, countryById.CountryName);
         }
 
         [Test]
@@ -69,7 +67,7 @@ namespace Hurace.Core.Test
         {
             await LocationDao.DeleteAllAsync();
             await CountryDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await CountryDao.FindAllAsync()).Count());
+            Assert.IsEmpty(await CountryDao.FindAllAsync());
         }
     }
 }

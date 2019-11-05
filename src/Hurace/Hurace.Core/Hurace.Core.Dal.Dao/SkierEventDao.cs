@@ -18,7 +18,7 @@ namespace Hurace.Core.Dal.Dao
 
         private protected override SelectStatementBuilder<SkierEvent> DefaultSelectQuery() =>
             StatementFactory.Select<SkierEvent>()
-                            .Join<RaceData, EventType>(("eventTypeId", "id"))
-                            .Join<SkierEvent, RaceData>(("raceDataId", "id"));
+                            .Join<SkierEvent, RaceData>(("raceDataId", "id"))
+                            .Join<RaceData, EventType>(("eventTypeId", "id"));
     }
 }

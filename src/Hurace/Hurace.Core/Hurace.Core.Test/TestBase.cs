@@ -33,6 +33,8 @@ namespace Hurace.Core.Test
         public ITimeDataDao TimeDataDao { get; set; }
         public IGenderDao GenderDao { get; set; }
         public ISensorDao SensorDao { get; set; }
+        public IRaceStateDao RaceStateDao { get; set; }
+        public IStartStateDao StartStateDao { get; set; }
 
 
         protected TestBase()
@@ -40,7 +42,6 @@ namespace Hurace.Core.Test
             ConnectionFactory =
                 new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString, ProviderName);
 
-            var x = new GenderDao(ConnectionFactory, StatementFactory);
             RaceDao = new RaceDao(ConnectionFactory, StatementFactory);
             SeasonDao = new SeasonDao(ConnectionFactory, StatementFactory);
             LocationDao = new LocationDao(ConnectionFactory, StatementFactory);
@@ -54,6 +55,8 @@ namespace Hurace.Core.Test
             GenderDao = new GenderDao(ConnectionFactory, StatementFactory);
             SensorDao = new SensorDao(ConnectionFactory, StatementFactory);
             RaceDataDao = new RaceDataDao(ConnectionFactory, StatementFactory);
+            RaceStateDao = new RaceStateDao(ConnectionFactory, StatementFactory);
+            StartStateDao = new StartStateDao(ConnectionFactory, StatementFactory);
         }
 
 
@@ -65,19 +68,22 @@ namespace Hurace.Core.Test
             var raceDataId = await InsertRaceData(raceId, (int) Constants.RaceEvent.Started);
             return await InsertRaceEvent(raceDataId);
         }
-        
+
+        protected async Task<int> SetupSkierEvent()
+        {
+            var raceId = await SetupRace();
+            var countryId = await InsertCountry();
+            var skierId = await InsertSkier(countryId);
+            await InsertStartList(skierId, raceId);
+            var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.Started);
+            return await InsertSkierEvent(raceDataId, skierId, raceId);
+        }
+
         protected async Task<int> SetupSkier()
         {
             var countryId = await InsertCountry();
             var disciplineId = await InsertDiscipline();
-            var skierId = await SkierDao.InsertGetIdAsync(new Skier
-            {
-                CountryId = countryId,
-                GenderId = (int) Constants.Gender.Male,
-                FirstName = "Random",
-                LastName = "Name",
-                DateOfBirth = DateTime.Now
-            });
+            var skierId = await InsertSkier(countryId);
 
             await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId);
             return skierId;
@@ -160,7 +166,7 @@ namespace Hurace.Core.Test
                 EventDateTime = DateTime.Now
             });
         }
-        
+
         private Task<int> InsertCountry(string code = "AT", string name = "Austria") =>
             CountryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
 
@@ -186,7 +192,7 @@ namespace Hurace.Core.Test
             SensorDescription = "Description"
         });
 
-        private Task InsertStartList(int skierId, int raceId) =>
+        protected Task InsertStartList(int skierId, int raceId) =>
             StartListDao.InsertAsync(new StartList
             {
                 RaceId = raceId,
@@ -201,7 +207,24 @@ namespace Hurace.Core.Test
             {
                 RaceDataId = raceDataId
             });
+
+        private Task<int> InsertSkierEvent(int raceDataId, int skierId, int raceId) => SkierEventDao.InsertGetIdAsync(
+            new SkierEvent
+            {
+                RaceId = raceId,
+                SkierId = skierId,
+                RaceDataId = raceDataId
+            });
         
+        protected Task<int> InsertSkier(int countryId) => SkierDao.InsertGetIdAsync(new Skier
+        {
+            CountryId = countryId,
+            GenderId = (int) Constants.Gender.Male,
+            FirstName = "Random",
+            LastName = "Name",
+            DateOfBirth = DateTime.Now
+        });
+
         #endregion
 
         [TearDown]

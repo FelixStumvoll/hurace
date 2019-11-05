@@ -12,5 +12,8 @@ namespace Hurace.Core.Test
     {
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(2, (await GenderDao.FindAllAsync()).Count());
+
+        [Test]
+        public async Task FindById() => Assert.AreEqual("male", (await GenderDao.FindByIdAsync(1)).GenderDescription);
     }
 }

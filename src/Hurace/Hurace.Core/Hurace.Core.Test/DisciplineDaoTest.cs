@@ -21,8 +21,33 @@ namespace Hurace.Core.Test
         public async Task FindById()
         {
             var discipline = (await DisciplineDao.FindAllAsync()).First();
-            Assert.AreEqual(discipline.DisciplineName,
-                            (await DisciplineDao.FindByIdAsync(discipline.Id)).DisciplineName);
+            var disciplineById = await DisciplineDao.FindByIdAsync(discipline.Id);
+            Assert.AreEqual(discipline.DisciplineName, disciplineById.DisciplineName);
+        }
+        
+        [Test]
+        public async Task UpdateTest()
+        {
+            var discipline = (await DisciplineDao.FindAllAsync()).First();
+            discipline.DisciplineName = "ABC";
+            await DisciplineDao.UpdateAsync(discipline);
+            discipline = await DisciplineDao.FindByIdAsync(discipline.Id);
+            Assert.AreEqual("ABC", discipline.DisciplineName);
+        }
+
+        [Test]
+        public async Task DeleteTest()
+        {
+            var discipline = (await DisciplineDao.FindAllAsync()).First();
+            await DisciplineDao.DeleteAsync(discipline.Id);
+            Assert.IsNull(await DisciplineDao.FindByIdAsync(discipline.Id));
+        }
+        
+        [Test]
+        public async Task DeleteAllTest()
+        {
+            await DisciplineDao.DeleteAllAsync();
+            Assert.IsEmpty((await DisciplineDao.FindAllAsync()));
         }
     }
 }

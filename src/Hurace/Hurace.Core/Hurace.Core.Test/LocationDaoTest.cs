@@ -30,6 +30,7 @@ namespace Hurace.Core.Test
                 DisciplineName = "XYZ"
             });
             await LocationDao.InsertPossibleDisciplineForLocation(location.Id, disciplineId);
+            
             Assert.AreEqual(2, (await LocationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
 
@@ -53,7 +54,7 @@ namespace Hurace.Core.Test
         public async Task DeleteAllTest()
         {
             await LocationDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await LocationDao.FindAllAsync()).Count());
+            Assert.IsEmpty(await LocationDao.FindAllAsync());
         }
 
         [Test]
@@ -81,13 +82,15 @@ namespace Hurace.Core.Test
         public async Task InsertTest()
         {
             var countryId = (await CountryDao.FindAllAsync()).First().Id;
-            await LocationDao.InsertAsync(new Location
+            var locationId = await LocationDao.InsertGetIdAsync(new Location
             {
                 CountryId = countryId,
                 LocationName = "Name"
             });
-
+            
             Assert.AreEqual(4, (await LocationDao.FindAllAsync()).Count());
+            Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId)).LocationName);
+            Assert.NotNull((await LocationDao.FindByIdAsync(locationId)).Country);
         }
 
         [Test]

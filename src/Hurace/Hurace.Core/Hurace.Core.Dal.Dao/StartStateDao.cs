@@ -7,7 +7,7 @@ namespace Hurace.Core.Dal.Dao
 {
     public class StartStateDao : DefaultReadonlyDao<StartState>, IStartStateDao
     {
-        public StartStateDao(StatementFactory statementFactory, IConnectionFactory connectionFactory) : base(
+        public StartStateDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
            connectionFactory , "hurace.StartState", statementFactory)
         {
         }

@@ -21,11 +21,5 @@ namespace Hurace.Core.Dal.Dao
                 .Select<RaceEvent>()
                 .Join<RaceEvent, RaceData>(("raceDataId", "id"))
                 .Join<RaceData, EventType>(("eventTypeId", "id"));
-
-//        public override async Task<bool> InsertAsync(RaceEvent obj) =>
-//            await GeneratedNonQueryAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
-//        
-//        public override async Task<int> InsertGetIdAsync(RaceEvent obj) =>
-//            await GeneratedNonQueryGetIdAsync(StatementFactory.Insert<RaceEvent>().WithKey().Build(obj));
     }
 }
