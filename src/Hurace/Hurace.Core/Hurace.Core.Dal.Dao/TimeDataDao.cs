@@ -59,7 +59,10 @@ namespace Hurace.Core.Dal.Dao
             StatementFactory
                 .Select<TimeData>()
                 .Join<TimeData, StartList>(("skierId", "skierId"), ("raceId", "raceId"))
-                .Join<TimeData, Sensor>(("sensorId", "id"));
+                .Join<TimeData, SkierEvent>(("skierEventId", "id"))
+                .Join<SkierEvent, RaceData>(("raceDataId", "id"))
+                .Join<TimeData, Sensor>(("sensorId", "id"))
+                .Join<StartList, Skier>(("skierId", "id"));
 
         public async Task<TimeData> FindByIdAsync(int skierId, int raceId, int sensorId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
@@ -69,7 +72,7 @@ namespace Hurace.Core.Dal.Dao
                                        .Build()))
             .SingleOrDefault();
 
-        public override async Task<bool> UpdateAsync(TimeData obj) => 
-            await GeneratedNonQueryAsync(StatementFactory.Update<TimeData>().WithKey().WhereId(obj).Build(obj));
+//        public override async Task<bool> UpdateAsync(TimeData obj) => 
+//            await GeneratedNonQueryAsync(StatementFactory.Update<TimeData>().WithKey().WhereId(obj).Build(obj));
     }
 }

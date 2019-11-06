@@ -82,7 +82,7 @@ namespace Hurace.Core.Dal.Dao
                                           .WithKey()
                                           .Build(obj));
 
-        public override async Task<bool> UpdateAsync(StartList obj) => 
-            await GeneratedNonQueryAsync(StatementFactory.Update<StartList>().WithKey().WhereId(obj).Build(obj));
+//        public override async Task<bool> UpdateAsync(StartList obj) => 
+//            await GeneratedNonQueryAsync(StatementFactory.Update<StartList>().WithKey().WhereId(obj).Build(obj));
     }
 }

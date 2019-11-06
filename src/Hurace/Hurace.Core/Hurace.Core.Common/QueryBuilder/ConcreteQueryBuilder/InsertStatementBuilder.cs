@@ -29,8 +29,8 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
             {
                 var (name, value) = pi;
                 columnNames.Add(name);
-                columnValues.Add($"@{name}");
-                queryParams.Add(($"@{name}", value));
+                columnValues.Add(AddParamSymbol(name));
+                queryParams.Add((AddParamSymbol(name), value));
             });
 
             return (

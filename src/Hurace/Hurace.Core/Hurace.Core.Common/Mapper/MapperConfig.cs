@@ -15,7 +15,11 @@ namespace Hurace.Core.Common.Mapper
         {
             if (!_mappingConfig.TryGetValue(typeof(T), out var configDict))
                 _mappingConfig[typeof(T)] = (configDict = new Dictionary<string, string>());
-            config.ToList().ForEach(cfg => configDict.Add(cfg.destName, cfg.srcName));
+            config.ToList().ForEach(cfg =>
+            {
+                var (srcName, destName) = cfg;
+                if(!configDict.ContainsKey(destName)) configDict.Add(destName, srcName);
+            });
             return this;
         }
         

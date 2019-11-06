@@ -27,8 +27,8 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
                 .ForEach(pi =>
                 {
                     var (name, value) = pi;
-                    updateProps.Add($"{name}=@{name}");
-                    queryParams.Add(($"@{name}", value));
+                    updateProps.Add($"{name}={AddParamSymbol(name)}");
+                    queryParams.Add(($"{AddParamSymbol(name)}", value));
                 });
 
             var (whereSection, whereQueryParams) = HandleWhere();

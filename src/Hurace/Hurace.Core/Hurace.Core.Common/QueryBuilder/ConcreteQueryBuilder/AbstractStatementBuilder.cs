@@ -11,6 +11,14 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
 
         internal AbstractStatementBuilder(string schemaName) => _schemaName = schemaName;
 
+        protected static string AddParamSymbol(string str) => $"@{str}";
+        
+        protected static QueryParam AddParamSymbol(QueryParam queryParam)
+        {
+            queryParam.Name = AddParamSymbol(queryParam.Name);
+            return queryParam;
+        }
+        
         protected string WithSchema(string append) => $"{_schemaName}.{append}";
 
         protected static IEnumerable<(string name,object value)> GetNonNavigationalProps(object obj, bool withKey) =>

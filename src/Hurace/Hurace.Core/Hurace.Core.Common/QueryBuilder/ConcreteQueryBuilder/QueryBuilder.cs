@@ -19,11 +19,7 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-        private static QueryParam AddParamSymbol(QueryParam queryParam)
-        {
-            queryParam.Name = $"@{queryParam.Name}";
-            return queryParam;
-        }
+      
 
         protected void AddWhere<TWhere>(params QueryParam[] whereParams)
         {

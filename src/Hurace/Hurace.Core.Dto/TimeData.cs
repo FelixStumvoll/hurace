@@ -10,9 +10,8 @@ namespace Hurace.Core.Dto
         [Key] public int SensorId { get; set; }
         public DateTime Time { get; set; }
         public int SkierEventId { get; set; }
-        [Navigational] public Skier? Skier { get; set; }
         [Navigational] public SkierEvent? SkierEvent { get; set; }
-        [Navigational] public Race? Race { get; set; }
         [Navigational] public Sensor? Sensor { get; set; }
+        [Navigational] public StartList? StartList { get; set; }
     }
 }
