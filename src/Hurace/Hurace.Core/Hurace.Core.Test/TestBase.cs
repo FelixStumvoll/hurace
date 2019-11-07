@@ -65,6 +65,7 @@ namespace Hurace.Core.Test
         protected async Task SetupTimeData()
         {
             var skierId = await SetupSkier();
+            await SetupSkier();
             var raceId = await SetupRace();
             var sensorId = await InsertSensor(raceId);
             await InsertStartList(skierId, raceId);
@@ -222,8 +223,8 @@ namespace Hurace.Core.Test
         {
             CountryId = countryId,
             GenderId = (int) Constants.Gender.Male,
-            FirstName = "Random",
-            LastName = "Name",
+            FirstName = "Test",
+            LastName = "Pacito",
             DateOfBirth = DateTime.Now
         });
         

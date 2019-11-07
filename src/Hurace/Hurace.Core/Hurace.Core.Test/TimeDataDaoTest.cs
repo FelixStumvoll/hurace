@@ -89,6 +89,7 @@ namespace Hurace.Core.Test
         [Test]
         public async Task GetRaceForRankingTest()
         {
+            var skier = (await SkierDao.FindAllAsync()).First();
             var race = (await RaceDao.FindAllAsync()).First();
             var res = await TimeDataDao.GetRankingForRace(race.Id);
         }

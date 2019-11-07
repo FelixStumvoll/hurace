@@ -24,13 +24,11 @@ namespace Hurace.Core.Dal.Dao
             QueryAsync<TimeData>(@"select * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
                                  new MapperConfig()
-                                     .AddMapping<TimeData>(("id", "SkierId"), ("raceTime", "Time"))
+                                     .AddMapping<TimeData>(("skierId", "SkierId"), ("raceTime", "Time"))
                                      .AddMapping<Country>(("countryId", "Id"))
-                                     .AddMapping<StartList>(("id", "SkierId"))
+                                     .AddMapping<StartList>(("skierId", "SkierId"))
                                      .AddMapping<Sensor>(("sensorId", "Id"))
-//                                     .Include<StartList>()
-                                     .Include<Skier>(),
-//                                     .Include<Country>()
+                                     .AddMapping<Skier>(("skierId", "Id")),
                                  ("@raceId", raceId));
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
