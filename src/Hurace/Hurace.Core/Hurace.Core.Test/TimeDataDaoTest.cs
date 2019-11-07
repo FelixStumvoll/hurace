@@ -85,5 +85,12 @@ namespace Hurace.Core.Test
             await TimeDataDao.DeleteAllAsync();
             Assert.AreEqual(0, (await TimeDataDao.FindAllAsync()).Count());
         }
+
+        [Test]
+        public async Task GetRaceForRankingTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            var res = await TimeDataDao.GetRankingForRace(race.Id);
+        }
     }
 }

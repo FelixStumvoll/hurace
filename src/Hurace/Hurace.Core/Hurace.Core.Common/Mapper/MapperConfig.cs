@@ -20,6 +20,7 @@ namespace Hurace.Core.Common.Mapper
                 var (srcName, destName) = cfg;
                 if(!configDict.ContainsKey(destName)) configDict.Add(destName, srcName);
             });
+            _inclusions.Add(typeof(T));
             return this;
         }
         

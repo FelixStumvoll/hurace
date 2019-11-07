@@ -21,35 +21,17 @@ namespace Hurace.Core.Dal.Dao
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
         public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
-            QueryAsync<TimeData>(@"select	s.id,
-                                                s.lastName,
-                                                s.dateOfBirth,
-                                                s.countryId,
-                                                s.genderId,
-                                                s.firstName,
-                                                c.countryCode,
-                                                c.countryName,
-                                                max(td.time) as raceTime
-                                                from hurace.TimeData as td
-                                                join hurace.Skier as s on td.skierId = s.id
-                                                join hurace.Country as c on s.countryId = c.id
-                                                join hurace.StartList as sl on sl.raceId = @id and sl.skierId = s.id
-                                                where td.raceId = @id and sl.startStateId = 3
-                                                group by
-                                                s.id,
-                                                s.firstName,
-                                                s.lastName,
-                                                s.countryId,
-                                                s.genderId,
-                                                s.dateOfBirth,
-                                                c.countryCode,
-                                                c.countryName
+            QueryAsync<TimeData>(@"select * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
                                  new MapperConfig()
+                                     .AddMapping<TimeData>(("id", "SkierId"), ("raceTime", "Time"))
                                      .AddMapping<Country>(("countryId", "Id"))
-                                     .Include<Skier>()
-                                     .Include<Country>(),
-                                 ("@id", raceId));
+                                     .AddMapping<StartList>(("id", "SkierId"))
+                                     .AddMapping<Sensor>(("sensorId", "Id"))
+//                                     .Include<StartList>()
+                                     .Include<Skier>(),
+//                                     .Include<Country>()
+                                 ("@raceId", raceId));
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
@@ -62,7 +44,8 @@ namespace Hurace.Core.Dal.Dao
                 .Join<TimeData, SkierEvent>(("skierEventId", "id"))
                 .Join<SkierEvent, RaceData>(("raceDataId", "id"))
                 .Join<TimeData, Sensor>(("sensorId", "id"))
-                .Join<StartList, Skier>(("skierId", "id"));
+                .Join<StartList, Skier>(("skierId", "id"))
+                .Join<Skier, Country>(("countryId", "id"));
 
         public async Task<TimeData> FindByIdAsync(int skierId, int raceId, int sensorId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
