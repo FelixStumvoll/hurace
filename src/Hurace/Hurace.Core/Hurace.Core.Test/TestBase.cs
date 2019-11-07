@@ -64,16 +64,25 @@ namespace Hurace.Core.Test
 
         protected async Task SetupTimeData()
         {
-            var skierId = await SetupSkier();
-            await SetupSkier();
             var raceId = await SetupRace();
-            var sensorId = await InsertSensor(raceId);
-            await InsertStartList(skierId, raceId);
-            var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.SplitTime);
-            var skierEventId = await InsertSkierEvent(raceDataId, skierId, raceId);
-            await InsertTimeData(raceId, skierId, sensorId, skierEventId);
+            var rand = new Random();
+
+            for (var i = 0; i < 5; i++)
+            {
+                var skierId = await SetupSkier();
+                await InsertStartList(skierId, raceId);
+                var dt = DateTime.Today;
+                for (var j = 0; j < 6; j++)
+                {
+                    dt = dt.AddMilliseconds(rand.Next(2000, 4000));
+                    var sensorId = await InsertSensor(raceId);
+                    var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.SplitTime);
+                    var skierEventId = await InsertSkierEvent(raceDataId, skierId, raceId);
+                    await InsertTimeData(raceId, skierId, sensorId, skierEventId, dt);
+                }
+            }
         }
-        
+
         protected async Task<int> SetupRaceEvent()
         {
             var raceId = await SetupRace();
@@ -148,7 +157,7 @@ namespace Hurace.Core.Test
             var disciplineId = await InsertDiscipline();
             return await InsertRace(disciplineId, locationId, seasonId);
         }
-        
+
         protected async Task SetupStartList()
         {
             var skierId = await SetupSkier();
@@ -218,7 +227,7 @@ namespace Hurace.Core.Test
                 SkierId = skierId,
                 RaceDataId = raceDataId
             });
-        
+
         protected Task<int> InsertSkier(int countryId) => SkierDao.InsertGetIdAsync(new Skier
         {
             CountryId = countryId,
@@ -227,7 +236,7 @@ namespace Hurace.Core.Test
             LastName = "Pacito",
             DateOfBirth = DateTime.Now
         });
-        
+
         private Task<int> InsertRace(int disciplineId, int locationId, int seasonId) =>
             RaceDao.InsertGetIdAsync(new Race
             {
@@ -240,14 +249,14 @@ namespace Hurace.Core.Test
                 RaceStateId = (int) Constants.RaceEvent.Finished
             });
 
-        private Task InsertTimeData(int raceId, int skierId, int sensorId, int skierEventId) =>
+        private Task InsertTimeData(int raceId, int skierId, int sensorId, int skierEventId, DateTime time) =>
             TimeDataDao.InsertAsync(new TimeData
             {
                 RaceId = raceId,
                 SkierId = skierId,
                 SensorId = sensorId,
                 SkierEventId = skierEventId,
-                Time = new DateTime(2019,11,6)
+                Time = time
             });
 
         #endregion

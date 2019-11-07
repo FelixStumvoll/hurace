@@ -23,7 +23,12 @@ namespace Hurace.Core.Test
         public async Task FindByIdTest()
         {
             var race = (await RaceDao.FindAllAsync()).First();
-            Assert.AreEqual(race.RaceDescription, (await RaceDao.FindByIdAsync(race.Id)).RaceDescription);
+            var raceById = await RaceDao.FindByIdAsync(race.Id);
+            Assert.AreEqual(race.RaceDescription, raceById.RaceDescription);
+            Assert.NotNull(raceById.Gender);
+            Assert.NotNull(raceById.Location);
+            Assert.NotNull(raceById.Season);
+            Assert.NotNull(raceById.RaceState);
         }
 
         [Test]

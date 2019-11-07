@@ -20,15 +20,15 @@ namespace Hurace.Core.Dal.Dao
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
-        public Task<IEnumerable<TimeData>> GetRankingForRace(int raceId) =>
-            QueryAsync<TimeData>(@"select * from hurace.TimeDataRanking where raceId=@raceId
+        public Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId) =>
+            QueryAsync<RaceRanking>(@"select * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
                                  new MapperConfig()
-                                     .AddMapping<TimeData>(("skierId", "SkierId"), ("raceTime", "Time"))
+                                     .AddMapping<RaceRanking>(("skierId", "SkierId"), ("raceTime", "Time"))
                                      .AddMapping<Country>(("countryId", "Id"))
                                      .AddMapping<StartList>(("skierId", "SkierId"))
-                                     .AddMapping<Sensor>(("sensorId", "Id"))
-                                     .AddMapping<Skier>(("skierId", "Id")),
+                                     .AddMapping<Skier>(("skierId", "Id"))
+                                     .AddMapping<Gender>(("genderId", "Id")),
                                  ("@raceId", raceId));
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
@@ -45,7 +45,7 @@ namespace Hurace.Core.Dal.Dao
                 .Join<StartList, Skier>(("skierId", "id"))
                 .Join<Skier, Country>(("countryId", "id"));
 
-        public async Task<TimeData> FindByIdAsync(int skierId, int raceId, int sensorId) =>
+        public async Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
                                        .Where<TimeData>(("skierId", skierId),
                                                         ("raceId", raceId),

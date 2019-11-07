@@ -23,6 +23,7 @@ namespace Hurace.Core.Dal.Dao
                             .Join<Race, Location>(("locationId", "id"))
                             .Join<Race, Season>(("seasonId", "id"))
                             .Join<Race, Discipline>(("disciplineId", "id"))
-                            .Join<Race, RaceState>(("raceStateId", "id"));
+                            .Join<Race, RaceState>(("raceStateId", "id"))
+                            .Join<Race, Gender>(("genderId", "id"));
     }
 }

@@ -13,7 +13,7 @@ namespace Hurace.Core.Dal.Dao
         {
         }
 
-        public async Task<T> FindByIdAsync(int id) =>
+        public async Task<T?> FindByIdAsync(int id) =>
             (await GeneratedQueryAsync(DefaultSelectQuery().Where<T>(("id", id)).Build())).SingleOrDefault();
     }
 }

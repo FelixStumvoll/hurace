@@ -22,6 +22,7 @@ namespace Hurace.Core.Test
             var skierEvent = (await SkierEventDao.FindAllAsync()).First();
             var skierEventById = await SkierEventDao.FindByIdAsync(skierEvent.Id);
             Assert.AreEqual(skierEvent.RaceData.EventTypeId, skierEventById.RaceData.EventTypeId);
+            Assert.NotNull(skierEventById.StartList);
         }
 
         [Test]

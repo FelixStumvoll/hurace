@@ -17,8 +17,8 @@ namespace Hurace.Core.Test
         public async Task FindAllTest()
         {
             var timeData = (await TimeDataDao.FindAllAsync()).ToList();
-            Assert.AreEqual(1, timeData.Count());
-            Assert.AreEqual(new DateTime(2019, 11, 6), timeData.First().Time);
+            Assert.AreEqual(30, timeData.Count());
+            Assert.AreEqual(DateTime.Today, timeData.First().Time.Date);
         }
 
         [Test]
@@ -32,7 +32,8 @@ namespace Hurace.Core.Test
             Assert.NotNull(timeData.StartList);
             Assert.NotNull(timeData.SkierEvent);
             Assert.NotNull(timeData.SkierEvent.RaceData);
-            Assert.AreEqual(new DateTime(2019, 11, 6), timeData.Time);
+            Assert.NotNull(timeData.Sensor);
+            Assert.AreEqual(DateTime.Today, timeData.Time.Date);
         }
 
         [Test]
@@ -89,9 +90,10 @@ namespace Hurace.Core.Test
         [Test]
         public async Task GetRaceForRankingTest()
         {
-            var skier = (await SkierDao.FindAllAsync()).First();
             var race = (await RaceDao.FindAllAsync()).First();
-            var res = await TimeDataDao.GetRankingForRace(race.Id);
+            var res = (await TimeDataDao.GetRankingForRace(race.Id)).ToList();
+            Assert.AreEqual(5, res.Count());
+            Assert.IsTrue(res[0].RaceTime < res[1].RaceTime);
         }
     }
 }

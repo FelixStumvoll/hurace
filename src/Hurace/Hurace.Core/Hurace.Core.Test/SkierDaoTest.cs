@@ -21,7 +21,10 @@ namespace Hurace.Core.Test
         public async Task FindByIdTest()
         {
             var id = (await SkierDao.FindAllAsync()).First().Id;
-            Assert.NotNull(await SkierDao.FindByIdAsync(id));
+            var skier = await SkierDao.FindByIdAsync(id);
+            Assert.NotNull(skier);
+            Assert.NotNull(skier.Country);
+            Assert.NotNull(skier.Gender);
         }
         
         [Test]

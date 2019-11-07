@@ -20,7 +20,11 @@ namespace Hurace.Core.Test
         public async Task FindByIdTest()
         {
             var startList = (await StartListDao.FindAllAsync()).First();
-            Assert.NotNull(await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId));
+            var startListById = await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId);
+            Assert.NotNull(startListById);
+            Assert.NotNull(startListById.Race);
+            Assert.NotNull(startListById.Skier);
+            Assert.NotNull(startListById.StartState);
         }
 
         [Test]
