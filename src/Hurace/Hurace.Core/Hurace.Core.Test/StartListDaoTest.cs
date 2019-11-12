@@ -24,6 +24,8 @@ namespace Hurace.Core.Test
             Assert.NotNull(startListById);
             Assert.NotNull(startListById.Race);
             Assert.NotNull(startListById.Skier);
+            Assert.NotNull(startListById.Skier.Country);
+            Assert.NotNull(startListById.Skier.Gender);
             Assert.NotNull(startListById.StartState);
         }
 

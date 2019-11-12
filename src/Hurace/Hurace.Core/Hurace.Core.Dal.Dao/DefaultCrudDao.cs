@@ -8,7 +8,7 @@ namespace Hurace.Core.Dal.Dao
 {
     public class DefaultCrudDao<T> : CrudDao<T>, IDefaultCrudDao<T> where T : class, new()
     {
-        public DefaultCrudDao(IConnectionFactory connectionFactory, string tableName, StatementFactory statementFactory)
+        protected DefaultCrudDao(IConnectionFactory connectionFactory, string tableName, StatementFactory statementFactory)
             : base(connectionFactory, tableName, statementFactory)
         {
         }

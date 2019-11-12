@@ -215,7 +215,7 @@
     "Country": "Austria"
   },
   {
-    "Name": " Anna Swenn-Larsson",
+    "Name": "Anna Swenn-Larsson",
     "Gender": "f",
     "Country": "Sweden"
   },
@@ -373,5 +373,80 @@
     "Name": "Nina Haver-Løseth",
     "Gender": "f",
     "Country": "Norway"
+  },
+  {
+    "Name": "Sterling Archer",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Algernop Krieger",
+    "Gender": "m",
+    "Country": "Germany"
+  },
+  {
+    "Name": "Barry Dylan",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Arthur Woodhouse",
+    "Gender": "m",
+    "Country": "Great Britain"
+  },
+  {
+    "Name": "Cyril Figgis",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Ray Gillette",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Seamus McGoon",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Ron Cadillac",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Nikolai Jakov",
+    "Gender": "m",
+    "Country": "Russian Federation"
+  },
+  {
+    "Name": "Torvald Utne",
+    "Gender": "m",
+    "Country": "Sweden"
+  },
+  {
+    "Name": "Len Trexler",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Conway Stern",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Wilhelm Schmeck",
+    "Gender": "m",
+    "Country": "Germany"
+  },
+  {
+    "Name": "Burt Reynolds",
+    "Gender": "m",
+    "Country": "United States"
+  },
+  {
+    "Name": "Reggie Thistleton",
+    "Gender": "m",
+    "Country": "Germany"
   }
 ]

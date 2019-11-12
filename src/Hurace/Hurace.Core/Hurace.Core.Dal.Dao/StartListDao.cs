@@ -60,6 +60,8 @@ namespace Hurace.Core.Dal.Dao
         private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()
                             .Join<StartList, Skier>(("skierId", "id"))
+                            .Join<Skier, Country>(("countryId", "id"))
+                            .Join<Skier, Gender>(("genderId", "id"))
                             .Join<StartList, StartState>(("startStateId", "id"))
                             .Join<StartList, Race>(("raceId", "id"));
 

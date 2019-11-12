@@ -131,7 +131,7 @@ namespace Hurace.DataGenerator
             _locations.SelectMany(location => _disciplines,
                                   (location, discipline) => new Race
                                   {
-                                      GenderId = 1,
+                                      GenderId = (int) Constants.Gender.Male,
                                       DisciplineId = discipline.Id,
                                       SeasonId = 2,
                                       RaceStateId = 3,
@@ -157,16 +157,12 @@ namespace Hurace.DataGenerator
         private static IEnumerable<Sensor> GenerateSensors(IEnumerable<Race> races)
         {
             foreach (var race in races)
-            {
                 for (var i = 0; i < 5; i++)
-                {
                     yield return new Sensor
                     {
                         RaceId = race.Id,
                         SensorDescription = $"{race.RaceDescription} - Sensor:{i}"
                     };
-                }
-            }
         }
 
         private async Task GenerateRaceData(IEnumerable<Race> races, IEnumerable<StartList> startList,
@@ -192,7 +188,7 @@ namespace Hurace.DataGenerator
                 {
                     var eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                     {
-                        RaceId = race.Id, EventDateTime = raceTime, EventTypeId = (int)Constants.SkierEvent.Started
+                        RaceId = race.Id, EventDateTime = raceTime, EventTypeId = (int) Constants.SkierEvent.Started
                     });
 
                     await _skierEventDao.InsertAsync(new SkierEvent
@@ -211,14 +207,21 @@ namespace Hurace.DataGenerator
                             EventDateTime = raceTime,
                             EventTypeId = (int) Constants.SkierEvent.SplitTime
                         });
-                        
+
+                        var skierEventId = await _skierEventDao.InsertGetIdAsync(new SkierEvent
+                        {
+                            RaceId = startListSkier.RaceId,
+                            SkierId =  startListSkier.SkierId,
+                            RaceDataId = raceDataId
+                        });
+
                         await _timeDataDao.InsertAsync(new TimeData
                         {
                             Time = splitTime,
                             RaceId = race.Id,
                             SensorId = sensor.Id,
                             SkierId = startListSkier.SkierId,
-                            SkierEventId = raceDataId
+                            SkierEventId = skierEventId
                         });
 
                         var splitSeconds = GetRandomSplitTime();
@@ -228,7 +231,7 @@ namespace Hurace.DataGenerator
 
                     eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                     {
-                        RaceId = race.Id, 
+                        RaceId = race.Id,
                         EventTypeId = (int) Constants.SkierEvent.Finished,
                         EventDateTime = raceTime
                     });
@@ -236,14 +239,14 @@ namespace Hurace.DataGenerator
                     await _skierEventDao.InsertAsync(new SkierEvent
                     {
                         RaceId = startListSkier.RaceId,
-                        SkierId =  startListSkier.SkierId,
+                        SkierId = startListSkier.SkierId,
                         RaceDataId = eventId
                     });
                 }
 
                 raceEventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                 {
-                    RaceId = race.Id, 
+                    RaceId = race.Id,
                     EventTypeId = (int) Constants.RaceEvent.Finished,
                     EventDateTime = raceTime
                 });
@@ -262,6 +265,8 @@ namespace Hurace.DataGenerator
         public async Task Cleanup()
         {
             await _timeDataDao.DeleteAllAsync();
+            await _skierEventDao.DeleteAllAsync();
+            await _raceEventDao.DeleteAllAsync();
             await _raceDataDao.DeleteAllAsync();
             await _sensorDao.DeleteAllAsync();
             await _startListDao.DeleteAllAsync();
@@ -275,6 +280,10 @@ namespace Hurace.DataGenerator
             var skiers = GenerateSkier();
             await PersistEntity(skiers, _skierDao);
             skiers = await _skierDao.FindAllAsync();
+
+            foreach (var skier in skiers)
+            foreach (var discipline in _disciplines)
+                await _skierDao.InsertPossibleDisciplineForSkier(skier.Id, discipline.Id);
 
             var races = GenerateRaces();
             await PersistEntity(races, _raceDao);
