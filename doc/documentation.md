@@ -108,8 +108,12 @@ Alle konkreten DAO Interfaces erben von diesen und fügen nach Bedarf Methoden h
 Die Vererbungshierarchie aller Interfaces sieht wie folgt aus:
 ![Interfaces](images/Dal.Interface.Diagram.png)
 
+Die DAO-Interfaces lassen sich in vier Bereiche gliedern.
+Zum einen gibt es ReadonlyDAOs, diese definieren lediglich 
+
 Anzumerken ist dabei, dass *ITimeDataDao* und *IStartListDao* direkt von *ICrudDao* erben, da die jeweiligen Tabellen einen zusammengesetzten Primärschlüssel haben und deshalb kein generisches *FindByIdAsync* wie in *IDefaultReadonlyDao* möglich ist.
 
-Weiters sind die Interfaces so aufgebaut, dass es bei Assoziativtabellen ein Master Interface besitzen, welches über die Assoziativtabelle verfügt. Dies ist der Fall in *ILocationDao* und *ISkierDao*, wobei in *ILocationDao* die möglichen Disziplinen eines Rennorts manipuliert werden können und in *ISkierDao* die Disziplinen des Rennläufers.
+Zu sehen ist ebenfalls, dass die Interfaces von *ILocationDao* und *ISkierDao* zusätzliche Methoden besitzen.
+Dies ist der Fall da es eine Assoziativtabelle zwischen *Location* und *Discipline* sowie eine zwischen *Skier* und *Discipline* gibt. Die Methoden zum Manipulieren dieser Beziehungen ist in *ILocationDao* respektive *ISkierDao* definiert.
 
 ### Database Access Objects
