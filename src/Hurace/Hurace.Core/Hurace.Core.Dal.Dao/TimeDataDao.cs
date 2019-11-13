@@ -44,7 +44,7 @@ namespace Hurace.Core.Dal.Dao
             StatementFactory
                 .Select<TimeData>()
                 .Join<TimeData, StartList>(("skierId", "skierId"), ("raceId", "raceId"))
-                .Join<TimeData, SkierEvent>(("skierEventId", "id"))
+                .Join<TimeData, SkierEvent>((nameof(TimeData.SkierEventId), nameof(SkierEvent.Id)))
                 .Join<SkierEvent, RaceData>(("raceDataId", "id"))
                 .Join<TimeData, Sensor>(("sensorId", "id"))
                 .Join<StartList, Skier>(("skierId", "id"))

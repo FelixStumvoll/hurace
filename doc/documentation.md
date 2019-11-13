@@ -150,13 +150,13 @@ Dieses Interface erbt von [IDefaultCrudDao](#idefaultcruddao). In diesem Interfa
 - GetPossibleDisciplinesForSkier
 - InsertPossibleDisciplineForSkier
 
-
 ### Domain Objects / Data Transfer Objects
+
 Domain Objects bzw. Data Transfer Objects (DTOs) dienen dazu die Tabellen als Klassen abzubilden.
 Bis auf die Tabellen [PossibleDiscipline](#possiblediscipline) und [SkierDiscipline](#skierdiscipline) gibt es für jede Tabelle ein eigenes DTO. Die Spaltennamen werden als Properties modelliert.
 In den DTOs kommen zwei Attribute zum Einsatz um das Mappen zu erleichtern.
-Für Primärschlüssel wird das *KeyAttribute* von *System.ComponentModel.DataAnnotations* verwendet.
-Weiters sind in jedem DTO die referenzierten Tabellen als Properties verfügbar (z.B. [Country](#country) bei [Skier](#skier)). Diese werden mit dem *NavigationalAttribut* gekennzeichnet.
+Für Primärschlüssel wird das _KeyAttribute_ von _System.ComponentModel.DataAnnotations_ verwendet.
+Weiters sind in jedem DTO die referenzierten Tabellen als Properties verfügbar (z.B. [Country](#country) bei [Skier](#skier)). Diese werden mit dem _NavigationalAttribut_ gekennzeichnet.
 
 ### Database Access Objects
 
@@ -167,26 +167,46 @@ Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
 
 ![DAOs](images/Dal.Dao.Diagram.png)
 
-Sämtliche Funktionalität ist dabei in *BaseDao* untergebracht. Zudem besitzt diese Klasse eine *ConnectionFactory* mit welcher eine Datenbankverbindung aufgebaut werden und anschließend SQL-Statements ausgeführt werden können.
+Sämtliche Funktionalität ist dabei in _BaseDao_ untergebracht. Zudem besitzt diese Klasse eine _ConnectionFactory_ mit welcher eine Datenbankverbindung aufgebaut werden und anschließend SQL-Statements ausgeführt werden können.
 Weiters steht eine [StatementFactory](#statementfactory) zur Verfügung, welche SQL Statements erzeugen kann.
 Die wichtigsten Methoden sind im Anschluss beschrieben.
 
 #### QueryAsync
+
 Diese Methode führt eine Query aus und liefert eine List an generischen Ergebnissen.
-Dabei wird ein Statement und optional Query Parameter übernommen. Zudem kann noch eine Konfiguration für den [Mapper](#mapper) übergeben werden. Zuerst wird mittels der *ConnectionFactory* ein *DbCommand* erzeugt. Anschließend wird das Statement ausgeführt und die Ergebnisse mittels des [Mappers](#mapper) gemappt und retourniert.
+Dabei wird ein Statement und optional Query Parameter übernommen. Zudem kann noch eine Konfiguration für den [Mapper](#mapper) übergeben werden. Zuerst wird mittels der _ConnectionFactory_ ein _DbCommand_ erzeugt. Anschließend wird das Statement ausgeführt und die Ergebnisse mittels des [Mappers](#mapper) gemappt und retourniert.
 
 #### ExecuteAsync
-Diese Methode führt ein Statement auf der Datenbank aus, dabei kann es sich z.B. um ein Update, Insert oder Delete Statement handeln. Diese Methode übernimmt ein Statement sowie die Query Parameter dafür. Anschließend wird wie bei [QueryAsync](#queryasync) ein *DbCommand* erzeugt, mit welchem das Statement ausgeführt wird.
+
+Diese Methode führt ein Statement auf der Datenbank aus, dabei kann es sich z.B. um ein Update, Insert oder Delete Statement handeln. Diese Methode übernimmt ein Statement sowie die Query Parameter dafür. Anschließend wird wie bei [QueryAsync](#queryasync) ein _DbCommand_ erzeugt, mit welchem das Statement ausgeführt wird.
 
 #### ExecuteGetIdAsync
+
 Diese Methode funktioniert ähnlich wie [ExecuteAsync](#executeasync). Der Unterschied ist der, dass bei dieser Methode die letzte generierte Id returniert wird.
 
 #### Mapper
-Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode *MapTo*. Der Mapper durchläuft alle Properties des angegebenen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen *IDataRecord* welcher die Datenbankeinträge enthält. Ist ein Property mit dem *NavigationAttribute* gekennzeichnet, so wird *MapTo* rekursiv aufgerufen und die Properties dieses Typen gemappt.
-Mittels einer *MapperConfig* kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Weiters wird mit der *MapperConfig* angegeben, welche referenzierten Entitäten geladen werden sollen.
+
+Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode _MapTo_. Der Mapper durchläuft alle Properties des angegebenen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen _IDataRecord_ welcher die Datenbankeinträge enthält. Ist ein Property mit dem _NavigationAttribute_ gekennzeichnet, so wird _MapTo_ rekursiv aufgerufen und die Properties dieses Typen gemappt.
+Mittels einer _MapperConfig_ kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Weiters wird mit der _MapperConfig_ angegeben, welche referenzierten Entitäten geladen werden sollen.
 
 #### StatementFactory
-Um simple Select Statements nicht jedes mal schreiben zu müssen, wird eine *StatementFactory* zur Verfügung gestellt. Diese ermöglicht es Select, Insert und Update Queries anhand eines generischen Typen zu generieren.
+
+Um simple Select Statements nicht jedes mal schreiben zu müssen, wird eine _StatementFactory_ zur Verfügung gestellt. Diese ermöglicht es Select, Insert und Update Queries anhand eines generischen Typen zu generieren. Einer der drei Builder kann mittels der jeweiligen Methoden erzeugt werden, der generische Typ gibt dabei an, auf welche Tabelle das Statement ausgeführt wird.
 Die Vererbungshierarchie sieht wie folgt aus:
 
 ![StatementFactory](images/Common.Diagram.png)
+
+Die drei StatementFactories bieten folgende Funktionen
+
+##### SelectStatementBuilder
+
+Der SelectQueryBuilder ermöglicht es ein Select Statement für eine Tabelle zu erzeugen. Zudem kann mittels _Join_ eine andere Tabelle gejoined werden. Dabei müssen zwei generische Typen angegeben werden, diese stellen die Tabellen dar zwischen welchen gejoined werden soll. Zudem können Join Conditions mitgegeben werden.
+Mit der *Where* Methode können zusätzlich Where Conditions hinzugefügt werden.
+Mittels der *Build* Methode kann ein Statement erzeugt werden.
+
+##### UpdateQueryBuilder
+Der UpdateQueryBuilder ermöglicht es Update Statements zu erzeugen.
+Mittels *Where* kann das Update Statement eingeschränkt werden. Dies Funktioniert gleich wie bei dem [SelectStatementBuilder](#selectstatementbuilder).
+Weiters gibt es eine Methode *WhereId* welche automatisch die Primärschlüssel in die Where Condition einfügt. Dies funktioniert mittels des *KeyAttributes*.
+
+##### InsertQueryBuilder
