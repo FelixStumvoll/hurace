@@ -201,8 +201,8 @@ Die drei StatementFactories bieten folgende Funktionen
 ##### SelectStatementBuilder
 
 Der SelectQueryBuilder ermöglicht es ein Select Statement für eine Tabelle zu erzeugen. Zudem kann mittels _Join_ eine andere Tabelle gejoined werden. Dabei müssen zwei generische Typen angegeben werden, diese stellen die Tabellen dar zwischen welchen gejoined werden soll. Zudem können Join Conditions mitgegeben werden.
-Mit der *Where* Methode können zusätzlich Where Conditions hinzugefügt werden.
-Mittels der *Build* Methode kann ein Statement erzeugt werden.
+Mit der *Where* Methode können zusätzlich Where Conditions hinzugefügt werden, der generische Typ gibt dabei an, auf welche Tabelle die Where Condition durchzuführen ist.
+Mittels der *Build* Methode kann ein Statement erzeugt werden, dabei wird über die Properties der initialen Tabelle iteriert um die Spalten zu ermitteln, welche selektiert werden sollen, anschließend werden die Spalten der gejointen Tabellen eingefügt bzw. die Join Constraints. Zuletzt werden die Where Conditions eingefügt, dabei wird ebenfalls über die Properties der jeweiligen Tabelle eingefügt. 
 
 ##### UpdateQueryBuilder
 Der UpdateQueryBuilder ermöglicht es Update Statements zu erzeugen.
@@ -210,3 +210,4 @@ Mittels *Where* kann das Update Statement eingeschränkt werden. Dies Funktionie
 Weiters gibt es eine Methode *WhereId* welche automatisch die Primärschlüssel in die Where Condition einfügt. Dies funktioniert mittels des *KeyAttributes*.
 
 ##### InsertQueryBuilder
+Der InsertQueryBuilder ermöglicht das erzeugen von Insert Statements, dabei werden die Properties des generischen Typens durchlaufen, die Namen des Properties steht dabei für den Namen der Spalte.
