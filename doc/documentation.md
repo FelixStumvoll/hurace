@@ -2,7 +2,7 @@
 
 ## Datenbank
 
-Die Datenbank von Hurace besteht aus folgenden 18 Tabellen. In nachfolgendem Diagramm ist zu sehen, welche Spalten jeweils definiert sind und wie diese zusammenhängen.
+Die Datenbank von Hurace besteht aus folgenden 18 Tabellen. In nachfolgendem Diagramm ist zu sehen, welche Spalten jeweils definiert sind und wie die Tabellen zusammenhängen.
 ![Diagramm](images/hurace.png)
 
 ### Tabellen
@@ -25,11 +25,11 @@ Stellt das Geschlecht dar, dieses wird um das Geschlecht eines Rennens und das e
 
 #### Location
 
-Stellt einen Rennort dar und besitzt zudem eine Referenz auf ein Land in dem sich der Ort befindet.
+Stellt einen Renn-Ort dar und besitzt zudem eine Referenz auf ein [Country](#country) in dem sich der Ort befindet.
 
 #### PossibleDiscipline
 
-Dies ist eine Assoziativtabelle zwischen [Discipline](#discipline) und [Location](#location). Hier wird dargestellt, welche Disziplinen an welchen Orten möglich sind. 
+Dies ist eine Assoziativtabelle zwischen [Discipline](#discipline) und [Location](#location). Hier wird dargestellt, welche Disziplinen an welchen Orten möglich sind.
 
 #### Race
 
@@ -41,7 +41,7 @@ Diese Tabelle stellt ein Event-Log für ein Rennen dar. Hier werden alle Ereigni
 
 #### RaceEvent
 
-Dies ist eine spezifizierte Ausführung von RaceData, welche ein Rennevent (z.B. Rennstart, Abbruch) darstellt.
+Dies ist eine spezifizierte Ausführung von [RaceData](#racedata), welche ein Rennevent (z.B. Rennstart, Abbruch) darstellt.
 
 #### RaceState
 
@@ -53,7 +53,7 @@ Stellt eine Schisaison dar.
 
 #### Sensor
 
-Stellt einen Sensor dar, dieser hat eine Referenz auf ein Rennen. Dies folgt daraus, das sich die Anzahl der Sensoren von Rennen zu Rennen ändern können auch wenn diese am selben Rennort stattfinden.
+Stellt einen Sensor dar, dieser hat eine Referenz auf ein [Race](#race). Dies folgt daraus, das sich die Anzahl der Sensoren von Rennen zu Rennen ändern können auch wenn diese am selben [Location](#location) stattfinden.
 
 #### Skier
 
@@ -86,34 +86,68 @@ Weiters wird nicht ein Rennläufer direkt sondern eine StartList referenziert um
 
 ## Database Access Layer
 
-Der Database Access Layer (DAL) stellt eine Möglichkeit zur Verfügung, die Daten in der Datenbank zu manipulieren, ohne direkt Queries absetzen zu müssen.
+Der Database Access Layer (DAL) stellt eine Schnittstelle zur Verfügung, die Daten in der Datenbank zu manipulieren, ohne direkt Queries absetzen zu müssen.
 Die DAL teilt sich dabei in zwei Bereiche auf:
 
 - Interfaces, welche die Methoden definieren, mit welchen die Daten manipuliert werden können
-- Database Access Objects, welche eine konkrete Implementierung der Interfaces für eine Datenbank zur Verfügung stellen.
+- Database Access Objects, welche eine konkrete Implementierung der Interfaces für eine konkrete Datenbank zur Verfügung stellen.
+
+Jedes DAO repräsentiert dabei eine Datenbanktabelle.
 
 ### Interfaces
 
-Um verschiedenste Datenbanken zu ermöglichen, werden die Methoden in Interfaces definiert, welche von den DAOs implementiert werden.
-Die Basis bilden 4 Basis Interfaces:
+Um verschiedene Datenbanksysteme realisieren zu können, werden die Methoden in Interfaces definiert, welche von den konkreten DAOs implementiert werden.
+Da einige Methoden gleich aussehen und in allen DAOs verfügbar sein sollten, gibt es die vier Basis Interfaces von denen geerbt werden kann. Zudem gibt es einige Interface, welche zusätzliche Methoden definieren. Jene Interfaces, welche nur von den Basis Interfaces erben sind hier nicht näher beschrieben. Die gesamte Vererbungshierarchie sieht wie folgt aus:
 
-- IReadonlyBaseDao
-- IDefaultReadonlyBaseDao
-- ICrudDao
-- IDefaultCrudDao
-
-Diese definieren möglichst modular die nötigen Methoden, welche jedes DAO benötigt (z.B. FindAll, Insert).
-Alle konkreten DAO Interfaces erben von diesen und fügen nach Bedarf Methoden hinzu.
-
-Die Vererbungshierarchie aller Interfaces sieht wie folgt aus:
 ![Interfaces](images/Dal.Interface.Diagram.png)
 
-Die DAO-Interfaces lassen sich in vier Bereiche gliedern.
-Zum einen gibt es ReadonlyDAOs, diese definieren lediglich 
+#### IReadonlyDao
 
-Anzumerken ist dabei, dass *ITimeDataDao* und *IStartListDao* direkt von *ICrudDao* erben, da die jeweiligen Tabellen einen zusammengesetzten Primärschlüssel haben und deshalb kein generisches *FindByIdAsync* wie in *IDefaultReadonlyDao* möglich ist.
+Dieses Interface definiert eine _FindAllAsync_ Methode welche in allen DAOs verfügbar sein soll.
 
-Zu sehen ist ebenfalls, dass die Interfaces von *ILocationDao* und *ISkierDao* zusätzliche Methoden besitzen.
-Dies ist der Fall da es eine Assoziativtabelle zwischen *Location* und *Discipline* sowie eine zwischen *Skier* und *Discipline* gibt. Die Methoden zum Manipulieren dieser Beziehungen ist in *ILocationDao* respektive *ISkierDao* definiert.
+#### IDefaultReadonlyDao
+
+Dieses Interface erbt von [IReadonlyDao](#ireadonlydao) und definiert eine _FindByIdAsync_ Methode mit welcher ein Eintrag anhand der Id retourniert.
+
+#### ICrudDao
+
+Dieses Interface erbt von [IReadonlyDao](#ireadonlydao) und definiert die Basis Crud Methoden:
+
+- UpdateAsync
+- InsertAsync
+- DeleteAllAsync
+
+Falls ein DAO eine Entität verwaltet die z.B. einen zusammengesetzten Primärschlüssel besitzt, kann von diesem Interface geerbt werden.
+
+#### IDefaultCrudDao
+
+Dieses Interface erbt sowohl von [IReadonlyDao](#ireadonlydao) als auch von [ICrudDao](#icruddao) und definiert CRUD Methoden für Entitäten mit einer einzelnen Id als Primärschlüssel:
+
+- InsertGetIdAsync
+- DeleteAsync
+
+#### ITimeDataDao
+
+Dieses Interface erbt von [ICrudDao](#icruddao). Dadurch das [TimeData](#timedata) keinen eindeutigen Primärschlüssel besitzt sondern sich dieser aus der Id des [Skiers](#skier) und der Id des [Races](#race) zusammensetzt müssen _DeleteAsync_ und _FindByIdAsync_ eigen definiert werden. Zudem definiert dieses Interface eine Methode _GetRankingForRace_ diese liefert den aktuellen Stand des Rennens.
+
+#### IStartListDao
+
+Dieses Interface erbt von [ICrudDao](#icruddao). Gleich wie bei [ITimeDataDao](#itimedatadao) müssen _DeleteAsync_ und _FindByIdAsync_ eigen definiert werden. Dieses Interface definiert zudem eine Methode _GetCurrentSkierForRace_ zum Ermitteln des aktuellen Rennläufers, sowie eine Methode _GetNextSkierForRace_ zum Ermitteln des nächsten Rennläufers. Weiters gibt es eine Methode _GetStartListForRace_ welche die Startliste eines Rennens ermittelt.
+
+#### ILocationDao
+
+Dieses Interface erbt von [IDefaultCrudDao](#idefaultcruddao). In diesem Interface wird auch die Tabelle [PossibleDiscipline](#possiblediscipline) mit verwaltet. Deshalb sind diese Methoden definiert:
+
+- DeletePossibleDisciplineForLocation
+- GetPossibleDisciplineForLocation
+- InsertPossibleDisciplineForLocation
+
+#### ISkierDao
+
+Dieses Interface erbt von [IDefaultCrudDao](#idefaultcruddao). In diesem Interface wird auch die Tabelle [SkierDiscipline](#skierdiscipline) mit verwaltet. Deshalb sind diese Methoden definiert:
+
+- DeletePossibleDisciplineForSkier
+- GetPossibleDisciplinesForSkier
+- InsertPossibleDisciplineForSkier
 
 ### Database Access Objects
