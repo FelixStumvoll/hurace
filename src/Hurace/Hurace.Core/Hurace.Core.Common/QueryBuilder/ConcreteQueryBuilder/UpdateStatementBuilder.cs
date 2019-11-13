@@ -9,7 +9,7 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-        private bool _withKey = false;
+        private bool _withKey;
 
         public UpdateStatementBuilder<T> WithKey()
         {

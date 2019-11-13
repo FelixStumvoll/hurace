@@ -6,6 +6,7 @@ namespace Hurace.Core.Dto
     {
         [Key]
         public int Id { get; set; }
-        public string RaceStateDescription { get; set; }
+
+        public string RaceStateDescription { get; set; } = default!;
     }
 }

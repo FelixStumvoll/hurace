@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -21,9 +20,6 @@ namespace Hurace.DataGenerator
         private IEnumerable<Country> _countries;
         private IEnumerable<Location> _locations;
         private IEnumerable<Discipline> _disciplines;
-        private IEnumerable<Race> _races;
-        private Season _season;
-
         private readonly Random _random = new Random();
         private readonly HashSet<DateTime> _usedRaceDates = new HashSet<DateTime>();
         private readonly DateTime _raceBaseDate = new DateTime(2018, 10, 28, 12, 0, 0);
@@ -43,27 +39,23 @@ namespace Hurace.DataGenerator
         private readonly IRaceEventDao _raceEventDao;
         private readonly ISkierEventDao _skierEventDao;
 
-        private readonly ISeasonDao _seasonDao;
-        private StatementFactory _statementFactory;
-
         public DbDataCreator(string providerName, string connectionString)
         {
             var connectionFactory =
-                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providerName), connectionString, providerName);
-            _statementFactory = new StatementFactory("hurace");
-            _countryDao = new CountryDao(connectionFactory, _statementFactory);
-            _locationDao = new LocationDao(connectionFactory, _statementFactory);
-            _skierDao = new SkierDao(connectionFactory, _statementFactory);
-            _disciplineDao = new DisciplineDao(connectionFactory, _statementFactory);
-            _seasonDao = new SeasonDao(connectionFactory, _statementFactory);
-            _raceDao = new RaceDao(connectionFactory, _statementFactory);
-            _startListDao = new StartListDao(connectionFactory, _statementFactory);
-            _raceDataDao = new RaceDataDao(connectionFactory, _statementFactory);
-            _sensorDao = new SensorDao(connectionFactory, _statementFactory);
-            _timeDataDao = new TimeDataDao(connectionFactory, _statementFactory);
-            _raceDataDao = new RaceDataDao(connectionFactory, _statementFactory);
-            _raceEventDao = new RaceEventDao(connectionFactory, _statementFactory);
-            _skierEventDao = new SkierEventDao(connectionFactory, _statementFactory);
+                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(providerName), connectionString);
+            var statementFactory = new StatementFactory("hurace");
+            _countryDao = new CountryDao(connectionFactory, statementFactory);
+            _locationDao = new LocationDao(connectionFactory, statementFactory);
+            _skierDao = new SkierDao(connectionFactory, statementFactory);
+            _disciplineDao = new DisciplineDao(connectionFactory, statementFactory);
+            _raceDao = new RaceDao(connectionFactory, statementFactory);
+            _startListDao = new StartListDao(connectionFactory, statementFactory);
+            _raceDataDao = new RaceDataDao(connectionFactory, statementFactory);
+            _sensorDao = new SensorDao(connectionFactory, statementFactory);
+            _timeDataDao = new TimeDataDao(connectionFactory, statementFactory);
+            _raceDataDao = new RaceDataDao(connectionFactory, statementFactory);
+            _raceEventDao = new RaceEventDao(connectionFactory, statementFactory);
+            _skierEventDao = new SkierEventDao(connectionFactory, statementFactory);
         }
 
         private async Task LoadFixedData()
@@ -277,17 +269,17 @@ namespace Hurace.DataGenerator
         public async Task FillDatabase()
         {
             await LoadFixedData();
-            var skiers = GenerateSkier();
+            var skiers = GenerateSkier().ToList();
             await PersistEntity(skiers, _skierDao);
-            skiers = await _skierDao.FindAllAsync();
+            skiers = (await _skierDao.FindAllAsync()).ToList();
 
             foreach (var skier in skiers)
             foreach (var discipline in _disciplines)
                 await _skierDao.InsertPossibleDisciplineForSkier(skier.Id, discipline.Id);
 
-            var races = GenerateRaces();
+            var races = GenerateRaces().ToList();
             await PersistEntity(races, _raceDao);
-            races = await _raceDao.FindAllAsync();
+            races = (await _raceDao.FindAllAsync()).ToList();
 
             var sensors = GenerateSensors(races);
             await PersistEntity(sensors, _sensorDao);

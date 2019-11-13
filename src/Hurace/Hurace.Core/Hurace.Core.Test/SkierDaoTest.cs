@@ -23,8 +23,8 @@ namespace Hurace.Core.Test
             var id = (await SkierDao.FindAllAsync()).First().Id;
             var skier = await SkierDao.FindByIdAsync(id);
             Assert.NotNull(skier);
-            Assert.NotNull(skier.Country);
-            Assert.NotNull(skier.Gender);
+            Assert.NotNull(skier?.Country);
+            Assert.NotNull(skier?.Gender);
         }
         
         [Test]
@@ -33,7 +33,7 @@ namespace Hurace.Core.Test
             var skier = (await SkierDao.FindAllAsync()).First();
             skier.FirstName = "Testname";
             await SkierDao.UpdateAsync(skier);
-            Assert.AreEqual(skier.FirstName, (await SkierDao.FindByIdAsync(skier.Id)).FirstName);
+            Assert.AreEqual(skier.FirstName, (await SkierDao.FindByIdAsync(skier.Id))?.FirstName);
         }
         
         [Test]

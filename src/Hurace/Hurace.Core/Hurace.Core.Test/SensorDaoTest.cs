@@ -28,7 +28,7 @@ namespace Hurace.Core.Test
             var sensor = (await SensorDao.FindAllAsync()).First();
             sensor.SensorDescription = "Test123";
             await SensorDao.UpdateAsync(sensor);
-            Assert.AreEqual(sensor.SensorDescription, (await SensorDao.FindByIdAsync(sensor.Id)).SensorDescription);
+            Assert.AreEqual(sensor.SensorDescription, (await SensorDao.FindByIdAsync(sensor.Id))?.SensorDescription);
         }
 
         [Test]

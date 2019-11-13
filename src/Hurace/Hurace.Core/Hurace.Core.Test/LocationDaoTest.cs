@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
-using Hurace.Dal.Interface;
 using NUnit.Framework;
 
 namespace Hurace.Core.Test
@@ -47,7 +45,7 @@ namespace Hurace.Core.Test
         public async Task GetCountryFromLocation()
         {
             var location = (await LocationDao.FindAllAsync()).First();
-            Assert.AreEqual("XX", location.Country.CountryCode);
+            Assert.AreEqual("XX", location.Country?.CountryCode);
         }
 
         [Test]
@@ -75,7 +73,7 @@ namespace Hurace.Core.Test
         public async Task FindByIdTest()
         {
             var location = (await LocationDao.FindAllAsync()).First();
-            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id)).LocationName);
+            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id))?.LocationName);
         }
 
         [Test]
@@ -89,8 +87,8 @@ namespace Hurace.Core.Test
             });
             
             Assert.AreEqual(4, (await LocationDao.FindAllAsync()).Count());
-            Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId)).LocationName);
-            Assert.NotNull((await LocationDao.FindByIdAsync(locationId)).Country);
+            Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId))?.LocationName);
+            Assert.NotNull((await LocationDao.FindByIdAsync(locationId))?.Country);
         }
 
         [Test]
@@ -99,7 +97,7 @@ namespace Hurace.Core.Test
             var location = (await LocationDao.FindAllAsync()).First();
             location.LocationName = "Test123";
             await LocationDao.UpdateAsync(location);
-            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id)).LocationName);
+            Assert.AreEqual(location.LocationName, (await LocationDao.FindByIdAsync(location.Id))?.LocationName);
         }
     }
 }

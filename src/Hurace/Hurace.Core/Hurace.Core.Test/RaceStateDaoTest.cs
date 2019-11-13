@@ -13,6 +13,6 @@ namespace Hurace.Core.Test
 
         [Test]
         public async Task FindById() =>
-            Assert.AreEqual("Finished", (await RaceStateDao.FindByIdAsync(3)).RaceStateDescription);
+            Assert.AreEqual("Finished", (await RaceStateDao.FindByIdAsync(3))?.RaceStateDescription);
     }
 }

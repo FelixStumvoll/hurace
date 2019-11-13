@@ -22,11 +22,11 @@ namespace Hurace.Core.Test
             var startList = (await StartListDao.FindAllAsync()).First();
             var startListById = await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId);
             Assert.NotNull(startListById);
-            Assert.NotNull(startListById.Race);
-            Assert.NotNull(startListById.Skier);
-            Assert.NotNull(startListById.Skier.Country);
-            Assert.NotNull(startListById.Skier.Gender);
-            Assert.NotNull(startListById.StartState);
+            Assert.NotNull(startListById?.Race);
+            Assert.NotNull(startListById?.Skier);
+            Assert.NotNull(startListById?.Skier?.Country);
+            Assert.NotNull(startListById?.Skier?.Gender);
+            Assert.NotNull(startListById?.StartState);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Hurace.Core.Test
             startList.StartNumber = 999;
             await StartListDao.UpdateAsync(startList);
             Assert.AreEqual(startList.StartNumber,
-                            (await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId)).StartNumber);
+                            (await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId))?.StartNumber);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Hurace.Core.Test
             var startList = (await StartListDao.FindAllAsync()).First();
             startList.StartStateId = (int) Constants.StartState.Running;
             await StartListDao.UpdateAsync(startList);
-            Assert.AreEqual(startList.SkierId, (await StartListDao.GetCurrentSkierForRace(startList.RaceId)).SkierId);
+            Assert.AreEqual(startList.SkierId, (await StartListDao.GetCurrentSkierForRace(startList.RaceId))?.SkierId);
         }
         
         [Test]
@@ -92,7 +92,7 @@ namespace Hurace.Core.Test
             var startList = (await StartListDao.FindAllAsync()).First();
             startList.StartStateId = (int) Constants.StartState.Upcoming;
             await StartListDao.UpdateAsync(startList);
-            Assert.AreEqual(startList.SkierId, (await StartListDao.GetNextSkierForRace(startList.RaceId)).SkierId);
+            Assert.AreEqual(startList.SkierId, (await StartListDao.GetNextSkierForRace(startList.RaceId))?.SkierId);
         }
     }
 }

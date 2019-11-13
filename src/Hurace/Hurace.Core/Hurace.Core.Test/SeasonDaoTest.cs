@@ -29,7 +29,7 @@ namespace Hurace.Core.Test
             var season = (await SeasonDao.FindAllAsync()).First();
             season.StartDate = season.StartDate.AddDays(-5);
             await SeasonDao.UpdateAsync(season);
-            Assert.AreEqual(season.StartDate, (await SeasonDao.FindByIdAsync(season.Id)).StartDate);
+            Assert.AreEqual(season.StartDate, (await SeasonDao.FindByIdAsync(season.Id))?.StartDate);
         }
         
         [Test]

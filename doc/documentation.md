@@ -151,3 +151,17 @@ Dieses Interface erbt von [IDefaultCrudDao](#idefaultcruddao). In diesem Interfa
 - InsertPossibleDisciplineForSkier
 
 ### Database Access Objects
+
+Die Database Access Objects (DAOs) sind eine konkrete Implementierung der [Interfaces](#interfaces).
+Konkret stellen diese einen Zugriff auf eine MSSQL Datenbank zur Verfügung.
+Gleich wie bei den [Interfaces](#interfaces) gibt es auch bei Basisklassen mit den gleichen Namen, die die jeweiligen Interfaces implementieren. Weiters gibt es eine _BaseDao_ Klasse welche über Methoden zum Ansprechen der Datenbank verfügt.
+Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
+
+![DAOs](images/Dal.Dao.Diagram.png)
+
+#### 
+
+
+
+#### StatementBuilder
+

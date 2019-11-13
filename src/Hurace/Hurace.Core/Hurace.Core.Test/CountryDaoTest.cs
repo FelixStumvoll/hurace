@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
-using Hurace.Dal.Interface;
 using NUnit.Framework;
 
 namespace Hurace.Core.Test
@@ -31,8 +29,8 @@ namespace Hurace.Core.Test
             });
 
             var country = await CountryDao.FindByIdAsync(id);
-            Assert.AreEqual("XY", country.CountryCode);
-            Assert.AreEqual("TestCountry", country.CountryName);
+            Assert.AreEqual("XY", country?.CountryCode);
+            Assert.AreEqual("TestCountry", country?.CountryName ?? "");
         }
         
         [Test]
@@ -42,7 +40,7 @@ namespace Hurace.Core.Test
             country.CountryName = "TestABC";
             await CountryDao.UpdateAsync(country);
             var updatedCountry = (await CountryDao.FindByIdAsync(country.Id));
-            Assert.AreEqual(country.CountryName, updatedCountry.CountryName);
+            Assert.AreEqual(country.CountryName, updatedCountry?.CountryName);
         }
 
         [Test]
@@ -50,8 +48,8 @@ namespace Hurace.Core.Test
         {
             var country = (await CountryDao.FindAllAsync()).First();
             var countryById = await CountryDao.FindByIdAsync(country.Id);
-            Assert.AreEqual(country.CountryCode, countryById.CountryCode);
-            Assert.AreEqual(country.CountryName, countryById.CountryName);
+            Assert.AreEqual(country.CountryCode, countryById?.CountryCode);
+            Assert.AreEqual(country.CountryName, countryById?.CountryName);
         }
 
         [Test]

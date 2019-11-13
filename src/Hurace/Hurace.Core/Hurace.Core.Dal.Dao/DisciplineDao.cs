@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.QueryBuilder;
 using Hurace.Core.Dal.Dao.Base;

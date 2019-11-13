@@ -18,9 +18,9 @@ namespace Hurace.Core.Test
         public async Task FindByIdTest()
         {
             var raceEvent =(await RaceEventDao.FindAllAsync()).First();
-            raceEvent = (await RaceEventDao.FindByIdAsync(raceEvent.Id));
-            Assert.NotNull(raceEvent);
-            Assert.NotNull(raceEvent.RaceData);
+            var raceEventById = (await RaceEventDao.FindByIdAsync(raceEvent.Id));
+            Assert.NotNull(raceEventById);
+            Assert.NotNull(raceEventById?.RaceData);
         }
     }
 }

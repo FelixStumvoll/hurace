@@ -6,7 +6,8 @@ namespace Hurace.Core.Dto
     {
         [Key]
         public int Id { get; set; }
-        public string LocationName { get; set; }
+
+        public string LocationName { get; set; } = default!;
         public int CountryId { get; set; }
         [Navigational]
         public Country? Country { get; set; }

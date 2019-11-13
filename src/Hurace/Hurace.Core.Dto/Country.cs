@@ -7,7 +7,8 @@ namespace Hurace.Core.Dto
     {
         [Key]
         public int Id { get; set; }
-        public string CountryName { get; set; }
-        public string CountryCode { get; set; }
+
+        public string CountryName { get; set; } = default!;
+        public string CountryCode { get; set; } = default!;
     }
 }

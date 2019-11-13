@@ -29,11 +29,11 @@ namespace Hurace.Core.Test
             var sensor = (await SensorDao.FindAllAsync()).First();
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
             Assert.NotNull(timeData);
-            Assert.NotNull(timeData.StartList);
-            Assert.NotNull(timeData.SkierEvent);
-            Assert.NotNull(timeData.SkierEvent.RaceData);
-            Assert.NotNull(timeData.Sensor);
-            Assert.AreEqual(DateTime.Today, timeData.Time.Date);
+            Assert.NotNull(timeData?.StartList);
+            Assert.NotNull(timeData?.SkierEvent);
+            Assert.NotNull(timeData?.SkierEvent?.RaceData);
+            Assert.NotNull(timeData?.Sensor);
+            Assert.AreEqual(DateTime.Today, timeData?.Time.Date);
         }
 
         [Test]
@@ -43,10 +43,14 @@ namespace Hurace.Core.Test
             var race = (await RaceDao.FindAllAsync()).First();
             var sensor = (await SensorDao.FindAllAsync()).First();
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
-            timeData.Time = new DateTime(2018, 11, 6);
-            await TimeDataDao.UpdateAsync(timeData);
-            timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
-            Assert.AreEqual(new DateTime(2018, 11, 6), timeData.Time);
+            if (timeData != null)
+            {
+                timeData.Time = new DateTime(2018, 11, 6);
+                await TimeDataDao.UpdateAsync(timeData);
+                timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
+                Assert.AreEqual(new DateTime(2018, 11, 6), timeData?.Time);
+            }else Assert.Fail("TimeData was null");
+            
         }
 
         [Test]
@@ -65,11 +69,11 @@ namespace Hurace.Core.Test
                 Time = new DateTime(2019, 11, 6),
                 SkierId = skier.Id
             });
-            
+
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, newSensorId);
-            
+
             Assert.NotNull(timeData);
-            Assert.AreEqual(new DateTime(2019,11,6), timeData.Time);
+            Assert.AreEqual(new DateTime(2019, 11, 6), timeData?.Time);
         }
 
         [Test]
@@ -79,7 +83,7 @@ namespace Hurace.Core.Test
             await TimeDataDao.DeleteAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId);
             Assert.IsNull(await TimeDataDao.FindByIdAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId));
         }
-        
+
         [Test]
         public async Task DeleteAllTest()
         {

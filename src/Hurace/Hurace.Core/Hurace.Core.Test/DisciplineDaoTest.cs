@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
-using Hurace.Core.Dto;
-using Hurace.Dal.Interface;
 using NUnit.Framework;
 
 namespace Hurace.Core.Test
@@ -22,7 +19,7 @@ namespace Hurace.Core.Test
         {
             var discipline = (await DisciplineDao.FindAllAsync()).First();
             var disciplineById = await DisciplineDao.FindByIdAsync(discipline.Id);
-            Assert.AreEqual(discipline.DisciplineName, disciplineById.DisciplineName);
+            Assert.AreEqual(discipline.DisciplineName, disciplineById?.DisciplineName);
         }
         
         [Test]
@@ -31,8 +28,8 @@ namespace Hurace.Core.Test
             var discipline = (await DisciplineDao.FindAllAsync()).First();
             discipline.DisciplineName = "ABC";
             await DisciplineDao.UpdateAsync(discipline);
-            discipline = await DisciplineDao.FindByIdAsync(discipline.Id);
-            Assert.AreEqual("ABC", discipline.DisciplineName);
+            var disciplineById = await DisciplineDao.FindByIdAsync(discipline.Id);
+            Assert.AreEqual("ABC", disciplineById?.DisciplineName);
         }
 
         [Test]

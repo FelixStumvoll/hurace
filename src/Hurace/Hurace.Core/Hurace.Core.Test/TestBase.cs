@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
@@ -40,7 +39,7 @@ namespace Hurace.Core.Test
         protected TestBase()
         {
             ConnectionFactory =
-                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString, ProviderName);
+                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString);
 
             RaceDao = new RaceDao(ConnectionFactory, StatementFactory);
             SeasonDao = new SeasonDao(ConnectionFactory, StatementFactory);
@@ -180,7 +179,7 @@ namespace Hurace.Core.Test
         }
 
         private Task<int> InsertCountry(string code = "AT", string name = "Austria") =>
-            CountryDao.InsertGetIdAsync(new Country {CountryCode = "XX", CountryName = "Test"});
+            CountryDao.InsertGetIdAsync(new Country {CountryCode = code, CountryName = name});
 
         private Task<int> InsertLocation(int countryId, string locationName = "Kitzbühl") =>
             LocationDao.InsertGetIdAsync(new Location

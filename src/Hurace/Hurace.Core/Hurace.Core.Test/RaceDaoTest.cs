@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 using NUnit.Framework;
@@ -24,11 +23,11 @@ namespace Hurace.Core.Test
         {
             var race = (await RaceDao.FindAllAsync()).First();
             var raceById = await RaceDao.FindByIdAsync(race.Id);
-            Assert.AreEqual(race.RaceDescription, raceById.RaceDescription);
-            Assert.NotNull(raceById.Gender);
-            Assert.NotNull(raceById.Location);
-            Assert.NotNull(raceById.Season);
-            Assert.NotNull(raceById.RaceState);
+            Assert.AreEqual(race.RaceDescription, raceById?.RaceDescription);
+            Assert.NotNull(raceById?.Gender);
+            Assert.NotNull(raceById?.Location);
+            Assert.NotNull(raceById?.Season);
+            Assert.NotNull(raceById?.RaceState);
         }
 
         [Test]
@@ -58,7 +57,7 @@ namespace Hurace.Core.Test
             var race = (await RaceDao.FindAllAsync()).First();
             race.RaceDescription = "Test123";
             await RaceDao.UpdateAsync(race);
-            Assert.AreEqual(race.RaceDescription, (await RaceDao.FindByIdAsync(race.Id)).RaceDescription);
+            Assert.AreEqual(race.RaceDescription, (await RaceDao.FindByIdAsync(race.Id))?.RaceDescription);
         }
 
         [Test]

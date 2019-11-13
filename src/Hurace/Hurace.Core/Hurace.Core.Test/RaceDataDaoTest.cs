@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 using NUnit.Framework;
@@ -26,7 +25,7 @@ namespace Hurace.Core.Test
             var raceDataId = (await RaceDataDao.FindAllAsync()).First().Id;
             var raceData = await RaceDataDao.FindByIdAsync(raceDataId);
             Assert.NotNull(raceData);
-            Assert.NotNull(raceData.EventType);
+            Assert.NotNull(raceData?.EventType);
         }
         
         [Test]
@@ -35,7 +34,7 @@ namespace Hurace.Core.Test
             var raceData = (await RaceDataDao.FindAllAsync()).First();
             raceData.EventTypeId = (int) Constants.RaceEvent.Canceled;
             await RaceDataDao.UpdateAsync(raceData);
-            Assert.AreEqual((int)Constants.RaceEvent.Canceled,(await RaceDataDao.FindByIdAsync(raceData.Id)).EventTypeId);
+            Assert.AreEqual((int)Constants.RaceEvent.Canceled,(await RaceDataDao.FindByIdAsync(raceData.Id))?.EventTypeId);
         }
 
         [Test]

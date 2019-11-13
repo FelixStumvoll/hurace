@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Dal.Dao", "Hura
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Common", "Hurace.Core\Hurace.Core.Common\Hurace.Core.Common.csproj", "{0776F86D-0071-49E9-B5F7-98EE403CA76D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.TestClient", "Hurace.TestClient\Hurace.TestClient.csproj", "{19998BC6-F8AD-459B-ACCC-47AF35A7414B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.DataGenerator", "Hurace.DataGenerator\Hurace.DataGenerator.csproj", "{15EA6B62-492F-4481-879D-17ABB30ABE1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Test", "Hurace.Core\Hurace.Core.Test\Hurace.Core.Test.csproj", "{364DBD6E-F896-426B-9EF5-A1DA3E45FB99}"
@@ -38,10 +36,6 @@ Global
 		{0776F86D-0071-49E9-B5F7-98EE403CA76D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0776F86D-0071-49E9-B5F7-98EE403CA76D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0776F86D-0071-49E9-B5F7-98EE403CA76D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19998BC6-F8AD-459B-ACCC-47AF35A7414B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15EA6B62-492F-4481-879D-17ABB30ABE1F}.Release|Any CPU.ActiveCfg = Release|Any CPU

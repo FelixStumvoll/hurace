@@ -12,8 +12,7 @@ namespace Hurace.Core.Common
 
         private readonly DbProviderFactory _dbProviderFactory;
         
-        public ConcreteConnectionFactory(DbProviderFactory dbProviderFactory, string connectionString,
-            string providerName)
+        public ConcreteConnectionFactory(DbProviderFactory dbProviderFactory, string connectionString)
         {
             _dbProviderFactory = dbProviderFactory;
             ConnectionString = connectionString;

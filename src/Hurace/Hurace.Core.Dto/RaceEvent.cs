@@ -9,6 +9,6 @@ namespace Hurace.Core.Dto
         public int Id { get; set; }
         public int RaceDataId { get; set; }
         [Navigational]
-        public RaceData RaceData { get; set; }
+        public RaceData? RaceData { get; set; }
     }
 }
