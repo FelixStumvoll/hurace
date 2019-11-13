@@ -202,7 +202,8 @@ Die drei StatementFactories bieten folgende Funktionen
 
 Der SelectQueryBuilder ermöglicht es ein Select Statement für eine Tabelle zu erzeugen. Zudem kann mittels _Join_ eine andere Tabelle gejoined werden. Dabei müssen zwei generische Typen angegeben werden, diese stellen die Tabellen dar zwischen welchen gejoined werden soll, bzw. bilden die Basis für die Join Constraints. 
 Mit der *Where* Methode können zusätzlich Where Conditions hinzugefügt werden, der generische Typ gibt dabei an, auf welche Tabelle die Where Condition durchzuführen ist.
-Mittels der *Build* Methode kann ein Statement erzeugt werden, dabei wird über die Properties der initialen Tabelle iteriert um die Spalten zu ermitteln, welche selektiert werden sollen, anschließend werden die Spalten der gejointen Tabellen eingefügt bzw. die Join Constraints. Zuletzt werden die angegebenen Where Conditions eingefügt. Zusätzlich zum Select Statement werden noch die Query Parametern sowie eine *Mapper Config* returniert.
+Mittels der *Build* Methode kann ein Statement erzeugt werden, dabei wird über die Properties der initialen Tabelle iteriert um die Spalten zu ermitteln, welche selektiert werden sollen, anschließend werden die Spalten der gejointen Tabellen eingefügt bzw. die Join Constraints. Zuletzt werden die angegebenen Where Conditions eingefügt.
+Zusätzlich zum Select Statement werden noch die Query Parametern sowie eine *MapperConfig* returniert.
 
 ##### UpdateQueryBuilder
 Der UpdateQueryBuilder ermöglicht es Update Statements zu erzeugen.
