@@ -1,4 +1,4 @@
-namespace Hurace.Core.Dal.Dao.QueryBuilder
+namespace Hurace.Core.Common.QueryBuilder
 {
     public class JoinParam
     {

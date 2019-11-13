@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Hurace.Dal.Interface.Util
+namespace Hurace.Dal.Interface.Base
 {
     public interface ICrudDao<T> : IReadonlyDao<T> where T : class, new()
     {

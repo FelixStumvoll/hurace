@@ -1,6 +1,6 @@
 using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
 
-namespace Hurace.Core.Dal.Dao.QueryBuilder
+namespace Hurace.Core.Common.QueryBuilder
 {
     public class StatementFactory
     {

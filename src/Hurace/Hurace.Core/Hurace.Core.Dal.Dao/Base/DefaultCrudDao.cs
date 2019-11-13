@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Dal.Dao.QueryBuilder;
-using Hurace.Dal.Interface.Util;
+using Hurace.Core.Common.QueryBuilder;
+using Hurace.Dal.Interface.Base;
 
-namespace Hurace.Core.Dal.Dao
+namespace Hurace.Core.Dal.Dao.Base
 {
     public class DefaultCrudDao<T> : CrudDao<T>, IDefaultCrudDao<T> where T : class, new()
     {

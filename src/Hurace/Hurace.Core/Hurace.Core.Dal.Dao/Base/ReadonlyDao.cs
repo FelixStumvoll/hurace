@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
+using Hurace.Core.Common.QueryBuilder;
 using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
-using Hurace.Core.Dal.Dao.QueryBuilder;
-using Hurace.Dal.Interface;
-using Hurace.Dal.Interface.Util;
+using Hurace.Dal.Interface.Base;
 
-namespace Hurace.Core.Dal.Dao
+namespace Hurace.Core.Dal.Dao.Base
 {
     public class ReadonlyDao<T> : BaseDao<T>, IReadonlyDao<T> where T : class, new()
     {
-        public ReadonlyDao(IConnectionFactory connectionFactory, string tableName,
+        protected ReadonlyDao(IConnectionFactory connectionFactory, string tableName,
             StatementFactory statementFactory) : base(connectionFactory, tableName, statementFactory)
         {
         }

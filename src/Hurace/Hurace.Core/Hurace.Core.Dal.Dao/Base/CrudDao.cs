@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Dal.Dao.QueryBuilder;
-using Hurace.Dal.Interface.Util;
+using Hurace.Core.Common.QueryBuilder;
+using Hurace.Dal.Interface.Base;
 
-namespace Hurace.Core.Dal.Dao
+namespace Hurace.Core.Dal.Dao.Base
 {
     public class CrudDao<T> : ReadonlyDao<T>, ICrudDao<T> where T : class, new()
     {

@@ -3,8 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
+using Hurace.Core.Common.QueryBuilder;
 using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
-using Hurace.Core.Dal.Dao.QueryBuilder;
+using Hurace.Core.Dal.Dao.Base;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
 
@@ -20,16 +21,20 @@ namespace Hurace.Core.Dal.Dao
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
-        public Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId) =>
-            QueryAsync<RaceRanking>(@"select * from hurace.TimeDataRanking where raceId=@raceId
+        public Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId, int count = 0)
+        {
+            var topSection = count > 0 ? "" : $" top {count}";
+            return QueryAsync<RaceRanking>(
+                $@"select{topSection} * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
-                                 new MapperConfig()
-                                     .AddMapping<RaceRanking>(("skierId", "SkierId"), ("raceTime", "Time"))
-                                     .AddMapping<Country>(("countryId", "Id"))
-                                     .AddMapping<StartList>(("skierId", "SkierId"))
-                                     .AddMapping<Skier>(("skierId", "Id"))
-                                     .AddMapping<Gender>(("genderId", "Id")),
-                                 ("@raceId", raceId));
+                new MapperConfig()
+                    .AddMapping<RaceRanking>(("skierId", "SkierId"), ("raceTime", "Time"))
+                    .AddMapping<Country>(("countryId", "Id"))
+                    .AddMapping<StartList>(("skierId", "SkierId"))
+                    .AddMapping<Skier>(("skierId", "Id"))
+                    .AddMapping<Gender>(("genderId", "Id")),
+                ("@raceId", raceId));
+        }
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",

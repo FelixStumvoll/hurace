@@ -1,5 +1,5 @@
 using Hurace.Core.Dto;
-using Hurace.Dal.Interface.Util;
+using Hurace.Dal.Interface.Base;
 
 namespace Hurace.Dal.Interface
 {

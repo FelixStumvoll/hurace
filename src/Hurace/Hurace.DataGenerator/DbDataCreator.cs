@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
+using Hurace.Core.Common.QueryBuilder;
 using Hurace.Core.Dal.Dao;
-using Hurace.Core.Dal.Dao.QueryBuilder;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
-using Hurace.Dal.Interface.Util;
+using Hurace.Dal.Interface.Base;
 using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator
