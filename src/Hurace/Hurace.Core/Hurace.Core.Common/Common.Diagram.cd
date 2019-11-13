@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.AbstractStatementBuilder">
+    <Position X="2.75" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAIIAAA=</HashCode>
+      <FileName>StatementBuilder\ConcreteStatementBuilder\AbstractStatementBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.InsertStatementBuilder&lt;T&gt;">
+    <Position X="2" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StatementBuilder\ConcreteStatementBuilder\InsertStatementBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.QueryBuilder&lt;T&gt;">
+    <Position X="4.5" Y="4.25" Width="1.75" />
+    <NestedTypes>
+      <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.QueryBuilder&lt;T&gt;.WhereConfig" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>StatementBuilder\ConcreteStatementBuilder\QueryBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAIAAgg=</HashCode>
+      <FileName>StatementBuilder\ConcreteStatementBuilder\QueryBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.SelectStatementBuilder&lt;T&gt;">
+    <Position X="2.75" Y="7.5" Width="2.25" />
+    <NestedTypes>
+      <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.SelectStatementBuilder&lt;T&gt;.JoinConfig">
+        <TypeIdentifier>
+          <NewMemberFileName>StatementBuilder\ConcreteStatementBuilder\SelectStatementBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAgAAAAAAAAgAAEAgAAAAAAAQAAAAgA=</HashCode>
+      <FileName>StatementBuilder\ConcreteStatementBuilder\SelectStatementBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder.UpdateStatementBuilder&lt;T&gt;">
+    <Position X="5.25" Y="7.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAFAgBAAAAAAAAAAAAA=</HashCode>
+      <FileName>StatementBuilder\ConcreteStatementBuilder\UpdateStatementBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hurace.Core.Common.StatementBuilder.StatementFactory">
+    <Position X="5.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAAAAAAAAABAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>StatementBuilder\StatementFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -167,6 +167,26 @@ Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
 
 ![DAOs](images/Dal.Dao.Diagram.png)
 
+Sämtliche Funktionalität ist dabei in *BaseDao* untergebracht. Zudem besitzt diese Klasse eine *ConnectionFactory* mit welcher eine Datenbankverbindung aufgebaut werden und anschließend SQL-Statements ausgeführt werden können.
+Weiters steht eine [StatementFactory](#statementfactory) zur Verfügung, welche SQL Statements erzeugen kann.
+Die wichtigsten Methoden sind im Anschluss beschrieben.
+
+#### QueryAsync
+Diese Methode führt eine Query aus und liefert eine List an generischen Ergebnissen.
+Dabei wird ein Statement und optional Query Parameter übernommen. Zudem kann noch eine Konfiguration für den [Mapper](#mapper) übergeben werden. Zuerst wird mittels der *ConnectionFactory* ein *DbCommand* erzeugt. Anschließend wird das Statement ausgeführt und die Ergebnisse mittels des [Mappers](#mapper) gemappt und retourniert.
+
+#### ExecuteAsync
+Diese Methode führt ein Statement auf der Datenbank aus, dabei kann es sich z.B. um ein Update, Insert oder Delete Statement handeln. Diese Methode übernimmt ein Statement sowie die Query Parameter dafür. Anschließend wird wie bei [QueryAsync](#queryasync) ein *DbCommand* erzeugt, mit welchem das Statement ausgeführt wird.
+
+#### ExecuteGetIdAsync
+Diese Methode funktioniert ähnlich wie [ExecuteAsync](#executeasync). Der Unterschied ist der, dass bei dieser Methode die letzte generierte Id returniert wird.
+
 #### Mapper
 Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode *MapTo*. Der Mapper durchläuft alle Properties des angegebenen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen *IDataRecord* welcher die Datenbankeinträge enthält. Ist ein Property mit dem *NavigationAttribute* gekennzeichnet, so wird *MapTo* rekursiv aufgerufen und die Properties dieses Typen gemappt.
 Mittels einer *MapperConfig* kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Weiters wird mit der *MapperConfig* angegeben, welche referenzierten Entitäten geladen werden sollen.
+
+#### StatementFactory
+Um simple Select Statements nicht jedes mal schreiben zu müssen, wird eine *StatementFactory* zur Verfügung gestellt. Diese ermöglicht es Select, Insert und Update Queries anhand eines generischen Typen zu generieren.
+Die Vererbungshierarchie sieht wie folgt aus:
+
+![StatementFactory](images/Common.Diagram.png)

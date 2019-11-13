@@ -30,15 +30,13 @@ namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
         protected void AddWhereId(T obj)
         {
             WhereCfg ??= new WhereConfig();
-            var queryParams = obj switch
+            WhereCfg.WhereConditions.Add((WithSchema(typeof(T).Name), obj switch
             {
-                ISinglePkEntity spe => new List<QueryParam> {(nameof(ISinglePkEntity.Id), spe.Id)},
+                ISinglePkEntity spe => new QueryParam[] {(nameof(ISinglePkEntity.Id), spe.Id)},
                 _ => typeof(T).GetProperties()
                               .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)))
                               .Select(pi => new QueryParam {Name = pi.Name, Value = pi.GetValue(obj)})
-            };
-
-            WhereCfg.WhereConditions.Add((WithSchema(typeof(T).Name), queryParams));
+            }));
         }
 
         protected (string statement, IEnumerable<QueryParam> queryParams) HandleWhere()
