@@ -158,10 +158,3 @@ Gleich wie bei den [Interfaces](#interfaces) gibt es auch bei Basisklassen mit d
 Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
 
 ![DAOs](images/Dal.Dao.Diagram.png)
-
-#### 
-
-
-
-#### StatementBuilder
-
