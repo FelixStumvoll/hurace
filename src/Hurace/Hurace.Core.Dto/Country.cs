@@ -1,9 +1,10 @@
-using Hurace.Core.Dto.Attributes;
+using System.ComponentModel.DataAnnotations;
+using Hurace.Core.Dto.Interfaces;
 
 
 namespace Hurace.Core.Dto
 {
-    public class Country
+    public class Country : ISinglePkEntity
     {
         [Key]
         public int Id { get; set; }

@@ -1,6 +1,6 @@
-using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
+using Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder;
 
-namespace Hurace.Core.Common.QueryBuilder
+namespace Hurace.Core.Common.StatementBuilder
 {
     public class StatementFactory
     {

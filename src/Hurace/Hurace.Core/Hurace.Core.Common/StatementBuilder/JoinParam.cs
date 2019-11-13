@@ -1,4 +1,4 @@
-namespace Hurace.Core.Common.QueryBuilder
+namespace Hurace.Core.Common.StatementBuilder
 {
     public class JoinParam
     {

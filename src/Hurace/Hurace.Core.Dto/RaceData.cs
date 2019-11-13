@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Hurace.Core.Dto.Attributes;
+using Hurace.Core.Dto.Interfaces;
 
 namespace Hurace.Core.Dto
 {
-    public class RaceData
+    public class RaceData: ISinglePkEntity
     {
         [Key]
         public int Id { get; set; }

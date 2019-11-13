@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Common.QueryBuilder;
+using Hurace.Core.Common.StatementBuilder;
 using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;

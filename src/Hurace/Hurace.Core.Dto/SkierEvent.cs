@@ -1,8 +1,10 @@
-﻿using Hurace.Core.Dto.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+using Hurace.Core.Dto.Attributes;
+using Hurace.Core.Dto.Interfaces;
 
 namespace Hurace.Core.Dto
 {
-    public class SkierEvent
+    public class SkierEvent: ISinglePkEntity
     {
         [Key] public int Id { get; set; }
         [Navigational] public StartList? StartList { get; set; }

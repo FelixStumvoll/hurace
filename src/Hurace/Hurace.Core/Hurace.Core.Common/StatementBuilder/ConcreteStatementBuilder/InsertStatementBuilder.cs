@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
 {
     public class InsertStatementBuilder<T> : AbstractStatementBuilder
     {

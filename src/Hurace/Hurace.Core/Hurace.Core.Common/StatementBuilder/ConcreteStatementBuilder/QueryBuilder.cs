@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Hurace.Core.Dto.Attributes;
+using Hurace.Core.Dto.Interfaces;
 
-namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
 {
     public abstract class QueryBuilder<T> : AbstractStatementBuilder where T : class, new()
     {
@@ -19,7 +20,6 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
         {
         }
 
-      
 
         protected void AddWhere<TWhere>(params QueryParam[] whereParams)
         {
@@ -30,16 +30,15 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
         protected void AddWhereId(T obj)
         {
             WhereCfg ??= new WhereConfig();
-            WhereCfg
-                .WhereConditions
-                .Add((WithSchema(typeof(T).Name), typeof(T)
-                                                  .GetProperties()
-                                                  .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)))
-                                                  .Select(pi => new QueryParam
-                                                  {
-                                                      Name = pi.Name,
-                                                      Value = pi.GetValue(obj)
-                                                  })));
+            var queryParams = obj switch
+            {
+                ISinglePkEntity spe => new List<QueryParam> {(nameof(ISinglePkEntity.Id), spe.Id)},
+                _ => typeof(T).GetProperties()
+                              .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)))
+                              .Select(pi => new QueryParam {Name = pi.Name, Value = pi.GetValue(obj)})
+            };
+
+            WhereCfg.WhereConditions.Add((WithSchema(typeof(T).Name), queryParams));
         }
 
         protected (string statement, IEnumerable<QueryParam> queryParams) HandleWhere()

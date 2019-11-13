@@ -27,7 +27,7 @@ namespace Hurace.Core.Common.Mapper
                 string mappedName = null;
                 var propName = config?.MappingExists(typeof(T), pi.Name, out mappedName) ?? false
                     ? mappedName
-                    : pi.Name.ToLowerFirstChar();
+                    : pi.Name;
                     pi.SetValue(ret, record[propName]);
             }
 

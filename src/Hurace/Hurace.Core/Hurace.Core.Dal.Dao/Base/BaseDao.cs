@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
-using Hurace.Core.Common.QueryBuilder;
+using Hurace.Core.Common.StatementBuilder;
 
 namespace Hurace.Core.Dal.Dao.Base
 {

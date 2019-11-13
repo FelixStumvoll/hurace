@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Hurace.Core.Dto.Attributes;
 
-namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
 {
     public abstract class AbstractStatementBuilder
     {

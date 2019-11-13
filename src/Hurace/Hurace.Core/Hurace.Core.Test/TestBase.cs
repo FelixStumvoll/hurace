@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
-using Hurace.Core.Common.QueryBuilder;
+using Hurace.Core.Common.StatementBuilder;
 using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
@@ -57,8 +57,7 @@ namespace Hurace.Core.Test
             RaceStateDao = new RaceStateDao(ConnectionFactory, StatementFactory);
             StartStateDao = new StartStateDao(ConnectionFactory, StatementFactory);
         }
-
-
+        
         #region Setup
 
         protected async Task SetupTimeData()

@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Hurace.Core.Common.Extensions;
 using Hurace.Core.Common.Mapper;
 using Hurace.Core.Dto.Attributes;
 
-namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
+namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
 {
     public class SelectStatementBuilder<T> : QueryBuilder<T> where T : class, new()
     {
@@ -67,7 +66,7 @@ namespace Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder
                 }
 
                 var alias = $"{typeof(TSelect).Name}_{propertyInfo.Name}";
-                list.Add($"{tableName}.{propertyInfo.Name.ToLowerFirstChar()} as {alias}");
+                list.Add($"{tableName}.{propertyInfo.Name} as {alias}");
                 config.AddMapping<TSelect>((alias, propertyInfo.Name));
             }
         }

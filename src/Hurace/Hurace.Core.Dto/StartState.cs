@@ -1,9 +1,10 @@
-using Hurace.Core.Dto.Attributes;
+using System.ComponentModel.DataAnnotations;
+using Hurace.Core.Dto.Interfaces;
 
 
 namespace Hurace.Core.Dto
 {
-    public class StartState
+    public class StartState: ISinglePkEntity
     {
         [Key]
         public int Id { get; set; }

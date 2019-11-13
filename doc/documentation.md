@@ -132,7 +132,7 @@ Dieses Interface erbt von [ICrudDao](#icruddao). Dadurch das [TimeData](#timedat
 
 #### IStartListDao
 
-Dieses Interface erbt von [ICrudDao](#icruddao). Gleich wie bei [ITimeDataDao](#itimedatadao) müssen _DeleteAsync_ und _FindByIdAsync_ eigen definiert werden. Dieses Interface definiert zudem eine Methode _GetCurrentSkierForRace_ zum Ermitteln des aktuellen Rennläufers, sowie eine Methode _GetNextSkierForRace_ zum Ermitteln des nächsten Rennläufers. Weiters gibt es eine Methode _GetStartListForRace_ welche die Startliste eines Rennens ermittelt.
+Dieses Interface erbt von [ICrudDao](#icruddao). Gleich wie bei [ITimeDataDao](#itimedatadao) müssen _DeleteAsync_ und _FindByIdAsync_ eigen definiert werden. Auch hier besteht der Primärschlüssel aus der Id des [Skiers](#skier) und der Id des [Races](#race). Dieses Interface definiert zudem eine Methode _GetCurrentSkierForRace_ zum Ermitteln des aktuellen Rennläufers, sowie eine Methode _GetNextSkierForRace_ zum Ermitteln des nächsten Rennläufers. Weiters gibt es eine Methode _GetStartListForRace_ welche die Startliste eines Rennens ermittelt.
 
 #### ILocationDao
 
@@ -150,11 +150,23 @@ Dieses Interface erbt von [IDefaultCrudDao](#idefaultcruddao). In diesem Interfa
 - GetPossibleDisciplinesForSkier
 - InsertPossibleDisciplineForSkier
 
+
+### Domain Objects / Data Transfer Objects
+Domain Objects bzw. Data Transfer Objects (DTOs) dienen dazu die Tabellen als Klassen abzubilden.
+Bis auf die Tabellen [PossibleDiscipline](#possiblediscipline) und [SkierDiscipline](#skierdiscipline) gibt es für jede Tabelle ein eigenes DTO. Die Spaltennamen werden als Properties modelliert.
+In den DTOs kommen zwei Attribute zum Einsatz um das Mappen zu erleichtern.
+Für Primärschlüssel wird das *KeyAttribute* von *System.ComponentModel.DataAnnotations* verwendet.
+Weiters sind in jedem DTO die referenzierten Tabellen als Properties verfügbar (z.B. [Country](#country) bei [Skier](#skier)). Diese werden mit dem *NavigationalAttribut* gekennzeichnet.
+
 ### Database Access Objects
 
 Die Database Access Objects (DAOs) sind eine konkrete Implementierung der [Interfaces](#interfaces).
 Konkret stellen diese einen Zugriff auf eine MSSQL Datenbank zur Verfügung.
-Gleich wie bei den [Interfaces](#interfaces) gibt es auch bei Basisklassen mit den gleichen Namen, die die jeweiligen Interfaces implementieren. Weiters gibt es eine _BaseDao_ Klasse welche über Methoden zum Ansprechen der Datenbank verfügt.
+Gleich wie bei den [Interfaces](#interfaces) gibt es auch bei Basisklassen mit den gleichen Namen, die die jeweiligen Interfaces implementieren. Weiters gibt es eine _BaseDao_ Klasse welche über Methoden zum Ansprechen der Datenbank verfügt. Diese Methoden verwenden ADO.NET um Die Daten aus der Datenbank zu laden. Wie die Daten in Domänenklassen gemappt werden, wird in [Mapper](#mapper) beschrieben.
 Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
 
 ![DAOs](images/Dal.Dao.Diagram.png)
+
+#### Mapper
+Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode *MapTo*. Der Mapper durchläuft alle Properties des angegebenen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen *IDataRecord* welcher die Datenbankeinträge enthält. Ist ein Property mit dem *NavigationAttribute* gekennzeichnet, so wird *MapTo* rekursiv aufgerufen und die Properties dieses Typen gemappt.
+Mittels einer *MapperConfig* kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Weiters wird mit der *MapperConfig* angegeben, welche referenzierten Entitäten geladen werden sollen.

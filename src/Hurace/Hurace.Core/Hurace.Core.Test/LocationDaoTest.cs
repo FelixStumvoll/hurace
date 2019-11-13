@@ -45,7 +45,7 @@ namespace Hurace.Core.Test
         public async Task GetCountryFromLocation()
         {
             var location = (await LocationDao.FindAllAsync()).First();
-            Assert.AreEqual("XX", location.Country?.CountryCode);
+            Assert.AreEqual("AT", location.Country?.CountryCode);
         }
 
         [Test]

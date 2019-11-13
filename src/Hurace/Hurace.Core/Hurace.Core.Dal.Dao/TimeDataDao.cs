@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.Mapper;
-using Hurace.Core.Common.QueryBuilder;
-using Hurace.Core.Common.QueryBuilder.ConcreteQueryBuilder;
+using Hurace.Core.Common.StatementBuilder;
+using Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder;
 using Hurace.Core.Dal.Dao.Base;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
@@ -23,7 +23,7 @@ namespace Hurace.Core.Dal.Dao
 
         public Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId, int count = 0)
         {
-            var topSection = count > 0 ? "" : $" top {count}";
+            var topSection = count <= 0 ? "" : $" top {count}";
             return QueryAsync<RaceRanking>(
                 $@"select{topSection} * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
@@ -57,8 +57,5 @@ namespace Hurace.Core.Dal.Dao
                                                         ("sensorId", sensorId))
                                        .Build()))
             .SingleOrDefault();
-
-//        public override async Task<bool> UpdateAsync(TimeData obj) => 
-//            await GeneratedNonQueryAsync(StatementFactory.Update<TimeData>().WithKey().WhereId(obj).Build(obj));
     }
 }

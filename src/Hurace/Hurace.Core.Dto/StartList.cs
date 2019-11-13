@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Hurace.Core.Dto.Attributes;
 
 namespace Hurace.Core.Dto

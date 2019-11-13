@@ -96,7 +96,7 @@ namespace Hurace.Core.Test
         {
             var race = (await RaceDao.FindAllAsync()).First();
             var res = (await TimeDataDao.GetRankingForRace(race.Id)).ToList();
-            Assert.AreEqual(5, res.Count());
+            Assert.AreEqual(5, res.Count);
             Assert.IsTrue(res[0].RaceTime < res[1].RaceTime);
         }
     }
