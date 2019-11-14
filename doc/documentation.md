@@ -174,7 +174,7 @@ Die wichtigsten Methoden sind im Anschluss beschrieben.
 #### QueryAsync
 
 Diese Methode führt eine Query aus und liefert eine List an generischen Ergebnissen.
-Dabei wird ein Statement und optional Query Parameter übernommen. Zudem kann noch eine Konfiguration für den [Mapper](#mapper) übergeben werden. Zuerst wird mittels der _ConnectionFactory_ ein _DbCommand_ erzeugt. Anschließend wird das Statement ausgeführt und die Ergebnisse mittels des [Mappers](#mapper) gemappt und retourniert.
+Dabei wird ein Statement und optional Query Parameter übernommen.Ein Query Parameter besteht dabei aus einem Key und einem Value. Der Key gibt an, wo der Value des Query Parameters im SQL Statement eingefügt werden soll. Dies dient dazu SQL-Injection zu verhindern.Zudem kann noch eine Konfiguration für den [Mapper](#mapper) übergeben werden. Zuerst wird mittels der _ConnectionFactory_ ein _DbCommand_ erzeugt. Anschließend wird das Statement ausgeführt und die Ergebnisse mittels des [Mappers](#mapper) gemappt und retourniert.
 
 #### ExecuteAsync
 
@@ -196,19 +196,34 @@ Die Vererbungshierarchie sieht wie folgt aus:
 
 ![StatementFactory](images/Common.Diagram.png)
 
-Die drei StatementFactories bieten folgende Funktionen
+Einige Methoden sind für mehreren StatementBuilder verfügbar:
+
+##### Where
+Die Where Methode ist sowohl für den [UpdateStatementBuilder](#updatestatementbuilder) als auch für den [SelectStatementBuilder](#selectstatementbuilder) verfügbar. Diese Methode nimmt einen generischen Typen sowie eine Liste von Query Parametern. Der Name des generischen Typen wird als Name der Tabelle herangezogen auf welcher die Where Condition zutrifft.
+
+Die drei StatementFactories bieten zudem folgende Methoden
 
 ##### SelectStatementBuilder
 
-Der SelectQueryBuilder ermöglicht es ein Select Statement für eine Tabelle zu erzeugen. Zudem kann mittels _Join_ eine andere Tabelle gejoined werden. Dabei müssen zwei generische Typen angegeben werden, diese stellen die Tabellen dar zwischen welchen gejoined werden soll, bzw. bilden die Basis für die Join Constraints. 
-Mit der *Where* Methode können zusätzlich Where Conditions hinzugefügt werden, der generische Typ gibt dabei an, auf welche Tabelle die Where Condition durchzuführen ist.
-Mittels der *Build* Methode kann ein Statement erzeugt werden, dabei wird über die Properties der initialen Tabelle iteriert um die Spalten zu ermitteln, welche selektiert werden sollen, anschließend werden die Spalten der gejointen Tabellen eingefügt bzw. die Join Constraints. Zuletzt werden die angegebenen Where Conditions eingefügt.
-Zusätzlich zum Select Statement werden noch die Query Parametern sowie eine *MapperConfig* returniert.
+###### Join
+Mit der Join Methode können Tabellen gejoined werden.
+Die Methode nimmt zwei generische Typen und eine Liste von Join Parametern. Diese bestehen aus zwei Strings, welche die Spaltennamen angeben, welche beim Join verglichen werden. Der Name des ersten generischen Typs steht für die Tabelle von welcher aus gejoined wird und der Name des zweiten Typs für die Tabelle auf welche gejoined wird. Diese Dinge werden zwischengespeichert und später beim Aufruf von [Build](#build) wieder abgerufen.
 
-##### UpdateQueryBuilder
-Der UpdateQueryBuilder ermöglicht es Update Statements zu erzeugen.
-Mittels *Where* kann das Update Statement eingeschränkt werden. Dies Funktioniert gleich wie bei dem [SelectStatementBuilder](#selectstatementbuilder).
-Weiters gibt es eine Methode *WhereId* welche automatisch die Primärschlüssel in die Where Condition einfügt. Dies funktioniert mittels des *KeyAttributes*. Wiederum wird mit *Build* das Statement erzeugt, welches ein Select Statement und eine Liste von Query Parametern liefert.
+###### Build - select
+Die Build Methode baut aus den konfigurierten Einstellungen ein SQL Statement mit Query Parametern sowie einer MapperConfig zusammen. Zuerst werden die Properties des generischen Typen durchlaufen und dabei werden die Namen der Properties als Spaltennamen in das Select Statement eingefügt. Dies wird auch für die generischen Typen der gejointen Tabellen gemacht.
+Anschließend werden die Join Constraints eingefügt. Zuletzt werden die Where Conditions aus [Where](#where) eingefügt.
+
+##### UpdateStatementBuilder
+
+###### WhereId
+Diese Methode erlaubt es automatisch die Primärschlüssel einer Entität als Where Conditions festzulegen. Dies geschieht mithilfe des [KeyAttributes].
+
+###### Build - Update
+Diese Methode baut wiederum ein Statement aus der Konfiguration zusammen. Dabei werden die Namen der Properties des generischen Datentypes als Spalten eingefügt. Navigations Properties werden dabei ignoriert. Aus der Wertebelegung der Properties werden zudem die Query Parameter generiert.
+Zuletzt werden noch die Where Conditions eingefügt.
+
 
 ##### InsertQueryBuilder
-Der InsertQueryBuilder ermöglicht das erzeugen von Insert Statements, dabei werden die Properties des generischen Typens durchlaufen, die Namen des Properties steht dabei für den Namen der Spalte. Die Werte der Properties werden in der Datenbank persistiert. Properties mit dem *NavigationalAttribute* werden dabei ignoriert. Mit *Build* wird wiederum ein Statement mit einer Liste von Query Parametern erzeugt.
+
+###### Build - Insert
+Diese Methode funktioniert ähnlich zu [Build - Update](#build---update), außer, dass die hier keine Where Conditions verfügbar sind.
