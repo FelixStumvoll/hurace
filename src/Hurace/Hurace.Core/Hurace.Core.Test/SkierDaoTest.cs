@@ -40,18 +40,23 @@ namespace Hurace.Core.Test
         public async Task InsertTest()
         {
             var countryId = (await CountryDao.FindAllAsync()).First().Id;
-
-            var skier = new Skier
+            var skierId = await SkierDao.InsertGetIdAsync(new Skier
             {
                 CountryId = countryId,
                 FirstName = "Test",
                 LastName = "pacito",
                 GenderId = (int) Constants.Gender.Male,
-                DateOfBirth = DateTime.Now
-            };
+                DateOfBirth = new DateTime(1969,4,20)
+            });
 
-            var skierId = await SkierDao.InsertGetIdAsync(skier);
-            Assert.NotNull(await SkierDao.FindByIdAsync(skierId));
+            var skier = await SkierDao.FindByIdAsync(skierId);
+            Assert.AreEqual(countryId, skier.CountryId);
+            Assert.AreEqual("Test", skier.FirstName);
+            Assert.AreEqual("pacito", skier.LastName);
+            Assert.AreEqual((int) Constants.Gender.Male, skier.GenderId);
+            Assert.AreEqual(new DateTime(1969,4,20), skier.DateOfBirth);
+            Assert.NotNull(skier.Country);
+            Assert.NotNull(skier.Gender);
         }
         
         [Test]

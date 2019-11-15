@@ -1,5 +1,8 @@
-﻿namespace Hurace.DataGenerator.JsonEntities
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Hurace.DataGenerator.JsonEntities
 {
+    [ExcludeFromCodeCoverage]
     public class LocationJson
     {
         public string Name { get; set; }

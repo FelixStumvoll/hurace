@@ -35,13 +35,14 @@ namespace Hurace.Core.Test
         [Test]
         public async Task InsertTest()
         {
-            await SeasonDao.InsertAsync(new Season
+            var id = await SeasonDao.InsertGetIdAsync(new Season
             {
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now
+                StartDate = new DateTime(1969,4,20),
+                EndDate = new DateTime(2069,4,20)
             });
-            
-            Assert.AreEqual(2, (await SeasonDao.FindAllAsync()).Count());
+            var season = await SeasonDao.FindByIdAsync(id);
+            Assert.AreEqual(new DateTime(1969,4,20), season.StartDate);
+            Assert.AreEqual(new DateTime(2069,4,20), season.EndDate);
         }
         
         [Test]

@@ -35,12 +35,14 @@ namespace Hurace.Core.Test
         public async Task InsertTest()
         {
             var raceId = (await RaceDao.FindAllAsync()).First().Id;
-            await SensorDao.InsertAsync(new Sensor
+            var id = await SensorDao.InsertGetIdAsync(new Sensor
             {
                 RaceId = raceId,
                 SensorDescription = "Description123"
             });
-            Assert.AreEqual(2, (await SensorDao.FindAllAsync()).Count());
+            var sensor = await SensorDao.FindByIdAsync(id);
+            Assert.AreEqual("Description123", sensor.SensorDescription);
+            Assert.AreEqual(raceId, sensor.RaceId);
         }
         
         [Test]

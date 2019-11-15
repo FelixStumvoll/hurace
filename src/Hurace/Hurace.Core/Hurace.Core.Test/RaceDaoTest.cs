@@ -11,10 +11,9 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class RaceDaoTest : TestBase
     {
-
         [SetUp]
         public Task BeforeEach() => SetupRace();
-        
+
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await RaceDao.FindAllAsync()).Count());
 
@@ -36,19 +35,29 @@ namespace Hurace.Core.Test
             var disciplineId = (await DisciplineDao.FindAllAsync()).First().Id;
             var locationId = (await LocationDao.FindAllAsync()).First().Id;
             var seasonId = (await SeasonDao.FindAllAsync()).First().Id;
-            
-            await RaceDao.InsertAsync(new Race
+
+            var raceId = await RaceDao.InsertGetIdAsync(new Race
             {
                 DisciplineId = disciplineId,
-                GenderId = 1,
+                GenderId = (int) Constants.Gender.Male,
                 LocationId = locationId,
                 RaceDescription = "Description",
                 SeasonId = seasonId,
                 RaceStateId = (int) Constants.RaceEvent.Finished,
-                RaceDate = DateTime.Now
+                RaceDate = new DateTime(2019, 11, 15)
             });
 
-            Assert.AreEqual(2, (await RaceDao.FindAllAsync()).Count());
+            var raceById = await RaceDao.FindByIdAsync(raceId);
+            Assert.AreEqual(disciplineId, raceById.DisciplineId);
+            Assert.AreEqual((int) Constants.Gender.Male, raceById.GenderId);
+            Assert.AreEqual(locationId, raceById.LocationId);
+            Assert.AreEqual("Description", raceById.RaceDescription);
+            Assert.AreEqual(seasonId, raceById.SeasonId);
+            Assert.AreEqual((int) Constants.RaceEvent.Finished, raceById.RaceStateId);
+            Assert.AreEqual(new DateTime(2019, 11, 15), raceById.RaceDate);
+            Assert.NotNull(raceById.Location);
+            Assert.NotNull(raceById.Gender);
+            Assert.NotNull(raceById.Season);
         }
 
         [Test]
@@ -67,7 +76,7 @@ namespace Hurace.Core.Test
             await RaceDao.DeleteAsync(race.Id);
             Assert.IsNull(await RaceDao.FindByIdAsync(race.Id));
         }
-        
+
         [Test]
         public async Task DeleteAllTest()
         {

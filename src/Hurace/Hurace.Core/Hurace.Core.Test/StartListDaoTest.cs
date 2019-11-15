@@ -48,11 +48,17 @@ namespace Hurace.Core.Test
             {
                 SkierId = skierId,
                 RaceId = raceId,
-                StartNumber = 2,
+                StartNumber = 99,
                 StartStateId = (int) Constants.RaceState.Finished
             });
+            var startList = await StartListDao.FindByIdAsync(skierId, raceId);
             
-            Assert.NotNull(await StartListDao.FindByIdAsync(skierId, raceId));
+            Assert.AreEqual(skierId, startList.SkierId);
+            Assert.AreEqual(raceId, startList.RaceId);
+            Assert.AreEqual((int) Constants.RaceState.Finished, startList.StartStateId);
+            Assert.NotNull(startList.Skier);
+            Assert.NotNull(startList.StartState);
+            Assert.NotNull(startList.Race);
         }
         
         [Test]

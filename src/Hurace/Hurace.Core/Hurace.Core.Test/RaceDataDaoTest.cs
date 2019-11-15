@@ -41,14 +41,17 @@ namespace Hurace.Core.Test
         public async Task InsertTest()
         {
             var raceId = (await RaceDao.FindAllAsync()).First().Id;
-            await RaceDataDao.InsertAsync(new RaceData
+            var raceDataId = await RaceDataDao.InsertGetIdAsync(new RaceData
             {
                 RaceId = raceId,
-                EventDateTime = DateTime.Now,
+                EventDateTime = new DateTime(1969,4,20),
                 EventTypeId = (int) Constants.RaceEvent.Finished
             });
-            
-            Assert.AreEqual(2, (await RaceDataDao.FindAllAsync()).Count());
+
+            var raceDataById = await RaceDataDao.FindByIdAsync(raceDataId);
+            Assert.AreEqual(raceId, raceDataById.RaceId);
+            Assert.AreEqual(new DateTime(1969,4,20),raceDataById.EventDateTime );
+            Assert.AreEqual((int) Constants.RaceEvent.Finished, raceDataById.EventTypeId);
         }
         
         [Test]

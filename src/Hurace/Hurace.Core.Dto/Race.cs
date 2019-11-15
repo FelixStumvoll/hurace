@@ -24,7 +24,6 @@ namespace Hurace.Core.Dto
         public int RaceStateId { get; set; }
         [Navigational]
         public RaceState? RaceState { get; set; }
-
         public string RaceDescription { get; set; } = default!;
     }
 }
