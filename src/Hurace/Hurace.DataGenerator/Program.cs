@@ -20,7 +20,7 @@ namespace Hurace.DataGenerator
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            await dbCreator.Cleanup();
+                await dbCreator.Cleanup();
             }
 
         }

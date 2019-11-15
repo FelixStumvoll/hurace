@@ -1,0 +1,46 @@
+﻿[
+  {
+    "Code": "AT",
+    "Name": "Austria"
+  },
+  {
+    "Code": "CAN",
+    "Name": "Canada"
+  },
+  {
+    "Code": "ITA",
+    "Name": "Italy"
+  },
+  {
+    "Code": "CHE",
+    "Name": "Swiss"
+  },
+  {
+    "Code": "NOR",
+    "Name": "Norway"
+  },
+  {
+    "Code": "USA",
+    "Name": "United States"
+  },
+  {
+    "Code": "GER",
+    "Name": "Germany"
+  },
+  {
+    "Code": "FRA",
+    "Name": "France"
+  },
+  {
+    "Code": "GBR",
+    "Name": "Great Britain"
+  },
+  {
+    "Code": "SWE",
+    "Name": "Sweden"
+  },
+  {
+    "Code": "RUS",
+    "Name": "Russian Federation"
+  }
+]

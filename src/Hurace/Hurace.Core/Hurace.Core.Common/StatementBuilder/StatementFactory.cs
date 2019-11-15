@@ -12,6 +12,6 @@ namespace Hurace.Core.Common.StatementBuilder
             new SelectStatementBuilder<T>(_schemaName);
 
         public UpdateStatementBuilder<T> Update<T>() where T : class, new() => new UpdateStatementBuilder<T>(_schemaName);
-        public InsertStatementBuilder<T> Insert<T>() => new InsertStatementBuilder<T>(_schemaName);
+        public InsertStatementBuilder<T> Insert<T>() where T : class, new() => new InsertStatementBuilder<T>(_schemaName);
     }
 }

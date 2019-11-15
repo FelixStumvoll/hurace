@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Hurace.Core.Common;
 using Hurace.Core.Common.StatementBuilder;
-using Hurace.Core.Dto;
 using Hurace.Core.Dto.Interfaces;
 using Hurace.Dal.Interface.Base;
 

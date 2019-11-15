@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
 {
-    public class InsertStatementBuilder<T> : AbstractStatementBuilder
+    public class InsertStatementBuilder<T> : AbstractStatementBuilder where T : class, new()
     {
         public InsertStatementBuilder(string schemaName) : base(schemaName)
         {
@@ -17,8 +18,9 @@ namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
             return this;
         }
 
-        public (string statement, IEnumerable<QueryParam> queryParams) Build(T obj)
+        public (string statement, IEnumerable<QueryParam> queryParams) Build(T? obj)
         {
+            if (obj == null) throw new ArgumentException();
             var queryParams = new List<QueryParam>();
             var columnNames = new List<string>();
             var columnValues = new List<string>();

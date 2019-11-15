@@ -34,8 +34,8 @@ namespace Hurace.Core.Common.StatementBuilder.ConcreteStatementBuilder
             {
                 ISinglePkEntity spe => new QueryParam[] {(nameof(ISinglePkEntity.Id), spe.Id)},
                 _ => typeof(T).GetProperties()
-                              .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)))
-                              .Select(pi => new QueryParam {Name = pi.Name, Value = pi.GetValue(obj)})
+                              .Where(pi => Attribute.IsDefined(pi, typeof(KeyAttribute)) && pi.GetValue(obj) != null)
+                              .Select(pi => new QueryParam (pi.Name, pi.GetValue(obj)!))
             }));
         }
 

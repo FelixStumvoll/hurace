@@ -22,11 +22,11 @@ namespace Hurace.Core.Test
             var startList = (await StartListDao.FindAllAsync()).First();
             var startListById = await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId);
             Assert.NotNull(startListById);
-            Assert.NotNull(startListById?.Race);
-            Assert.NotNull(startListById?.Skier);
-            Assert.NotNull(startListById?.Skier?.Country);
-            Assert.NotNull(startListById?.Skier?.Gender);
-            Assert.NotNull(startListById?.StartState);
+            Assert.NotNull(startListById.Race);
+            Assert.NotNull(startListById.Skier);
+            Assert.NotNull(startListById.Skier?.Country);
+            Assert.NotNull(startListById.Skier?.Gender);
+            Assert.NotNull(startListById.StartState);
         }
 
         [Test]

@@ -8,8 +8,10 @@ using Hurace.Core.Common;
 using Hurace.Core.Common.StatementBuilder;
 using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
+using Hurace.Core.Dto.Interfaces;
 using Hurace.Dal.Interface;
 using Hurace.Dal.Interface.Base;
+using Hurace.DataGenerator.JsonEntities;
 using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator
@@ -20,6 +22,7 @@ namespace Hurace.DataGenerator
         private IEnumerable<Country> _countries;
         private IEnumerable<Location> _locations;
         private IEnumerable<Discipline> _disciplines;
+        private Season _season;
         private readonly Random _random = new Random();
         private readonly HashSet<DateTime> _usedRaceDates = new HashSet<DateTime>();
         private readonly DateTime _raceBaseDate = new DateTime(2018, 10, 28, 12, 0, 0);
@@ -38,6 +41,7 @@ namespace Hurace.DataGenerator
         private readonly ITimeDataDao _timeDataDao;
         private readonly IRaceEventDao _raceEventDao;
         private readonly ISkierEventDao _skierEventDao;
+        private readonly ISeasonDao _seasonDao;
 
         public DbDataCreator(string providerName, string connectionString)
         {
@@ -56,19 +60,10 @@ namespace Hurace.DataGenerator
             _raceDataDao = new RaceDataDao(connectionFactory, statementFactory);
             _raceEventDao = new RaceEventDao(connectionFactory, statementFactory);
             _skierEventDao = new SkierEventDao(connectionFactory, statementFactory);
+            _seasonDao = new SeasonDao(connectionFactory, statementFactory);
         }
 
-        private async Task LoadFixedData()
-        {
-            _countries = await _countryDao.FindAllAsync();
-            _locations = await _locationDao.FindAllAsync();
-            _disciplines = await _disciplineDao.FindAllAsync();
-        }
-
-        private DateTime GetRandomBirthDate()
-        {
-            return _skierBaseDate.AddDays(_random.Next(-300, 300));
-        }
+        private DateTime GetRandomBirthDate() => _skierBaseDate.AddDays(_random.Next(-300, 300));
 
         private int GetCountryId(string country) =>
             _countries.FirstOrDefault(c => c.CountryName.Equals(country))?.Id ?? -1;
@@ -76,8 +71,8 @@ namespace Hurace.DataGenerator
         private static int GetGenderId(string gender) =>
             gender switch
             {
-                "f" => 2,
-                "m" => 1,
+                "f" => (int) Constants.Gender.Female,
+                "m" => (int) Constants.Gender.Male,
                 _ => -1,
             };
 
@@ -87,26 +82,46 @@ namespace Hurace.DataGenerator
             return (name.Substring(0, spaceIndex), name.Substring(spaceIndex + 1));
         }
 
-        private IEnumerable<Skier> GenerateSkier()
-        {
-            using var streamReader = new StreamReader("Data.json");
-            var json = streamReader.ReadToEnd();
-            var skier = JsonConvert.DeserializeObject<List<JsonData>>(json);
-
-            return skier.Select(jsonData =>
+        private IList<Skier> GenerateSkiers() =>
+            LoadJson<SkierJson, Skier>("Data/Skiers.json", skierJson =>
             {
-                var (firstname, lastname) = GetName(jsonData.Name);
+                var (firstname, lastname) = GetName(skierJson.Name);
                 return new Skier
                 {
-                    CountryId = GetCountryId(jsonData.Country),
-                    GenderId = GetGenderId(jsonData.Gender),
+                    CountryId = GetCountryId(skierJson.Country),
+                    GenderId = GetGenderId(skierJson.Gender),
                     FirstName = firstname,
                     LastName = lastname,
                     DateOfBirth = GetRandomBirthDate()
                 };
             });
+
+        private static IList<TResult> LoadJson<T, TResult>(string path, Func<T, TResult> transform)
+        {
+            using var streamReader = new StreamReader(path);
+            var data = JsonConvert.DeserializeObject<List<T>>(streamReader.ReadToEnd());
+            return data.Select(transform).ToList();
         }
 
+        private static IEnumerable<Country> GenerateCountries() =>
+            LoadJson<CountryJson, Country>("./Data/Countries.json", countryJson => new Country
+            {
+                CountryCode = countryJson.Code,
+                CountryName = countryJson.Name
+            });
+
+        private IEnumerable<Location> GenerateLocations() =>
+            LoadJson<LocationJson, Location>("./Data/Locations.json", locationJson => new Location
+            {
+                CountryId = GetCountryId(locationJson.Country),
+                LocationName = locationJson.Name
+            });
+
+        private IEnumerable<Discipline> GenerateDisciplines() =>
+            LoadJson<DisciplineJson, Discipline>("./Data/Disciplines.json", disciplineJson => new Discipline
+            {
+                DisciplineName = disciplineJson.Name
+            });
 
         private DateTime GetRandomRaceDate()
         {
@@ -125,8 +140,8 @@ namespace Hurace.DataGenerator
                                   {
                                       GenderId = (int) Constants.Gender.Male,
                                       DisciplineId = discipline.Id,
-                                      SeasonId = 2,
-                                      RaceStateId = 3,
+                                      SeasonId = _season.Id,
+                                      RaceStateId = (int) Constants.RaceState.Finished,
                                       RaceDate = GetRandomRaceDate(),
                                       LocationId = location.Id,
                                       RaceDescription =
@@ -176,6 +191,7 @@ namespace Hurace.DataGenerator
                 {
                     RaceDataId = raceEventId
                 });
+                
                 foreach (var startListSkier in startList.Where(sl => sl.RaceId == race.Id).OrderBy(s => s.StartNumber))
                 {
                     var eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
@@ -203,7 +219,7 @@ namespace Hurace.DataGenerator
                         var skierEventId = await _skierEventDao.InsertGetIdAsync(new SkierEvent
                         {
                             RaceId = startListSkier.RaceId,
-                            SkierId =  startListSkier.SkierId,
+                            SkierId = startListSkier.SkierId,
                             RaceDataId = raceDataId
                         });
 
@@ -249,6 +265,12 @@ namespace Hurace.DataGenerator
             }
         }
 
+        private static async Task PersistEntity<T>(IEnumerable<T> entities, IDefaultCrudDao<T> dao)
+            where T : class, ISinglePkEntity, new()
+        {
+            foreach (var dto in entities) dto.Id = await dao.InsertGetIdAsync(dto);
+        }
+
         private static async Task PersistEntity<T>(IEnumerable<T> entities, ICrudDao<T> dao) where T : class, new()
         {
             foreach (var dto in entities) await dao.InsertAsync(dto);
@@ -264,26 +286,54 @@ namespace Hurace.DataGenerator
             await _startListDao.DeleteAllAsync();
             await _raceDao.DeleteAllAsync();
             await _skierDao.DeleteAllAsync();
+            await _locationDao.DeleteAllAsync();
+            await _disciplineDao.DeleteAllAsync();
+            await _countryDao.DeleteAllAsync();
+            await _seasonDao.DeleteAllAsync();
+        }
+        
+        private async Task InsertPossibleDisciplineForSkier(IEnumerable<Skier> skiers)
+        {
+            foreach (var skier in skiers)
+            foreach (var discipline in _disciplines)
+                await _skierDao.InsertPossibleDisciplineForSkier(skier.Id, discipline.Id);
+        }
+
+        private async Task InsertPossibleDisciplineForLocation()
+        {
+            foreach (var location in _locations)
+            foreach (var discipline in _disciplines)
+                await _locationDao.InsertPossibleDisciplineForLocation(location.Id, discipline.Id);
         }
 
         public async Task FillDatabase()
         {
-            await LoadFixedData();
-            var skiers = GenerateSkier().ToList();
-            await PersistEntity(skiers, _skierDao);
-            skiers = (await _skierDao.FindAllAsync()).ToList();
+            _countries = GenerateCountries();
+            await PersistEntity(_countries, _countryDao);
 
-            foreach (var skier in skiers)
-            foreach (var discipline in _disciplines)
-                await _skierDao.InsertPossibleDisciplineForSkier(skier.Id, discipline.Id);
+            _disciplines = GenerateDisciplines();
+            await PersistEntity(_disciplines, _disciplineDao);
+
+            _locations = GenerateLocations();
+            await PersistEntity(_locations, _locationDao);
+            await InsertPossibleDisciplineForLocation();
+
+            _season = new Season
+            {
+                StartDate = new DateTime(2018, 10, 28),
+                EndDate = new DateTime(2019, 3, 17)
+            };
+            _season.Id = await _seasonDao.InsertGetIdAsync(_season);
+
+            var skiers = GenerateSkiers();
+            await PersistEntity(skiers, _skierDao);
+            await InsertPossibleDisciplineForSkier(skiers);
 
             var races = GenerateRaces().ToList();
             await PersistEntity(races, _raceDao);
-            races = (await _raceDao.FindAllAsync()).ToList();
 
-            var sensors = GenerateSensors(races);
+            var sensors = GenerateSensors(races).ToList();
             await PersistEntity(sensors, _sensorDao);
-            sensors = await _sensorDao.FindAllAsync();
 
             var startList = races.SelectMany(r => GenerateStartList(r, skiers)).ToList();
             await PersistEntity(startList, _startListDao);

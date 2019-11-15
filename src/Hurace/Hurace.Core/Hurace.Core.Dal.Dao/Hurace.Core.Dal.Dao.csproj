@@ -6,6 +6,10 @@
         <LangVersion>8</LangVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\..\Hurace.Core.Dal.Interface\Hurace.Core.Dal.Interface.csproj" />
       <ProjectReference Include="..\..\Hurace.Core.Dto\Hurace.Core.Dto.csproj" />

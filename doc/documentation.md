@@ -5,6 +5,8 @@
 Die Datenbank von Hurace besteht aus folgenden 18 Tabellen. In nachfolgendem Diagramm ist zu sehen, welche Spalten jeweils definiert sind und wie die Tabellen zusammenhängen.
 ![Diagramm](images/hurace.png)
 
+Bei der Datenbank handelt es sich um eine SQL Server Datenbank.
+
 ### Tabellen
 
 #### Country
@@ -83,6 +85,22 @@ Stellt eine Zwischenzeit dar. Es wird eine Referenz auf ein SkierEvent gespeiche
 Zudem wird der Sensor referenziert, welcher die Zwischenzeit aufgenommen hat.
 Dabei kann ein Skirennläufer nur eine Zwischenzeit pro Rennen für einen Sensor besitzen.
 Weiters wird nicht ein Rennläufer direkt sondern eine StartList referenziert um sicherzugehen, dass der Schiläufer antritt bei dem jeweiligen Rennen.
+
+### Demodaten 
+Die Demodaten werden zum Großteil generiert. Basis dafür bildet ein JSON-File mit dem Namen, Herkunft und Geschlecht der Schirennläufer. Zudem werden Daten für Länder, Locations, Saisonen und Disziplinen eingefügt.
+
+Bei der Saison wird standardmäßig das Start und Enddatum der Saison 2018/19 eingefügt.
+Für die Länder werden die bekanntesten Schination eingefügt bzw. jene die in der JSON Datei der Schiläufer verwendet werden.
+Die Rennorte sind bekannte Orte, an welchen Rennen in der Saison 2018/19 in echt stattfinden.
+
+Für jeden Schirennläufer wird ein Geburtsdatum generiert. Weiters werden die möglichen Disziplinen der Schirennläufer erstellt.
+Schirennen werden zufällig in der Saison verteilt, dabei wird geachtet, dass nicht zwei Rennen am selben Tag stattfinden.
+Für die Testdaten werden nur Schirennen nur für Männer erstellt um die Anzahl der Schifahrer geringer zu halten. 
+Anschließend werden Rennen generiert und für jedes Rennen fünf Sensoren angelegt.
+Weiters wird für jedes Rennen jeder männlicher Schirennläufer in die Start Liste eingetragen.
+
+Anschließend werden die Rennläufe generiert. 
+Dabei wird für jedes Rennen die Startliste durchlaufen. Der Startzeitpunkt jedes Rennens ist um 12 Uhr des Renntages. Die Zwischenzeiten werden zufällig erstellt. Zwischenzeiten sind durchschnittlich 20 Sekunden auseinander, wobei dieser Wert um bis zu einer Sekunde abweichen kann.
 
 ## Database Access Layer
 

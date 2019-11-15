@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Hurace.Core.Dto;
 using Hurace.Core.Dto.Interfaces;
 
 namespace Hurace.Dal.Interface.Base

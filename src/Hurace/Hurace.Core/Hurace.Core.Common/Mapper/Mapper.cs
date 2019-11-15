@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using Hurace.Core.Common.Extensions;
 using Hurace.Core.Dto.Attributes;
 
 namespace Hurace.Core.Common.Mapper
@@ -18,13 +17,13 @@ namespace Hurace.Core.Common.Mapper
                     if (config?.IsIncluded(pi.PropertyType) ?? false)
                     {
                         var res = typeof(Mapper).GetMethod(nameof(MapTo))?.MakeGenericMethod(pi.PropertyType)
-                            .Invoke(null, new object[] {record, config});
+                            .Invoke(null, new object?[] { record, config });
                         pi.SetValue(ret, res);
                     }
                     continue;
                 }
 
-                string mappedName = null;
+                string? mappedName = null;
                 var propName = config?.MappingExists(typeof(T), pi.Name, out mappedName) ?? false
                     ? mappedName
                     : pi.Name;

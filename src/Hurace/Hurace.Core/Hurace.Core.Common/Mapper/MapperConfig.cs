@@ -32,7 +32,7 @@ namespace Hurace.Core.Common.Mapper
 
         public bool IsIncluded(Type t) => _inclusions.Contains(t);
 
-        public bool MappingExists(Type t, string propName, out string srcName)
+        public bool MappingExists(Type t, string propName, out string? srcName)
         {
             if (_mappingConfig.TryGetValue(t, out var propertyMappings) &&
                 propertyMappings.TryGetValue(propName, out srcName)) return true;

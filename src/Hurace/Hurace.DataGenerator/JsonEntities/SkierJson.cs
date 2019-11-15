@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Hurace.DataGenerator
+namespace Hurace.DataGenerator.JsonEntities
 {
     [ExcludeFromCodeCoverage]
-    public class JsonData
+    public class SkierJson
     {
         public string Name { get; set; }
         public string Gender { get; set; }

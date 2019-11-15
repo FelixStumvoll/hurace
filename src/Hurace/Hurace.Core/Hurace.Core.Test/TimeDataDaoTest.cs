@@ -29,7 +29,7 @@ namespace Hurace.Core.Test
             var sensor = (await SensorDao.FindAllAsync()).First();
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
             Assert.NotNull(timeData);
-            Assert.NotNull(timeData?.StartList);
+            Assert.NotNull(timeData.StartList);
             Assert.NotNull(timeData?.SkierEvent);
             Assert.NotNull(timeData?.SkierEvent?.RaceData);
             Assert.NotNull(timeData?.Sensor);
