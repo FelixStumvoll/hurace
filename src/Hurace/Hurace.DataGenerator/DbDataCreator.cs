@@ -278,6 +278,7 @@ namespace Hurace.DataGenerator
 
         public async Task Cleanup()
         {
+            Console.WriteLine("Start Cleanup");
             await _timeDataDao.DeleteAllAsync();
             await _skierEventDao.DeleteAllAsync();
             await _raceEventDao.DeleteAllAsync();
@@ -290,6 +291,7 @@ namespace Hurace.DataGenerator
             await _disciplineDao.DeleteAllAsync();
             await _countryDao.DeleteAllAsync();
             await _seasonDao.DeleteAllAsync();
+            Console.WriteLine("Finished Cleanup");
         }
         
         private async Task InsertPossibleDisciplineForSkier(IEnumerable<Skier> skiers)
@@ -308,16 +310,20 @@ namespace Hurace.DataGenerator
 
         public async Task FillDatabase()
         {
+            Console.WriteLine("Creating Countries");
             _countries = GenerateCountries();
             await PersistEntity(_countries, _countryDao);
 
+            Console.WriteLine("Creating Disciplines");
             _disciplines = GenerateDisciplines();
             await PersistEntity(_disciplines, _disciplineDao);
 
+            Console.WriteLine("Creating Locations");
             _locations = GenerateLocations();
             await PersistEntity(_locations, _locationDao);
             await InsertPossibleDisciplineForLocation();
 
+            Console.WriteLine("Creating Season");
             _season = new Season
             {
                 StartDate = new DateTime(2018, 10, 28),
@@ -325,20 +331,26 @@ namespace Hurace.DataGenerator
             };
             _season.Id = await _seasonDao.InsertGetIdAsync(_season);
 
+            Console.WriteLine("Creating Skiers");
             var skiers = GenerateSkiers();
             await PersistEntity(skiers, _skierDao);
             await InsertPossibleDisciplineForSkier(skiers);
 
+            Console.WriteLine("Creating Races");
             var races = GenerateRaces().ToList();
             await PersistEntity(races, _raceDao);
 
+            Console.WriteLine("Creating Sensors");
             var sensors = GenerateSensors(races).ToList();
             await PersistEntity(sensors, _sensorDao);
 
+            Console.WriteLine("Creating Startlist");
             var startList = races.SelectMany(r => GenerateStartList(r, skiers)).ToList();
             await PersistEntity(startList, _startListDao);
 
+            Console.WriteLine("Creating RaceData");
             await GenerateRaceData(races, startList, sensors);
+            Console.WriteLine("Finished");
         }
     }
 }

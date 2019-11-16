@@ -8,7 +8,7 @@ namespace Hurace.Core.Dal.Dao
 {
     public class EventTypeDao : DefaultReadonlyDao<EventType>, IEventTypeDao
     {
-        protected EventTypeDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(connectionFactory, "hurace.eventType", statementFactory)
+        public EventTypeDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(connectionFactory, "hurace.eventType", statementFactory)
         {
         }
     }

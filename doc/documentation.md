@@ -186,7 +186,7 @@ Im folgenden Diagram ist die Vererbungshierarchie der DAOs zu sehen.
 ![DAOs](images/Dal.Dao.Diagram.png)
 
 Sämtliche Funktionalität ist dabei in _BaseDao_ untergebracht. Zudem besitzt diese Klasse eine _ConnectionFactory_ mit welcher eine Datenbankverbindung aufgebaut werden und anschließend SQL-Statements ausgeführt werden können.
-Weiters steht eine [StatementFactory](#statementfactory) zur Verfügung, welche SQL Statements erzeugen kann.
+Weiters steht eine [StatementFactory](#statementfactory) zur Verfügung, welche einfache SQL Statements erzeugen kann.
 Die wichtigsten Methoden sind im Anschluss beschrieben.
 
 #### QueryAsync
@@ -204,8 +204,15 @@ Diese Methode funktioniert ähnlich wie [ExecuteAsync](#executeasync). Der Unter
 
 #### Mapper
 
-Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode _MapTo_. Der Mapper durchläuft alle Properties des angegebenen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen _IDataRecord_ welcher die Datenbankeinträge enthält. Ist ein Property mit dem _NavigationAttribute_ gekennzeichnet, so wird _MapTo_ rekursiv aufgerufen und die Properties dieses Typen gemappt.
-Mittels einer _MapperConfig_ kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Weiters wird mit der _MapperConfig_ angegeben, welche referenzierten Entitäten geladen werden sollen.
+Um nicht manuell einen Mapper für jedes DTO schreiben zu müssen, wird diese Funktionalität in einen Mapper ausgelagert. Dieser hat eine generische Methode _MapTo_. Der Mapper durchläuft alle Properties des angegebenen generischen Typen und holt sich mittels des Property Names einen Wert aus dem ebenfalls übergebenen _IDataRecord_. _IDataRecord_ enthält alle Daten welche aus der ausgeführten Query zurückkommen. Ist ein Property mit dem _NavigationAttribute_ gekennzeichnet, so wird _MapTo_ rekursiv aufgerufen und die Properties dieses Typen gemappt.
+Mittels einer [MapperConfig](#mapperconfig) kann konfiguriert werden, dass z.B ein Property einen Wert erhält welcher unter einem anderen Namen aus der Datenbank geholt wird. Beispielsweise wird für einen [Skier](#skier) der [Country](#country) mitgeladen. Damit die beiden Id Spalten nicht kollidieren, wird die Id des [Countries](#country) als _countryId_ geladen, in der [MapperConfig](#mapperconfig) kann konfiguriert werden, dass die Werte trotzdem richtig zugeordnet werden. Weiters wird mit der [MapperConfig](#mapperconfig) angegeben, welche referenzierten Entitäten geladen werden sollen.
+
+##### MapperConfig
+Eine MapperConfig bietet vier Methoden, zwei zum Konfigurieren und zwei zum Auslesen. 
+Mittels _AddMapping_ können für einen generischen Mappings definiert werden. Dabei wird eine Liste von Tuplen übernommen mit jeweils dem Namen der Spalte und der Name des Properties auf welchen gemappt werden soll.
+Zudem gibt es eine Methode _Include_ diese nimmt einen generischen Typen. Mit dieser Methode wird bestimmt, dass eine Property mit dem _NavigationalAttribute_ ebenfalls gemappt werden soll. Diese Methode wird bei _AddMapping_ automatisch aufgerufen.
+
+Mit _IsIncluded_ kann herausgefunden werden ob ein Property mit dem _NavigationalAttribute_ inkludiert werden soll und mit _MappingExists_ wird geprüft ob für einen Typen und dessen Property ein Mapping existiert.
 
 #### StatementFactory
 
@@ -225,16 +232,16 @@ Die drei StatementFactories bieten zudem folgende Methoden
 
 ###### Join
 Mit der Join Methode können Tabellen gejoined werden.
-Die Methode nimmt zwei generische Typen und eine Liste von Join Parametern. Diese bestehen aus zwei Strings, welche die Spaltennamen angeben, welche beim Join verglichen werden. Der Name des ersten generischen Typs steht für die Tabelle von welcher aus gejoined wird und der Name des zweiten Typs für die Tabelle auf welche gejoined wird. Diese Dinge werden zwischengespeichert und später beim Aufruf von [Build](#build) wieder abgerufen.
+Die Methode nimmt zwei generische Typen und eine Liste von Join Parametern. Diese bestehen aus zwei Strings, welche die Spaltennamen angeben, welche beim Join verglichen werden sollen. Der Name des ersten generischen Typs steht für die Tabelle von welcher aus gejoined wird und der Name des zweiten Typs für die Tabelle auf welche gejoined wird. Diese Dinge werden zwischengespeichert und später beim Aufruf von [Build](#build) wieder abgerufen.
 
-###### Build - select
-Die Build Methode baut aus den konfigurierten Einstellungen ein SQL Statement mit Query Parametern sowie einer MapperConfig zusammen. Zuerst werden die Properties des generischen Typen durchlaufen und dabei werden die Namen der Properties als Spaltennamen in das Select Statement eingefügt. Dies wird auch für die generischen Typen der gejointen Tabellen gemacht.
+###### Build - Select
+Die Build Methode baut aus den konfigurierten Einstellungen ein SQL Statement mit Query Parametern sowie einer MapperConfig zusammen. Zuerst werden die Properties des generischen Typen durchlaufen und dabei werden die Namen der Properties als Spaltennamen in das Select Statement eingefügt, der Name des generischen Typen wird als Tabellenname herangezogen. Dies wird auch für die Spalten der gejointen Tabellen gemacht.
 Anschließend werden die Join Constraints eingefügt. Zuletzt werden die Where Conditions aus [Where](#where) eingefügt.
 
 ##### UpdateStatementBuilder
 
 ###### WhereId
-Diese Methode erlaubt es automatisch die Primärschlüssel einer Entität als Where Conditions festzulegen. Dies geschieht mithilfe des [KeyAttributes].
+Diese Methode erlaubt es automatisch die Primärschlüssel einer Entität als Where Conditions festzulegen. Dies geschieht mithilfe des _KeyAttributes_.
 
 ###### Build - Update
 Diese Methode baut wiederum ein Statement aus der Konfiguration zusammen. Dabei werden die Namen der Properties des generischen Datentypes als Spalten eingefügt. Navigations Properties werden dabei ignoriert. Aus der Wertebelegung der Properties werden zudem die Query Parameter generiert.
@@ -244,4 +251,18 @@ Zuletzt werden noch die Where Conditions eingefügt.
 ##### InsertQueryBuilder
 
 ###### Build - Insert
-Diese Methode funktioniert ähnlich zu [Build - Update](#build---update), außer, dass die hier keine Where Conditions verfügbar sind.
+Diese Methode funktioniert ähnlich zu [Build - Update](#build---update), außer, dass die hier keine Where Conditions eingefügt werden.
+
+## Unit Tests
+
+Die Unit Tests decken jeweils die Methoden
+* FindAll
+* FindById
+* Insert
+* Update
+* Delete
+* DeleteAll
+
+ab. Wobei bei lesenden Daos nur die ersten beiden getestet werden. 
+Der Test muss für alle Daos durchgeführt werden, obwohl die meisten Methoden generisch implementiert wurden,
+da diese auf unterschiedliche Tabellen zugreifen.

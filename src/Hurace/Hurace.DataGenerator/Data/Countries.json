@@ -42,5 +42,9 @@
   {
     "Code": "RUS",
     "Name": "Russian Federation"
+  },
+  {
+    "Code": "JPN",
+    "Name": "Japan"
   }
 ]

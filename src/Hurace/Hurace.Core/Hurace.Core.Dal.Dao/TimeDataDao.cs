@@ -28,11 +28,10 @@ namespace Hurace.Core.Dal.Dao
                 $@"select{topSection} * from hurace.TimeDataRanking where raceId=@raceId
                                                 order by raceTime asc",
                 new MapperConfig()
-                    .AddMapping<RaceRanking>(("skierId", "SkierId"), ("raceTime", "Time"))
-                    .AddMapping<Country>(("countryId", "Id"))
-                    .AddMapping<StartList>(("skierId", "SkierId"))
-                    .AddMapping<Skier>(("skierId", "Id"))
-                    .AddMapping<Gender>(("genderId", "Id")),
+                    .AddMapping<Country>(("countryId", nameof(Country.Id)))
+                    .Include<StartList>()
+                    .AddMapping<Skier>(("skierId",nameof(Skier.Id)))
+                    .AddMapping<Gender>(("genderId", nameof(Gender.Id))),
                 ("@raceId", raceId));
         }
 
@@ -43,18 +42,19 @@ namespace Hurace.Core.Dal.Dao
         private protected override SelectStatementBuilder<TimeData> DefaultSelectQuery() =>
             StatementFactory
                 .Select<TimeData>()
-                .Join<TimeData, StartList>(("skierId", "skierId"), ("raceId", "raceId"))
+                .Join<TimeData, StartList>((nameof(TimeData.RaceId), nameof(StartList.RaceId)),
+                                             (nameof(TimeData.SkierId), nameof(StartList.SkierId)))
                 .Join<TimeData, SkierEvent>((nameof(TimeData.SkierEventId), nameof(SkierEvent.Id)))
-                .Join<SkierEvent, RaceData>(("raceDataId", "id"))
-                .Join<TimeData, Sensor>(("sensorId", "id"))
-                .Join<StartList, Skier>(("skierId", "id"))
-                .Join<Skier, Country>(("countryId", "id"));
+                .Join<SkierEvent, RaceData>((nameof(SkierEvent.RaceDataId), nameof(RaceData.Id)))
+                .Join<TimeData, Sensor>((nameof(TimeData.SensorId), nameof(Sensor.Id)))
+                .Join<StartList, Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
+                .Join<Skier, Country>((nameof(Skier.CountryId), nameof(Country.Id)));
 
         public async Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
-                                       .Where<TimeData>(("skierId", skierId),
-                                                        ("raceId", raceId),
-                                                        ("sensorId", sensorId))
+                                       .Where<TimeData>((nameof(TimeData.SkierId), skierId),
+                                                        (nameof(TimeData.RaceId), raceId),
+                                                        (nameof(TimeData.SensorId), sensorId))
                                        .Build()))
             .SingleOrDefault();
     }

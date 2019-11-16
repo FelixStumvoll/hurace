@@ -35,8 +35,8 @@ namespace Hurace.Core.Dal.Dao
         private protected override SelectStatementBuilder<Skier> DefaultSelectQuery() =>
             StatementFactory
                 .Select<Skier>()
-                .Join<Skier, Country>(("countryId", "id"))
-                .Join<Skier, Gender>(("genderId", "id"));
+                .Join<Skier, Country>((nameof(Skier.CountryId), nameof(Country.Id)))
+                .Join<Skier, Gender>((nameof(Skier.GenderId), nameof(Gender.Id)));
 
         public override async Task<bool> DeleteAsync(int id)
         {

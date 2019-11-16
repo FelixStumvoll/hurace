@@ -49,10 +49,10 @@ namespace Hurace.Core.Dal.Dao
         private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId,
             Constants.StartState startListState) =>
             await GeneratedQueryAsync(StatementFactory.Select<StartList>()
-                                                      .Join<StartList, Skier>(("skierId", "id"))
-                                                      .Join<Skier, Country>(("countryId", "id"))
+                                                      .Join<StartList, Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
+                                                      .Join<Skier, Country>((nameof(Skier.CountryId), nameof(Country.Id)))
                                                       .Where<StartList>(
-                                                          ("startStateId", (int) startListState), ("raceId", raceId))
+                                                          (nameof(StartList.StartStateId), (int) startListState), (nameof(StartList.RaceId), raceId))
                                                       .Build());
         
         public async Task<StartList?> GetNextSkierForRace(int raceId) =>
@@ -60,15 +60,15 @@ namespace Hurace.Core.Dal.Dao
 
         private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()
-                            .Join<StartList, Skier>(("skierId", "id"))
-                            .Join<Skier, Country>(("countryId", "id"))
-                            .Join<Skier, Gender>(("genderId", "id"))
-                            .Join<StartList, StartState>(("startStateId", "id"))
-                            .Join<StartList, Race>(("raceId", "id"));
+                            .Join<StartList, Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
+                            .Join<Skier, Country>((nameof(Skier.CountryId), nameof(Country.Id)))
+                            .Join<Skier, Gender>((nameof(Skier.GenderId), nameof(Gender.Id)))
+                            .Join<StartList, StartState>((nameof(StartList.StartStateId), nameof(StartState.Id)))
+                            .Join<StartList, Race>((nameof(StartList.RaceId), nameof(Race.Id)));
 
         public async Task<StartList?> FindByIdAsync(int skierId, int raceId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
-                                       .Where<StartList>(("skierId", skierId), ("raceId", raceId)).Build()))
+                                       .Where<StartList>((nameof(StartList.SkierId), skierId), (nameof(StartList.RaceId), raceId)).Build()))
             .SingleOrDefault();
 
         public async Task<bool> DeleteAsync(int raceId, int skierId) =>

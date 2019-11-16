@@ -31,7 +31,6 @@ namespace Hurace.Core.Dal.Dao.Base
                 var items = new List<TResult>();
                 await using var reader = await command.ExecuteReaderAsync();
                 while (reader.Read()) items.Add(reader.MapTo<TResult>(mapperConfig));
-
                 return items;
             });
         }
@@ -40,7 +39,7 @@ namespace Hurace.Core.Dal.Dao.Base
             (string statement, MapperConfig config, IEnumerable<QueryParam> queryParams) data) =>
             await QueryAsync<T>(data.statement, data.config, data.queryParams.ToArray());
 
-        private protected async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
+        private async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
             await ConnectionFactory.UseConnection($"{statement};SELECT CAST(scope_identity() AS int)",
                                                   queryParams,
                                                   async command =>

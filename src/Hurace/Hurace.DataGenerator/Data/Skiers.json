@@ -449,4 +449,40 @@
     "Gender": "m",
     "Country": "Germany"
   }
+,
+  {
+    "Name": "Lana Kane",
+    "Gender": "f",
+    "Country": "United States"
+  },
+  {
+    "Name": "Pamela Poovey",
+    "Gender": "f",
+    "Country": "United States"
+  },
+  {
+    "Name": "Cheryl Tunt",
+    "Gender": "f",
+    "Country": "United States"
+  },
+  {
+    "Name": "Malory Archer",
+    "Gender": "f",
+    "Country": "United States"
+  },
+  {
+    "Name": "Katya Kazanova",
+    "Gender": "f",
+    "Country": "Russian Federation"
+  },
+  {
+    "Name": "Mitsuko Miyazumi",
+    "Gender": "f",
+    "Country": "Japan"
+  },
+  {
+    "Name": "Anka Schlotz",
+    "Gender": "f",
+    "Country": "Germany"
+  }
 ]

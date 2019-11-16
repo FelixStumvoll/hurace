@@ -7,10 +7,10 @@ namespace Hurace.DataGenerator
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
-        static async Task Main()
+        private static async Task Main()
         {
             var dbCreator = new DbDataCreator("Microsoft.Data.SqlClient",
-                                              "Data Source=localhost,8888;Initial Catalog=huraceDB;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q");
+                                              "Data Source=localhost;Initial Catalog=huraceDB_Prod;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q");
             
             await dbCreator.Cleanup();
             try

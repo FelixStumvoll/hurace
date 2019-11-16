@@ -37,7 +37,7 @@ namespace Hurace.Core.Dal.Dao
         private protected override SelectStatementBuilder<Location> DefaultSelectQuery() =>
             StatementFactory
                 .Select<Location>()
-                .Join<Location, Country>(("countryId", "id"));
+                .Join<Location, Country>((nameof(Location.CountryId), nameof(Country.Id)));
         
         public override async Task DeleteAllAsync()
         {

@@ -16,10 +16,10 @@ namespace Hurace.Core.Dal.Dao
 
         private protected override SelectStatementBuilder<Race> DefaultSelectQuery() =>
             StatementFactory.Select<Race>()
-                            .Join<Race, Location>(("locationId", "id"))
-                            .Join<Race, Season>(("seasonId", "id"))
-                            .Join<Race, Discipline>(("disciplineId", "id"))
-                            .Join<Race, RaceState>(("raceStateId", "id"))
-                            .Join<Race, Gender>(("genderId", "id"));
+                            .Join<Race, Location>((nameof(Race.LocationId), nameof(Location.Id)))
+                            .Join<Race, Season>((nameof(Race.SeasonId),nameof(Season.Id)))
+                            .Join<Race, Discipline>((nameof(Race.DisciplineId), nameof(Discipline.Id)))
+                            .Join<Race, RaceState>((nameof(Race.RaceStateId), nameof(RaceState.Id)))
+                            .Join<Race, Gender>((nameof(Race.GenderId), nameof(Gender.Id)));
     }
 }

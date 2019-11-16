@@ -17,23 +17,24 @@ namespace Hurace.Core.Test
             "Data Source=localhost;Initial Catalog=huraceDB;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q";
 
         private const string ProviderName = "Microsoft.Data.SqlClient";
-        protected StatementFactory StatementFactory { get; } = new StatementFactory("hurace");
-        protected ConcreteConnectionFactory ConnectionFactory { get; }
+        private StatementFactory StatementFactory { get; } = new StatementFactory("hurace");
+        private ConcreteConnectionFactory ConnectionFactory { get; }
         protected IRaceDataDao RaceDataDao { get; set; }
-        public IRaceDao RaceDao { get; set; }
-        public ILocationDao LocationDao { get; set; }
-        public IDisciplineDao DisciplineDao { get; set; }
-        public ISeasonDao SeasonDao { get; set; }
-        public ICountryDao CountryDao { get; set; }
-        public ISkierDao SkierDao { get; set; }
-        public IStartListDao StartListDao { get; set; }
-        public IRaceEventDao RaceEventDao { get; set; }
-        public ISkierEventDao SkierEventDao { get; set; }
-        public ITimeDataDao TimeDataDao { get; set; }
-        public IGenderDao GenderDao { get; set; }
-        public ISensorDao SensorDao { get; set; }
-        public IRaceStateDao RaceStateDao { get; set; }
-        public IStartStateDao StartStateDao { get; set; }
+        protected IRaceDao RaceDao { get; set; }
+        protected ILocationDao LocationDao { get; set; }
+        protected IDisciplineDao DisciplineDao { get; set; }
+        protected ISeasonDao SeasonDao { get; set; }
+        protected ICountryDao CountryDao { get; set; }
+        protected ISkierDao SkierDao { get; set; }
+        protected IStartListDao StartListDao { get; set; }
+        protected IRaceEventDao RaceEventDao { get; set; }
+        protected ISkierEventDao SkierEventDao { get; set; }
+        protected ITimeDataDao TimeDataDao { get; set; }
+        protected IGenderDao GenderDao { get; set; }
+        protected ISensorDao SensorDao { get; set; }
+        protected IRaceStateDao RaceStateDao { get; set; }
+        protected IStartStateDao StartStateDao { get; set; }
+        protected IEventTypeDao EventTypeDao { get; set; }
 
 
         protected TestBase()
@@ -56,6 +57,7 @@ namespace Hurace.Core.Test
             RaceDataDao = new RaceDataDao(ConnectionFactory, StatementFactory);
             RaceStateDao = new RaceStateDao(ConnectionFactory, StatementFactory);
             StartStateDao = new StartStateDao(ConnectionFactory, StatementFactory);
+            EventTypeDao = new EventTypeDao(ConnectionFactory, StatementFactory);
         }
         
         #region Setup
