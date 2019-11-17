@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Hurace.DataGenerator
 {
@@ -9,9 +10,12 @@ namespace Hurace.DataGenerator
     {
         private static async Task Main()
         {
-            var dbCreator = new DbDataCreator("Microsoft.Data.SqlClient",
-                                              "Data Source=localhost;Initial Catalog=huraceDB_Prod;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q");
-            
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var section = config.GetSection("ConnectionStrings").GetSection("huraceProd");
+            var dbCreator = new DbDataCreator(
+                section["ProviderName"],
+                section["ConnectionString"]);
+
             await dbCreator.Cleanup();
             try
             {
@@ -22,7 +26,6 @@ namespace Hurace.DataGenerator
                 Console.WriteLine(e.Message);
                 await dbCreator.Cleanup();
             }
-
         }
     }
 }

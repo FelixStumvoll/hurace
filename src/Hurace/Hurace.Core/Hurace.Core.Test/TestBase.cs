@@ -6,6 +6,7 @@ using Hurace.Core.Common.StatementBuilder;
 using Hurace.Core.Dal.Dao;
 using Hurace.Core.Dto;
 using Hurace.Dal.Interface;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Hurace.Core.Test
@@ -13,10 +14,6 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class TestBase
     {
-        private const string ConnectionString =
-            "Data Source=localhost;Initial Catalog=huraceDB;Persist Security Info=True;User ID=SA;Password=EHq(iT|$@A4q";
-
-        private const string ProviderName = "Microsoft.Data.SqlClient";
         private StatementFactory StatementFactory { get; } = new StatementFactory("hurace");
         private ConcreteConnectionFactory ConnectionFactory { get; }
         protected IRaceDataDao RaceDataDao { get; set; }
@@ -39,8 +36,11 @@ namespace Hurace.Core.Test
 
         protected TestBase()
         {
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var section = config.GetSection("ConnectionStrings").GetSection("huraceTest");
+            
             ConnectionFactory =
-                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(ProviderName), ConnectionString);
+                new ConcreteConnectionFactory(DbUtil.GetProviderFactory(section["ProviderName"]), section["ConnectionString"]);
 
             RaceDao = new RaceDao(ConnectionFactory, StatementFactory);
             SeasonDao = new SeasonDao(ConnectionFactory, StatementFactory);

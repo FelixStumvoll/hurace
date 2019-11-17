@@ -1,5 +1,11 @@
 # Hurace
 
+## Setup
+Um Hurace in Betrieb zu nehmen muss ein Datenbank-Server zur Verfügung stehen. 
+In ```src/Datenbank``` befindet sich ein Script, welches einen SQL Server Container anlegt.
+Anschließend müssen auf dem Datenbank Server die Test und die Produktivdatenbank angelegt werden.
+Die Scripts zum Erstellen befinden sich ebenfalls in ```scr/Datenbank```. Diese sind für den SQL Server 2016 und 2019 verfügbar.
+
 ## Datenbank
 
 Die Datenbank von Hurace besteht aus folgenden 18 Tabellen. In nachfolgendem Diagramm ist zu sehen, welche Spalten jeweils definiert sind und wie die Tabellen zusammenhängen.
