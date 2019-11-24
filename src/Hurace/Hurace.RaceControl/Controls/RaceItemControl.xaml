@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="Hurace.RaceControl.Controls.RaceItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
+             d:DataContext="{d:DesignInstance vm:RaceItemViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0">
+            <TabItem Header="Stammdaten">
+                <controls:RaceBaseDataViewControl />
+            </TabItem>
+            <TabItem Header="Startliste" />
+            <TabItem Header="Race Control" />
+        </TabControl>
+
+
+        <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
+            <ContentPresenter.Resources>
+                <DataTemplate x:Key="InEdit">
+                    <StackPanel Style="{StaticResource CrudButtonStyle}">
+                        <Button Content="Abbrechen" Command="{Binding CancelEdit}" Margin="0,0,10,0" />
+                        <Button Content="Speichern" Command="{Binding SaveEdit}" />
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="View">
+                    <StackPanel Style="{StaticResource CrudButtonStyle}">
+                        <Button Content="Bearbeiten" Command="{Binding StartEdit}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ContentPresenter.Resources>
+
+            <ContentPresenter.Style>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Edit}" Value="True">
+                            <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Edit}" Value="False">
+                            <Setter Property="ContentTemplate" Value="{StaticResource View}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentPresenter.Style>
+        </ContentPresenter>
+
+    </Grid>
+
+</UserControl>
