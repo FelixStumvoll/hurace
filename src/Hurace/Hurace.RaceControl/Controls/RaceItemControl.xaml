@@ -9,57 +9,24 @@
              xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
              d:DataContext="{d:DesignInstance vm:RaceItemViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-
-    <UserControl.Resources>
-        <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
-            <Setter Property="Orientation" Value="Horizontal" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-        </Style>
-    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TabControl Grid.Row="0">
+        <DockPanel Grid.Row="0" Margin="5">
+            <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
+                       Text="{Binding Race.RaceDescription}" />
+            <Button HorizontalAlignment="Right" Content="Delete" Padding="5,0" Command="{Binding Delete}" />
+        </DockPanel>
+        <TabControl Grid.Row="1" BorderThickness="0,1,0,0">
             <TabItem Header="Stammdaten">
                 <controls:RaceBaseDataViewControl />
             </TabItem>
             <TabItem Header="Startliste" />
+            <TabItem Header="Sensoren" />
             <TabItem Header="Race Control" />
         </TabControl>
-
-
-        <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
-            <ContentPresenter.Resources>
-                <DataTemplate x:Key="InEdit">
-                    <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Abbrechen" Command="{Binding CancelEdit}" Margin="0,0,10,0" />
-                        <Button Content="Speichern" Command="{Binding SaveEdit}" />
-                    </StackPanel>
-                </DataTemplate>
-
-                <DataTemplate x:Key="View">
-                    <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Bearbeiten" Command="{Binding StartEdit}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ContentPresenter.Resources>
-
-            <ContentPresenter.Style>
-                <Style TargetType="{x:Type ContentPresenter}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Edit}" Value="True">
-                            <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Edit}" Value="False">
-                            <Setter Property="ContentTemplate" Value="{StaticResource View}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentPresenter.Style>
-        </ContentPresenter>
-
     </Grid>
-
 </UserControl>

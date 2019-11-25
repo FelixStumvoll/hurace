@@ -28,8 +28,35 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False">
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
             <ListBox Grid.Row="0" ItemsSource="{Binding Races}" SelectedItem="{Binding CurrentRace}"
                      BorderThickness="0">
+                <!-- <ListBox.Style> -->
+                <!--     <Style TargetType="ListBox"> -->
+                <!--         <Style.Triggers> -->
+                <!--             <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True"> -->
+                <!--                 <Setter Property="IsEnabled" Value="False" /> -->
+                <!--             </DataTrigger> -->
+                <!--              -->
+                <!--             <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False"> -->
+                <!--                 <Setter Property="IsEnabled" Value="True" /> -->
+                <!--             </DataTrigger> -->
+                <!--         </Style.Triggers> -->
+                <!--     </Style> -->
+                <!-- </ListBox.Style> -->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Race.RaceDescription}" />
@@ -40,7 +67,7 @@
             <Button Grid.Row="1" Content="Create Race" Margin="10" />
         </Grid>
 
-        <GridSplitter Grid.Column="0" Background="Black" Width="1" VerticalAlignment="Stretch"
+        <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"
                       HorizontalAlignment="Right" />
 
 

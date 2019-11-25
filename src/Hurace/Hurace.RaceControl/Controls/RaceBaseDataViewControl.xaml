@@ -7,48 +7,105 @@
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceItemViewModel}">
-    <WrapPanel Orientation="Vertical">
-        <WrapPanel.Resources>
-            <Style TargetType="{x:Type StackPanel}">
+    
+    <UserControl.Resources>
+        <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                <Setter Property="Margin" Value="10,0" />
-            </Style>
-
-
-        </WrapPanel.Resources>
-        <StackPanel Orientation="Horizontal">
-            <StackPanel.Resources>
+        <WrapPanel Grid.Row="0" Orientation="Vertical">
+            <WrapPanel.Resources>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Setter Property="Margin" Value="10,0" />
+                </Style>
                 <Style TargetType="{x:Type TextBox}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Edit}" Value="True">
                             <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="Margin" Value="0" />
                             <Setter Property="IsReadOnly" Value="False" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Edit}" Value="False">
                             <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Margin" Value="1" />
                             <Setter Property="IsReadOnly" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </StackPanel.Resources>
-            <TextBlock Text="Beschreibung:" />
-            <TextBox Text="{Binding Race.RaceDescription}" />
-        </StackPanel>
+                
+                <Style TargetType="{x:Type ComboBox}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Edit}" Value="True">
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Edit}" Value="False">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </WrapPanel.Resources>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Beschreibung:" />
+                <TextBox Text="{Binding Race.RaceDescription}" />
+            </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Disziplin: " />
-            <TextBlock Text="{Binding Race.Discipline.DisciplineName}" />
-        </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Disziplin: " />
+                <ComboBox IsReadOnly="true">
+                    <ComboBox.Items>
+                        <ComboBoxItem Content="Abfahrt"></ComboBoxItem>
+                        <ComboBoxItem Content="Super-G"></ComboBoxItem>
+                    </ComboBox.Items>
+                </ComboBox>
+            </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Ort: " />
-            <TextBlock Text="{Binding Race.Location.LocationName}" />
-        </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Ort: " />
+                <TextBox Text="{Binding Race.Location.LocationName}" />
+            </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Geschlecht: " />
-            <TextBlock Text="{Binding Race.Gender.GenderDescription}" />
-        </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Geschlecht: " />
+                <TextBox Text="{Binding Race.Gender.GenderDescription}" />
+            </StackPanel>
+        </WrapPanel>
 
-    </WrapPanel>
+        <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
+            <ContentPresenter.Resources>
+                <DataTemplate x:Key="InEdit">
+                    <StackPanel Style="{StaticResource CrudButtonStyle}">
+                        <Button Content="Abbrechen" Command="{Binding CancelEdit}" Padding="5,0" Margin="0,0,10,0" />
+                        <Button Content="Speichern" Command="{Binding SaveEdit}" Padding="5,0" />
+                    </StackPanel>
+                </DataTemplate>
+
+                <DataTemplate x:Key="View">
+                    <StackPanel Style="{StaticResource CrudButtonStyle}">
+                        <Button Content="Bearbeiten" Command="{Binding StartEdit}" Padding="5,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </ContentPresenter.Resources>
+
+            <ContentPresenter.Style>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Edit}" Value="True">
+                            <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Edit}" Value="False">
+                            <Setter Property="ContentTemplate" Value="{StaticResource View}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentPresenter.Style>
+        </ContentPresenter>
+
+    </Grid>
 </UserControl>
