@@ -35,9 +35,10 @@
                         </Style>
                     </StackPanel.Resources>
                     <TextBlock Text="Beschreibung:" Margin="0" />
-                    <TextBlock Text="Disziplin: " />
-                    <TextBlock Text="Ort: " />
-                    <TextBlock Text="Geschlecht: " />
+                    <TextBlock Text="Datum:" />
+                    <TextBlock Text="Disziplin:" />
+                    <TextBlock Text="Ort:" />
+                    <TextBlock Text="Geschlecht:" />
                 </StackPanel>
                 <!-- Inputs -->
                 <StackPanel Orientation="Vertical" Margin="50,0,0,0">
@@ -74,8 +75,21 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
+
+                        <Style TargetType="DatePicker">
+                            <Setter Property="Width" Value="250" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
                     </StackPanel.Resources>
                     <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
+                    <DatePicker SelectedDate="{Binding Race.RaceDate}" />
                     <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -85,28 +99,7 @@
                     </ComboBox>
                     <TextBox Text="{Binding Race.Location.LocationName}" />
                     <TextBox Text="{Binding Race.Gender.GenderDescription}" />
-                    <!--     <TextBox Text="{Binding Race.RaceDescription}" /> -->
-                    <!-- </StackPanel> -->
-                    <!-- -->
-                    <!-- <StackPanel Orientation="Horizontal"> -->
-                    <!--      -->
-                    <!--     <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}"> -->
-                    <!--         <ComboBox.ItemTemplate> -->
-                    <!--             <DataTemplate> -->
-                    <!--                 <TextBlock Text="{Binding DisciplineName}" /> -->
-                    <!--             </DataTemplate> -->
-                    <!--         </ComboBox.ItemTemplate> -->
-                    <!--     </ComboBox> -->
-                    <!-- </StackPanel> -->
-                    <!-- -->
-                    <!-- <StackPanel Orientation="Horizontal"> -->
-                    <!--      -->
-                    <!--     <TextBox Text="{Binding Race.Location.LocationName}" /> -->
-                    <!-- </StackPanel> -->
-                    <!-- -->
-                    <!-- <StackPanel Orientation="Horizontal"> -->
-                    <!--      -->
-                    <!--     <TextBox Text="{Binding Race.Gender.GenderDescription}" /> -->
+                    
                 </StackPanel>
             </StackPanel>
 

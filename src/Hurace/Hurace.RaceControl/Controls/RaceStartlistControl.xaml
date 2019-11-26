@@ -47,7 +47,14 @@
         </StackPanel>
         <!-- Selected Skier -->
         <ListBox Grid.Column="2" Grid.Row="2" x:Name="SelectedSkiers" ItemsSource="{Binding SelectedSkiers}"
-                 SelectionMode="Multiple" />
+                 SelectedItem="{Binding SelectedStartList}"
+                 SelectionMode="Multiple">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Skier.FirstName}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
     </Grid>
 </UserControl>

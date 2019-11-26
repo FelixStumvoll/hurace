@@ -1,8 +1,13 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api;
 using Hurace.Core.Dto;
+using Hurace.Dal.Interface;
 using Hurace.RaceControl.ViewModels.Commands;
 
 namespace Hurace.RaceControl.ViewModels
@@ -51,20 +56,51 @@ namespace Hurace.RaceControl.ViewModels
             _logic = logic;
             _race = race;
 
-            AddSkier = new AsyncCommand(_ =>
+            AddSkier = new AsyncCommand(AddSkiers, _ => SelectedSkier != null);
+            RemoveSkier = new AsyncCommand(RemoveSkiers, _ => SelectedStartList != null);
+
+            AvailableSkiers.Add(new Skier {FirstName = "Felix", LastName = "Stumvoll"});
+            AvailableSkiers.Add(new Skier {FirstName = "XYZ", LastName = "ABC"});
+            AvailableSkiers.Add(new Skier {FirstName = "Yeetus", LastName = "Feetus"});
+        }
+
+        private IEnumerable<T> CastParam<T>(object param)
+        {
+            var castedList = new List<T>();
+            castedList.AddRange(((IList) param).Cast<T>());
+            return castedList;
+        }
+
+        private Task AddSkiers(object param)
+        {
+            foreach (var skier in CastParam<Skier>(param))
             {
-                SelectedSkier = null;
-                return Task.CompletedTask;
-            }, _ => SelectedSkier != null);
-            
-            RemoveSkier = new AsyncCommand(_ =>
+                SelectedSkiers.Add(new StartList
+                {
+                    Race = _race,
+                    RaceId = _race.Id,
+                    Skier = skier,
+                    SkierId = skier.Id,
+                    StartStateId = (int) Constants.StartState.DrawReady
+                });
+
+                AvailableSkiers.Remove(skier);
+            }
+
+            SelectedSkier = null;
+            return Task.CompletedTask;
+        }
+
+        private Task RemoveSkiers(object param)
+        {
+            foreach (var startList in CastParam<StartList>(param))
             {
-                return Task.CompletedTask;
-            }, _ => SelectedStartList != null);
-            
-            AvailableSkiers.Add(new Skier{FirstName = "Felix", LastName = "Stumvoll"});
-            AvailableSkiers.Add(new Skier{FirstName = "XYZ", LastName = "ABC"});
-            AvailableSkiers.Add(new Skier{FirstName = "Yeetus", LastName = "Feetus"});
+                AvailableSkiers.Add(startList.Skier);
+                SelectedSkiers.Remove(startList);
+            }
+
+            SelectedStartList = null;
+            return Task.CompletedTask;
         }
     }
 }
