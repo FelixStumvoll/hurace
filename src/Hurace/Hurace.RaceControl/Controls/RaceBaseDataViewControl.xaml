@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceItemViewModel}">
-    
+
     <UserControl.Resources>
         <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
             <Setter Property="Orientation" Value="Horizontal" />
@@ -20,6 +20,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        
         <WrapPanel Grid.Row="0" Orientation="Vertical">
             <WrapPanel.Resources>
                 <Style TargetType="{x:Type StackPanel}">
@@ -39,7 +40,7 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-                
+
                 <Style TargetType="{x:Type ComboBox}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Edit}" Value="True">
@@ -55,14 +56,15 @@
                 <TextBlock Text="Beschreibung:" />
                 <TextBox Text="{Binding Race.RaceDescription}" />
             </StackPanel>
-
+            
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Disziplin: " />
-                <ComboBox IsReadOnly="true">
-                    <ComboBox.Items>
-                        <ComboBoxItem Content="Abfahrt"></ComboBoxItem>
-                        <ComboBoxItem Content="Super-G"></ComboBoxItem>
-                    </ComboBox.Items>
+                <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisciplineName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
 

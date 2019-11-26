@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Hurace.RaceControl"
         xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
         xmlns:dto="clr-namespace:Hurace.Core.Dto;assembly=Hurace.Core.Dto"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
         xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
         d:DataContext="{d:DesignInstance vm:MainViewModel}"
@@ -22,55 +23,127 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True">
+                        <Setter Property="IsEnabled" Value="False" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False">
+                        <Setter Property="IsEnabled" Value="True" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+
+        <!-- Left Side -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False">
-                            <Setter Property="IsEnabled" Value="True" />
-                        </DataTrigger>
-                    </Style.Triggers>
+            <Grid.Resources>
+                <Style x:Key="LabelName" TargetType="TextBlock">
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="5,0,0,0" />
                 </Style>
-            </Grid.Style>
+            </Grid.Resources>
 
-            <ListBox Grid.Row="0" ItemsSource="{Binding Races}" SelectedItem="{Binding CurrentRace}"
-                     BorderThickness="0">
-                <!-- <ListBox.Style> -->
-                <!--     <Style TargetType="ListBox"> -->
-                <!--         <Style.Triggers> -->
-                <!--             <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True"> -->
-                <!--                 <Setter Property="IsEnabled" Value="False" /> -->
-                <!--             </DataTrigger> -->
-                <!--              -->
-                <!--             <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False"> -->
-                <!--                 <Setter Property="IsEnabled" Value="True" /> -->
-                <!--             </DataTrigger> -->
-                <!--         </Style.Triggers> -->
-                <!--     </Style> -->
-                <!-- </ListBox.Style> -->
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Race.RaceDescription}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <!-- Race Lists -->
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition>
+                        <RowDefinition.Style>
+                            <Style TargetType="RowDefinition">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
+                                        <Setter Property="Height" Value="0" />
+                                    </DataTrigger>
 
+                                    <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
+                                        <Setter Property="Height" Value="1*" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RowDefinition.Style>
+                    </RowDefinition>
+                    <RowDefinition Height="3*" />
+                </Grid.RowDefinitions>
+
+                <!-- Active Races -->
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+
+                    <TextBlock Grid.Row="0" Text="Active Races:" Style="{StaticResource LabelName}" />
+                    <ListBox Grid.Row="1" ItemsSource="{Binding ActiveRaces}" SelectedItem="{Binding CurrentRace}"
+                             BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Race.RaceDescription}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+
+                <GridSplitter Grid.Row="0" Background="Gray" Height="1" HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom">
+                    <GridSplitter.Style>
+                        <Style TargetType="GridSplitter">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </GridSplitter.Style>
+                </GridSplitter>
+                
+                <!-- All Races -->
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="All Races:" Style="{StaticResource LabelName}" />
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Races}" SelectedItem="{Binding CurrentRace}"
+                             BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Race.RaceDescription}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
             <Button Grid.Row="1" Content="Create Race" Margin="10" />
         </Grid>
 
         <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"
                       HorizontalAlignment="Right" />
 
-
+        <!-- Race Detail View -->
         <ContentPresenter Grid.Column="1" Content="{Binding}">
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="RaceSelected">

@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Hurace.Core.Api\Hurace.Core.Api.csproj" />
       <ProjectReference Include="..\Hurace.Core.Dto\Hurace.Core.Dto.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="DeepCopy" Version="1.0.3" />
+      <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     </ItemGroup>
 
 </Project>

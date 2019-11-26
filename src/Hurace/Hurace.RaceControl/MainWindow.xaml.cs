@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Hurace.Core.Api;
 using Hurace.RaceControl.ViewModels;
 
 namespace Hurace.RaceControl
@@ -23,9 +24,10 @@ namespace Hurace.RaceControl
     {
         public MainWindow()
         {
-            var vm = new MainViewModel();
+            var vm = new MainViewModel(new MockHuraceCore());
             DataContext = vm;
             InitializeComponent();
+            Loaded += async (sender, args) => await vm.InitializeAsync();
         }
     }
 }
