@@ -13,6 +13,8 @@ namespace Hurace.RaceControl.ViewModels
     {
         private RaceItemViewModel _currentRace;
 
+        private readonly IHuraceCore _logic;
+
         public ObservableCollection<RaceItemViewModel> Races { get; set; } =
             new ObservableCollection<RaceItemViewModel>();
 
@@ -25,11 +27,17 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _currentRace, value);
         }
 
-        private readonly IHuraceCore _logic;
+        public ICommand AddRace { get; set; }
 
         public MainViewModel(IHuraceCore logic)
         {
             _logic = logic;
+            AddRace = new ActionCommand(_ =>
+            {
+                var rvm = new RaceItemViewModel(_logic, new Race(), DeleteRace) {Edit = true};
+                Races.Add(rvm);
+                CurrentRace = rvm;
+            });
         }
 
         private bool DeleteRace(RaceItemViewModel rvm)

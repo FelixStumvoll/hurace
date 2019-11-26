@@ -18,6 +18,7 @@ namespace Hurace.RaceControl.ViewModels
         private bool _edit;
         private Race? _backupRace;
         private Race _race;
+        public RaceItemStartListViewModel RaceItemStartListViewModel { get; set; }
 
         public ICommand StartEdit { get; set; }
         public ICommand Delete { get; set; }
@@ -55,6 +56,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             _logic = logic;
             Race = race;
+            RaceItemStartListViewModel = new RaceItemStartListViewModel(logic, Race);
             StartEdit = new ActionCommand(_ =>
             {
                 _backupRace = DeepCopier.Copy(Race);

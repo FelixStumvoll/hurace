@@ -6,20 +6,48 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceItemViewModel  }">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceItemStartListViewModel}">
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <ListBox Grid.Column="0" ItemsSource="{Binding Disciplines}"></ListBox>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-            <Button Content="right"></Button>
-            <Button Content="left"></Button>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="Alle Rennläufer:" />
+        <TextBlock Grid.Column="2" Grid.Row="0" Text="Eingetragene Rennläufer:" />
+        <!-- Search -->
+        <TextBox Grid.Column="0" Grid.Row="1" Margin="0,5" />
+        <TextBox Grid.Column="2" Grid.Row="1" Margin="0,5" />
+        <!-- Available Skiers -->
+        <ListBox Grid.Column="0" Grid.Row="2" x:Name="AvailableSkiers" ItemsSource="{Binding AvailableSkiers}"
+                 SelectionMode="Multiple"
+                 SelectedItem="{Binding SelectedSkier}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding FirstName}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <!-- Buttons -->
+        <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Orientation="Vertical" Margin="10,0">
+            <!-- Add -->
+            <Button Content="&gt;&gt;" CommandParameter="{Binding ElementName=AvailableSkiers, Path=SelectedItems}"
+                    Command="{Binding AddSkier}" />
+            <!-- Remove -->
+            <Button Margin="0,10,0,0" CommandParameter="{Binding ElementName=SelectedSkiers, Path=SelectedItems}"
+                    Command="{Binding RemoveSkier}" Content="&lt;&lt;" />
         </StackPanel>
-        <ListBox Grid.Column="2" ItemsSource="{Binding Disciplines}"></ListBox>
-        
+        <!-- Selected Skier -->
+        <ListBox Grid.Column="2" Grid.Row="2" x:Name="SelectedSkiers" ItemsSource="{Binding SelectedSkiers}"
+                 SelectionMode="Multiple" />
+
     </Grid>
 </UserControl>

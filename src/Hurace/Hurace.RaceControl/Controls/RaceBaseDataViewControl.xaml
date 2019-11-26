@@ -20,64 +20,97 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        
-        <WrapPanel Grid.Row="0" Orientation="Vertical">
-            <WrapPanel.Resources>
-                <Style TargetType="{x:Type StackPanel}">
-                    <Setter Property="Margin" Value="10,0" />
-                </Style>
-                <Style TargetType="{x:Type TextBox}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Edit}" Value="True">
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="IsReadOnly" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Edit}" Value="False">
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Margin" Value="1" />
-                            <Setter Property="IsReadOnly" Value="True" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
 
-                <Style TargetType="{x:Type ComboBox}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Edit}" Value="True">
-                            <Setter Property="IsEnabled" Value="True" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Edit}" Value="False">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </WrapPanel.Resources>
+        <ScrollViewer Grid.Row="0" Margin="10" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer.Resources>
+
+            </ScrollViewer.Resources>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Beschreibung:" />
-                <TextBox Text="{Binding Race.RaceDescription}" />
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Disziplin: " />
-                <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DisciplineName}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                <!-- Labels -->
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Height" Value="20" />
+                            <Setter Property="Margin" Value="0,5,0,0" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Text="Beschreibung:" Margin="0" />
+                    <TextBlock Text="Disziplin: " />
+                    <TextBlock Text="Ort: " />
+                    <TextBlock Text="Geschlecht: " />
+                </StackPanel>
+                <!-- Inputs -->
+                <StackPanel Orientation="Vertical" Margin="50,0,0,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Height" Value="20" />
+                            <Setter Property="Width" Value="250" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="Margin" Value="0,5,0,0" />
+                                    <Setter Property="IsReadOnly" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Margin" Value="1,6,1,1" />
+                                    <Setter Property="IsReadOnly" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Height" Value="20" />
+                            <Setter Property="Width" Value="250" />
+                            <Setter Property="Margin" Value="0,5,0,0" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
+                    <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisciplineName}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBox Text="{Binding Race.Location.LocationName}" />
+                    <TextBox Text="{Binding Race.Gender.GenderDescription}" />
+                    <!--     <TextBox Text="{Binding Race.RaceDescription}" /> -->
+                    <!-- </StackPanel> -->
+                    <!-- -->
+                    <!-- <StackPanel Orientation="Horizontal"> -->
+                    <!--      -->
+                    <!--     <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}"> -->
+                    <!--         <ComboBox.ItemTemplate> -->
+                    <!--             <DataTemplate> -->
+                    <!--                 <TextBlock Text="{Binding DisciplineName}" /> -->
+                    <!--             </DataTemplate> -->
+                    <!--         </ComboBox.ItemTemplate> -->
+                    <!--     </ComboBox> -->
+                    <!-- </StackPanel> -->
+                    <!-- -->
+                    <!-- <StackPanel Orientation="Horizontal"> -->
+                    <!--      -->
+                    <!--     <TextBox Text="{Binding Race.Location.LocationName}" /> -->
+                    <!-- </StackPanel> -->
+                    <!-- -->
+                    <!-- <StackPanel Orientation="Horizontal"> -->
+                    <!--      -->
+                    <!--     <TextBox Text="{Binding Race.Gender.GenderDescription}" /> -->
+                </StackPanel>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Ort: " />
-                <TextBox Text="{Binding Race.Location.LocationName}" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Geschlecht: " />
-                <TextBox Text="{Binding Race.Gender.GenderDescription}" />
-            </StackPanel>
-        </WrapPanel>
+        </ScrollViewer>
 
         <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
             <ContentPresenter.Resources>

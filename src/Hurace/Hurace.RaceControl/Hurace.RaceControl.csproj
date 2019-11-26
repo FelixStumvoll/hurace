@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <PackageReference Include="DeepCopy" Version="1.0.3" />
-      <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     </ItemGroup>
 
 </Project>

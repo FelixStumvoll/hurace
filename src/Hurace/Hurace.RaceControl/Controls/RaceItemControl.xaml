@@ -18,17 +18,18 @@
         <DockPanel Grid.Row="0" Margin="5">
             <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
                        Text="{Binding Race.RaceDescription}" />
-            <Button HorizontalAlignment="Right" Content="Delete" Padding="5,0" Command="{Binding Delete}" />
+            <Button HorizontalAlignment="Right" Content="Löschen" Padding="5,0" Command="{Binding Delete}" />
         </DockPanel>
         <TabControl Grid.Row="1" BorderThickness="0,1,0,0">
             <TabItem Header="Stammdaten">
                 <controls:RaceBaseDataViewControl />
             </TabItem>
             <TabItem Header="Startliste">
-                <controls:RaceStartlistControl />
+                <controls:RaceStartlistControl DataContext="{Binding RaceItemStartListViewModel}" />
             </TabItem>
             <TabItem Header="Sensoren" />
             <TabItem Header="Race Control" />
+            <TabItem Header="Anzeigekontrolle" />
         </TabControl>
     </Grid>
 </UserControl>
