@@ -34,7 +34,7 @@ namespace Hurace.RaceControl.ViewModels
             {
                 Race.Discipline = value;
                 Race.DisciplineId = value.Id;
-                InvokePropertyChanged();
+                InvokePropertyChanged(nameof(SelectedDiscipline));
             }
         }
 
@@ -45,7 +45,7 @@ namespace Hurace.RaceControl.ViewModels
             {
                 Race.Gender = value;
                 Race.GenderId = value.Id;
-                InvokePropertyChanged();
+                InvokePropertyChanged(nameof(SelectedGender));
             }
         }
 
@@ -83,12 +83,15 @@ namespace Hurace.RaceControl.ViewModels
             CancelEdit = new ActionCommand(_ =>
             {
                 ShallowCopy(_backupRace, Race);
+                SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == Race.DisciplineId);
+                SelectedGender = Genders.SingleOrDefault(g => g.Id == Race.GenderId);
+                InvokePropertyChanged(nameof(Race));
                 Edit = false;
             });
 
             Delete = new ActionCommand(_ => { deleteFunc(this); });
-            Disciplines.Add(new Discipline{DisciplineName = "Downhill"});
-            Disciplines.Add(new Discipline{DisciplineName = "Super-G"});
+            Disciplines.Add(new Discipline{Id = 1,DisciplineName = "Downhill"});
+            Disciplines.Add(new Discipline{Id = 2,DisciplineName = "Super-G"});
         }
 
         private static void ShallowCopy(Race original, Race copyTarget)

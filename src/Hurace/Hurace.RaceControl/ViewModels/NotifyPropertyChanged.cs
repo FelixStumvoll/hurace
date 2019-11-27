@@ -17,7 +17,7 @@ namespace Hurace.RaceControl.ViewModels
             InvokePropertyChanged(propertyName);
         }
 
-        protected void InvokePropertyChanged([CallerMemberName] string propertyName = "") =>
+        protected void InvokePropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
