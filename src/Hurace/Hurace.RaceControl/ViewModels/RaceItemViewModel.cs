@@ -38,6 +38,17 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
+        public Gender SelectedGender
+        {
+            get => Race.Gender;
+            set
+            {
+                Race.Gender = value;
+                Race.GenderId = value.Id;
+                InvokePropertyChanged();
+            }
+        }
+
         public Race Race
         {
             get => _race;
@@ -56,29 +67,38 @@ namespace Hurace.RaceControl.ViewModels
         {
             _logic = logic;
             Race = race;
+            _backupRace = new Race();
             RaceItemStartListViewModel = new RaceItemStartListViewModel(logic, Race);
             StartEdit = new ActionCommand(_ =>
             {
-                _backupRace = DeepCopier.Copy(Race);
+                ShallowCopy(Race, _backupRace);
                 Edit = true;
             });
 
             SaveEdit = new ActionCommand(_ =>
             {
-                _backupRace = null;
                 Edit = false;
             });
 
             CancelEdit = new ActionCommand(_ =>
             {
-                Race = DeepCopier.Copy(_backupRace);
-                SelectedDiscipline =
-                    Disciplines.SingleOrDefault(d => d.DisciplineName == Race.Discipline.DisciplineName);
-                _backupRace = null;
+                ShallowCopy(_backupRace, Race);
                 Edit = false;
             });
 
             Delete = new ActionCommand(_ => { deleteFunc(this); });
+            Disciplines.Add(new Discipline{DisciplineName = "Downhill"});
+            Disciplines.Add(new Discipline{DisciplineName = "Super-G"});
+        }
+
+        private static void ShallowCopy(Race original, Race copyTarget)
+        {
+            copyTarget.DisciplineId = original.DisciplineId;
+            copyTarget.GenderId = original.GenderId;
+            copyTarget.LocationId = original.LocationId;
+            copyTarget.RaceDescription = original.RaceDescription;
+            copyTarget.SeasonId = original.SeasonId;
+            copyTarget.RaceStateId = original.RaceStateId;
         }
     }
 }

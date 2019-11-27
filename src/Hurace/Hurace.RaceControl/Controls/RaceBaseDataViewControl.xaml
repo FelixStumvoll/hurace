@@ -29,40 +29,52 @@
                 <!-- Labels -->
                 <StackPanel Orientation="Vertical">
                     <StackPanel.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Height" Value="20" />
+                        <Style TargetType="TextBlock" />
+                        <Style TargetType="Border">
+                            <Setter Property="Height" Value="25" />
                             <Setter Property="Margin" Value="0,5,0,0" />
                         </Style>
                     </StackPanel.Resources>
-                    <TextBlock Text="Beschreibung:" Margin="0" />
-                    <TextBlock Text="Datum:" />
-                    <TextBlock Text="Disziplin:" />
-                    <TextBlock Text="Ort:" />
-                    <TextBlock Text="Geschlecht:" />
+                    <Border Margin="0">
+                        <TextBlock Text="Beschreibung:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
+                        <TextBlock Text="Datum:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
+                        <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
+                        <TextBlock Text="Ort:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
+                        <TextBlock Text="Geschlecht:" VerticalAlignment="Center" />
+                    </Border>
                 </StackPanel>
                 <!-- Inputs -->
                 <StackPanel Orientation="Vertical" Margin="50,0,0,0">
                     <StackPanel.Resources>
                         <Style TargetType="TextBox">
-                            <Setter Property="Height" Value="20" />
+                            <Setter Property="Height" Value="25" />
                             <Setter Property="Width" Value="250" />
-
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="0,5,0,0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Edit}" Value="True">
                                     <Setter Property="BorderThickness" Value="1" />
-                                    <Setter Property="Margin" Value="0,5,0,0" />
                                     <Setter Property="IsReadOnly" Value="False" />
+                                    <Setter Property="Padding" Value="0" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edit}" Value="False">
                                     <Setter Property="BorderThickness" Value="0" />
-                                    <Setter Property="Margin" Value="1,6,1,1" />
                                     <Setter Property="IsReadOnly" Value="True" />
+                                    <Setter Property="Padding" Value="1" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
 
                         <Style TargetType="ComboBox">
-                            <Setter Property="Height" Value="20" />
+                            <Setter Property="Height" Value="25" />
                             <Setter Property="Width" Value="250" />
                             <Setter Property="Margin" Value="0,5,0,0" />
 
@@ -77,29 +89,27 @@
                         </Style>
 
                         <Style TargetType="DatePicker">
+                            <Setter Property="Height" Value="25" />
                             <Setter Property="Width" Value="250" />
+                            <Setter Property="Margin" Value="0,5,0,0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Edit}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                    <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Edit}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                    <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Resources>
                     <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
                     <DatePicker SelectedDate="{Binding Race.RaceDate}" />
-                    <ComboBox ItemsSource="{Binding Disciplines}" SelectedItem="{Binding SelectedDiscipline}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisciplineName}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
+                    <ComboBox ItemsSource="{Binding Disciplines}" DisplayMemberPath="DisciplineName"
+                              SelectedItem="{Binding SelectedDiscipline}">
                     </ComboBox>
                     <TextBox Text="{Binding Race.Location.LocationName}" />
-                    <TextBox Text="{Binding Race.Gender.GenderDescription}" />
-                    
+                    <ComboBox ItemsSource="{Binding Genders}" DisplayMemberPath="GenderDescription"
+                              SelectedItem="{Binding SelectedGender}" />
                 </StackPanel>
             </StackPanel>
 

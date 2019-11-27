@@ -5,9 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:dto="clr-namespace:Hurace.Core.Dto;assembly=Hurace.Core.Dto"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceItemStartListViewModel}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Country.CountryCode}" />
+                <TextBlock Margin="5,0" Text="-" />
+                <TextBlock Text="{Binding FirstName}" Margin="0,0,5,0" />
+                <TextBlock Text="{Binding LastName}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -28,7 +41,7 @@
         <TextBox Grid.Column="0" Grid.Row="1" x:Name="AvailableSearch" Margin="0,5,5,5"
                  Text="{Binding AvailableSearchText}">
             <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding ElementName=SelectedSearch, Path=Text}">
+                <i:PropertyChangedTrigger Binding="{Binding ElementName=AvailableSearch, Path=Text}">
                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=AvailableSearch, Path=Text}"
                                            Command="{Binding AvailableSearchTextChange}" />
                 </i:PropertyChangedTrigger>
@@ -50,7 +63,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel LastChildFill="False">
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding FirstName}" />
+                        <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" />
                         <Button DockPanel.Dock="Right" Content="+" Width="35" CommandParameter="{Binding Id}"
                                 Command="{Binding ElementName=AvailableSkiers, Path=DataContext.AddSkier}" />
                     </DockPanel>
@@ -66,8 +79,8 @@
                 <DataTemplate>
                     <DockPanel LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,5,0" FontWeight="Bold" Text="{Binding StartNumber}" />
-                            <TextBlock Text="{Binding Skier.FirstName}" />
+                            <TextBlock Margin="0,0,10,0" FontWeight="Bold" Text="{Binding StartNumber}" />
+                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" Content="{Binding Skier}" />
                         </StackPanel>
                         <Button DockPanel.Dock="Right" Content="-" Width="35" CommandParameter="{Binding SkierId}"
                                 Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveSkier}" />
