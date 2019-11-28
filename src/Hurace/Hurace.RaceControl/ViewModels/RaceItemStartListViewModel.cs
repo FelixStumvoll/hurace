@@ -57,17 +57,9 @@ namespace Hurace.RaceControl.ViewModels
 
             AddSkier = new AsyncCommand(AddSkierById);
             RemoveSkier = new AsyncCommand(RemoveSkierById);
-            AvailableSearchTextChange = new ActionCommand(searchText =>
-            {
-                AvailableSearchText = (string) searchText;
-                FillAvailableSkiers(FilterSkier());
-            });
+            AvailableSearchTextChange = new ActionCommand(_ => FillAvailableSkiers(FilterSkier()));
 
-            SelectedSearchTextChange = new ActionCommand(searchText =>
-            {
-                SelectedSearchText = (string) searchText;
-                FillSelectedStartList(FilterStartList());
-            });
+            SelectedSearchTextChange = new ActionCommand(_ => FillSelectedStartList(FilterStartList()));
 
             StartListUp = new ActionCommand(_ => MoveStartList(i => i - 1),
                                             _ => SelectedStartList != null &&

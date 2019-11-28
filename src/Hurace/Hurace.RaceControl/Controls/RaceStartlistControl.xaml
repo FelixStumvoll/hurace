@@ -9,7 +9,6 @@
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceItemStartListViewModel}">
-
     <UserControl.Resources>
         <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
             <StackPanel Orientation="Horizontal">
@@ -20,7 +19,7 @@
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
-    
+
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -38,21 +37,20 @@
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Alle Rennläufer:" />
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="5,0,0,0" Text="Eingetragene Rennläufer:" />
         <!-- Search -->
-        <TextBox Grid.Column="0" Grid.Row="1" x:Name="AvailableSearch" Margin="0,5,5,5"
-                 Text="{Binding AvailableSearchText}">
+        <TextBox Grid.Column="0" Grid.Row="1" Margin="0,5,5,5"
+                 Text="{Binding AvailableSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding ElementName=AvailableSearch, Path=Text}">
-                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=AvailableSearch, Path=Text}"
-                                           Command="{Binding AvailableSearchTextChange}" />
+                <i:PropertyChangedTrigger Binding="{Binding AvailableSearchText}">
+                    <i:InvokeCommandAction Command="{Binding AvailableSearchTextChange}" />
                 </i:PropertyChangedTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-        <TextBox Grid.Column="1" Grid.Row="1" x:Name="SelectedSearch" Margin="5,5,0,5"
-                 Text="{Binding SelectedSearchText}">
+        <TextBox Grid.Column="1" Grid.Row="1" Margin="5,5,0,5"
+                 Text="{Binding SelectedSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding ElementName=SelectedSearch, Path=Text}">
-                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=SelectedSearch, Path=Text}"
-                                           Command="{Binding SelectedSearchTextChange}" />
+                <i:PropertyChangedTrigger Binding="{Binding SelectedSearchText}">
+                    <i:InvokeCommandAction
+                        Command="{Binding SelectedSearchTextChange}" />
                 </i:PropertyChangedTrigger>
             </i:Interaction.Triggers>
         </TextBox>
@@ -80,7 +78,8 @@
                     <DockPanel LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                             <TextBlock Margin="0,0,10,0" FontWeight="Bold" Text="{Binding StartNumber}" />
-                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" Content="{Binding Skier}" />
+                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                                              Content="{Binding Skier}" />
                         </StackPanel>
                         <Button DockPanel.Dock="Right" Content="-" Width="35" CommandParameter="{Binding SkierId}"
                                 Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveSkier}" />

@@ -96,11 +96,11 @@
                     </StackPanel.Resources>
                     <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
                     <DatePicker SelectedDate="{Binding Race.RaceDate}" />
-                    <ComboBox ItemsSource="{Binding Disciplines}" DisplayMemberPath="DisciplineName"
+                    <ComboBox ItemsSource="{Binding SharedRaceItemViewModel.Disciplines}" DisplayMemberPath="DisciplineName"
                               SelectedItem="{Binding SelectedDiscipline}">
                     </ComboBox>
                     <TextBox Text="{Binding Race.Location.LocationName}" />
-                    <ComboBox ItemsSource="{Binding Genders}" DisplayMemberPath="GenderDescription"
+                    <ComboBox ItemsSource="{Binding SharedRaceItemViewModel.Genders}" DisplayMemberPath="GenderDescription"
                               SelectedItem="{Binding SelectedGender}" />
                 </StackPanel>
             </StackPanel>

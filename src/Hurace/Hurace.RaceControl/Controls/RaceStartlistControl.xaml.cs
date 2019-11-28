@@ -7,6 +7,7 @@ namespace Hurace.RaceControl.Controls
         public RaceStartlistControl()
         {
             InitializeComponent();
+
         }
     }
 }

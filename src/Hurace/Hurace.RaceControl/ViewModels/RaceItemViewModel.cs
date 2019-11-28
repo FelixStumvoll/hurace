@@ -1,31 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using DeepCopy;
 using Hurace.Core.Api;
 using Hurace.Core.Dto;
 using Hurace.RaceControl.ViewModels.Commands;
-using Microsoft.VisualBasic;
 
 namespace Hurace.RaceControl.ViewModels
 {
     public class RaceItemViewModel : NotifyPropertyChanged
     {
         private bool _edit;
-        private Race? _backupRace;
         private Race _race;
+        private IHuraceCore _logic;
         public RaceItemStartListViewModel RaceItemStartListViewModel { get; set; }
 
         public ICommand StartEdit { get; set; }
         public ICommand Delete { get; set; }
         public ICommand SaveEdit { get; set; }
         public ICommand CancelEdit { get; set; }
-        public ObservableCollection<Discipline> Disciplines { get; set; } = new ObservableCollection<Discipline>();
-        public ObservableCollection<Gender> Genders { get; set; } = new ObservableCollection<Gender>();
+        public SharedRaceItemViewModel SharedRaceItemViewModel { get; set; }
+
 
         public Discipline SelectedDiscipline
         {
@@ -61,40 +55,36 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _edit, value);
         }
 
-        private IHuraceCore _logic;
-
-        public RaceItemViewModel(IHuraceCore logic, Race race, Func<RaceItemViewModel, bool> deleteFunc)
+        public RaceItemViewModel(IHuraceCore logic, Race race, SharedRaceItemViewModel svm,
+            Func<RaceItemViewModel, bool> deleteFunc)
         {
             _logic = logic;
             Race = race;
-            _backupRace = new Race();
+            SharedRaceItemViewModel = svm;
+            var backupRace = new Race();
             RaceItemStartListViewModel = new RaceItemStartListViewModel(logic, Race);
             StartEdit = new ActionCommand(_ =>
             {
-                ShallowCopy(Race, _backupRace);
+                ShallowCopyRace(Race, backupRace);
                 Edit = true;
             });
 
-            SaveEdit = new ActionCommand(_ =>
-            {
-                Edit = false;
-            });
+            SaveEdit = new ActionCommand(_ => { Edit = false; });
 
             CancelEdit = new ActionCommand(_ =>
             {
-                ShallowCopy(_backupRace, Race);
-                SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == Race.DisciplineId);
-                SelectedGender = Genders.SingleOrDefault(g => g.Id == Race.GenderId);
+                ShallowCopyRace(backupRace, Race);
+                SelectedDiscipline =
+                    SharedRaceItemViewModel.Disciplines.SingleOrDefault(d => d.Id == Race.DisciplineId);
+                SelectedGender = SharedRaceItemViewModel.Genders.SingleOrDefault(g => g.Id == Race.GenderId);
                 InvokePropertyChanged(nameof(Race));
                 Edit = false;
             });
 
             Delete = new ActionCommand(_ => { deleteFunc(this); });
-            Disciplines.Add(new Discipline{Id = 1,DisciplineName = "Downhill"});
-            Disciplines.Add(new Discipline{Id = 2,DisciplineName = "Super-G"});
         }
 
-        private static void ShallowCopy(Race original, Race copyTarget)
+        private static void ShallowCopyRace(Race original, Race copyTarget)
         {
             copyTarget.DisciplineId = original.DisciplineId;
             copyTarget.GenderId = original.GenderId;

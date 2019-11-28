@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
-             xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
              d:DataContext="{d:DesignInstance vm:RaceItemViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -22,10 +21,10 @@
         </DockPanel>
         <TabControl Grid.Row="1" BorderThickness="0,1,0,0">
             <TabItem Header="Stammdaten">
-                <controls:RaceBaseDataViewControl />
+                <local:RaceBaseDataViewControl />
             </TabItem>
-            <TabItem Header="Startliste">
-                <controls:RaceStartlistControl DataContext="{Binding RaceItemStartListViewModel}" />
+            <TabItem Header="Startliste" >
+                <local:RaceStartlistControl DataContext="{Binding RaceItemStartListViewModel}" />
             </TabItem>
             <TabItem Header="Sensoren" />
             <TabItem Header="Race Control" />
