@@ -10,7 +10,8 @@ namespace Hurace.Core.Api
     {
         public async Task<IEnumerable<Gender>> GetGenders()
         {
-            return new List<Gender> {new Gender {Id = 2, GenderDescription = "Female"},new Gender {Id = 1, GenderDescription = "Male"}};
+            return new List<Gender>
+                {new Gender {Id = 2, GenderDescription = "Female"}, new Gender {Id = 1, GenderDescription = "Male"}};
         }
 
         public async Task<IEnumerable<Location>> GetLocations()
@@ -38,8 +39,10 @@ namespace Hurace.Core.Api
                 {
                     Id = 1,
                     RaceDescription = "Yeet",
-                    Discipline = new Discipline {DisciplineName = "Abfahrt"},
-                    Gender = new Gender {GenderDescription = "Herren"},
+                    DisciplineId = 1,
+                    Discipline = new Discipline {Id = 1},
+                    Gender = new Gender {Id = 1},
+                    GenderId = 1,
                     Location = new Location {LocationName = "Kitz", Country = new Country()},
                     Season = new Season(),
                     RaceDate = DateTime.Now,
@@ -49,8 +52,10 @@ namespace Hurace.Core.Api
                 {
                     Id = 2,
                     RaceDescription = "Yeet",
-                    Discipline = new Discipline {DisciplineName = "Abfahrt"},
-                    Gender = new Gender {GenderDescription = "Herren"},
+                    Discipline = new Discipline {Id = 1},
+                    Gender = new Gender {Id = 1},
+                    DisciplineId = 1,
+                    GenderId = 1,
                     Location = new Location {LocationName = "Kitz", Country = new Country()},
                     Season = new Season(),
                     RaceDate = DateTime.Now,
@@ -67,8 +72,10 @@ namespace Hurace.Core.Api
                 {
                     Id = 3,
                     RaceDescription = "LMAO",
-                    Discipline = new Discipline {DisciplineName = "Abfahrt"},
-                    Gender = new Gender {GenderDescription = "Herren"},
+                    Discipline = new Discipline {Id = 1},
+                    Gender = new Gender {Id = 1},
+                    DisciplineId = 1,
+                    GenderId = 1,
                     Location = new Location {LocationName = "Kitz", Country = new Country()},
                     Season = new Season(),
                     RaceDate = DateTime.Now,
@@ -78,8 +85,10 @@ namespace Hurace.Core.Api
                 {
                     Id = 4,
                     RaceDescription = "Roflkek",
-                    Discipline = new Discipline {DisciplineName = "Abfahrt"},
-                    Gender = new Gender {GenderDescription = "Herren"},
+                    Discipline = new Discipline {Id = 1},
+                    Gender = new Gender {Id = 1},
+                    DisciplineId = 1,
+                    GenderId = 1,
                     Location = new Location {LocationName = "Kitz", Country = new Country()},
                     Season = new Season(),
                     RaceDate = DateTime.Now,
@@ -87,7 +96,7 @@ namespace Hurace.Core.Api
                 }
             };
         }
-
+        
         public async Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId)
         {
             return Enumerable.Empty<Skier>();

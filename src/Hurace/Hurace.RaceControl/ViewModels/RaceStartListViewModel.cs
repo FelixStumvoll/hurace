@@ -12,29 +12,29 @@ using Hurace.RaceControl.ViewModels.Commands;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class RaceItemStartListViewModel : NotifyPropertyChanged
+    public class RaceStartListViewModel : NotifyPropertyChanged
     {
-        private IHuraceCore _logic;
+        private readonly IHuraceCore _logic;
         private readonly Race _race;
-        private string _availableSearchText;
-        private string _selectedSearchText;
+        private string _skierSearchText;
+        private string _startListSearchText;
 
         public ObservableCollection<Skier> AvailableSkiers { get; set; } = new ObservableCollection<Skier>();
-        public ObservableCollection<StartList> SelectedSkiers { get; set; } = new ObservableCollection<StartList>();
+        public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
         private readonly List<Skier> _skiers = new List<Skier>();
         private readonly List<StartList> _startList = new List<StartList>();
         private StartList _selectedStartList;
 
-        public string AvailableSearchText
+        public string SkierSearchText
         {
-            get => _availableSearchText;
-            set => Set(ref _availableSearchText, value);
+            get => _skierSearchText;
+            set => Set(ref _skierSearchText, value);
         }
 
-        public string SelectedSearchText
+        public string StartListSearchText
         {
-            get => _selectedSearchText;
-            set => Set(ref _selectedSearchText, value);
+            get => _startListSearchText;
+            set => Set(ref _startListSearchText, value);
         }
 
         public StartList SelectedStartList
@@ -43,50 +43,51 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedStartList, value);
         }
 
-        public ICommand AddSkier { get; set; }
-        public ICommand RemoveSkier { get; set; }
-        public ICommand AvailableSearchTextChange { get; set; }
-        public ICommand SelectedSearchTextChange { get; set; }
-        public ICommand StartListUp { get; set; }
-        public ICommand StartListDown { get; set; }
+        public ICommand AddSkierCommand { get; set; }
+        public ICommand RemoveStartListCommand { get; set; }
+        public ICommand SkierSearchChangeCommand { get; set; }
+        public ICommand StartListSearchChangeCommand { get; set; }
+        public ICommand StartListUpCommand { get; set; }
+        public ICommand StartListDownCommand { get; set; }
 
-        public RaceItemStartListViewModel(IHuraceCore logic, Race race)
+        public RaceStartListViewModel(IHuraceCore logic, Race race)
         {
             _logic = logic;
             _race = race;
 
-            AddSkier = new AsyncCommand(AddSkierById);
-            RemoveSkier = new AsyncCommand(RemoveSkierById);
-            AvailableSearchTextChange = new ActionCommand(_ => FillAvailableSkiers(FilterSkier()));
+            AddSkierCommand = new AsyncCommand(AddSkier);
+            RemoveStartListCommand = new AsyncCommand(RemoveStartList);
+            SkierSearchChangeCommand = new ActionCommand(_ => PopulateSkiers(FilterSkier()));
 
-            SelectedSearchTextChange = new ActionCommand(_ => FillSelectedStartList(FilterStartList()));
+            StartListSearchChangeCommand = new ActionCommand(_ => PopulateStartList(FilterStartList()));
 
-            StartListUp = new ActionCommand(_ => MoveStartList(i => i - 1),
+            StartListUpCommand = new ActionCommand(_ => MoveStartList(i => i - 1),
                                             _ => SelectedStartList != null &&
                                                  _startList.IndexOf(SelectedStartList) != 0);
-            StartListDown = new ActionCommand(_ => MoveStartList(i => i + 1),
+            StartListDownCommand = new ActionCommand(_ => MoveStartList(i => i + 1),
                                               _ => SelectedStartList != null && 
                                                    _startList.IndexOf(SelectedStartList) != _startList.Count - 1);
+        }
 
-            var cntry = new Country {CountryCode = "AT", CountryName = "Österreich"};
-            _skiers.Add(new Skier {Id = 1, FirstName = "Felix", LastName = "Stumvoll", Country = cntry});
-            _skiers.Add(new Skier {Id = 2, FirstName = "XYZ", LastName = "ABC", Country = cntry});
-            _skiers.Add(new Skier {Id = 3, FirstName = "Yeetus", LastName = "Feetus", Country = cntry});
-
-            FillAvailableSkiers(_skiers);
+        public async Task SetupAsync()
+        {
+            _skiers.AddRange(await _logic.GetAvailableSkiersForRace(_race.Id));
+            _startList.AddRange(await _logic.GetStartListForRace(_race.Id));
+            PopulateSkiers(_skiers);
+            PopulateStartList(_startList);
         }
 
         private IEnumerable<Skier> FilterSkier() =>
-            string.IsNullOrEmpty(AvailableSearchText)
+            string.IsNullOrEmpty(SkierSearchText)
                 ? _skiers
                 : _skiers.Where(
-                    s => SkierCompareFunc(s, AvailableSearchText.ToLower()));
+                    s => SkierCompareFunc(s, SkierSearchText.ToLower()));
 
         private IEnumerable<StartList> FilterStartList() =>
-            string.IsNullOrEmpty(SelectedSearchText)
+            string.IsNullOrEmpty(StartListSearchText)
                 ? _startList
                 : _startList.Where(
-                    s => SkierCompareFunc(s.Skier, SelectedSearchText.ToLower()));
+                    s => SkierCompareFunc(s.Skier, StartListSearchText.ToLower()));
 
         private static bool SkierCompareFunc(Skier skier, string text) =>
             skier.FirstName.ToLower().Contains(text) ||
@@ -94,16 +95,16 @@ namespace Hurace.RaceControl.ViewModels
             skier.Country.CountryCode.ToLower().Contains(text) ||
             skier.Country.CountryName.ToLower().Contains(text);
 
-        private void FillAvailableSkiers(IEnumerable<Skier> skiers)
+        private void PopulateSkiers(IEnumerable<Skier> skiers)
         {
             AvailableSkiers.Clear();
             foreach (var skier in skiers.OrderBy(s => s.LastName)) AvailableSkiers.Add(skier);
         }
 
-        private void FillSelectedStartList(IEnumerable<StartList> startList)
+        private void PopulateStartList(IEnumerable<StartList> startList)
         {
-            SelectedSkiers.Clear();
-            foreach (var startListEntry in startList.OrderBy(s => s.StartNumber)) SelectedSkiers.Add(startListEntry);
+            StartList.Clear();
+            foreach (var startListEntry in startList.OrderBy(s => s.StartNumber)) StartList.Add(startListEntry);
         }
 
         private void MoveStartList(Func<int, int> operation)
@@ -113,11 +114,11 @@ namespace Hurace.RaceControl.ViewModels
             var tmpSkier = SelectedStartList.Skier;
             SelectedStartList.Skier = prev.Skier;
             prev.Skier = tmpSkier;
-            FillSelectedStartList(FilterStartList());
+            PopulateStartList(FilterStartList());
             SelectedStartList = prev;
         }
 
-        private Task AddSkierById(object param)
+        private Task AddSkier(object param)
         {
             var skier = _skiers.SingleOrDefault(s => s.Id == (int) param);
             if (skier == null) return Task.CompletedTask;
@@ -132,19 +133,19 @@ namespace Hurace.RaceControl.ViewModels
             });
 
             _skiers.Remove(skier);
-            FillAvailableSkiers(_skiers);
-            FillSelectedStartList(_startList);
+            PopulateSkiers(_skiers);
+            PopulateStartList(_startList);
             return Task.CompletedTask;
         }
 
-        private Task RemoveSkierById(object param)
+        private Task RemoveStartList(object param)
         {
             var startList = _startList.SingleOrDefault(s => s.SkierId == (int) param);
             if (startList == null) return Task.CompletedTask;
             _skiers.Add(startList.Skier);
             _startList.Remove(startList);
-            FillAvailableSkiers(_skiers);
-            FillSelectedStartList(_startList);
+            PopulateSkiers(_skiers);
+            PopulateStartList(_startList);
             return Task.CompletedTask;
         }
     }

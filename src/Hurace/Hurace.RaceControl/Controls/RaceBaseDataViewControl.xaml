@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceItemViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceViewModel}">
 
     <UserControl.Resources>
         <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
@@ -96,11 +96,11 @@
                     </StackPanel.Resources>
                     <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
                     <DatePicker SelectedDate="{Binding Race.RaceDate}" />
-                    <ComboBox ItemsSource="{Binding SharedRaceItemViewModel.Disciplines}" DisplayMemberPath="DisciplineName"
+                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines}" DisplayMemberPath="DisciplineName"
                               SelectedItem="{Binding SelectedDiscipline}">
                     </ComboBox>
                     <TextBox Text="{Binding Race.Location.LocationName}" />
-                    <ComboBox ItemsSource="{Binding SharedRaceItemViewModel.Genders}" DisplayMemberPath="GenderDescription"
+                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders}" DisplayMemberPath="GenderDescription"
                               SelectedItem="{Binding SelectedGender}" />
                 </StackPanel>
             </StackPanel>
@@ -111,14 +111,14 @@
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="InEdit">
                     <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Abbrechen" Command="{Binding CancelEdit}" Padding="5,0" Margin="0,0,10,0" />
-                        <Button Content="Speichern" Command="{Binding SaveEdit}" Padding="5,0" />
+                        <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0" Margin="0,0,10,0" />
+                        <Button Content="Speichern" Command="{Binding SaveEditCommand}" Padding="5,0" />
                     </StackPanel>
                 </DataTemplate>
 
                 <DataTemplate x:Key="View">
                     <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Bearbeiten" Command="{Binding StartEdit}" Padding="5,0" />
+                        <Button Content="Bearbeiten" Command="{Binding StartEditCommand}" Padding="5,0" />
                     </StackPanel>
                 </DataTemplate>
             </ContentPresenter.Resources>

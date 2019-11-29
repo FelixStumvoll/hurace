@@ -13,47 +13,48 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class MainViewModel : NotifyPropertyChanged
     {
-        private RaceItemViewModel _currentRace;
+        private RaceViewModel _selectedRace;
 
         private readonly IHuraceCore _logic;
-        private readonly SharedRaceItemViewModel _sharedRaceItemViewModel;
+        private readonly SharedRaceViewModel _sharedRaceViewModel;
 
-        public ObservableCollection<RaceItemViewModel> AllRaces { get; set; } =
-            new ObservableCollection<RaceItemViewModel>();
+        public ObservableCollection<RaceViewModel> AllRaces { get; set; } =
+            new ObservableCollection<RaceViewModel>();
 
-        public ObservableCollection<RaceItemViewModel> ActiveRaces { get; set; } =
-            new ObservableCollection<RaceItemViewModel>();
+        public ObservableCollection<RaceViewModel> ActiveRaces { get; set; } =
+            new ObservableCollection<RaceViewModel>();
 
-        public RaceItemViewModel CurrentRace
+        public RaceViewModel SelectedRace
         {
-            get => _currentRace;
-            set => Set(ref _currentRace, value);
+            get => _selectedRace;
+            set => Set(ref _selectedRace, value);
         }
 
-        public ICommand AddRace { get; set; }
-        public ICommand SelectedRaceChanged { get; set; }
+        public ICommand AddRaceCommand { get; set; }
+        public ICommand SelectedRaceChangedCommand { get; set; }
 
         public MainViewModel(IHuraceCore logic)
         {
             _logic = logic;
-            _sharedRaceItemViewModel = new SharedRaceItemViewModel();
-            AddRace = new ActionCommand(_ =>
+            _sharedRaceViewModel = new SharedRaceViewModel();
+            AddRaceCommand = new ActionCommand(_ =>
             {
-                var rvm = new RaceItemViewModel(_logic, new Race(), _sharedRaceItemViewModel, DeleteRace) {Edit = true};
+                var rvm = new RaceViewModel(_logic, new Race(), _sharedRaceViewModel, DeleteRace, true)
+                    {Edit = true};
                 AllRaces.Add(rvm);
-                CurrentRace = rvm;
+                SelectedRace = rvm;
             });
 
-            SelectedRaceChanged = new ActionCommand(_ => { });
+            SelectedRaceChangedCommand = new ActionCommand(async _ => { await SelectedRace.SetupAsync(); });
         }
 
-        private bool DeleteRace(RaceItemViewModel rvm)
+        private bool DeleteRace(RaceViewModel rvm)
         {
             if (MessageBox.Show("Delete Race ?", "Delete ?", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return false;
-            AllRaces.Remove(CurrentRace);
-            ActiveRaces.Remove(CurrentRace);
-            CurrentRace = null;
+            AllRaces.Remove(SelectedRace);
+            ActiveRaces.Remove(SelectedRace);
+            SelectedRace = null;
             return true;
         }
 
@@ -61,13 +62,13 @@ namespace Hurace.RaceControl.ViewModels
         {
             AllRaces.AddRange(
                 (await _logic.GetAllRaces()).Select(
-                    r => new RaceItemViewModel(_logic, r, _sharedRaceItemViewModel, DeleteRace)));
+                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace)));
             ActiveRaces.AddRange(
                 (await _logic.GetActiveRaces()).Select(
-                    r => new RaceItemViewModel(_logic, r, _sharedRaceItemViewModel, DeleteRace)));
-            _sharedRaceItemViewModel.Disciplines.AddRange(await _logic.GetDisciplines());
-            _sharedRaceItemViewModel.Genders.AddRange(await _logic.GetGenders());
-            _sharedRaceItemViewModel.Locations.AddRange(await _logic.GetLocations());
+                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace)));
+            _sharedRaceViewModel.Disciplines.AddRange(await _logic.GetDisciplines());
+            _sharedRaceViewModel.Genders.AddRange(await _logic.GetGenders());
+            _sharedRaceViewModel.Locations.AddRange(await _logic.GetLocations());
         }
     }
 }

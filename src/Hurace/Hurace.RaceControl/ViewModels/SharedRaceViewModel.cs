@@ -3,7 +3,7 @@ using Hurace.Core.Dto;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class SharedRaceItemViewModel
+    public class SharedRaceViewModel
     {
         public ObservableCollection<Gender> Genders { get; set; } = new ObservableCollection<Gender>();
         public ObservableCollection<Discipline> Disciplines { get; set; } = new ObservableCollection<Discipline>();

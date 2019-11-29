@@ -31,11 +31,11 @@
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="True">
+                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding CurrentRace.Edit}" Value="False">
+                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="False">
                             <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -91,7 +91,7 @@
                     </Grid.Style>
 
                     <TextBlock Grid.Row="0" Text="Active Races:" Style="{StaticResource LabelName}" />
-                    <ListBox Grid.Row="1" ItemsSource="{Binding ActiveRaces}" SelectedItem="{Binding CurrentRace}"
+                    <ListBox Grid.Row="1" ItemsSource="{Binding ActiveRaces}" SelectedItem="{Binding SelectedRace}"
                              BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -125,11 +125,11 @@
                     </Grid.RowDefinitions>
                     
                     <TextBlock Grid.Row="0" Text="All Races:" Style="{StaticResource LabelName}" />
-                    <ListBox Grid.Row="1" ItemsSource="{Binding AllRaces}" SelectedItem="{Binding CurrentRace}"
+                    <ListBox Grid.Row="1" ItemsSource="{Binding AllRaces}" SelectedItem="{Binding SelectedRace}"
                              BorderThickness="0,0,0,1">
                         <i:Interaction.Triggers>
-                            <i:PropertyChangedTrigger Binding="{Binding CurrentRace}">
-                                <i:InvokeCommandAction Command="{Binding SelectedRaceChanged}"></i:InvokeCommandAction>
+                            <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
+                                <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}"></i:InvokeCommandAction>
                             </i:PropertyChangedTrigger>
                         </i:Interaction.Triggers>
                         <ListBox.ItemTemplate>
@@ -140,7 +140,7 @@
                     </ListBox>
                 </Grid>
             </Grid>
-            <Button Grid.Row="1" Content="Create Race" Margin="10" Command="{Binding AddRace}" />
+            <Button Grid.Row="1" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
         </Grid>
 
         <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"
@@ -150,7 +150,7 @@
         <ContentPresenter Grid.Column="1" Content="{Binding}">
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="RaceSelected">
-                    <controls:RaceItemControl DataContext="{Binding CurrentRace}" />
+                    <controls:RaceControl DataContext="{Binding SelectedRace}" />
                 </DataTemplate>
 
                 <DataTemplate x:Key="NoSelection">
@@ -162,12 +162,12 @@
             <ContentPresenter.Style>
                 <Style TargetType="{x:Type ContentPresenter}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentRace, Converter={StaticResource IsNullConverter}}"
+                        <DataTrigger Binding="{Binding SelectedRace, Converter={StaticResource IsNullConverter}}"
                                      Value="True">
                             <Setter Property="ContentTemplate" Value="{StaticResource NoSelection}" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding CurrentRace, Converter={StaticResource IsNullConverter}}"
+                        <DataTrigger Binding="{Binding SelectedRace, Converter={StaticResource IsNullConverter}}"
                                      Value="False">
                             <Setter Property="ContentTemplate" Value="{StaticResource RaceSelected}" />
                         </DataTrigger>

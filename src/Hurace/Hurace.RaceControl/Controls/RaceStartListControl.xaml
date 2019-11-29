@@ -1,4 +1,4 @@
-<UserControl x:Class="Hurace.RaceControl.Controls.RaceStartlistControl"
+<UserControl x:Class="Hurace.RaceControl.Controls.RaceStartListControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,7 +8,7 @@
              xmlns:dto="clr-namespace:Hurace.Core.Dto;assembly=Hurace.Core.Dto"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceItemStartListViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceStartListViewModel}">
     <UserControl.Resources>
         <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
             <StackPanel Orientation="Horizontal">
@@ -38,19 +38,19 @@
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="5,0,0,0" Text="Eingetragene Rennläufer:" />
         <!-- Search -->
         <TextBox Grid.Column="0" Grid.Row="1" Margin="0,5,5,5"
-                 Text="{Binding AvailableSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                 Text="{Binding SkierSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding AvailableSearchText}">
-                    <i:InvokeCommandAction Command="{Binding AvailableSearchTextChange}" />
+                <i:PropertyChangedTrigger Binding="{Binding SkierSearchText}">
+                    <i:InvokeCommandAction Command="{Binding SkierSearchChangeCommand}" />
                 </i:PropertyChangedTrigger>
             </i:Interaction.Triggers>
         </TextBox>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5,5,0,5"
-                 Text="{Binding SelectedSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                 Text="{Binding StartListSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding SelectedSearchText}">
+                <i:PropertyChangedTrigger Binding="{Binding StartListSearchText}">
                     <i:InvokeCommandAction
-                        Command="{Binding SelectedSearchTextChange}" />
+                        Command="{Binding StartListSearchChangeCommand}" />
                 </i:PropertyChangedTrigger>
             </i:Interaction.Triggers>
         </TextBox>
@@ -63,14 +63,14 @@
                     <DockPanel LastChildFill="False">
                         <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" />
                         <Button DockPanel.Dock="Right" Content="+" Width="35" CommandParameter="{Binding Id}"
-                                Command="{Binding ElementName=AvailableSkiers, Path=DataContext.AddSkier}" />
+                                Command="{Binding ElementName=AvailableSkiers, Path=DataContext.AddSkierCommand}" />
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <!-- Selected Skier -->
         <ListBox Grid.Column="1" Grid.Row="2" x:Name="SelectedSkiers" Margin="5,0,0,0"
-                 ItemsSource="{Binding SelectedSkiers}"
+                 ItemsSource="{Binding StartList}"
                  SelectedItem="{Binding SelectedStartList}"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
@@ -82,7 +82,7 @@
                                               Content="{Binding Skier}" />
                         </StackPanel>
                         <Button DockPanel.Dock="Right" Content="-" Width="35" CommandParameter="{Binding SkierId}"
-                                Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveSkier}" />
+                                Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveStartListCommand}" />
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -92,8 +92,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Margin="0,0,5,0" Content="↑" Command="{Binding StartListUp}" />
-            <Button Grid.Column="1" Margin="5,0,0,0" Content="↓" Command="{Binding StartListDown}" />
+            <Button Grid.Column="0" Margin="0,0,5,0" Content="↑" Command="{Binding StartListUpCommand}" />
+            <Button Grid.Column="1" Margin="5,0,0,0" Content="↓" Command="{Binding StartListDownCommand}" />
         </Grid>
 
     </Grid>
