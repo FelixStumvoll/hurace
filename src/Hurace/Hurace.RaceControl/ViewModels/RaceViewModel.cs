@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api;
-using Hurace.Core.Dto;
+using Hurace.Core.Api.Race;
+using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
@@ -12,7 +14,7 @@ namespace Hurace.RaceControl.ViewModels
     {
         private bool _edit;
         private Race _race;
-        private readonly IHuraceCore _logic;
+        private readonly IRaceService _logic;
         private readonly Race _backupRace = new Race();
         private bool _isNew;
         public RaceStartListViewModel RaceStartListViewModel { get; set; }
@@ -63,7 +65,7 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _isNew, value);
         }
 
-        public RaceViewModel(IHuraceCore logic, Race race, SharedRaceViewModel svm,
+        public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm,
             Func<RaceViewModel, bool> deleteFunc, bool isNew = false)
         {
             _logic = logic;

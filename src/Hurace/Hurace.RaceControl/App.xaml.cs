@@ -17,7 +17,7 @@ namespace Hurace.RaceControl
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            
         }
     }
 }

@@ -6,15 +6,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api;
-using Hurace.Core.Dto;
+using Hurace.Core.Api.Race;
+using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
     public class RaceStartListViewModel : NotifyPropertyChanged
     {
-        private readonly IHuraceCore _logic;
+        private readonly IRaceService _logic;
         private readonly Race _race;
         private string _skierSearchText;
         private string _startListSearchText;
@@ -50,7 +52,7 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand StartListUpCommand { get; set; }
         public ICommand StartListDownCommand { get; set; }
 
-        public RaceStartListViewModel(IHuraceCore logic, Race race)
+        public RaceStartListViewModel(IRaceService logic, Race race)
         {
             _logic = logic;
             _race = race;

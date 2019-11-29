@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Hurace.Core.Api;
+using Hurace.Core.Api.Race;
 using Hurace.RaceControl.ViewModels;
 
 namespace Hurace.RaceControl
@@ -24,7 +25,7 @@ namespace Hurace.RaceControl
     {
         public MainWindow()
         {
-            var vm = new MainViewModel(new MockHuraceCore());
+            var vm = new MainViewModel(new MockRaceService());
             DataContext = vm;
             InitializeComponent();
             Loaded += async (sender, args) => await vm.InitializeAsync();

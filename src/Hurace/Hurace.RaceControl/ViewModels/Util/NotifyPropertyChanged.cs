@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.Util
 {
     public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     {

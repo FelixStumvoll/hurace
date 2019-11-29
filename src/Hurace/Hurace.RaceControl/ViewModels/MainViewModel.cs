@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api;
-using Hurace.Core.Dto;
-using Hurace.RaceControl.Util;
+using Hurace.Core.Api.Race;
+using Hurace.Dal.Domain;
+using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
@@ -15,7 +17,7 @@ namespace Hurace.RaceControl.ViewModels
     {
         private RaceViewModel _selectedRace;
 
-        private readonly IHuraceCore _logic;
+        private readonly IRaceService _logic;
         private readonly SharedRaceViewModel _sharedRaceViewModel;
 
         public ObservableCollection<RaceViewModel> AllRaces { get; set; } =
@@ -33,7 +35,7 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand AddRaceCommand { get; set; }
         public ICommand SelectedRaceChangedCommand { get; set; }
 
-        public MainViewModel(IHuraceCore logic)
+        public MainViewModel(IRaceService logic)
         {
             _logic = logic;
             _sharedRaceViewModel = new SharedRaceViewModel();

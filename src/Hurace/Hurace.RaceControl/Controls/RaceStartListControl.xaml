@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:dto="clr-namespace:Hurace.Core.Dto;assembly=Hurace.Core.Dto"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:dto="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceStartListViewModel}">
     <UserControl.Resources>

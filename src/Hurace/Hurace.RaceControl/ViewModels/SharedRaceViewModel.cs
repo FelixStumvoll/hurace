@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using Hurace.Core.Dto;
+using Hurace.Dal.Domain;
 
 namespace Hurace.RaceControl.ViewModels
 {

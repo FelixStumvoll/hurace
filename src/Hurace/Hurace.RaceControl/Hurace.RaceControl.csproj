@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Hurace.Core.Api\Hurace.Core.Api.csproj" />
-      <ProjectReference Include="..\Hurace.Core.Dto\Hurace.Core.Dto.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
