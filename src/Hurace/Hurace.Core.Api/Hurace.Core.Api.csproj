@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
     </ItemGroup>
@@ -15,12 +16,7 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="4.9.4" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Hurace.Dal.Dao, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\Hurace.Core\Hurace.Dal.Test\bin\Debug\netcoreapp3.0\Hurace.Dal.Dao.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>

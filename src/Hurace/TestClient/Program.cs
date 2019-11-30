@@ -7,7 +7,7 @@ namespace TestClient
     {
         static void Main(string[] args)
         {
-           var sf = new ServiceFactory();
+//           var sf = new ContainerFactory(null, "");
         }
     }
 }

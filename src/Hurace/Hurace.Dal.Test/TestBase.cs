@@ -32,8 +32,7 @@ namespace Hurace.Dal.Test
         protected IRaceStateDao RaceStateDao { get; set; }
         protected IStartStateDao StartStateDao { get; set; }
         protected IEventTypeDao EventTypeDao { get; set; }
-
-
+        
         protected TestBase()
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

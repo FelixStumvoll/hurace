@@ -32,13 +32,9 @@ namespace Hurace.Core.Api.Race
 
         public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
 
-        public Task<IEnumerable<Dal.Domain.Race>> GetAllRaces()
-        {
-            return _raceDao.FindAllAsync();
-        }
+        public Task<IEnumerable<Dal.Domain.Race>> GetAllRaces() => _raceDao.FindAllAsync();
 
-        public Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces() =>
-            _raceDao.GetActiveRaces();
+        public Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
 
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);

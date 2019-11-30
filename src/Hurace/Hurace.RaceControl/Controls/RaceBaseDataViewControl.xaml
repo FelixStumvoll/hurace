@@ -95,7 +95,7 @@
                         </Style>
                     </StackPanel.Resources>
                     <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
-                    <DatePicker SelectedDate="{Binding Race.RaceDate}" />
+                    <DatePicker  SelectedDate="{Binding Race.RaceDate}" />
                     <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines}" DisplayMemberPath="DisciplineName"
                               SelectedItem="{Binding SelectedDiscipline}">
                     </ComboBox>

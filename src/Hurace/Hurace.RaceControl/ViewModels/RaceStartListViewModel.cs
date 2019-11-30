@@ -73,6 +73,8 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
+            _skiers.Clear();
+            _startList.Clear();
             _skiers.AddRange(await _logic.GetAvailableSkiersForRace(_race.Id));
             _startList.AddRange(await _logic.GetStartListForRace(_race.Id));
             PopulateSkiers(_skiers);
