@@ -6,7 +6,7 @@ using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.Race
 {
-    public class MockRaceService : IRaceService
+    public class MockRaceService
     {
         public async Task<IEnumerable<Gender>> GetGenders()
         {

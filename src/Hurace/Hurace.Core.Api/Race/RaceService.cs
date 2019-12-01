@@ -41,5 +41,15 @@ namespace Hurace.Core.Api.Race
 
         public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
+
+        public Task<bool> InsertOrUpdateRace(Dal.Domain.Race race) =>
+            race.Id == -1 ? _raceDao.InsertAsync(race) : _raceDao.UpdateAsync(race);
+
+        public async Task<bool> RemoveRace(Dal.Domain.Race race)
+        {
+            if (await _raceDao.FindByIdAsync(race.Id) == null) return false;
+            await _raceDao.DeleteAsync(race.Id);
+            return true;
+        }
     }
 }

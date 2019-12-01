@@ -21,7 +21,7 @@
         </DockPanel>
         <TabControl Grid.Row="1" BorderThickness="0,1,0,0">
             <TabItem Header="Stammdaten">
-                <local:RaceBaseDataViewControl />
+                <local:RaceBaseDataViewControl DataContext="{Binding RaceBaseDataViewModel}" />
             </TabItem>
             <TabItem Header="Startliste" >
                 <local:RaceStartListControl DataContext="{Binding RaceStartListViewModel}" />

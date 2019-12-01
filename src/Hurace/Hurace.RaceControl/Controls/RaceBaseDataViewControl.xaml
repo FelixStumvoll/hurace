@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceBaseDataViewModel}">
 
     <UserControl.Resources>
         <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
@@ -41,10 +41,10 @@
                         <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
-                        <TextBlock Text="Ort:" VerticalAlignment="Center" />
+                        <TextBlock Text="Geschlecht:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
-                        <TextBlock Text="Geschlecht:" VerticalAlignment="Center" />
+                        <TextBlock Text="Ort:" VerticalAlignment="Center" />
                     </Border>
                 </StackPanel>
                 <!-- Inputs -->
@@ -55,8 +55,8 @@
                             <Setter Property="Margin" Value="0,5,0,0" />
                             <Setter Property="Width" Value="250" />
                         </Style>
-                        
-                        <Style TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
+
+                        <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Edit}" Value="True">
@@ -94,24 +94,71 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Resources>
-                    <TextBox Margin="0" Text="{Binding Race.RaceDescription}" />
-                    <DatePicker  SelectedDate="{Binding Race.RaceDate}" />
-                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines}" DisplayMemberPath="DisciplineName"
-                              SelectedItem="{Binding SelectedDiscipline}">
-                    </ComboBox>
-                    <TextBox Text="{Binding Race.Location.LocationName}" />
-                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders}" DisplayMemberPath="GenderDescription"
-                              SelectedItem="{Binding SelectedGender}" />
+                    <!-- Race Description -->
+                    <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding Race.RaceDescription}" />
+                    <!-- DatePicker -->
+                    <DatePicker SelectedDate="{Binding Race.RaceDate}" />
+                    <!-- Discipline Selection -->
+                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines.ViewItems}"
+                              DisplayMemberPath="DisciplineName"
+                              SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
+                    <!-- Gender Selection -->
+                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders.ViewItems}" DisplayMemberPath="GenderDescription"
+                              SelectedItem="{Binding SelectedGender, Mode=TwoWay}" />
+                    <!-- Location SearchBox -->
+                    <TextBox>
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                        <Setter Property="Text"
+                                                Value="{Binding SharedRaceViewModel.Locations.SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                                        <Setter Property="Text" Value="{Binding SelectedLocation.LocationName}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <!-- Location SelectBox -->
+                    <ListBox ItemsSource="{Binding SharedRaceViewModel.Locations.ViewItems}"
+                             SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+                        <ListBox.Style>
+                            <Style TargetType="ListBox" BasedOn="{StaticResource InputStyle}">
+                                <Setter Property="Height" Value="150" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.Style>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding LocationName}" />
+                                    <TextBlock Text="-" Margin="5,0" />
+                                    <TextBlock Text="{Binding Country.CountryCode}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
                 </StackPanel>
             </StackPanel>
-
         </ScrollViewer>
 
         <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="InEdit">
                     <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0" Margin="0,0,10,0" />
+                        <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0"
+                                Margin="0,0,10,0" />
                         <Button Content="Speichern" Command="{Binding SaveEditCommand}" Padding="5,0" />
                     </StackPanel>
                 </DataTemplate>

@@ -12,7 +12,7 @@ namespace Hurace.Dal.Domain
         public int SeasonId { get; set; }
         [Navigational] public Season? Season { get; set; }
         public int DisciplineId { get; set; }
-        [Navigational] public Discipline Discipline { get; set; }
+        [Navigational] public Discipline? Discipline { get; set; }
         public int LocationId { get; set; }
         [Navigational] public Location? Location { get; set; }
         public DateTime RaceDate { get; set; }

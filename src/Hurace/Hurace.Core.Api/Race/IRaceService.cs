@@ -13,5 +13,7 @@ namespace Hurace.Core.Api.Race
         Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces();
         Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
+        Task<bool> InsertOrUpdateRace(Dal.Domain.Race race);
+        Task<bool> RemoveRace(Dal.Domain.Race race);
     }
 }

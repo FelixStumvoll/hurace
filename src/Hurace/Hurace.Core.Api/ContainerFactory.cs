@@ -1,14 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Autofac;
-using Hurace.Core.Api.Race;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
-using Hurace.Dal.Dao;
-using Hurace.Dal.Domain;
-using Hurace.Dal.Interface;
-using Hurace.Dal.Interface.Base;
 using Microsoft.Extensions.Configuration;
 
 namespace Hurace.Core.Api

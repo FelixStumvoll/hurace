@@ -1,12 +1,21 @@
 using System.Collections.ObjectModel;
 using Hurace.Dal.Domain;
+using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
     public class SharedRaceViewModel
     {
-        public ObservableCollection<Gender> Genders { get; set; } = new ObservableCollection<Gender>();
-        public ObservableCollection<Discipline> Disciplines { get; set; } = new ObservableCollection<Discipline>();
-        public ObservableCollection<Location> Locations { get; set; } = new ObservableCollection<Location>();
+        public FilterableObservableCollection<Gender> Genders { get; set; }
+        public FilterableObservableCollection<Discipline> Disciplines { get; set; }
+        public FilterableObservableCollection<Location> Locations { get; set; }
+
+        public SharedRaceViewModel()
+        {
+            Genders = new FilterableObservableCollection<Gender>((g, s) => g.GenderDescription.ToLower().Contains(s));
+            Disciplines =
+                new FilterableObservableCollection<Discipline>((d, s) => d.DisciplineName.ToLower().Contains(s));
+            Locations = new FilterableObservableCollection<Location>((l, s) => l.LocationName.ToLower().Contains(s));
+        }
     }
 }

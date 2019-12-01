@@ -38,25 +38,25 @@
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="5,0,0,0" Text="Eingetragene Rennläufer:" />
         <!-- Search -->
         <TextBox Grid.Column="0" Grid.Row="1" Margin="0,5,5,5"
-                 Text="{Binding SkierSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding SkierSearchText}">
-                    <i:InvokeCommandAction Command="{Binding SkierSearchChangeCommand}" />
-                </i:PropertyChangedTrigger>
-            </i:Interaction.Triggers>
+                 Text="{Binding AvailableSkiers.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <!-- <i:Interaction.Triggers> -->
+            <!--     <i:PropertyChangedTrigger Binding="{Binding SkierSearchText}"> -->
+            <!--         <i:InvokeCommandAction Command="{Binding SkierSearchChangeCommand}" /> -->
+            <!--     </i:PropertyChangedTrigger> -->
+            <!-- </i:Interaction.Triggers> -->
         </TextBox>
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5,5,0,5"
-                 Text="{Binding StartListSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <i:Interaction.Triggers>
-                <i:PropertyChangedTrigger Binding="{Binding StartListSearchText}">
-                    <i:InvokeCommandAction
-                        Command="{Binding StartListSearchChangeCommand}" />
-                </i:PropertyChangedTrigger>
-            </i:Interaction.Triggers>
+                 Text="{Binding StartList.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <!-- <i:Interaction.Triggers> -->
+            <!--     <i:PropertyChangedTrigger Binding="{Binding StartListSearchText}"> -->
+            <!--         <i:InvokeCommandAction -->
+            <!--             Command="{Binding StartListSearchChangeCommand}" /> -->
+            <!--     </i:PropertyChangedTrigger> -->
+            <!-- </i:Interaction.Triggers> -->
         </TextBox>
         <!-- Available Skiers -->
         <ListBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" x:Name="AvailableSkiers" Margin="0,0,5,0"
-                 ItemsSource="{Binding AvailableSkiers}"
+                 ItemsSource="{Binding AvailableSkiers.ViewItems}"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -70,7 +70,7 @@
         </ListBox>
         <!-- Selected Skier -->
         <ListBox Grid.Column="1" Grid.Row="2" x:Name="SelectedSkiers" Margin="5,0,0,0"
-                 ItemsSource="{Binding StartList}"
+                 ItemsSource="{Binding StartList.ViewItems}"
                  SelectedItem="{Binding SelectedStartList}"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>

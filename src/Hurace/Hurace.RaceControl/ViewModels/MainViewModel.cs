@@ -41,8 +41,8 @@ namespace Hurace.RaceControl.ViewModels
             _sharedRaceViewModel = new SharedRaceViewModel();
             AddRaceCommand = new ActionCommand(_ =>
             {
-                var rvm = new RaceViewModel(_logic, new Race(), _sharedRaceViewModel, DeleteRace, true)
-                    {Edit = true};
+                var rvm = new RaceViewModel(_logic, new Race {Id = -1, RaceDate = DateTime.Now}, _sharedRaceViewModel,
+                                            DeleteRace, DeleteRaceViewModel);
                 AllRaces.Add(rvm);
                 SelectedRace = rvm;
             });
@@ -50,27 +50,33 @@ namespace Hurace.RaceControl.ViewModels
             SelectedRaceChangedCommand = new ActionCommand(async _ => { await SelectedRace.SetupAsync(); });
         }
 
-        private bool DeleteRace(RaceViewModel rvm)
+        private async Task<bool> DeleteRace(RaceViewModel rvm)
         {
             if (MessageBox.Show("Delete Race ?", "Delete ?", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return false;
-            AllRaces.Remove(SelectedRace);
-            ActiveRaces.Remove(SelectedRace);
-            SelectedRace = null;
+            await _logic.RemoveRace(rvm.Race);
+            DeleteRaceViewModel(rvm);
             return true;
+        }
+
+        private void DeleteRaceViewModel(RaceViewModel rvm)
+        {
+            AllRaces.Remove(rvm);
+            ActiveRaces.Remove(rvm);
+            SelectedRace = null;
         }
 
         public async Task InitializeAsync()
         {
             AllRaces.AddRange(
                 (await _logic.GetAllRaces()).Select(
-                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace)));
+                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace, DeleteRaceViewModel)));
             ActiveRaces.AddRange(
                 (await _logic.GetActiveRaces()).Select(
-                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace)));
-            _sharedRaceViewModel.Disciplines.AddRange(await _logic.GetDisciplines());
-            _sharedRaceViewModel.Genders.AddRange(await _logic.GetGenders());
-            _sharedRaceViewModel.Locations.AddRange(await _logic.GetLocations());
+                    r => new RaceViewModel(_logic, r, _sharedRaceViewModel, DeleteRace, DeleteRaceViewModel)));
+            _sharedRaceViewModel.Disciplines.UpdateDataSource(await _logic.GetDisciplines());
+            _sharedRaceViewModel.Genders.UpdateDataSource(await _logic.GetGenders());
+            _sharedRaceViewModel.Locations.UpdateDataSource(await _logic.GetLocations());
         }
     }
 }
