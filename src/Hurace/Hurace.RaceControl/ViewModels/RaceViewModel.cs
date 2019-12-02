@@ -17,14 +17,15 @@ namespace Hurace.RaceControl.ViewModels
         public Race Race { get; set; }
         public ICommand DeleteCommand { get; set; }
 
+        public event Action<RaceViewModel> OnDelete;
 
-        public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm,
-            Func<RaceViewModel, Task<bool>> deleteFunc, Action<RaceViewModel> unsavedDeleteFunc)
+        public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
         {
             Race = race;
             RaceStartListViewModel = new RaceStartListViewModel(logic, race);
             RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, race, svm);
-            DeleteCommand = new ActionCommand(_ => deleteFunc(this), _ => Race.Id != -1);
+            RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
+            DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this), _ => Race.Id != -1);
         }
 
         public async Task SetupAsync()

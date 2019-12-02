@@ -17,6 +17,7 @@ namespace Hurace.RaceControl.ViewModels
         private Race _race;
         private readonly IRaceService _logic;
         private readonly Race _backupRace = new Race();
+        public event Action OnUnsavedCancel;
         public ICommand StartEditCommand { get; set; }
 
         public ICommand SaveEditCommand { get; set; }
@@ -103,10 +104,17 @@ namespace Hurace.RaceControl.ViewModels
 
         private void CancelEdit(object _)
         {
+            Edit = false;
+            if (Race.Id == -1)
+            {
+                OnUnsavedCancel?.Invoke();
+                return;
+            }
+            
             ShallowCopyRace(_backupRace, Race);
             SetSelectedProps();
             InvokePropertyChanged(nameof(Race));
-            Edit = false;
+            
         }
 
         private async Task SaveEdit(object _)
