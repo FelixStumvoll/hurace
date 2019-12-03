@@ -5,18 +5,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Hurace.Core\Hurace.Core.Timer\Hurace.Core.Timer.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="RaceControl" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Autofac" Version="4.9.4" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Timer" />
     </ItemGroup>
 </Project>

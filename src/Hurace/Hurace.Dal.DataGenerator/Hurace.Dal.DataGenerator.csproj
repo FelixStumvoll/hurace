@@ -9,10 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Hurace.Core\Hurace.Dal.Common\Hurace.Dal.Common.csproj" />
-      <ProjectReference Include="..\Hurace.Core\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
-      <ProjectReference Include="..\Hurace.Dal.Common\Hurace.Dal.Common.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
     </ItemGroup>
 
@@ -39,6 +37,12 @@
       <None Update="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Diagnostics.Tools, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+        <HintPath>C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\3.0.0\ref\netcoreapp3.0\System.Diagnostics.Tools.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

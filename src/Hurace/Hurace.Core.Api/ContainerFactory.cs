@@ -17,7 +17,7 @@ namespace Hurace.Core.Api
 
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Api"))
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
-            
+
             var section = config.GetSection("ConnectionStrings").GetSection(configName);
             
             builder.RegisterInstance(

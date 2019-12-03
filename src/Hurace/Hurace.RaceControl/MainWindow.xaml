@@ -150,7 +150,7 @@
         <ContentPresenter Grid.Column="1" Content="{Binding}">
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="RaceSelected">
-                    <controls:RaceControl DataContext="{Binding SelectedRace}" />
+                    <controls:RaceView DataContext="{Binding SelectedRace}" />
                 </DataTemplate>
 
                 <DataTemplate x:Key="NoSelection">

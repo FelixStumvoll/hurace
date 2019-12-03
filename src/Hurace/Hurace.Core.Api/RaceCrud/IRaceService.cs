@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Api.Race
+namespace Hurace.Core.Api.RaceCrud
 {
     public interface IRaceService
     {
         Task<IEnumerable<Gender>> GetGenders();
         Task<IEnumerable<Location>> GetLocations();
         Task<IEnumerable<Discipline>> GetDisciplines();
-        Task<IEnumerable<Dal.Domain.Race>> GetAllRaces();
-        Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces();
+        Task<IEnumerable<Race>> GetAllRaces();
+        Task<IEnumerable<Race>> GetActiveRaces();
         Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
-        Task<bool> InsertOrUpdateRace(Dal.Domain.Race race);
-        Task<bool> RemoveRace(Dal.Domain.Race race);
+        Task<bool> InsertOrUpdateRace(Race race);
+        Task<bool> RemoveRace(Race race);
     }
 }

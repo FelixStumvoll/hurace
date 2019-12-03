@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api;
-using Hurace.Core.Api.Race;
+using Hurace.Core.Api.RaceCrud;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -109,6 +109,7 @@ namespace Hurace.RaceControl.ViewModels
             if (startList == null) return Task.CompletedTask;
             AvailableSkiers.DataSource.Add(startList.Skier);
             StartList.DataSource.Remove(startList);
+            foreach (var sl in StartList.DataSource.Where(s => s.StartNumber > startList.StartNumber)) sl.StartNumber--;
             AvailableSkiers.Apply();
             StartList.Apply();
             return Task.CompletedTask;

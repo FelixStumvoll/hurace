@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Api.Race
+namespace Hurace.Core.Api.RaceCrud
 {
     public class MockRaceService
     {
@@ -31,11 +31,11 @@ namespace Hurace.Core.Api.Race
             };
         }
 
-        public async Task<IEnumerable<Dal.Domain.Race>> GetAllRaces()
+        public async Task<IEnumerable<Race>> GetAllRaces()
         {
-            return new List<Dal.Domain.Race>
+            return new List<Race>
             {
-                new Dal.Domain.Race
+                new Race
                 {
                     Id = 1,
                     RaceDescription = "Yeet",
@@ -48,7 +48,7 @@ namespace Hurace.Core.Api.Race
                     RaceDate = DateTime.Now,
                     RaceState = new RaceState {RaceStateDescription = "Lul"}
                 },
-                new Dal.Domain.Race
+                new Race
                 {
                     Id = 2,
                     RaceDescription = "Yeet",
@@ -64,11 +64,11 @@ namespace Hurace.Core.Api.Race
             };
         }
 
-        public async Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces()
+        public async Task<IEnumerable<Race>> GetActiveRaces()
         {
-            return new List<Dal.Domain.Race>
+            return new List<Race>
             {
-                new Dal.Domain.Race
+                new Race
                 {
                     Id = 3,
                     RaceDescription = "LMAO",
@@ -81,7 +81,7 @@ namespace Hurace.Core.Api.Race
                     RaceDate = DateTime.Now,
                     RaceState = new RaceState {RaceStateDescription = "Lul"}
                 },
-                new Dal.Domain.Race
+                new Race
                 {
                     Id = 4,
                     RaceDescription = "Roflkek",

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Api.Race
+namespace Hurace.Core.Api.RaceCrud
 {
     internal class RaceService : IRaceService
     {
@@ -32,9 +31,9 @@ namespace Hurace.Core.Api.Race
 
         public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
 
-        public Task<IEnumerable<Dal.Domain.Race>> GetAllRaces() => _raceDao.FindAllAsync();
+        public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
 
-        public Task<IEnumerable<Dal.Domain.Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
+        public Task<IEnumerable<Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
 
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);
@@ -42,10 +41,10 @@ namespace Hurace.Core.Api.Race
         public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
 
-        public Task<bool> InsertOrUpdateRace(Dal.Domain.Race race) =>
+        public Task<bool> InsertOrUpdateRace(Race race) =>
             race.Id == -1 ? _raceDao.InsertAsync(race) : _raceDao.UpdateAsync(race);
 
-        public async Task<bool> RemoveRace(Dal.Domain.Race race)
+        public async Task<bool> RemoveRace(Race race)
         {
             if (await _raceDao.FindByIdAsync(race.Id) == null) return false;
             await _raceDao.DeleteAsync(race.Id);

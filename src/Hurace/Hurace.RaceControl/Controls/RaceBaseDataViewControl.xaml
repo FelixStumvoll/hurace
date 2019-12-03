@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceBaseDataViewModel}">
 
@@ -44,6 +45,9 @@
                         <TextBlock Text="Geschlecht:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
+                        <TextBlock Text="Sensoren:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
                         <TextBlock Text="Ort:" VerticalAlignment="Center" />
                     </Border>
                 </StackPanel>
@@ -54,6 +58,15 @@
                             <Setter Property="Height" Value="25" />
                             <Setter Property="Margin" Value="0,5,0,0" />
                             <Setter Property="Width" Value="250" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
 
                         <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
@@ -72,39 +85,27 @@
                             </Style.Triggers>
                         </Style>
 
-                        <Style TargetType="ComboBox" BasedOn="{StaticResource InputStyle}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Edit}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Edit}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource InputStyle}" />
 
-                        <Style TargetType="DatePicker" BasedOn="{StaticResource InputStyle}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Edit}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Edit}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
+                        <Style TargetType="xctk:UIntegerUpDown" BasedOn="{StaticResource InputStyle}" />
+
+                        <Style TargetType="xctk:DateTimePicker" BasedOn="{StaticResource InputStyle}" />
                     </StackPanel.Resources>
                     <!-- Race Description -->
                     <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding Race.RaceDescription}" />
                     <!-- DatePicker -->
-                    <DatePicker SelectedDate="{Binding Race.RaceDate}" />
+                    <xctk:DateTimePicker Value="{Binding Race.RaceDate}" />
                     <!-- Discipline Selection -->
                     <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines.ViewItems}"
                               DisplayMemberPath="DisciplineName"
                               SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
                     <!-- Gender Selection -->
-                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders.ViewItems}" DisplayMemberPath="GenderDescription"
+                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders.ViewItems}"
+                              DisplayMemberPath="GenderDescription"
                               SelectedItem="{Binding SelectedGender, Mode=TwoWay}" />
+
+                    <!-- Sensors -->
+                    <xctk:UIntegerUpDown Minimum="0" />
                     <!-- Location SearchBox -->
                     <TextBox>
                         <TextBox.Style>

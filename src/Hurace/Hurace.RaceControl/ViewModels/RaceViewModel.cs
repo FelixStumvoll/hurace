@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api;
-using Hurace.Core.Api.Race;
+using Hurace.Core.Api.RaceCrud;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
@@ -14,6 +14,7 @@ namespace Hurace.RaceControl.ViewModels
     {
         public RaceStartListViewModel RaceStartListViewModel { get; set; }
         public RaceBaseDataViewModel RaceBaseDataViewModel { get; set; }
+        public RaceControlViewModel RaceControlViewModel { get; set; }
         public Race Race { get; set; }
         public ICommand DeleteCommand { get; set; }
 
@@ -24,6 +25,7 @@ namespace Hurace.RaceControl.ViewModels
             Race = race;
             RaceStartListViewModel = new RaceStartListViewModel(logic, race);
             RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, race, svm);
+            RaceControlViewModel = new RaceControlViewModel();
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this), _ => Race.Id != -1);
         }

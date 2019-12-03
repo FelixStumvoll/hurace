@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Autofac;
 using Hurace.Core.Api;
-using Hurace.Core.Api.Race;
+using Hurace.Core.Api.RaceCrud;
 using Hurace.RaceControl.ViewModels;
 using Microsoft.Extensions.Configuration;
 using ContainerBuilder = Autofac.ContainerBuilder;
