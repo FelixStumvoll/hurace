@@ -25,7 +25,7 @@ namespace Hurace.RaceControl.ViewModels
             Race = race;
             RaceStartListViewModel = new RaceStartListViewModel(logic, race);
             RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, race, svm);
-            RaceControlViewModel = new RaceControlViewModel();
+            RaceControlViewModel = new RaceControlViewModel(Race);
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this), _ => Race.Id != -1);
         }

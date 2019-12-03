@@ -41,7 +41,7 @@ namespace Hurace.RaceControl.ViewModels
             _sharedRaceViewModel = new SharedRaceViewModel();
             AddRaceCommand = new ActionCommand(_ =>
             {
-                var rvm = new RaceViewModel(_logic, new Race {Id = -1, RaceDate = DateTime.Now}, _sharedRaceViewModel);
+                var rvm = new RaceViewModel(_logic, new Race {Id = -1, RaceStateId = (int) Constants.RaceState.Upcoming, RaceDate = DateTime.Now}, _sharedRaceViewModel);
                 rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
                 AllRaces.Add(rvm);
                 SelectedRace = rvm;

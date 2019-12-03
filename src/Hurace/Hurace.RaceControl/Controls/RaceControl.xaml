@@ -8,44 +8,47 @@
              xmlns:domain="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance vm:RaceControlViewModel}"
-             >
-    
+             d:DataContext="{d:DesignInstance vm:RaceControlViewModel}">
+
     <ContentPresenter Content="{Binding}">
         <ContentPresenter.Resources>
             <DataTemplate x:Key="Upcoming">
-                <Button Content="Start Race"></Button>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Start Race" />
+                </StackPanel>
             </DataTemplate>
-            
+
             <DataTemplate x:Key="Running">
                 <Grid>
-                    <Label Content="AAAAAAAAAAAAAA"></Label>
+                    <Label Content="AAAAAAAAAAAAAA" />
                 </Grid>
             </DataTemplate>
-            
+
             <DataTemplate x:Key="Finished">
-                <Label Content="EEEEEEEEEEEEEEEEEEEEEE"></Label>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock FontWeight="Bold" Text="Rennen bereits vorbei" />
+                </StackPanel>
             </DataTemplate>
         </ContentPresenter.Resources>
-        
+
         <ContentPresenter.Style>
             <Style TargetType="{x:Type ContentPresenter}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="{x:Static domain:Constants+RaceState.Running}">
+                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="2">
                         <Setter Property="ContentTemplate" Value="{StaticResource Running}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="{x:Static domain:Constants+RaceState.Finished}">
+                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="3">
                         <Setter Property="ContentTemplate" Value="{StaticResource Finished}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="{x:Static domain:Constants+RaceState.Canceled}">
+                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="4">
                         <Setter Property="ContentTemplate" Value="{StaticResource Finished}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="{x:Static domain:Constants+RaceState.Upcoming}">
+                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="1">
                         <Setter Property="ContentTemplate" Value="{StaticResource Upcoming}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </ContentPresenter.Style>
     </ContentPresenter>
-    
+
 </UserControl>

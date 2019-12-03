@@ -41,8 +41,11 @@ namespace Hurace.Core.Api.RaceCrud
         public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
 
-        public Task<bool> InsertOrUpdateRace(Race race) =>
-            race.Id == -1 ? _raceDao.InsertAsync(race) : _raceDao.UpdateAsync(race);
+        public Task<bool> InsertOrUpdateRace(Race race)
+        {
+            race.SeasonId = 8; //TODO fix this shit
+            return race.Id == -1 ? _raceDao.InsertAsync(race) : _raceDao.UpdateAsync(race);
+        }
 
         public async Task<bool> RemoveRace(Race race)
         {
