@@ -19,7 +19,8 @@ namespace Hurace.Dal.Dao
 
         public async Task<IEnumerable<Skier>> FindAvailableSkiersForRace(int raceId) =>
             await QueryAsync<Skier>(@"
-                                                select s.id,
+                                                select
+                                                s.id,
                                                 s.firstName,
                                                 s.lastName,
                                                 s.genderId,
@@ -31,10 +32,10 @@ namespace Hurace.Dal.Dao
                                                 from hurace.Skier as s 
                                                 join hurace.gender g on g.id = s.genderId
                                                 join hurace.country c on c.id = s.countryId
-                                                join hurace.Race r on r.genderId = s.genderId and r.disciplineId in 
-                                                (select disciplineId from hurace.SkierDiscipline where skierId = s.id)
-                                                left outer join hurace.StartList as ss on s.id = ss.skierId
-                                                where ss.raceId is null and ss.skierId is null and r.id = @ri",
+                                                join hurace.Race r on  r.genderId = s.genderId and r.disciplineId in 
+                                                (select disciplineId from hurace.SkierDiscipline as d where d.skierId = s.id)
+                                                left outer join hurace.StartList as ss on s.id = ss.skierId and ss.raceId = @ri
+                                                where r.id= @ri and ss.raceId is null and ss.skierId is null and ss.startNumber is null",
                                     new MapperConfig()
                                         .AddMapping<Country>((nameof(Skier.CountryId), nameof(Country.Id)))
                                         .AddMapping<Gender>((nameof(Skier.GenderId), nameof(Gender.Id))),

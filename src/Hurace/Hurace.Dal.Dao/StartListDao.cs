@@ -17,7 +17,7 @@ namespace Hurace.Dal.Dao
             connectionFactory, "hurace.StartList", statementFactory)
         {
         }
-        
+
         public async Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             await QueryAsync<StartList>(@"select
                                                 sl.raceId,
@@ -49,12 +49,15 @@ namespace Hurace.Dal.Dao
         private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId,
             Constants.StartState startListState) =>
             await GeneratedQueryAsync(StatementFactory.Select<StartList>()
-                                                      .Join<StartList, Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
-                                                      .Join<Skier, Country>((nameof(Skier.CountryId), nameof(Country.Id)))
+                                                      .Join<StartList, Skier>(
+                                                          (nameof(StartList.SkierId), nameof(Skier.Id)))
+                                                      .Join<Skier, Country>(
+                                                          (nameof(Skier.CountryId), nameof(Country.Id)))
                                                       .Where<StartList>(
-                                                          (nameof(StartList.StartStateId), (int) startListState), (nameof(StartList.RaceId), raceId))
+                                                          (nameof(StartList.StartStateId), (int) startListState),
+                                                          (nameof(StartList.RaceId), raceId))
                                                       .Build());
-        
+
         public async Task<StartList?> GetNextSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Upcoming)).FirstOrDefault();
 
@@ -68,7 +71,8 @@ namespace Hurace.Dal.Dao
 
         public async Task<StartList?> FindByIdAsync(int skierId, int raceId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
-                                       .Where<StartList>((nameof(StartList.SkierId), skierId), (nameof(StartList.RaceId), raceId)).Build()))
+                                       .Where<StartList>((nameof(StartList.SkierId), skierId),
+                                                         (nameof(StartList.RaceId), raceId)).Build()))
             .SingleOrDefault();
 
         public async Task<bool> DeleteAsync(int raceId, int skierId) =>
@@ -76,14 +80,17 @@ namespace Hurace.Dal.Dao
                 $"delete from {TableName} where raceId=@ri and skierId=@si",
                 ("@ri", raceId), ("@si", skierId));
 
+        public Task<bool> DeleteAllForRace(int raceId) =>
+            ExecuteAsync($"delete from {TableName} where raceId=@rid", ("@rid", raceId));
+
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
 
-        public override async Task<bool> InsertAsync(StartList obj) => 
+        public override async Task<bool> InsertAsync(StartList obj) =>
             await GeneratedNonQueryAsync(StatementFactory
-                                          .Insert<StartList>()
-                                          .WithKey()
-                                          .Build(obj));
+                                         .Insert<StartList>()
+                                         .WithKey()
+                                         .Build(obj));
 
 //        public override async Task<bool> UpdateAsync(StartList obj) => 
 //            await GeneratedNonQueryAsync(StatementFactory.Update<StartList>().WithKey().WhereId(obj).Build(obj));

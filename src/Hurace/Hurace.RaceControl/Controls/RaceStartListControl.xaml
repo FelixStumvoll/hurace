@@ -18,6 +18,7 @@
                 <TextBlock Text="{Binding LastName}" />
             </StackPanel>
         </DataTemplate>
+        
     </UserControl.Resources>
 
     <Grid Margin="10">
@@ -31,6 +32,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -38,22 +40,9 @@
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="5,0,0,0" Text="Eingetragene Rennläufer:" />
         <!-- Search -->
         <TextBox Grid.Column="0" Grid.Row="1" Margin="0,5,5,5"
-                 Text="{Binding AvailableSkiers.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <!-- <i:Interaction.Triggers> -->
-            <!--     <i:PropertyChangedTrigger Binding="{Binding SkierSearchText}"> -->
-            <!--         <i:InvokeCommandAction Command="{Binding SkierSearchChangeCommand}" /> -->
-            <!--     </i:PropertyChangedTrigger> -->
-            <!-- </i:Interaction.Triggers> -->
-        </TextBox>
+                 Text="{Binding AvailableSkiers.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox Grid.Column="1" Grid.Row="1" Margin="5,5,0,5"
-                 Text="{Binding StartList.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <!-- <i:Interaction.Triggers> -->
-            <!--     <i:PropertyChangedTrigger Binding="{Binding StartListSearchText}"> -->
-            <!--         <i:InvokeCommandAction -->
-            <!--             Command="{Binding StartListSearchChangeCommand}" /> -->
-            <!--     </i:PropertyChangedTrigger> -->
-            <!-- </i:Interaction.Triggers> -->
-        </TextBox>
+                 Text="{Binding StartList.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <!-- Available Skiers -->
         <ListBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" x:Name="AvailableSkiers" Margin="0,0,5,0"
                  ItemsSource="{Binding AvailableSkiers.ViewItems}"
@@ -95,6 +84,46 @@
             <Button Grid.Column="0" Margin="0,0,5,0" Content="↑" Command="{Binding StartListUpCommand}" />
             <Button Grid.Column="1" Margin="5,0,0,0" Content="↓" Command="{Binding StartListDownCommand}" />
         </Grid>
+
+        <StackPanel Grid.Column="1" Grid.Row="4" Margin="10">
+            <StackPanel.Resources>
+                <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
+                    <Setter Property="Orientation" Value="Horizontal" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                </Style>
+            </StackPanel.Resources>
+    
+            <ContentPresenter Content="{Binding}">
+                <ContentPresenter.Resources>
+                    <DataTemplate x:Key="InEdit">
+                        <StackPanel Style="{StaticResource CrudButtonStyle}">
+                            <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0"
+                                    Margin="0,0,10,0" />
+                            <Button Content="Speichern" Command="{Binding SaveCommand}" Padding="5,0" />
+                        </StackPanel>
+                    </DataTemplate>
+
+                    <DataTemplate x:Key="View">
+                        <StackPanel Style="{StaticResource CrudButtonStyle}">
+                            <Button Content="Bearbeiten" Command="{Binding EditCommand}" Padding="5,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentPresenter.Resources>
+
+                <ContentPresenter.Style>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Edit}" Value="True">
+                                <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Edit}" Value="False">
+                                <Setter Property="ContentTemplate" Value="{StaticResource View}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentPresenter.Style>
+            </ContentPresenter>
+        </StackPanel>
 
     </Grid>
 </UserControl>

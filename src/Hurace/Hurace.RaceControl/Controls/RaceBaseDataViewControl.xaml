@@ -105,7 +105,7 @@
                               SelectedItem="{Binding SelectedGender, Mode=TwoWay}" />
 
                     <!-- Sensors -->
-                    <xctk:UIntegerUpDown Minimum="0" />
+                    <xctk:UIntegerUpDown Minimum="1" Value="{Binding SensorCount}" />
                     <!-- Location SearchBox -->
                     <TextBox>
                         <TextBox.Style>
@@ -154,6 +154,7 @@
             </StackPanel>
         </ScrollViewer>
 
+
         <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
             <ContentPresenter.Resources>
                 <DataTemplate x:Key="InEdit">
@@ -163,7 +164,6 @@
                         <Button Content="Speichern" Command="{Binding SaveEditCommand}" Padding="5,0" />
                     </StackPanel>
                 </DataTemplate>
-
                 <DataTemplate x:Key="View">
                     <StackPanel Style="{StaticResource CrudButtonStyle}">
                         <Button Content="Bearbeiten" Command="{Binding StartEditCommand}" Padding="5,0" />

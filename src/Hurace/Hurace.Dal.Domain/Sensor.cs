@@ -11,6 +11,7 @@ namespace Hurace.Dal.Domain
 
         public string SensorDescription { get; set; } = default!;
         public int RaceId { get; set; }
+        public int SensorNumber { get; set; }
         [Navigational]
         public Race? Race { get; set; }
     }

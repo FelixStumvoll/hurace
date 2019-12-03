@@ -27,7 +27,7 @@ namespace Hurace.Dal.Common.Mapper
                 var propName = config?.MappingExists(typeof(T), pi.Name, out mappedName) ?? false
                     ? mappedName
                     : pi.Name;
-                    pi.SetValue(ret, record[propName]);
+                if(!(record[propName] is DBNull)) pi.SetValue(ret, record[propName]);
             }
 
             return ret;

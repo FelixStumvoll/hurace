@@ -24,6 +24,7 @@ namespace Hurace.RaceControl.ViewModels
         public FilterableObservableCollection<StartList> StartList { get; set; }
 
         private StartList _selectedStartList;
+        private bool _edit;
 
         public StartList SelectedStartList
         {
@@ -35,22 +36,38 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand RemoveStartListCommand { get; set; }
         public ICommand StartListUpCommand { get; set; }
         public ICommand StartListDownCommand { get; set; }
+        public ICommand EditCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ICommand CancelEditCommand { get; set; }
+
+        public bool Edit
+        {
+            get => _edit;
+            set => Set(ref _edit, value);
+        }
 
         public RaceStartListViewModel(IRaceService logic, Race race)
         {
+            EditCommand = new ActionCommand(_ => EditStartList());
+            SaveCommand = new AsyncCommand(_ => SaveStartList());
+            CancelEditCommand = new AsyncCommand(_ => CancelEditStartList());
+
+
             _logic = logic;
             _race = race;
 
-            AddSkierCommand = new AsyncCommand(AddSkier);
-            RemoveStartListCommand = new AsyncCommand(RemoveStartList);
+            AddSkierCommand = new ActionCommand(AddSkier, _ => Edit);
+            RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => Edit);
 
             StartListUpCommand = new ActionCommand(_ => MoveStartList(i => i - 1),
                                                    _ => SelectedStartList != null &&
-                                                        StartList.DataSource.IndexOf(SelectedStartList) != 0);
+                                                        StartList.DataSource.IndexOf(SelectedStartList) != 0 &&
+                                                        Edit);
             StartListDownCommand = new ActionCommand(_ => MoveStartList(i => i + 1),
                                                      _ => SelectedStartList != null &&
                                                           StartList.DataSource.IndexOf(SelectedStartList) !=
-                                                          StartList.DataSource.Count - 1);
+                                                          StartList.DataSource.Count - 1 &&
+                                                          Edit);
             AvailableSkiers =
                 new FilterableObservableCollection<Skier>(SkierFilterFunc, s => s.OrderBy(sk => sk.LastName));
             StartList = new FilterableObservableCollection<StartList>((sl, st) => SkierFilterFunc(sl.Skier, st),
@@ -64,14 +81,14 @@ namespace Hurace.RaceControl.ViewModels
             StartList.UpdateDataSource(await _logic.GetStartListForRace(_race.Id));
             StartList.Apply();
         }
-        
+
 
         private static bool SkierFilterFunc(Skier skier, string text) =>
             skier.FirstName.ToLower().Contains(text) ||
             skier.LastName.ToLower().Contains(text) ||
             skier.Country.CountryCode.ToLower().Contains(text) ||
             skier.Country.CountryName.ToLower().Contains(text);
-        
+
         private void MoveStartList(Func<int, int> operation)
         {
             var index = StartList.DataSource.IndexOf(SelectedStartList);
@@ -83,10 +100,10 @@ namespace Hurace.RaceControl.ViewModels
             SelectedStartList = prev;
         }
 
-        private Task AddSkier(object param)
+        private void AddSkier(object param)
         {
             var skier = AvailableSkiers.DataSource.SingleOrDefault(s => s.Id == (int) param);
-            if (skier == null) return Task.CompletedTask;
+            if (skier == null) return;
             StartList.DataSource.Add(new StartList
             {
                 Race = _race,
@@ -100,19 +117,34 @@ namespace Hurace.RaceControl.ViewModels
             AvailableSkiers.DataSource.Remove(skier);
             AvailableSkiers.Apply();
             StartList.Apply();
-            return Task.CompletedTask;
         }
 
-        private Task RemoveStartList(object param)
+        private void RemoveStartList(object param)
         {
             var startList = StartList.DataSource.SingleOrDefault(s => s.SkierId == (int) param);
-            if (startList == null) return Task.CompletedTask;
+            if (startList == null) return;
             AvailableSkiers.DataSource.Add(startList.Skier);
             StartList.DataSource.Remove(startList);
             foreach (var sl in StartList.DataSource.Where(s => s.StartNumber > startList.StartNumber)) sl.StartNumber--;
             AvailableSkiers.Apply();
             StartList.Apply();
-            return Task.CompletedTask;
+        }
+
+        private Task SaveStartList()
+        {
+            Edit = false;
+            return _logic.UpdateStartList(_race, StartList.DataSource);
+        }
+
+        private Task CancelEditStartList()
+        {
+            Edit = false;
+            return SetupAsync();
+        }
+
+        private void EditStartList()
+        {
+            Edit = true;
         }
     }
 }

@@ -13,7 +13,9 @@ namespace Hurace.Core.Api.RaceCrud
         Task<IEnumerable<Race>> GetActiveRaces();
         Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
-        Task<bool> InsertOrUpdateRace(Race race);
+        Task<bool> InsertOrUpdateRace(Race race, int sensorCount);
+        Task<int> GetSensorCount(int raceId);
         Task<bool> RemoveRace(Race race);
+        Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList);
     }
 }

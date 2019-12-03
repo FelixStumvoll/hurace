@@ -17,27 +17,35 @@ namespace Hurace.RaceControl.ViewModels
         public RaceControlViewModel RaceControlViewModel { get; set; }
         public Race Race { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public bool Edit => RaceBaseDataViewModel.Edit || RaceStartListViewModel.Edit;
 
         public event Action<RaceViewModel> OnDelete;
 
         public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
         {
+            
             Race = race;
             RaceStartListViewModel = new RaceStartListViewModel(logic, race);
             RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, race, svm);
             RaceControlViewModel = new RaceControlViewModel(Race);
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this), _ => Race.Id != -1);
+            
+            RaceBaseDataViewModel.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(RaceBaseDataViewModel.Edit)) InvokePropertyChanged(nameof(Edit));
+            };
+
+            RaceStartListViewModel.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(RaceBaseDataViewModel.Edit)) InvokePropertyChanged(nameof(Edit));
+            };
         }
 
         public async Task SetupAsync()
         {
             await RaceStartListViewModel.SetupAsync();
-            await Task.Run(() =>
-            {
-                Task.Delay(500);
-                RaceBaseDataViewModel.Setup();
-            });
+            await RaceBaseDataViewModel.Setup();
         }
     }
 }

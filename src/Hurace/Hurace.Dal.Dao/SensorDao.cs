@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Hurace.Dal.Dao.Base;
@@ -12,5 +14,11 @@ namespace Hurace.Dal.Dao
             connectionFactory, "hurace.sensor", statementFactory)
         {
         }
+
+        public Task<IEnumerable<Sensor>> FindAllSensorsForRace(int raceId) =>
+            GeneratedQueryAsync(StatementFactory
+                                .Select<Sensor>()
+                                .Where<Sensor>((nameof(Sensor.RaceId), raceId))
+                                .Build());
     }
 }

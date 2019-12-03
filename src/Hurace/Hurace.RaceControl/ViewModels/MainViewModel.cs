@@ -31,7 +31,7 @@ namespace Hurace.RaceControl.ViewModels
             get => _selectedRace;
             set => Set(ref _selectedRace, value);
         }
-
+        
         public ICommand AddRaceCommand { get; set; }
         public ICommand SelectedRaceChangedCommand { get; set; }
 

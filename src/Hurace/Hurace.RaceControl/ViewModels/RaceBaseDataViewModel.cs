@@ -17,13 +17,11 @@ namespace Hurace.RaceControl.ViewModels
         private Race _race;
         private readonly IRaceService _logic;
         private readonly Race _backupRace = new Race();
+        private int _sensorCount;
         public event Action OnUnsavedCancel;
         public ICommand StartEditCommand { get; set; }
-
         public ICommand SaveEditCommand { get; set; }
-
         public ICommand CancelEditCommand { get; set; }
-
         public SharedRaceViewModel SharedRaceViewModel { get; set; }
 
         public Discipline SelectedDiscipline
@@ -59,6 +57,12 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
+        public int SensorCount
+        {
+            get => _sensorCount;
+            set => Set(ref _sensorCount, value);
+        }
+
         public Race Race
         {
             get => _race;
@@ -78,13 +82,15 @@ namespace Hurace.RaceControl.ViewModels
             SharedRaceViewModel = svm;
 
             Edit = race.Id == -1;
+            
             StartEditCommand = new ActionCommand(StartEdit);
             CancelEditCommand = new ActionCommand(CancelEdit);
             SaveEditCommand = new AsyncCommand(SaveEdit, SaveValidator);
         }
 
-        public void Setup()
+        public async Task Setup()
         {
+            SensorCount = await _logic.GetSensorCount(Race.Id);
             SetSelectedProps();
         }
 
@@ -119,7 +125,7 @@ namespace Hurace.RaceControl.ViewModels
 
         private async Task SaveEdit(object _)
         {
-            if (await _logic.InsertOrUpdateRace(Race))
+            if (await _logic.InsertOrUpdateRace(Race, SensorCount))
             {
                 Edit = false;
             }
@@ -128,7 +134,7 @@ namespace Hurace.RaceControl.ViewModels
         private bool SaveValidator(object _)
         {
             return Race.LocationId != -1 && Race.GenderId != -1 && Race.DisciplineId != -1 &&
-                   !Race.RaceDescription.IsNullOrEmpty() && Race.RaceDate != DateTime.MinValue;
+                   !Race.RaceDescription.IsNullOrEmpty() && Race.RaceDate != DateTime.MinValue && SensorCount > 0;
         }
 
         private static void ShallowCopyRace(Race original, Race copyTarget)
