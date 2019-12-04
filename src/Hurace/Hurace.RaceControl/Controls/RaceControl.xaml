@@ -14,7 +14,7 @@
         <ContentPresenter.Resources>
             <DataTemplate x:Key="Upcoming">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="Start Race" />
+                    <Button Command="{Binding StartRaceCommand}" Padding="10,0" Content="Start Race" />
                 </StackPanel>
             </DataTemplate>
 

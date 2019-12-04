@@ -8,18 +8,18 @@ using SkierEvent = Hurace.Dal.Domain.SkierEvent;
 
 namespace Hurace.Core.Api.RaceControl
 {
-    public class RaceControl
+    public class RaceControlService : IRaceControlService
     {
         public event Action<TimeData> OnTimeData;
         public event Action<Event> OnEvent;
-        private IRaceDao _raceDao;
-        private IStartListDao _startListDao;
-        private IRaceEventDao _raceEventDao;
-        private IRaceDataDao _raceDataDao;
-        private ISkierEventDao _skierEventDao;
+        private readonly IRaceDao _raceDao;
+        private readonly IStartListDao _startListDao;
+        private readonly IRaceEventDao _raceEventDao;
+        private readonly IRaceDataDao _raceDataDao;
+        private readonly ISkierEventDao _skierEventDao;
         private ITimeDataDao _timeDataDao;
 
-        public RaceControl(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
+        public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
             IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao)
         {
             _raceDao = raceDao;

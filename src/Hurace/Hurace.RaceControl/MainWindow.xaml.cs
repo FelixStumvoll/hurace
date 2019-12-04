@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Autofac;
 using Hurace.Core.Api;
+using Hurace.Core.Api.RaceControl;
 using Hurace.Core.Api.RaceCrud;
 using Hurace.RaceControl.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -28,9 +29,10 @@ namespace Hurace.RaceControl
     {
         public MainWindow()
         {
-            var config =new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var diContainer = ContainerFactory.BuildContainer(config, "hurace");
-            var vm = new MainViewModel(diContainer.Resolve<IRaceService>());
+            var vm = new MainViewModel(diContainer.Resolve<IRaceService>(), 
+                                       diContainer.Resolve<IRaceControlService>());
             DataContext = vm;
             InitializeComponent();
             Loaded += async (sender, args) => await vm.InitializeAsync();

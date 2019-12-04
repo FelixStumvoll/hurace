@@ -131,11 +131,9 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
-        private bool SaveValidator(object _)
-        {
-            return Race.LocationId != -1 && Race.GenderId != -1 && Race.DisciplineId != -1 &&
-                   !Race.RaceDescription.IsNullOrEmpty() && Race.RaceDate != DateTime.MinValue && SensorCount > 0;
-        }
+        private bool SaveValidator(object _) =>
+            Race.LocationId != -1 && Race.GenderId != -1 && Race.DisciplineId != -1 &&
+            !Race.RaceDescription.IsNullOrEmpty() && Race.RaceDate != DateTime.MinValue && SensorCount > 0;
 
         private static void ShallowCopyRace(Race original, Race copyTarget)
         {

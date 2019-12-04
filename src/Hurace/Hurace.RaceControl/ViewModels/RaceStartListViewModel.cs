@@ -82,7 +82,6 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-
         private static bool SkierFilterFunc(Skier skier, string text) =>
             skier.FirstName.ToLower().Contains(text) ||
             skier.LastName.ToLower().Contains(text) ||

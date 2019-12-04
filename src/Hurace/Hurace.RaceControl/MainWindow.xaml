@@ -24,6 +24,7 @@
         <!-- Left Side -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -50,97 +51,21 @@
             </Grid.Resources>
 
             <!-- Race Lists -->
-            <Grid Grid.Row="0" >
-                <Grid.RowDefinitions>
-                    <RowDefinition>
-                        <RowDefinition.Style>
-                            <Style TargetType="RowDefinition">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
-                                        <Setter Property="Height" Value="0" />
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
-                                        <Setter Property="Height" Value="1*" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </RowDefinition.Style>
-                    </RowDefinition>
-                    <RowDefinition Height="3*" />
-                </Grid.RowDefinitions>
-
-                <!-- Active Races -->
-                <Grid Grid.Row="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
-
-                    <TextBlock Grid.Row="0" Text="Active Races:" Style="{StaticResource LabelName}" />
-                    <ListBox Grid.Row="1" ItemsSource="{Binding ActiveRaces}" SelectedItem="{Binding SelectedRace}"
-                             BorderThickness="0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Race.RaceDescription}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-
-                <GridSplitter Grid.Row="0" Background="Gray" Height="1" HorizontalAlignment="Stretch"
-                              VerticalAlignment="Bottom">
-                    <GridSplitter.Style>
-                        <Style TargetType="GridSplitter">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ActiveRaces.Count}" Value="!0">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </GridSplitter.Style>
-                </GridSplitter>
-                
-                <!-- All Races -->
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Text="All Races:" Style="{StaticResource LabelName}" />
-                    <ListBox Grid.Row="1" ItemsSource="{Binding AllRaces}" SelectedItem="{Binding SelectedRace}"
-                             BorderThickness="0,0,0,1">
-                        <i:Interaction.Triggers>
-                            <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
-                                <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}"></i:InvokeCommandAction>
-                            </i:PropertyChangedTrigger>
-                        </i:Interaction.Triggers>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Race.RaceDescription}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </Grid>
-            <Button Grid.Row="1" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
+            <TextBlock Grid.Row="0" Text="All Races:" Style="{StaticResource LabelName}" />
+            <ListBox Grid.Row="1" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
+                     BorderThickness="0,0,0,1">
+                <i:Interaction.Triggers>
+                    <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
+                        <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}"></i:InvokeCommandAction>
+                    </i:PropertyChangedTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Race.RaceDescription}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Grid.Row="2" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
         </Grid>
 
         <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"

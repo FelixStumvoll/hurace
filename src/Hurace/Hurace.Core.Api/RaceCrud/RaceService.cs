@@ -36,8 +36,6 @@ namespace Hurace.Core.Api.RaceCrud
 
         public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
 
-        public Task<IEnumerable<Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
-
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);
 
