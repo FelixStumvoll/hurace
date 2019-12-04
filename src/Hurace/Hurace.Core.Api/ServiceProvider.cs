@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Autofac;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
@@ -6,9 +7,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Hurace.Core.Api
 {
-    public static class ContainerFactory
+    public sealed class ServiceProvider
     {
-        public static IContainer BuildContainer(IConfiguration config, string configName)
+        private IContainer _container;
+
+        private static readonly Lazy<ServiceProvider> _lazy = new Lazy<ServiceProvider>(() => new ServiceProvider());
+        
+        public static ServiceProvider Instance => _lazy.Value;
+        
+        private ServiceProvider()
+        {
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            BuildContainer(config, "hurace");
+        }
+
+        private void BuildContainer(IConfiguration config, string configName)
         {
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Dal.Dao"))
@@ -19,13 +32,15 @@ namespace Hurace.Core.Api
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
             var section = config.GetSection("ConnectionStrings").GetSection(configName);
-            
+
             builder.RegisterInstance(
                        new ConcreteConnectionFactory(DbUtil.GetProviderFactory(section["ProviderName"]),
                                                      section["ConnectionString"]))
                    .As<IConnectionFactory>();
             builder.RegisterInstance(new StatementFactory("hurace")).AsSelf();
-            return builder.Build();
+            _container = builder.Build();
         }
+
+        public T ResolveService<T>() => _container.Resolve<T>();
     }
 }

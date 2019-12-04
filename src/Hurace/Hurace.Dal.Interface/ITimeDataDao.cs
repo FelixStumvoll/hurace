@@ -10,5 +10,6 @@ namespace Hurace.Dal.Interface
         Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId, int count = 0);
         Task<bool> DeleteAsync(int skierId, int raceId, int sensorId);
         Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId);
+        Task<IEnumerable<TimeData>> GetTimeDataForStartList(int skierId, int raceId);
     }
 }

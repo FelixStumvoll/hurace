@@ -83,6 +83,11 @@ namespace Hurace.Dal.Dao
         public Task<bool> DeleteAllForRace(int raceId) =>
             ExecuteAsync($"delete from {TableName} where raceId=@rid", ("@rid", raceId));
 
+        public async Task<IEnumerable<StartList>> GetDisqualifiedSkierForRace(int raceId)
+        {
+            return Enumerable.Empty<StartList>(); //TODO implement query
+        }
+
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
 

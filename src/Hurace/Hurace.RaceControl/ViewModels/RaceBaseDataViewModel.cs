@@ -88,7 +88,7 @@ namespace Hurace.RaceControl.ViewModels
             SaveEditCommand = new AsyncCommand(SaveEdit, SaveValidator);
         }
 
-        public async Task Setup()
+        public async Task SetupAsync()
         {
             SensorCount = await _logic.GetSensorCount(Race.Id);
             SetSelectedProps();

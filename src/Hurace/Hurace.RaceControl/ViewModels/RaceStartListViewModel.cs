@@ -77,8 +77,8 @@ namespace Hurace.RaceControl.ViewModels
         public async Task SetupAsync()
         {
             AvailableSkiers.UpdateDataSource(await _logic.GetAvailableSkiersForRace(_race.Id));
-            AvailableSkiers.Apply();
             StartList.UpdateDataSource(await _logic.GetStartListForRace(_race.Id));
+            AvailableSkiers.Apply();
             StartList.Apply();
         }
 

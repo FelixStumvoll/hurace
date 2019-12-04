@@ -17,7 +17,6 @@ namespace Hurace.RaceControl.ViewModels
     public class MainViewModel : NotifyPropertyChanged
     {
         private RaceViewModel _selectedRace;
-        private readonly IRaceControlService _raceControlService;
 
         private readonly IRaceService _logic;
         private readonly SharedRaceViewModel _sharedRaceViewModel;
@@ -33,14 +32,13 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand AddRaceCommand { get; set; }
         public ICommand SelectedRaceChangedCommand { get; set; }
 
-        public MainViewModel(IRaceService logic, IRaceControlService raceControlService)
+        public MainViewModel(IRaceService logic)
         {
-            _raceControlService = raceControlService;
             _logic = logic;
             _sharedRaceViewModel = new SharedRaceViewModel();
             AddRaceCommand = new ActionCommand(_ =>
             {
-                var rvm = new RaceViewModel(_logic, _raceControlService, new Race {Id = -1, RaceStateId = (int) Constants.RaceState.Upcoming, RaceDate = DateTime.Now}, _sharedRaceViewModel);
+                var rvm = new RaceViewModel(_logic, new Race {Id = -1, RaceStateId = (int) Constants.RaceState.Upcoming, RaceDate = DateTime.Now}, _sharedRaceViewModel);
                 rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
                 Races.Add(rvm);
                 SelectedRace = rvm;
@@ -76,7 +74,7 @@ namespace Hurace.RaceControl.ViewModels
         public async Task InitializeAsync()
         {
             foreach (var raceViewModel in (await _logic.GetAllRaces()).Select(
-                r => new RaceViewModel(_logic,_raceControlService, r, _sharedRaceViewModel)))
+                r => new RaceViewModel(_logic, r, _sharedRaceViewModel)))
             {
                 raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
                 Races.Add(raceViewModel);

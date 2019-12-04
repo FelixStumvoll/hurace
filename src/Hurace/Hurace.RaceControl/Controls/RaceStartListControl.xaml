@@ -9,17 +9,6 @@
              xmlns:dto="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance vm:RaceStartListViewModel}">
-    <UserControl.Resources>
-        <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Country.CountryCode}" />
-                <TextBlock Margin="5,0" Text="-" />
-                <TextBlock Text="{Binding FirstName}" Margin="0,0,5,0" />
-                <TextBlock Text="{Binding LastName}" />
-            </StackPanel>
-        </DataTemplate>
-        
-    </UserControl.Resources>
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>

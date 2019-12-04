@@ -13,11 +13,18 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="4.9.4" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Timer" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

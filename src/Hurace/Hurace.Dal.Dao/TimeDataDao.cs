@@ -30,7 +30,7 @@ namespace Hurace.Dal.Dao
                 new MapperConfig()
                     .AddMapping<Country>(("countryId", nameof(Country.Id)))
                     .Include<StartList>()
-                    .AddMapping<Skier>(("skierId",nameof(Skier.Id)))
+                    .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
                     .AddMapping<Gender>(("genderId", nameof(Gender.Id))),
                 ("@raceId", raceId));
         }
@@ -43,7 +43,7 @@ namespace Hurace.Dal.Dao
             StatementFactory
                 .Select<TimeData>()
                 .Join<TimeData, StartList>((nameof(TimeData.RaceId), nameof(StartList.RaceId)),
-                                             (nameof(TimeData.SkierId), nameof(StartList.SkierId)))
+                                           (nameof(TimeData.SkierId), nameof(StartList.SkierId)))
                 .Join<TimeData, SkierEvent>((nameof(TimeData.SkierEventId), nameof(SkierEvent.Id)))
                 .Join<SkierEvent, RaceData>((nameof(SkierEvent.RaceDataId), nameof(RaceData.Id)))
                 .Join<TimeData, Sensor>((nameof(TimeData.SensorId), nameof(Sensor.Id)))
@@ -57,5 +57,10 @@ namespace Hurace.Dal.Dao
                                                         (nameof(TimeData.SensorId), sensorId))
                                        .Build()))
             .SingleOrDefault();
+
+        public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int skierId, int raceId) =>
+            GeneratedQueryAsync(DefaultSelectQuery()
+                                .Where<StartList>((nameof(StartList.RaceId), raceId),
+                                                  (nameof(StartList.SkierId), skierId)).Build());
     }
 }

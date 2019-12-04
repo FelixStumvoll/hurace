@@ -29,10 +29,8 @@ namespace Hurace.RaceControl
     {
         public MainWindow()
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            var diContainer = ContainerFactory.BuildContainer(config, "hurace");
-            var vm = new MainViewModel(diContainer.Resolve<IRaceService>(), 
-                                       diContainer.Resolve<IRaceControlService>());
+            var provider = ServiceProvider.Instance;
+            var vm = new MainViewModel(provider.ResolveService<IRaceService>());
             DataContext = vm;
             InitializeComponent();
             Loaded += async (sender, args) => await vm.InitializeAsync();

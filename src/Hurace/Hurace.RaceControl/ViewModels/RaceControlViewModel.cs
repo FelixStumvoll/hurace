@@ -1,7 +1,10 @@
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api.RaceControl;
 using Hurace.Dal.Domain;
+using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Util;
 using Microsoft.Xaml.Behaviors.Core;
 
@@ -17,6 +20,7 @@ namespace Hurace.RaceControl.ViewModels
 
         public ICommand StartRaceCommand { get; set; }
         private IRaceControlService _raceControlService;
+        public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
         private Race _race;
 
         public RaceControlViewModel(Race race, IRaceControlService raceControlService)
@@ -31,6 +35,13 @@ namespace Hurace.RaceControl.ViewModels
                 _raceControlService.StartRace(Race);
                 InvokePropertyChanged(nameof(Race));
             });
+        }
+
+        public async Task SetupAsync()
+        {
+            var startList = await _raceControlService.GetStartListForRace(Race.Id);
+            StartList.Clear();
+            StartList.AddRange(startList);
         }
     }
 }

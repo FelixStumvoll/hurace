@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              d:DataContext="{d:DesignInstance vm:RaceViewModel}"
@@ -19,7 +20,13 @@
                        Text="{Binding Race.RaceDescription}" />
             <Button HorizontalAlignment="Right" Content="Löschen" Padding="5,0" Command="{Binding DeleteCommand}" />
         </DockPanel>
-        <TabControl Grid.Row="1" BorderThickness="0,1,0,0">
+        <TabControl Grid.Row="1" x:Name="TabControl" BorderThickness="0,1,0,0">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=TabControl, Path=SelectedIndex}"
+                                           Command="{Binding TabSelectionChangedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TabItem Header="Stammdaten">
                 <local:RaceBaseDataViewControl DataContext="{Binding RaceBaseDataViewModel}" />
             </TabItem>
