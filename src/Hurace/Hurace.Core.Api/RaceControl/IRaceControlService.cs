@@ -8,14 +8,21 @@ namespace Hurace.Core.Api.RaceControl
 {
     public interface IRaceControlService
     {
+        int RaceId { get; set; }
         event Action<TimeData> OnTimeData;
-        event Action<Event> OnEvent;
-        Task<bool> StartRace(Race race);
-        Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
-        Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId);
-        Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId);
+        event Action<StartList> OnSkierStarted;
+        event Action<StartList> OnSkierFinished;
+        event Action<StartList> OnSkierCanceled;
+        event Action<StartList> OnCurrentSkierDisqualified;
+        event Action<StartList> OnLateDisqualification;
+        event Action<TimeData> OnSplitTime;
+        event Action OnRaceCanceled;
+        event Action OnRaceFinished;
+      
+        
+        
         Task EnableRaceForSkier(Race race);
-        void CancelSkier(Skier skier);
+        Task CancelSkier(int skierId);
         void CancelRace();
     }
 }

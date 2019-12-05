@@ -18,19 +18,11 @@ namespace Hurace.RaceControl.ViewModels
     {
         private readonly IRaceService _logic;
         private readonly Race _race;
-
-        public FilterableObservableCollection<Skier> AvailableSkiers { get; set; }
-
-        public FilterableObservableCollection<StartList> StartList { get; set; }
-
         private StartList _selectedStartList;
         private bool _edit;
 
-        public StartList SelectedStartList
-        {
-            get => _selectedStartList;
-            set => Set(ref _selectedStartList, value);
-        }
+        public FilterableObservableCollection<Skier> AvailableSkiers { get; set; }
+        public FilterableObservableCollection<StartList> StartList { get; set; }
 
         public ICommand AddSkierCommand { get; set; }
         public ICommand RemoveStartListCommand { get; set; }
@@ -46,15 +38,25 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _edit, value);
         }
 
+        public StartList SelectedStartList
+        {
+            get => _selectedStartList;
+            set => Set(ref _selectedStartList, value);
+        }
+
         public RaceStartListViewModel(IRaceService logic, Race race)
+        {
+            _logic = logic;
+            _race = race;
+
+            SetupCommands();
+        }
+
+        private void SetupCommands()
         {
             EditCommand = new ActionCommand(_ => EditStartList());
             SaveCommand = new AsyncCommand(_ => SaveStartList());
             CancelEditCommand = new AsyncCommand(_ => CancelEditStartList());
-
-
-            _logic = logic;
-            _race = race;
 
             AddSkierCommand = new ActionCommand(AddSkier, _ => Edit);
             RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => Edit);
@@ -141,9 +143,6 @@ namespace Hurace.RaceControl.ViewModels
             return SetupAsync();
         }
 
-        private void EditStartList()
-        {
-            Edit = true;
-        }
+        private void EditStartList() => Edit = true;
     }
 }

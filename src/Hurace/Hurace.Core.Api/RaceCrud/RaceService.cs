@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
@@ -15,9 +16,14 @@ namespace Hurace.Core.Api.RaceCrud
         private readonly IGenderDao _genderDao;
         private readonly ISkierDao _skierDao;
         private readonly ISensorDao _sensorDao;
+        private readonly ITimeDataDao _timeDataDao;
 
+        public event Action<Race> OnRaceAdded;
+        public event Action<Race> OnRaceUpdated;
+        
         public RaceService(IRaceDao raceDao, IDisciplineDao disciplineDao, ILocationDao locationDao,
-            IStartListDao startListDao, IGenderDao genderDao, ISkierDao skierDao, ISensorDao sensorDao)
+            IStartListDao startListDao, IGenderDao genderDao, ISkierDao skierDao, ISensorDao sensorDao,
+            ITimeDataDao timeDataDao)
         {
             _raceDao = raceDao;
             _disciplineDao = disciplineDao;
@@ -26,7 +32,11 @@ namespace Hurace.Core.Api.RaceCrud
             _genderDao = genderDao;
             _skierDao = skierDao;
             _sensorDao = sensorDao;
+            _timeDataDao = timeDataDao;
         }
+
+        
+        public Task<Race> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
 
         public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
 
@@ -45,8 +55,16 @@ namespace Hurace.Core.Api.RaceCrud
         public async Task<bool> InsertOrUpdateRace(Race race, int sensorCount)
         {
             race.SeasonId = 1; //TODO fix this shit
-            if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
-            else await _raceDao.UpdateAsync(race);
+            if (race.Id == -1)
+            {
+                race.Id = await _raceDao.InsertGetIdAsync(race);
+                OnRaceAdded?.Invoke(race);
+            }
+            else
+            {
+                await _raceDao.UpdateAsync(race);
+                OnRaceUpdated?.Invoke(race);
+            }
 
             var sensors = (await _sensorDao.FindAllSensorsForRace(race.Id)).ToList();
 
@@ -67,6 +85,23 @@ namespace Hurace.Core.Api.RaceCrud
             if (await _raceDao.FindByIdAsync(race.Id) == null) return false;
             await _raceDao.DeleteAsync(race.Id);
             return true;
+        }
+
+        public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId) =>
+            _timeDataDao.GetTimeDataForStartList(skierId, raceId);
+
+        public async Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId)
+        {
+            var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
+            var disqualifiedSkiers = (await _startListDao.GetDisqualifiedSkierForRace(raceId)).Select(
+                sl => new RaceRanking
+                {
+                    Skier = sl.Skier,
+                    StartList = sl,
+                    RaceId = raceId, RaceTime = DateTime.MinValue
+                });
+
+            return timeRanking.Concat(disqualifiedSkiers);
         }
 
         public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList)

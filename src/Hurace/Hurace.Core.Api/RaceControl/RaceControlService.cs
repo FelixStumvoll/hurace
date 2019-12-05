@@ -13,13 +13,22 @@ namespace Hurace.Core.Api.RaceControl
     public class RaceControlService : IRaceControlService
     {
         public event Action<TimeData> OnTimeData;
-        public event Action<Event> OnEvent;
+        public event Action<StartList> OnSkierStarted;
+        public event Action<StartList> OnSkierFinished;
+        public event Action<StartList> OnSkierCanceled;
+        public event Action<StartList> OnCurrentSkierDisqualified;
+        public event Action<StartList> OnLateDisqualification;
+        public event Action<TimeData> OnSplitTime;
+        public event Action OnRaceCanceled;
+        public event Action OnRaceFinished;
+        
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
         private readonly ISkierEventDao _skierEventDao;
         private ITimeDataDao _timeDataDao;
+        public int RaceId { get; set; }
 
         public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
             IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao)
@@ -31,77 +40,40 @@ namespace Hurace.Core.Api.RaceControl
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
         }
-
-        public async Task<bool> StartRace(Race race)
-        {
-            race.RaceStateId = (int)Constants.RaceState.Running;
-            await _raceDao.UpdateAsync(race);
-            var raceData = new RaceData
-            {
-                EventTypeId = (int)Constants.RaceEvent.Started,
-                RaceId = race.Id,
-                EventDateTime = DateTime.Now
-            };
-            raceData.Id = await _raceDataDao.InsertGetIdAsync(raceData);
-            await _raceEventDao.InsertAsync(new RaceEvent
-            {
-                RaceDataId = raceData.Id
-            });
-
-            OnEvent?.Invoke(new Events.RaceEvent
-            {
-                Race = race,
-                RaceData = raceData
-            });
-
-            return await _raceDao.UpdateAsync(race);
-        }
-
-        public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) => 
-            _startListDao.GetStartListForRace(raceId);
-
-        public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId) => 
-            _timeDataDao.GetTimeDataForStartList(skierId, raceId);
-
-        public async Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId)
-        {
-            var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
-            var disqualifiedSkiers = (await _startListDao.GetDisqualifiedSkierForRace(raceId)).Select(
-                sl => new RaceRanking
-                {
-                    Skier = sl.Skier,
-                    StartList = sl,
-                    RaceId = raceId, RaceTime = DateTime.MinValue
-                });
-
-            return timeRanking.Concat(disqualifiedSkiers);
-        }
-
+        
         public async Task EnableRaceForSkier(Race race)
         {
-            var skier = await _startListDao.GetNextSkierForRace(race.Id);
-            skier.StartStateId = (int)Constants.StartState.Running;
-            await _startListDao.UpdateAsync(skier);
+            var startList = await _startListDao.GetNextSkierForRace(race.Id);
+            await UpdateStartListState(startList, Constants.StartState.Running);
+            OnSkierStarted?.Invoke(startList);
+        }
+
+        private async Task UpdateStartListState(StartList startList, Constants.StartState state)
+        {
+            startList.StartStateId = (int)Constants.StartState.Running;
+            await _startListDao.UpdateAsync(startList);
             var raceData = new RaceData
             {
-                EventTypeId = (int)Constants.StartState.Running,
-                RaceId = race.Id,
+                EventTypeId = (int)state,
+                RaceId = startList.RaceId,
                 EventDateTime = DateTime.Now
             };
 
             raceData.Id = await _raceDataDao.InsertGetIdAsync(raceData);
             await _skierEventDao.InsertAsync(new SkierEvent
             {
-                RaceId = race.Id,
-                SkierId = skier.SkierId,
+                RaceId = startList.RaceId,
+                SkierId = startList.SkierId,
                 RaceDataId = raceData.Id
             });
         }
 
-        public void CancelSkier(Skier skier)
+        public async Task CancelSkier(int skierId)
         {
+            var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
+            await UpdateStartListState(startList, Constants.StartState.Canceled);
         }
-
+        
         public void CancelRace()
         {
         }

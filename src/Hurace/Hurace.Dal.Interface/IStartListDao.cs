@@ -14,5 +14,6 @@ namespace Hurace.Dal.Interface
         Task<bool> DeleteAsync(int raceId, int skierId);
         Task<bool> DeleteAllForRace(int raceId);
         Task<IEnumerable<StartList>> GetDisqualifiedSkierForRace(int raceId);
+        Task<StartList> GetSkierForRace(int skierId, int raceId);
     }
 }

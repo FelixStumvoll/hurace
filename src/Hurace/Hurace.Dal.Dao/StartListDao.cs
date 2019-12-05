@@ -88,6 +88,12 @@ namespace Hurace.Dal.Dao
             return Enumerable.Empty<StartList>(); //TODO implement query
         }
 
+        public async Task<StartList> GetSkierForRace(int skierId, int raceId) =>
+            (await GeneratedQueryAsync(DefaultSelectQuery()
+                                       .Where<StartList>((nameof(StartList.SkierId), skierId), (
+                                                             nameof(StartList.RaceId),
+                                                             raceId)).Build())).SingleOrDefault();
+
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
 

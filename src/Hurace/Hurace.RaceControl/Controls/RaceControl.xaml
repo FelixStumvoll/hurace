@@ -6,9 +6,14 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:domain="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
+             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance vm:RaceControlViewModel}">
+
+    <UserControl.Resources>
+        <converters:IsNullConverter x:Key="IsNullConverter" />
+    </UserControl.Resources>
 
     <ContentPresenter Content="{Binding}">
         <ContentPresenter.Resources>
@@ -36,30 +41,62 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Aktueller Läufer:" />
                     <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="Gray"
                             Margin="0,0,5,0">
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Row="0" FontSize="25" FontWeight="Bold" Text="1" />
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
-                                <StackPanel.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="20" />
-                                    </Style>
-                                </StackPanel.Resources>
-                                <TextBlock Text="Felix Stumvoll" />
-                                <TextBlock Margin="5,0" Text="-" />
-                                <TextBlock Text="AT" />
-                                <Button Height="25" Content="Disqualifizieren" Margin="20,0,0,0" />
-                            </StackPanel>
-                        </Grid>
+                        <ContentPresenter Margin="5" Height="30" Content="{Binding}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate x:Key="Skier">
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Row="0" VerticalAlignment="Center" FontSize="25"
+                                                   FontWeight="Bold" Text="1" />
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontSize" Value="20" />
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <TextBlock Text="Felix Stumvoll" />
+                                            <TextBlock Margin="5,0" Text="-" />
+                                            <TextBlock Text="AT" />
+                                            <Button Height="25" Content="Disqualifizieren" Margin="20,0,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate x:Key="NoSkier">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock FontSize="15" FontWeight="Bold" Text="Derzeit kein Rennläufer auf der Strecke" />
+                                    </StackPanel>
+                                </DataTemplate>
+
+                            </ContentPresenter.Resources>
+
+                            <ContentPresenter.Style>
+                                <Style TargetType="ContentPresenter">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding CurrentSkier, Converter={StaticResource IsNullConverter}}"
+                                            Value="True">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource NoSkier}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger
+                                            Binding="{Binding CurrentSkier, Converter={StaticResource IsNullConverter}}"
+                                            Value="False">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource Skier}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentPresenter.Style>
+                        </ContentPresenter>
+
                     </Border>
                     <!-- Controls -->
                     <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Height="25" VerticalAlignment="Center"
-                                Content="Strecke freigeben" />
+                                Content="Strecke freigeben" Command="{Binding ReadyTrackCommand}" />
                     </StackPanel>
 
                     <!-- Lists -->
@@ -79,7 +116,7 @@
                                                               Content="{Binding Skier}" />
                                         </StackPanel>
 
-                                        <Button DockPanel.Dock="Right" Content="Cancel" />
+                                        <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel" />
                                     </DockPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
