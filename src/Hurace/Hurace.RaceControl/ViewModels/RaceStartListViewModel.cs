@@ -111,7 +111,7 @@ namespace Hurace.RaceControl.ViewModels
                 RaceId = _race.Id,
                 Skier = skier,
                 SkierId = skier.Id,
-                StartStateId = (int) Constants.StartState.DrawReady,
+                StartStateId = (int) Constants.StartState.Upcoming,
                 StartNumber = StartList.DataSource.Count + 1
             });
 

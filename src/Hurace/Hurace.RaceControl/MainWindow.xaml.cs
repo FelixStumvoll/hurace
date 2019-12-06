@@ -30,6 +30,7 @@ namespace Hurace.RaceControl
         public MainWindow()
         {
             var provider = ServiceProvider.Instance;
+            ActiveRaceHandler.InitializeActiveRaceHandler();
             var vm = new MainViewModel(provider.ResolveService<IRaceService>());
             DataContext = vm;
             InitializeComponent();

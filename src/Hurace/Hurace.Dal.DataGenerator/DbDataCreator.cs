@@ -327,7 +327,7 @@ namespace Hurace.DataGenerator
             _season = new Season
             {
                 StartDate = new DateTime(2018, 10, 28),
-                EndDate = new DateTime(2019, 3, 17)
+                EndDate = new DateTime(2022, 3, 17)
             };
             _season.Id = await _seasonDao.InsertGetIdAsync(_season);
 

@@ -44,30 +44,32 @@
                         <ContentPresenter Margin="5" Height="30" Content="{Binding}">
                             <ContentPresenter.Resources>
                                 <DataTemplate x:Key="Skier">
-                                    <Grid >
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Row="0" VerticalAlignment="Center" FontSize="25"
-                                                   FontWeight="Bold" Text="1" />
+                                                   FontWeight="Bold" Text="{Binding CurrentSkier.StartNumber}" />
                                         <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
                                             <StackPanel.Resources>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="FontSize" Value="20" />
                                                 </Style>
                                             </StackPanel.Resources>
-                                            <TextBlock Text="Felix Stumvoll" />
+                                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" />
+                                            <TextBlock Text="{Binding CurrentSkier.Skier.LastName}" />
                                             <TextBlock Margin="5,0" Text="-" />
-                                            <TextBlock Text="AT" />
+                                            <TextBlock Text="{Binding CurrentSkier.Skier.Country.CountryCode}" />
                                             <Button Height="25" Content="Disqualifizieren" Margin="20,0,0,0" />
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
                                 <DataTemplate x:Key="NoSkier">
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock FontSize="15" FontWeight="Bold" Text="Derzeit kein Rennläufer auf der Strecke" />
+                                        <TextBlock FontSize="15" FontWeight="Bold"
+                                                   Text="Derzeit kein Rennläufer auf der Strecke" />
                                     </StackPanel>
                                 </DataTemplate>
 
@@ -106,7 +108,8 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Startliste" />
-                        <ListBox Grid.Row="1" ItemsSource="{Binding StartList}" HorizontalContentAlignment="Stretch">
+                        <ListBox Grid.Row="1" x:Name="sl" ItemsSource="{Binding StartList}"
+                                 HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel LastChildFill="False">
@@ -116,7 +119,9 @@
                                                               Content="{Binding Skier}" />
                                         </StackPanel>
 
-                                        <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel" />
+                                        <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel"
+                                                CommandParameter="{Binding Skier.Id}"
+                                                Command="{Binding ElementName=sl, Path=DataContext.CancelSkier}" />
                                     </DockPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

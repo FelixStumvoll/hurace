@@ -15,19 +15,26 @@ namespace Hurace.Core.Api.RaceControl
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
 
-
-        private static readonly Lazy<ActiveRaceHandler> LazyInstance =
-            new Lazy<ActiveRaceHandler>(() => new ActiveRaceHandler());
-
-        public static ActiveRaceHandler Instance => LazyInstance.Value;
+        public static ActiveRaceHandler Instance { get; private set; }
 
         private ActiveRaceHandler()
         {
             var serviceProvider = ServiceProvider.Instance;
-
             _raceDao = serviceProvider.ResolveService<IRaceDao>();
             _raceDataDao = serviceProvider.ResolveService<IRaceDataDao>();
             _raceEventDao = serviceProvider.ResolveService<IRaceEventDao>();
+        }
+
+        public static async Task InitializeActiveRaceHandler()
+        {
+            Instance = new ActiveRaceHandler();
+            var provider = ServiceProvider.Instance;
+            Instance._activeRaces.AddRange((await Instance._raceDao.GetActiveRaces()).Select(r =>
+            {
+                var rcs = provider.ResolveService<IRaceControlService>();
+                rcs.RaceId = r.Id;
+                return rcs;
+            }));
         }
 
 
@@ -54,8 +61,8 @@ namespace Hurace.Core.Api.RaceControl
             return service;
         }
 
-        public IRaceControlService GetRaceControlServiceForRace(int raceId) =>
-            _activeRaces.SingleOrDefault(r => r.RaceId == raceId);
+        public IRaceControlService this[int raceId] =>  _activeRaces.SingleOrDefault(r => r.RaceId == raceId);
+
 
         private async Task ChangeRaceState(int raceId, Constants.RaceState state)
         {

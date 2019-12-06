@@ -45,8 +45,8 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this),
-                                              _ => Race.Id != -1 &&
-                                                   Race.RaceStateId == (int) Constants.RaceState.Upcoming);
+                                              _ => Race.Id !=
+                                                   -1); // && Race.RaceStateId == (int) Constants.RaceState.Upcoming
             TabSelectionChangedCommand = new AsyncCommand(_ => OnTabSelectionChanged());
         }
 

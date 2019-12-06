@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ namespace Hurace.RaceControl.ViewModels
         public ObservableCollection<TimeData> SkierTimeData { get; set; } = new ObservableCollection<TimeData>();
         public ICommand StartRaceCommand { get; set; }
         public ICommand ReadyTrackCommand { get; set; }
+        public ICommand CancelSkier { get; set; }
 
         public Race Race
         {
@@ -43,29 +45,43 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupRaceHooks()
         {
-            _raceControlService.OnSkierStarted += startList =>
+            async Task ReloadStartList()
+            {
+                var newStartList = await _raceControlService.GetRemainingStartList();
+                StartList.Clear();
+                StartList.AddRange(newStartList);
+            }
+
+            _raceControlService.OnSkierStarted += async startList =>
             {
                 CurrentSkier = startList;
-                //todo update remaining start list
+                await ReloadStartList();
             };
 
-            _raceControlService.OnSkierCanceled += startList =>
-            {
-                //todo reload startlist
-            };
-
+            _raceControlService.OnSkierCanceled += async startList => await ReloadStartList();
             _raceControlService.OnSkierFinished += startList => { CurrentSkier = null; };
         }
 
         private void SetupCommands()
         {
             StartRaceCommand = new AsyncCommand(StartRace);
-            ReadyTrackCommand = new AsyncCommand(async _ => { await _raceControlService.EnableRaceForSkier(Race); });
+            ReadyTrackCommand = new AsyncCommand(async _ => { await _raceControlService.EnableRaceForSkier(); },
+                                                 _ => StartList.Any());
+            CancelSkier = new AsyncCommand(async skierId => await _raceControlService.CancelSkier((int) skierId));
         }
 
         public async Task SetupAsync()
         {
-            var startList = await _logic.GetStartListForRace(Race.Id);
+            _raceControlService = ActiveRaceHandler.Instance[Race.Id];
+            if (_raceControlService != null)
+                await SetupRaceControl();
+        }
+
+        private async Task SetupRaceControl()
+        {
+            SetupRaceHooks();
+            CurrentSkier = await _raceControlService.GetCurrentSkier();
+            var startList = await _raceControlService.GetRemainingStartList();
             StartList.Clear();
             StartList.AddRange(startList);
         }
@@ -76,8 +92,8 @@ namespace Hurace.RaceControl.ViewModels
                                 "Warnung", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
             _raceControlService = await ActiveRaceHandler.Instance.StartRace(Race.Id);
-            Race = await _logic.GetRaceById(Race.Id); //todo dunno bout this one
-            SetupRaceHooks();
+            Race = await _logic.GetRaceById(Race.Id);
+            await SetupRaceControl();
         }
     }
 }

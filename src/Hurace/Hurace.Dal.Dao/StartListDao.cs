@@ -48,18 +48,23 @@ namespace Hurace.Dal.Dao
 
         private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId,
             Constants.StartState startListState) =>
-            await GeneratedQueryAsync(StatementFactory.Select<StartList>()
-                                                      .Join<StartList, Skier>(
-                                                          (nameof(StartList.SkierId), nameof(Skier.Id)))
-                                                      .Join<Skier, Country>(
-                                                          (nameof(Skier.CountryId), nameof(Country.Id)))
-                                                      .Where<StartList>(
-                                                          (nameof(StartList.StartStateId), (int) startListState),
-                                                          (nameof(StartList.RaceId), raceId))
-                                                      .Build());
+            await GeneratedQueryAsync(DefaultSelectQuery()
+                                      .Where<StartList>(
+                                          (nameof(StartList.StartStateId), (int) startListState),
+                                          (nameof(StartList.RaceId), raceId))
+                                      .Build());
 
-        public async Task<StartList?> GetNextSkierForRace(int raceId) =>
-            (await GetStartListEntriesByState(raceId, Constants.StartState.Upcoming)).FirstOrDefault();
+        public async Task<StartList?> GetNextSkierForRace(int raceId)
+        {
+            var builtStatementData = DefaultSelectQuery()
+                                     .Where<StartList>((nameof(StartList.StartStateId),
+                                                           (int) Constants.StartState.Upcoming),
+                                                       (nameof(StartList.RaceId), raceId)).Build();
+            builtStatementData.statement = builtStatementData.statement.Replace("select", "select top 1");
+            builtStatementData.statement = builtStatementData.statement +=
+                $" order by {TableName}.{nameof(StartList.StartNumber)} asc";
+            return (await GeneratedQueryAsync(builtStatementData)).FirstOrDefault();
+        }
 
         private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()
@@ -94,7 +99,7 @@ namespace Hurace.Dal.Dao
                                                              nameof(StartList.RaceId),
                                                              raceId)).Build())).SingleOrDefault();
 
-        public Task<int> CountStartListForRace(int raceId) => 
+        public Task<int> CountStartListForRace(int raceId) =>
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>

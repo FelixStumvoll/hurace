@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Core.Api.RaceControl.Events;
@@ -21,8 +22,10 @@ namespace Hurace.Core.Api.RaceControl
       
         
         
-        Task EnableRaceForSkier(Race race);
+        Task EnableRaceForSkier();
+        Task<StartList> GetCurrentSkier();
         Task CancelSkier(int skierId);
+        Task<IEnumerable<StartList>> GetRemainingStartList();
         void CancelRace();
     }
 }
