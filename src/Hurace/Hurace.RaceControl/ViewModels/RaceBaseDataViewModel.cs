@@ -74,6 +74,8 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _edit, value);
         }
 
+        public Season Season => Race.Season;
+
         public RaceBaseDataViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
         {
             _logic = logic;

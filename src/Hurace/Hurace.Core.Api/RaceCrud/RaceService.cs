@@ -17,10 +17,11 @@ namespace Hurace.Core.Api.RaceCrud
         private readonly ISkierDao _skierDao;
         private readonly ISensorDao _sensorDao;
         private readonly ITimeDataDao _timeDataDao;
-        
+        private readonly ISeasonDao _seasonDao;
+
         public RaceService(IRaceDao raceDao, IDisciplineDao disciplineDao, ILocationDao locationDao,
             IStartListDao startListDao, IGenderDao genderDao, ISkierDao skierDao, ISensorDao sensorDao,
-            ITimeDataDao timeDataDao)
+            ITimeDataDao timeDataDao, ISeasonDao seasonDao)
         {
             _raceDao = raceDao;
             _disciplineDao = disciplineDao;
@@ -30,9 +31,10 @@ namespace Hurace.Core.Api.RaceCrud
             _skierDao = skierDao;
             _sensorDao = sensorDao;
             _timeDataDao = timeDataDao;
+            _seasonDao = seasonDao;
         }
 
-        
+
         public Task<Race> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
 
         public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
@@ -42,6 +44,9 @@ namespace Hurace.Core.Api.RaceCrud
         public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
 
         public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
+        public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
+
+        public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
 
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);
@@ -51,7 +56,6 @@ namespace Hurace.Core.Api.RaceCrud
 
         public async Task<bool> InsertOrUpdateRace(Race race, int sensorCount)
         {
-            race.SeasonId = 1; //TODO fix this shit
             if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
             else await _raceDao.UpdateAsync(race);
 
@@ -71,8 +75,11 @@ namespace Hurace.Core.Api.RaceCrud
 
         public async Task<bool> RemoveRace(Race race)
         {
-            if (await _raceDao.FindByIdAsync(race.Id) == null) return false;
-            //todo delete all sensors
+            if (await _raceDao.FindByIdAsync(race.Id) == null ||
+                (await _startListDao.CountStartListForRace(race.Id)) != 0 ||
+                (await _timeDataDao.CountTimeDataForRace(race.Id) != 0))
+                return false;
+            await _sensorDao.DeleteAllSensorsForRace(race.Id);
             await _raceDao.DeleteAsync(race.Id);
             return true;
         }

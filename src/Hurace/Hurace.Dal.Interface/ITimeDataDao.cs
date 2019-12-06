@@ -11,5 +11,6 @@ namespace Hurace.Dal.Interface
         Task<bool> DeleteAsync(int skierId, int raceId, int sensorId);
         Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId);
         Task<IEnumerable<TimeData>> GetTimeDataForStartList(int skierId, int raceId);
+        Task<int> CountTimeDataForRace(int raceId);
     }
 }

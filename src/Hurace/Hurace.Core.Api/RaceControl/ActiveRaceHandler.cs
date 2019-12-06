@@ -9,15 +9,18 @@ namespace Hurace.Core.Api.RaceControl
 {
     public class ActiveRaceHandler : IActiveRaceHandler
     {
-        private List<IRaceControlService> _activeRaces;
+        private List<IRaceControlService> _activeRaces = new List<IRaceControlService>();
 
         private readonly IRaceDao _raceDao;
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
 
 
-        private static Lazy<ActiveRaceHandler> _instance = new Lazy<ActiveRaceHandler>(() => new ActiveRaceHandler());
-        public static ActiveRaceHandler Instance => _instance.Value;
+        private static readonly Lazy<ActiveRaceHandler> LazyInstance =
+            new Lazy<ActiveRaceHandler>(() => new ActiveRaceHandler());
+
+        public static ActiveRaceHandler Instance => LazyInstance.Value;
+
         private ActiveRaceHandler()
         {
             var serviceProvider = ServiceProvider.Instance;

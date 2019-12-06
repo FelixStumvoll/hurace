@@ -62,5 +62,8 @@ namespace Hurace.Dal.Dao
             GeneratedQueryAsync(DefaultSelectQuery()
                                 .Where<StartList>((nameof(StartList.RaceId), raceId),
                                                   (nameof(StartList.SkierId), skierId)).Build());
+
+        public Task<int> CountTimeDataForRace(int raceId) => 
+            ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
     }
 }

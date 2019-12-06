@@ -94,6 +94,9 @@ namespace Hurace.Dal.Dao
                                                              nameof(StartList.RaceId),
                                                              raceId)).Build())).SingleOrDefault();
 
+        public Task<int> CountStartListForRace(int raceId) => 
+            ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
+
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
             (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
 

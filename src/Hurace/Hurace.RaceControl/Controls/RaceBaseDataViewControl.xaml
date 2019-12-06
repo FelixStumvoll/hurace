@@ -94,7 +94,8 @@
                     <!-- Race Description -->
                     <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding Race.RaceDescription}" />
                     <!-- DatePicker -->
-                    <xctk:DateTimePicker Value="{Binding Race.RaceDate}" />
+                    <xctk:DateTimePicker Value="{Binding Race.RaceDate}" Minimum="{Binding Season.StartDate}"
+                                         Maximum="{Binding Season.EndDate}" />
                     <!-- Discipline Selection -->
                     <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines.ViewItems}"
                               DisplayMemberPath="DisciplineName"

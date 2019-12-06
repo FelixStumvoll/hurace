@@ -12,6 +12,8 @@ namespace Hurace.Core.Api.RaceCrud
         Task<IEnumerable<Location>> GetLocations();
         Task<IEnumerable<Discipline>> GetDisciplines();
         Task<IEnumerable<Race>> GetAllRaces();
+        Task<IEnumerable<Race>> GetRacesForSeason(int seasonId);
+        Task<IEnumerable<Season>> GetAllSeasons();
         Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
         Task<bool> InsertOrUpdateRace(Race race, int sensorCount);

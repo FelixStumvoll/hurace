@@ -33,7 +33,7 @@ namespace Hurace.RaceControl
             var vm = new MainViewModel(provider.ResolveService<IRaceService>());
             DataContext = vm;
             InitializeComponent();
-            Loaded += async (sender, args) => await vm.InitializeAsync();
+            Loaded += async (sender, args) => await vm.SetupAsync();
         }
     }
 }

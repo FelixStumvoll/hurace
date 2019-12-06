@@ -20,15 +20,17 @@
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <!-- Left Side -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Style.Triggers>
@@ -42,21 +44,38 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            
+
             <Grid.Resources>
-                <Style x:Key="LabelName" TargetType="TextBlock">
+                <Style x:Key="ListLabel" TargetType="TextBlock">
                     <Setter Property="FontWeight" Value="Bold" />
                     <Setter Property="Margin" Value="5,0,0,5" />
                 </Style>
             </Grid.Resources>
-
+            <TextBlock Grid.Row="0" Style="{StaticResource ListLabel}" Text="Saison:" />
+            <ComboBox Grid.Row="1" Margin="5,0,5,5" ItemsSource="{Binding Seasons}"
+                      SelectedItem="{Binding SelectedSeason}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SeasonChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding StartDate, StringFormat=d, ConverterCulture=de-DE}" />
+                            <TextBlock Text="-" Margin="5,0" />
+                            <TextBlock Text="{Binding EndDate,StringFormat=d, ConverterCulture=de-DE}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <!-- Race Lists -->
-            <TextBlock Grid.Row="0" Text="All Races:" Style="{StaticResource LabelName}" />
-            <ListBox Grid.Row="1" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
+            <TextBlock Grid.Row="2" Text="Alle Rennen:" Style="{StaticResource ListLabel}" />
+            <ListBox Grid.Row="3" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
                      BorderThickness="0,0,0,1">
                 <i:Interaction.Triggers>
                     <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
-                        <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}"></i:InvokeCommandAction>
+                        <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}" />
                     </i:PropertyChangedTrigger>
                 </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
@@ -65,7 +84,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Grid.Row="2" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
+            <Button Grid.Row="4" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
         </Grid>
 
         <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"

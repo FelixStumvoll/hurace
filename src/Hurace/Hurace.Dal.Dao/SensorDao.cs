@@ -20,5 +20,8 @@ namespace Hurace.Dal.Dao
                                 .Select<Sensor>()
                                 .Where<Sensor>((nameof(Sensor.RaceId), raceId))
                                 .Build());
+
+        public Task<bool> DeleteAllSensorsForRace(int raceId) =>
+            ExecuteAsync($"Delete from {TableName} where raceId=@rid", ("@rid", raceId));
     }
 }

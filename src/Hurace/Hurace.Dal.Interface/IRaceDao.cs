@@ -9,5 +9,7 @@ namespace Hurace.Dal.Interface
     public interface IRaceDao : IDefaultCrudDao<Race>
     {
         Task<IEnumerable<Race>> GetActiveRaces();
+        Task<IEnumerable<Race>> GetRaceForSeasonId(int seasonId);
+        
     }
 }
