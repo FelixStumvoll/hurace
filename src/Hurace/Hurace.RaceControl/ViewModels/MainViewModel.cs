@@ -115,7 +115,7 @@ namespace Hurace.RaceControl.ViewModels
                                 "Löschen ?",
                                 MessageBoxButton.YesNo,
                                 MessageBoxImage.Information) != MessageBoxResult.Yes) return;
-            if (rvm.Race.Id != -1 || !await _logic.RemoveRace(rvm.Race))
+            if (rvm.Race.Id != -1 && !await _logic.RemoveRace(rvm.Race))
             {
                 MessageBox.Show("Rennen konnte nicht gelöscht werden!",
                                 "Fehler",

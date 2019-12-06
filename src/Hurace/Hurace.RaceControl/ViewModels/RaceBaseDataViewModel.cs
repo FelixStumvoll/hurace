@@ -16,7 +16,7 @@ namespace Hurace.RaceControl.ViewModels
         private bool _edit;
         private Race _race;
         private readonly IRaceService _logic;
-        private int _sensorCount;
+        private int _sensorCount = 1;
         public event Action OnUnsavedCancel;
         public ICommand StartEditCommand { get; set; }
         public ICommand SaveEditCommand { get; set; }

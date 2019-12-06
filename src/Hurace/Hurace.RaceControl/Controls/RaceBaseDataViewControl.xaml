@@ -39,6 +39,9 @@
                         <TextBlock Text="Datum:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
+                        <TextBlock Text="Zustand:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
                         <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
@@ -85,10 +88,14 @@
                             </Style.Triggers>
                         </Style>
 
+                        <Style TargetType="Border">
+                            <Setter Property="Height" Value="25" />
+                            <Setter Property="Margin" Value="0,5,0,0" />
+                            <Setter Property="Width" Value="250" />
+                        </Style>
+
                         <Style TargetType="ComboBox" BasedOn="{StaticResource InputStyle}" />
-
                         <Style TargetType="xctk:UIntegerUpDown" BasedOn="{StaticResource InputStyle}" />
-
                         <Style TargetType="xctk:DateTimePicker" BasedOn="{StaticResource InputStyle}" />
                     </StackPanel.Resources>
                     <!-- Race Description -->
@@ -96,6 +103,10 @@
                     <!-- DatePicker -->
                     <xctk:DateTimePicker Value="{Binding Race.RaceDate}" Minimum="{Binding Season.StartDate}"
                                          Maximum="{Binding Season.EndDate}" />
+                    <Border>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Race.RaceState.RaceStateDescription}" />
+                    </Border>
+
                     <!-- Discipline Selection -->
                     <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines.ViewItems}"
                               DisplayMemberPath="DisciplineName"
