@@ -20,7 +20,7 @@
                        Text="{Binding Race.RaceDescription}" />
             <Button HorizontalAlignment="Right" Content="Löschen" Padding="5,0" Command="{Binding DeleteCommand}" />
         </DockPanel>
-        <TabControl Grid.Row="1" x:Name="TabControl" BorderThickness="0,1,0,0">
+        <TabControl Grid.Row="1" x:Name="TabControl" SelectedIndex="{Binding SelectedTab}" BorderThickness="0,1,0,0">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=TabControl, Path=SelectedIndex}"

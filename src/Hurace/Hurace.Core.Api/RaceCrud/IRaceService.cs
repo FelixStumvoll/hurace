@@ -7,8 +7,6 @@ namespace Hurace.Core.Api.RaceCrud
 {
     public interface IRaceService
     {
-        event Action<Race> OnRaceAdded;
-        event Action<Race> OnRaceUpdated;
         Task<Race> GetRaceById(int raceId);
         Task<IEnumerable<Gender>> GetGenders();
         Task<IEnumerable<Location>> GetLocations();

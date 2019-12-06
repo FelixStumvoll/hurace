@@ -41,6 +41,7 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task InitializeAsync()
         {
+            Races.Clear();
             foreach (var raceViewModel in (await _logic.GetAllRaces()).Select(
                 r => new RaceViewModel(_logic, r, _sharedRaceViewModel)))
             {

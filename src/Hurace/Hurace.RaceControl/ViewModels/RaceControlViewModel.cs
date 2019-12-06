@@ -8,7 +8,6 @@ using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
-using ActionCommand = Microsoft.Xaml.Behaviors.Core.ActionCommand;
 
 namespace Hurace.RaceControl.ViewModels
 {
@@ -19,9 +18,10 @@ namespace Hurace.RaceControl.ViewModels
         private StartList _currentSkier;
         private readonly IRaceService _logic;
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
+        public ObservableCollection<TimeData> SkierTimeData { get; set; } = new ObservableCollection<TimeData>();
         public ICommand StartRaceCommand { get; set; }
         public ICommand ReadyTrackCommand { get; set; }
-        
+
         public Race Race
         {
             get => _race;
@@ -36,19 +36,31 @@ namespace Hurace.RaceControl.ViewModels
 
         public RaceControlViewModel(Race race, IRaceService logic)
         {
-            Race = race; 
+            Race = race;
             _logic = logic;
             SetupCommands();
+        }
+
+        private void SetupRaceHooks()
+        {
+            _raceControlService.OnSkierStarted += startList =>
+            {
+                CurrentSkier = startList;
+                //todo update remaining start list
+            };
+
+            _raceControlService.OnSkierCanceled += startList =>
+            {
+                //todo reload startlist
+            };
+
+            _raceControlService.OnSkierFinished += startList => { CurrentSkier = null; };
         }
 
         private void SetupCommands()
         {
             StartRaceCommand = new AsyncCommand(StartRace);
-            ReadyTrackCommand = new ActionCommand(_ =>
-            {
-                _raceControlService.EnableRaceForSkier(Race);
-                CurrentSkier = CurrentSkier == null ? new StartList() : null;
-            });
+            ReadyTrackCommand = new AsyncCommand(async _ => { await _raceControlService.EnableRaceForSkier(Race); });
         }
 
         public async Task SetupAsync()
@@ -64,7 +76,8 @@ namespace Hurace.RaceControl.ViewModels
                                 "Warnung", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
             _raceControlService = await ActiveRaceHandler.Instance.StartRace(Race.Id);
-            InvokePropertyChanged(nameof(Race));
+            Race = await _logic.GetRaceById(Race.Id); //todo dunno bout this one
+            SetupRaceHooks();
         }
     }
 }

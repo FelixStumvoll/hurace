@@ -13,7 +13,8 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceViewModel : NotifyPropertyChanged
     {
-        private int _selectedTab = -1;
+        private int _selectedTab;
+        private int _tempTabIndex;
         public event Action<RaceViewModel> OnDelete;
         public RaceStartListViewModel RaceStartListViewModel { get; set; }
         public RaceBaseDataViewModel RaceBaseDataViewModel { get; set; }
@@ -22,6 +23,12 @@ namespace Hurace.RaceControl.ViewModels
         public bool Edit => RaceBaseDataViewModel.Edit || RaceStartListViewModel.Edit;
         public ICommand DeleteCommand { get; set; }
         public ICommand TabSelectionChangedCommand { get; set; }
+
+        public int SelectedTab
+        {
+            get => _selectedTab;
+            set => Set(ref _selectedTab, value);
+        }
 
         public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
         {
@@ -38,7 +45,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this), _ => Race.Id != -1);
-            TabSelectionChangedCommand = new AsyncCommand(OnTabSelectionChanged);
+            TabSelectionChangedCommand = new AsyncCommand(_ => OnTabSelectionChanged());
         }
 
         private void RegisterEditHooks()
@@ -56,16 +63,19 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            await RaceStartListViewModel.SetupAsync();
-            await RaceBaseDataViewModel.SetupAsync();
+            await SetupTab();
         }
 
-        private async Task OnTabSelectionChanged(object idx)
+        private async Task OnTabSelectionChanged(bool ignoreSameTab = true)
         {
-            var index = (int) idx;
-            if (_selectedTab == index) return;
-            _selectedTab = index;
-            switch (index)
+            if (_tempTabIndex == SelectedTab && ignoreSameTab) return;
+            await SetupTab();
+            _tempTabIndex = SelectedTab;
+        }
+
+        private async Task SetupTab()
+        {
+            switch (SelectedTab)
             {
                 case 0:
                     await RaceBaseDataViewModel.SetupAsync();
