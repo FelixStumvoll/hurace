@@ -1,123 +1,17 @@
-﻿<Window x:Class="Hurace.RaceControl.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-        xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
-        xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
-        d:DataContext="{d:DesignInstance vm:MainViewModel}"
-        mc:Ignorable="d"
-        Title="Hurace RaceControl" Height="450" Width="800">
+﻿<NavigationWindow x:Class="Hurace.RaceControl.MainWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                  xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+                  xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+                  xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
+                  d:DataContext="{d:DesignInstance vm:MainViewModel}"
+                  mc:Ignorable="d"
+                  Title="Hurace RaceControl" Height="450" Width="800"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                  VerticalContentAlignment="Stretch"
+                  Content="{Binding CurrentPage}">
 
-    <Window.Resources>
-        <converters:IsNullConverter x:Key="IsNullConverter" />
-    </Window.Resources>
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <!-- Left Side -->
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="True">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="False">
-                            <Setter Property="IsEnabled" Value="True" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-
-            <Grid.Resources>
-                <Style x:Key="ListLabel" TargetType="TextBlock">
-                    <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="Margin" Value="5,0,0,5" />
-                </Style>
-            </Grid.Resources>
-            <TextBlock Grid.Row="0" Style="{StaticResource ListLabel}" Text="Saison:" />
-            <ComboBox Grid.Row="1" Margin="5,0,5,5" ItemsSource="{Binding Seasons}"
-                      SelectedItem="{Binding SelectedSeason}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding SeasonChangedCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding StartDate, StringFormat=d, ConverterCulture=de-DE}" />
-                            <TextBlock Text="-" Margin="5,0" />
-                            <TextBlock Text="{Binding EndDate,StringFormat=d, ConverterCulture=de-DE}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <!-- Race Lists -->
-            <TextBlock Grid.Row="2" Text="Alle Rennen:" Style="{StaticResource ListLabel}" />
-            <ListBox Grid.Row="3" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
-                     BorderThickness="0,0,0,1">
-                <i:Interaction.Triggers>
-                    <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
-                        <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}" />
-                    </i:PropertyChangedTrigger>
-                </i:Interaction.Triggers>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Race.RaceDescription}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Grid.Row="4" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
-        </Grid>
-
-        <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"
-                      HorizontalAlignment="Right" />
-
-        <!-- Race Detail View -->
-        <ContentPresenter Grid.Column="1" Content="{Binding}">
-            <ContentPresenter.Resources>
-                <DataTemplate x:Key="RaceSelected">
-                    <controls:RaceView DataContext="{Binding SelectedRace}" />
-                </DataTemplate>
-
-                <DataTemplate x:Key="NoSelection">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="35"
-                               Text="Plox Select Race ÓwÒ" />
-                </DataTemplate>
-            </ContentPresenter.Resources>
-
-            <ContentPresenter.Style>
-                <Style TargetType="{x:Type ContentPresenter}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedRace, Converter={StaticResource IsNullConverter}}"
-                                     Value="True">
-                            <Setter Property="ContentTemplate" Value="{StaticResource NoSelection}" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding SelectedRace, Converter={StaticResource IsNullConverter}}"
-                                     Value="False">
-                            <Setter Property="ContentTemplate" Value="{StaticResource RaceSelected}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentPresenter.Style>
-        </ContentPresenter>
-    </Grid>
-</Window>
+</NavigationWindow>

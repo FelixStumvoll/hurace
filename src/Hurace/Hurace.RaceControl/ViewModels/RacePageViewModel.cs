@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Hurace.Core.Api;
-using Hurace.Core.Api.RaceControl;
 using Hurace.Core.Api.RaceCrud;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
@@ -14,7 +12,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class MainViewModel : NotifyPropertyChanged
+    public class RacePageViewModel : NotifyPropertyChanged
     {
         private RaceViewModel _selectedRace;
 
@@ -47,7 +45,7 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedSeason, value);
         }
 
-        public MainViewModel(IRaceService logic)
+        public RacePageViewModel(IRaceService logic)
         {
             _logic = logic;
             _sharedRaceViewModel = new SharedRaceViewModel();
