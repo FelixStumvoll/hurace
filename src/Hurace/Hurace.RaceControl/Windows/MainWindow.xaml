@@ -1,0 +1,51 @@
+﻿<Window x:Class="Hurace.RaceControl.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+        xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+        xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
+        xmlns:pages="clr-namespace:Hurace.RaceControl.Pages"
+        d:DataContext="{d:DesignInstance vm:MainViewModel}"
+        mc:Ignorable="d"
+        x:Name="Main"
+        Title="Hurace RaceControl" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0,0,0,1" Padding="0,5">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding BackVisible}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BackVisible}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <DockPanel Margin="5,0,0,0" LastChildFill="False" VerticalAlignment="Center">
+                <Button DockPanel.Dock="Left" Command="{Binding BackToMainCommand}" Padding="10,0" Content="Zurück" />
+            </DockPanel>
+        </Border>
+
+
+        <ContentControl HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch" Grid.Row="1" Content="{Binding CurrentPage}">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type vm:RacePageViewModel}">
+                    <pages:RacePage />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MainPageViewModel}">
+                    <pages:MainPage DataContext="{Binding ElementName=Main, Path=DataContext.CurrentPage}" />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+    </Grid>
+</Window>

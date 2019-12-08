@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Hurace.RaceControl"
              xmlns:dto="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
-             StartupUri="MainWindow.xaml"
+             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:pages="clr-namespace:Hurace.RaceControl.Pages"
+             StartupUri="Windows/MainWindow.xaml"
              >
     <Application.Resources>
         <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
@@ -14,5 +16,6 @@
                 <TextBlock Text="{Binding LastName}" />
             </StackPanel>
         </DataTemplate>
+
     </Application.Resources>
 </Application>

@@ -12,7 +12,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class RacePageViewModel : NotifyPropertyChanged
+    public class RacePageViewModel : NotifyPropertyChanged, IPageViewModel
     {
         private RaceViewModel _selectedRace;
 

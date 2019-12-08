@@ -2,7 +2,7 @@
 
 namespace Hurace.RaceControl.Pages
 {
-    public partial class RacePage : Page
+    public partial class RacePage : UserControl
     {
         public RacePage()
         {

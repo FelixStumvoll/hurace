@@ -36,25 +36,10 @@ namespace Hurace.Core.Api.RaceControl
                 return rcs;
             }));
         }
-
-
+        
         public async Task<IRaceControlService> StartRace(int raceId)
         {
-            var race = await _raceDao.FindByIdAsync(raceId);
-            race.RaceStateId = (int) Constants.RaceState.Running;
-            await _raceDao.UpdateAsync(race);
-            var raceData = new RaceData
-            {
-                EventTypeId = (int) Constants.RaceEvent.Started,
-                RaceId = race.Id,
-                EventDateTime = DateTime.Now
-            };
-            raceData.Id = await _raceDataDao.InsertGetIdAsync(raceData);
-            await _raceEventDao.InsertAsync(new RaceEvent
-            {
-                RaceDataId = raceData.Id
-            });
-
+            await ChangeRaceState(raceId, Constants.RaceState.Running);
             var service = ServiceProvider.Instance.ResolveService<IRaceControlService>();
             service.RaceId = raceId;
             _activeRaces.Add(service);
@@ -62,8 +47,7 @@ namespace Hurace.Core.Api.RaceControl
         }
 
         public IRaceControlService this[int raceId] =>  _activeRaces.SingleOrDefault(r => r.RaceId == raceId);
-
-
+        
         private async Task ChangeRaceState(int raceId, Constants.RaceState state)
         {
             var race = await _raceDao.FindByIdAsync(raceId);

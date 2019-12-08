@@ -1,0 +1,56 @@
+﻿<Window x:Class="Hurace.Core.Simulation.SimulatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        SizeToContent="WidthAndHeight"
+        Title="SimulatorWindow">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
+        </Grid.ColumnDefinitions>
+        <Button Grid.Row="1" Grid.Column="0" Content="Start Clock" />
+        <Button Grid.Row="1" Grid.Column="1" Content="Stop Clock" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" />
+        <TextBox Grid.Row="2" Grid.Column="1"></TextBox>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Deviation" />
+        <TextBox Grid.Row="3" Grid.Column="1"></TextBox>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Next Sensor Id:" />
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="1" />
+
+        <Button Grid.Row="5" Grid.Column="0" Content="Skip Next Sensor" />
+        <Button Grid.Row="5" Grid.Column="1" Content="Reset Id" />
+
+        <ComboBox Grid.Row="6" Grid.Column="0" />
+        <Button Grid.Row="6" Grid.Column="1" Content="Trigger Sensor" />
+    </Grid>
+</Window>

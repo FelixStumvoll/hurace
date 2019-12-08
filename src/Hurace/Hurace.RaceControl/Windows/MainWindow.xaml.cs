@@ -1,23 +1,20 @@
 ﻿using System.Windows;
-using System.Windows.Navigation;
 using Hurace.Core.Api.RaceControl;
 using Hurace.RaceControl.ViewModels;
 
-namespace Hurace.RaceControl
+namespace Hurace.RaceControl.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : NavigationWindow
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
-            //var provider = ServiceProvider.Instance;
             ActiveRaceHandler.InitializeActiveRaceHandler();
-            var vm = new MainViewModel(); //provider.ResolveService<IRaceService>()
+            var vm = new MainViewModel();
             DataContext = vm;
             InitializeComponent();
-            //Loaded += async (sender, args) => await vm.SetupAsync();
         }
     }
 }

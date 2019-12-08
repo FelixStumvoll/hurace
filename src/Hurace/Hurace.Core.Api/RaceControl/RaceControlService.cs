@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Api.RaceControl.Events;
+using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using RaceEvent = Hurace.Dal.Domain.RaceEvent;
@@ -28,10 +29,11 @@ namespace Hurace.Core.Api.RaceControl
         private readonly IRaceDataDao _raceDataDao;
         private readonly ISkierEventDao _skierEventDao;
         private ITimeDataDao _timeDataDao;
+        private IRaceClock _raceClock;
         public int RaceId { get; set; }
 
         public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
-            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao)
+            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, IRaceClock raceClock)
         {
             _raceDao = raceDao;
             _startListDao = startListDao;
@@ -39,6 +41,7 @@ namespace Hurace.Core.Api.RaceControl
             _raceDataDao = raceDataDao;
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
+            _raceClock = raceClock;
         }
 
         public async Task EnableRaceForSkier()

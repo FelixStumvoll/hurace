@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
-using Hurace.Core.Api;
-using Hurace.Core.Api.RaceControl;
-using Hurace.Core.Api.RaceCrud;
-using Hurace.Dal.Domain;
-using Hurace.RaceControl.Extensions;
-using Hurace.RaceControl.Pages;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 
@@ -18,15 +7,35 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class MainViewModel : NotifyPropertyChanged
     {
-        public Page CurrentPage { get; set; }
-        private Page _racePage;
-        private Page _mainPage;
+        private IPageViewModel _currentPage;
+        private bool _backVisible;
+        private MainPageViewModel _mainPageViewModel;
+        public ICommand BackToMainCommand { get; set; }
+
+        public bool BackVisible
+        {
+            get => _backVisible;
+            set => Set(ref _backVisible, value);
+        }
+
+        public IPageViewModel CurrentPage
+        {
+            get => _currentPage;
+            set => Set(ref _currentPage, value, true);
+        }
 
         public MainViewModel()
         {
-            _racePage = new RacePage();
-            _mainPage = new MainPage();
-            CurrentPage = _mainPage;
+            _mainPageViewModel = new MainPageViewModel(ChangePage);
+            CurrentPage = _mainPageViewModel;
+            BackToMainCommand = new AsyncCommand(async _ => await ChangePage(_mainPageViewModel));
+        }
+
+        private async Task ChangePage(IPageViewModel vm)
+        {
+            BackVisible = vm != _mainPageViewModel;
+            await vm.SetupAsync();
+            CurrentPage = vm;
         }
     }
 }

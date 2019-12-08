@@ -1,19 +1,18 @@
-﻿<Page x:Class="Hurace.RaceControl.Pages.RacePage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:Hurace.RaceControl.Pages"
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-      xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
-      xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
-      d:DataContext="{d:DesignInstance vm:MainViewModel}"
-      mc:Ignorable="d"
-      Title="RacePage" Height="450" Width="800">
-    <Page.Resources>
+﻿<UserControl x:Class="Hurace.RaceControl.Pages.RacePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hurace.RaceControl.Pages"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
+             d:DataContext="{d:DesignInstance vm:RacePageViewModel}"
+             mc:Ignorable="d">
+    <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
-    </Page.Resources>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -120,4 +119,4 @@
             </ContentPresenter.Style>
         </ContentPresenter>
     </Grid>
-</Page>
+</UserControl>

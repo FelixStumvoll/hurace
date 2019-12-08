@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
+using Hurace.Core.Timer;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ namespace Hurace.Core.Api
     {
         private IContainer _container;
 
-        private static readonly Lazy<ServiceProvider> _lazy = new Lazy<ServiceProvider>(() => new ServiceProvider());
+        private static readonly Lazy<ServiceProvider> Lazy = new Lazy<ServiceProvider>(() => new ServiceProvider());
         
-        public static ServiceProvider Instance => _lazy.Value;
+        public static ServiceProvider Instance => Lazy.Value;
         
         private ServiceProvider()
         {
@@ -31,11 +32,11 @@ namespace Hurace.Core.Api
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Api"))
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
-            var section = config.GetSection("ConnectionStrings").GetSection(configName);
+            var connectionStringSection = config.GetSection("ConnectionStrings").GetSection(configName);
 
             builder.RegisterInstance(
-                       new ConcreteConnectionFactory(DbUtil.GetProviderFactory(section["ProviderName"]),
-                                                     section["ConnectionString"]))
+                       new ConcreteConnectionFactory(DbUtil.GetProviderFactory(connectionStringSection["ProviderName"]),
+                                                     connectionStringSection["ConnectionString"]))
                    .As<IConnectionFactory>();
             builder.RegisterInstance(new StatementFactory("hurace")).AsSelf();
             _container = builder.Build();
