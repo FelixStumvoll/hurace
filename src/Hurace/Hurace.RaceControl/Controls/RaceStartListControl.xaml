@@ -102,10 +102,10 @@
                 <ContentPresenter.Style>
                     <Style TargetType="{x:Type ContentPresenter}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Edit}" Value="True">
+                            <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                                 <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Edit}" Value="False">
+                            <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                                 <Setter Property="ContentTemplate" Value="{StaticResource View}" />
                             </DataTrigger>
                         </Style.Triggers>

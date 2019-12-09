@@ -1,4 +1,6 @@
-﻿using Hurace.Core.Api.RaceControl;
+﻿using System;
+using System.Collections.ObjectModel;
+using Hurace.Core.Api.RaceControl;
 using Hurace.Core.Api.RaceCrud;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Util;
@@ -13,16 +15,25 @@ namespace Hurace.RaceControl.ViewModels
         private StartList _currentSkier;
         private string _message;
 
+        public ObservableCollection<TimeDataComparison> TimeDataComparisons { get; set; } =
+            new ObservableCollection<TimeDataComparison>();
+
         public string Message
         {
             get => _message;
             set => Set(ref _message, value);
         }
 
-        public StartList CurrentSkier    
+        public StartList CurrentSkier
         {
             get => _currentSkier;
             set => Set(ref _currentSkier, value);
+        }
+
+        public class TimeDataComparison
+        {
+            public TimeData TimeData { get; set; }
+            public TimeSpan DiffToLeader { get; set; }
         }
 
         public CurrentSkierWindowViewModel(int raceId, IRaceService raceService)
@@ -33,6 +44,7 @@ namespace Hurace.RaceControl.ViewModels
             _raceControlService.OnSkierFinished += OnSkierFinished;
             _raceControlService.OnSkierStarted += OnSkierStarted;
             _raceControlService.OnCurrentSkierDisqualified += OnCurrentSkierDisqualified;
+            _raceControlService.OnSplitTime += OnSplitTime;
         }
 
         private void OnSkierFinished(StartList startList)
@@ -41,10 +53,16 @@ namespace Hurace.RaceControl.ViewModels
 
         private void OnSkierStarted(StartList startList)
         {
-            
+            CurrentSkier = startList;
+            Message = "";
+            TimeDataComparisons.Clear();
         }
 
         private void OnCurrentSkierDisqualified(StartList startList)
+        {
+        }
+
+        private void OnSplitTime(TimeData timeData)
         {
             
         }

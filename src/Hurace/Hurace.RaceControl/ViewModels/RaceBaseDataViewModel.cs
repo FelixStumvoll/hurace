@@ -13,8 +13,6 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceBaseDataViewModel : NotifyPropertyChanged
     {
-        private bool _edit;
-        private Race _race;
         private readonly IRaceService _logic;
         private int _sensorCount = 1;
         public event Action OnUnsavedCancel;
@@ -22,36 +20,36 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand SaveEditCommand { get; set; }
         public ICommand CancelEditCommand { get; set; }
         public SharedRaceViewModel SharedRaceViewModel { get; set; }
-
+        public SharedRaceStateViewModel RaceState { get; set; }
         public Discipline SelectedDiscipline
         {
-            get => Race.Discipline;
+            get => RaceState.Race.Discipline;
             set
             {
-                Race.Discipline = value;
-                Race.DisciplineId = value?.Id ?? -1;
+                RaceState.Race.Discipline = value;
+                RaceState.Race.DisciplineId = value?.Id ?? -1;
                 InvokePropertyChanged(nameof(SelectedDiscipline));
             }
         }
 
         public Gender SelectedGender
         {
-            get => Race.Gender;
+            get => RaceState.Race.Gender;
             set
             {
-                Race.Gender = value;
-                Race.GenderId = value?.Id ?? -1;
+                RaceState.Race.Gender = value;
+                RaceState.Race.GenderId = value?.Id ?? -1;
                 InvokePropertyChanged(nameof(SelectedGender));
             }
         }
 
         public Location SelectedLocation
         {
-            get => Race.Location;
+            get => RaceState.Race.Location;
             set
             {
-                Race.Location = value;
-                Race.LocationId = value?.Id ?? -1;
+                RaceState.Race.Location = value;
+                RaceState.Race.LocationId = value?.Id ?? -1;
                 InvokePropertyChanged(nameof(SelectedLocation));
             }
         }
@@ -61,27 +59,15 @@ namespace Hurace.RaceControl.ViewModels
             get => _sensorCount;
             set => Set(ref _sensorCount, value);
         }
+        
 
-        public Race Race
-        {
-            get => _race;
-            set => Set(ref _race, value);
-        }
+        public Season Season => RaceState.Race.Season;
 
-        public bool Edit
-        {
-            get => _edit;
-            set => Set(ref _edit, value);
-        }
-
-        public Season Season => Race.Season;
-
-        public RaceBaseDataViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
+        public RaceBaseDataViewModel(IRaceService logic, SharedRaceViewModel svm, SharedRaceStateViewModel raceState)
         {
             _logic = logic;
-            Race = race;
+            RaceState = raceState;
             SharedRaceViewModel = svm;
-            Edit = race.Id == -1;
 
             SetupCommands();
         }
@@ -95,53 +81,42 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            SensorCount = await _logic.GetSensorCount(Race.Id);
+            SensorCount = await _logic.GetSensorCount(RaceState.Race.Id);
             SetSelectedProps();
         }
 
         private void SetSelectedProps()
         {
             SelectedDiscipline =
-                SharedRaceViewModel.Disciplines.DataSource.SingleOrDefault(d => d.Id == Race.DisciplineId);
-            SelectedGender = SharedRaceViewModel.Genders.DataSource.SingleOrDefault(g => g.Id == Race.GenderId);
-            SelectedLocation = SharedRaceViewModel.Locations.DataSource.SingleOrDefault(l => l.Id == Race.LocationId);
+                SharedRaceViewModel.Disciplines.DataSource.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
+            SelectedGender = SharedRaceViewModel.Genders.DataSource.SingleOrDefault(g => g.Id == RaceState.Race.GenderId);
+            SelectedLocation = SharedRaceViewModel.Locations.DataSource.SingleOrDefault(l => l.Id == RaceState.Race.LocationId);
         }
 
-        private void StartEdit(object param) => Edit = true;
+        private void StartEdit(object param) => RaceState.Edit = true;
 
         private async Task CancelEdit(object _)
         {
-            Edit = false;
-            if (Race.Id == -1)
+            RaceState.Edit = false;
+            if (RaceState.Race.Id == -1)
             {
                 OnUnsavedCancel?.Invoke();
                 return;
             }
 
-            var race = await _logic.GetRaceById(Race.Id);
-
-            static void ShallowCopyRace(Race original, Race copyTarget)
-            {
-                copyTarget.DisciplineId = original.DisciplineId;
-                copyTarget.GenderId = original.GenderId;
-                copyTarget.LocationId = original.LocationId;
-                copyTarget.RaceDescription = original.RaceDescription;
-                copyTarget.SeasonId = original.SeasonId;
-                copyTarget.RaceStateId = original.RaceStateId;
-            }
-
-            ShallowCopyRace(race, Race);
+            RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
+            
             SetSelectedProps();
             InvokePropertyChanged(nameof(Race));
         }
 
         private async Task SaveEdit(object _)
         {
-            if (await _logic.InsertOrUpdateRace(Race, SensorCount)) Edit = false;
+            if (await _logic.InsertOrUpdateRace(RaceState.Race, SensorCount)) RaceState.Edit = false;
         }
 
         private bool SaveValidator(object _) =>
-            Race.LocationId != -1 && Race.GenderId != -1 && Race.DisciplineId != -1 &&
-            !Race.RaceDescription.IsNullOrEmpty() && Race.RaceDate != DateTime.MinValue && SensorCount > 0;
+            RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 && RaceState.Race.DisciplineId != -1 &&
+            !RaceState.Race.RaceDescription.IsNullOrEmpty() && RaceState.Race.RaceDate != DateTime.MinValue && SensorCount > 0;
     }
 }

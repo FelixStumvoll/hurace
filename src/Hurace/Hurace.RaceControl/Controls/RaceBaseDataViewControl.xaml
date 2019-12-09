@@ -63,10 +63,10 @@
                             <Setter Property="Width" Value="250" />
 
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -75,12 +75,12 @@
                         <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Edit}" Value="True">
+                                <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                                     <Setter Property="BorderThickness" Value="1" />
                                     <Setter Property="IsReadOnly" Value="False" />
                                     <Setter Property="Padding" Value="0" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Edit}" Value="False">
+                                <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                                     <Setter Property="BorderThickness" Value="0" />
                                     <Setter Property="IsReadOnly" Value="True" />
                                     <Setter Property="Padding" Value="1" />
@@ -99,12 +99,12 @@
                         <Style TargetType="xctk:DateTimePicker" BasedOn="{StaticResource InputStyle}" />
                     </StackPanel.Resources>
                     <!-- Race Description -->
-                    <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding Race.RaceDescription}" />
+                    <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding RaceState.Race.RaceDescription}" />
                     <!-- DatePicker -->
-                    <xctk:DateTimePicker Value="{Binding Race.RaceDate}" Minimum="{Binding Season.StartDate}"
+                    <xctk:DateTimePicker Value="{Binding RaceState.Race.RaceDate}" Minimum="{Binding Season.StartDate}"
                                          Maximum="{Binding Season.EndDate}" />
                     <Border>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Race.RaceState.RaceStateDescription}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding RaceState.Race.RaceState.RaceStateDescription}" />
                     </Border>
 
                     <!-- Discipline Selection -->
@@ -123,11 +123,11 @@
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                                         <Setter Property="Text"
                                                 Value="{Binding SharedRaceViewModel.Locations.SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                                         <Setter Property="Text" Value="{Binding SelectedLocation.LocationName}" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -141,10 +141,10 @@
                             <Style TargetType="ListBox" BasedOn="{StaticResource InputStyle}">
                                 <Setter Property="Height" Value="150" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Edit}" Value="True">
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Edit}" Value="False">
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -186,10 +186,10 @@
             <ContentPresenter.Style>
                 <Style TargetType="{x:Type ContentPresenter}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Edit}" Value="True">
+                        <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
                             <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Edit}" Value="False">
+                        <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
                             <Setter Property="ContentTemplate" Value="{StaticResource View}" />
                         </DataTrigger>
                     </Style.Triggers>

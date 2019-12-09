@@ -7,9 +7,14 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
+             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
              d:DataContext="{d:DesignInstance vm:RaceViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
 
+    <UserControl.Resources>
+        <converters:RaceRunningBoolConverter x:Key="RaceRunningBoolConverter"/>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -17,7 +22,7 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Margin="5">
             <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
-                       Text="{Binding Race.RaceDescription}" />
+                       Text="{Binding RaceState.Race.RaceDescription}" />
             <Button HorizontalAlignment="Right" Content="Löschen" Padding="5,0" Command="{Binding DeleteCommand}" />
         </DockPanel>
         <TabControl Grid.Row="1" x:Name="TabControl" SelectedIndex="{Binding SelectedTab}" BorderThickness="0,1,0,0">
@@ -36,7 +41,9 @@
             <TabItem Header="Race Control">
                 <local:RaceControl DataContext="{Binding RaceControlViewModel}" />
             </TabItem>
-            <TabItem Header="Anzeigekontrolle" />
+            <TabItem Header="Anzeigekontrolle" IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">
+                <local:RaceDisplayControl DataContext="{Binding RaceDisplayViewModel}" />
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>

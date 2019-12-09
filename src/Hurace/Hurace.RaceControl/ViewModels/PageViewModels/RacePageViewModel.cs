@@ -71,7 +71,7 @@ namespace Hurace.RaceControl.ViewModels
         private async Task LoadRaces()
         {
             var races = (await _logic.GetRacesForSeason(SelectedSeason.Id)).Select(
-                r => new RaceViewModel(_logic, r, _sharedRaceViewModel));
+                r => new RaceViewModel(_logic, new SharedRaceStateViewModel {Race = r}, _sharedRaceViewModel));
             Races.Clear();
             foreach (var raceViewModel in races)
             {
@@ -86,13 +86,17 @@ namespace Hurace.RaceControl.ViewModels
             {
                 var rvm = new RaceViewModel(
                     _logic,
-                    new Race
+                    new SharedRaceStateViewModel
                     {
-                        Id = -1,
-                        RaceStateId = (int) Constants.RaceState.Upcoming,
-                        RaceDate = DateTime.Now,
-                        SeasonId = SelectedSeason.Id,
-                        Season = SelectedSeason
+                        Race = new Race
+                        {
+                            Id = -1,
+                            RaceStateId = (int) Constants.RaceState.Upcoming,
+                            RaceDate = DateTime.Now,
+                            SeasonId = SelectedSeason.Id,
+                            Season = SelectedSeason
+                        },
+                        Edit = true
                     },
                     _sharedRaceViewModel);
                 rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
@@ -113,7 +117,7 @@ namespace Hurace.RaceControl.ViewModels
                                 "Löschen ?",
                                 MessageBoxButton.YesNo,
                                 MessageBoxImage.Information) != MessageBoxResult.Yes) return;
-            if (rvm.Race.Id != -1 && !await _logic.RemoveRace(rvm.Race))
+            if (rvm.RaceState.Race.Id != -1 && !await _logic.RemoveRace(rvm.RaceState.Race))
             {
                 MessageBox.Show("Rennen konnte nicht gelöscht werden!",
                                 "Fehler",

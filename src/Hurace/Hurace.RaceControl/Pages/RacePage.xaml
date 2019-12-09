@@ -33,11 +33,11 @@
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="True">
+                        <DataTrigger Binding="{Binding SelectedRace.RaceState.Edit}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding SelectedRace.Edit}" Value="False">
+                        <DataTrigger Binding="{Binding SelectedRace.RaceState.Edit}" Value="False">
                             <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -79,7 +79,7 @@
                 </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Race.RaceDescription}" />
+                        <TextBlock Text="{Binding RaceState.Race.RaceDescription}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

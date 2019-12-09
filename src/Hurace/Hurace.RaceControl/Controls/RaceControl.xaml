@@ -164,16 +164,16 @@
         <ContentPresenter.Style>
             <Style TargetType="{x:Type ContentPresenter}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="2">
+                    <DataTrigger Binding="{Binding RaceState.Race.RaceStateId}" Value="2">
                         <Setter Property="ContentTemplate" Value="{StaticResource Running}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="3">
+                    <DataTrigger Binding="{Binding RaceState.Race.RaceStateId}" Value="3">
                         <Setter Property="ContentTemplate" Value="{StaticResource Finished}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="4">
+                    <DataTrigger Binding="{Binding RaceState.Race.RaceStateId}" Value="4">
                         <Setter Property="ContentTemplate" Value="{StaticResource Finished}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Race.RaceStateId}" Value="1">
+                    <DataTrigger Binding="{Binding RaceState.Race.RaceStateId}" Value="1">
                         <Setter Property="ContentTemplate" Value="{StaticResource Upcoming}" />
                     </DataTrigger>
                 </Style.Triggers>

@@ -17,10 +17,9 @@ namespace Hurace.RaceControl.ViewModels
     public class RaceStartListViewModel : NotifyPropertyChanged
     {
         private readonly IRaceService _logic;
-        private readonly Race _race;
         private StartList _selectedStartList;
-        private bool _edit;
 
+        public SharedRaceStateViewModel RaceState { get; set; }
         public FilterableObservableCollection<Skier> AvailableSkiers { get; set; }
         public FilterableObservableCollection<StartList> StartList { get; set; }
 
@@ -31,24 +30,16 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand EditCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand CancelEditCommand { get; set; }
-
-        public bool Edit
-        {
-            get => _edit;
-            set => Set(ref _edit, value);
-        }
-
         public StartList SelectedStartList
         {
             get => _selectedStartList;
             set => Set(ref _selectedStartList, value);
         }
 
-        public RaceStartListViewModel(IRaceService logic, Race race)
+        public RaceStartListViewModel(IRaceService logic, SharedRaceStateViewModel raceState)
         {
             _logic = logic;
-            _race = race;
-
+            RaceState = raceState;
             SetupCommands();
         }
 
@@ -58,18 +49,18 @@ namespace Hurace.RaceControl.ViewModels
             SaveCommand = new AsyncCommand(_ => SaveStartList());
             CancelEditCommand = new AsyncCommand(_ => CancelEditStartList());
 
-            AddSkierCommand = new ActionCommand(AddSkier, _ => Edit);
-            RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => Edit);
+            AddSkierCommand = new ActionCommand(AddSkier, _ => RaceState.Edit);
+            RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => RaceState.Edit);
 
             StartListUpCommand = new ActionCommand(_ => MoveStartList(i => i - 1),
                                                    _ => SelectedStartList != null &&
                                                         StartList.DataSource.IndexOf(SelectedStartList) != 0 &&
-                                                        Edit);
+                                                        RaceState.Edit);
             StartListDownCommand = new ActionCommand(_ => MoveStartList(i => i + 1),
                                                      _ => SelectedStartList != null &&
                                                           StartList.DataSource.IndexOf(SelectedStartList) !=
                                                           StartList.DataSource.Count - 1 &&
-                                                          Edit);
+                                                          RaceState.Edit);
             AvailableSkiers =
                 new FilterableObservableCollection<Skier>(SkierFilterFunc, s => s.OrderBy(sk => sk.LastName));
             StartList = new FilterableObservableCollection<StartList>((sl, st) => SkierFilterFunc(sl.Skier, st),
@@ -78,8 +69,8 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            AvailableSkiers.UpdateDataSource(await _logic.GetAvailableSkiersForRace(_race.Id));
-            StartList.UpdateDataSource(await _logic.GetStartListForRace(_race.Id));
+            AvailableSkiers.UpdateDataSource(await _logic.GetAvailableSkiersForRace(RaceState.Race.Id));
+            StartList.UpdateDataSource(await _logic.GetStartListForRace(RaceState.Race.Id));
             AvailableSkiers.Apply();
             StartList.Apply();
         }
@@ -107,8 +98,8 @@ namespace Hurace.RaceControl.ViewModels
             if (skier == null) return;
             StartList.DataSource.Add(new StartList
             {
-                Race = _race,
-                RaceId = _race.Id,
+                Race = RaceState.Race,
+                RaceId = RaceState.Race.Id,
                 Skier = skier,
                 SkierId = skier.Id,
                 StartStateId = (int) Constants.StartState.Upcoming,
@@ -133,16 +124,16 @@ namespace Hurace.RaceControl.ViewModels
 
         private Task SaveStartList()
         {
-            Edit = false;
-            return _logic.UpdateStartList(_race, StartList.DataSource);
+            RaceState.Edit = false;
+            return _logic.UpdateStartList(RaceState.Race, StartList.DataSource);
         }
 
         private Task CancelEditStartList()
         {
-            Edit = false;
+            RaceState.Edit = false;
             return SetupAsync();
         }
 
-        private void EditStartList() => Edit = true;
+        private void EditStartList() => RaceState.Edit = true;
     }
 }

@@ -15,20 +15,15 @@ namespace Hurace.RaceControl.ViewModels
     public class RaceControlViewModel : NotifyPropertyChanged
     {
         private IRaceControlService _raceControlService;
-        private Race _race;
         private StartList _currentSkier;
         private readonly IRaceService _logic;
+
+        public SharedRaceStateViewModel RaceState { get; set; }
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
         public ObservableCollection<TimeData> SkierTimeData { get; set; } = new ObservableCollection<TimeData>();
         public ICommand StartRaceCommand { get; set; }
         public ICommand ReadyTrackCommand { get; set; }
         public ICommand CancelSkier { get; set; }
-
-        public Race Race
-        {
-            get => _race;
-            set => Set(ref _race, value);
-        }
 
         public StartList CurrentSkier
         {
@@ -36,9 +31,9 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _currentSkier, value);
         }
 
-        public RaceControlViewModel(Race race, IRaceService logic)
+        public RaceControlViewModel(SharedRaceStateViewModel raceState, IRaceService logic)
         {
-            Race = race;
+            RaceState = raceState;
             _logic = logic;
             SetupCommands();
         }
@@ -72,7 +67,7 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            _raceControlService = ActiveRaceHandler.Instance[Race.Id];
+            _raceControlService = ActiveRaceHandler.Instance[RaceState.Race.Id];
             if (_raceControlService != null)
                 await SetupRaceControl();
         }
@@ -91,8 +86,8 @@ namespace Hurace.RaceControl.ViewModels
             if (MessageBox.Show("Rennen kann nach dem Starten nicht mehr bearbeitet werden. Fortfahren ?",
                                 "Warnung", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
-            _raceControlService = await ActiveRaceHandler.Instance.StartRace(Race.Id);
-            Race = await _logic.GetRaceById(Race.Id);
+            _raceControlService = await ActiveRaceHandler.Instance.StartRace(RaceState.Race.Id);
+            RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
             await SetupRaceControl();
         }
     }

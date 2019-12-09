@@ -19,8 +19,8 @@ namespace Hurace.RaceControl.ViewModels
         public RaceStartListViewModel RaceStartListViewModel { get; set; }
         public RaceBaseDataViewModel RaceBaseDataViewModel { get; set; }
         public RaceControlViewModel RaceControlViewModel { get; set; }
-        public Race Race { get; set; }
-        public bool Edit => RaceBaseDataViewModel.Edit || RaceStartListViewModel.Edit;
+        public RaceDisplayViewModel RaceDisplayViewModel { get; set; }
+        public SharedRaceStateViewModel RaceState { get; set; }
         public ICommand DeleteCommand { get; set; }
         public ICommand TabSelectionChangedCommand { get; set; }
 
@@ -30,37 +30,48 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedTab, value);
         }
 
-        public RaceViewModel(IRaceService logic, Race race, SharedRaceViewModel svm)
+        public RaceViewModel(IRaceService logic, SharedRaceStateViewModel raceState, SharedRaceViewModel svm)
         {
-            Race = race;
-            RaceStartListViewModel = new RaceStartListViewModel(logic, race);
-            RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, race, svm);
-            RaceControlViewModel = new RaceControlViewModel(Race, logic);
+            RaceState = raceState;
+            RaceStartListViewModel = new RaceStartListViewModel(logic, RaceState);
+            RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, svm,RaceState);
+            RaceControlViewModel = new RaceControlViewModel(RaceState, logic);
+            RaceDisplayViewModel = new RaceDisplayViewModel(RaceState);
 
             SetupCommands();
-            RegisterEditHooks();
+            RegisterPropagationHooks();
         }
 
         private void SetupCommands()
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this),
-                                              _ => Race.Id !=
+                                              _ => RaceState.Race.Id !=
                                                    -1); // && Race.RaceStateId == (int) Constants.RaceState.Upcoming
             TabSelectionChangedCommand = new AsyncCommand(_ => OnTabSelectionChanged());
         }
 
-        private void RegisterEditHooks()
+        private void RegisterPropagationHooks()
         {
-            RaceBaseDataViewModel.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == nameof(RaceBaseDataViewModel.Edit)) InvokePropertyChanged(nameof(Edit));
-            };
-
-            RaceStartListViewModel.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == nameof(RaceBaseDataViewModel.Edit)) InvokePropertyChanged(nameof(Edit));
-            };
+//            RaceBaseDataViewModel.PropertyChanged += (sender, args) =>
+//            {
+//                switch (args.PropertyName)
+//                {
+//                    case nameof(RaceBaseDataViewModel.Edit):
+//                        InvokePropertyChanged(nameof(RaceState.));
+//                        break;
+//                }
+//            };
+//
+//            RaceStartListViewModel.PropertyChanged += (sender, args) =>
+//            {
+//                switch (args.PropertyName)
+//                {
+//                    case nameof(RaceStartListViewModel.Edit):
+//                        InvokePropertyChanged(nameof(Edit));
+//                        break;
+//                }
+//            };
         }
 
         public async Task SetupAsync()

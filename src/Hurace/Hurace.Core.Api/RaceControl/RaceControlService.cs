@@ -33,7 +33,7 @@ namespace Hurace.Core.Api.RaceControl
         public int RaceId { get; set; }
 
         public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
-            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, IRaceClock raceClock)
+            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao)
         {
             _raceDao = raceDao;
             _startListDao = startListDao;
@@ -41,7 +41,7 @@ namespace Hurace.Core.Api.RaceControl
             _raceDataDao = raceDataDao;
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
-            _raceClock = raceClock;
+            _raceClock = RaceClockProvider.Instance.RaceClock;
         }
 
         public async Task EnableRaceForSkier()
