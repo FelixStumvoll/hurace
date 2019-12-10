@@ -58,7 +58,7 @@
                                                     <Setter Property="FontSize" Value="20" />
                                                 </Style>
                                             </StackPanel.Resources>
-                                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" />
+                                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" Margin="0,0,5,0" />
                                             <TextBlock Text="{Binding CurrentSkier.Skier.LastName}" />
                                             <TextBlock Margin="5,0" Text="-" />
                                             <TextBlock Text="{Binding CurrentSkier.Skier.Country.CountryCode}" />

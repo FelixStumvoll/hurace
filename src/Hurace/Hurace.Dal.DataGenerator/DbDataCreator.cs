@@ -168,7 +168,8 @@ namespace Hurace.DataGenerator
                     yield return new Sensor
                     {
                         RaceId = race.Id,
-                        SensorDescription = $"{race.RaceDescription} - Sensor:{i}"
+                        SensorDescription = $"{race.RaceDescription} - Sensor:{i}",
+                        SensorNumber = i
                     };
         }
 

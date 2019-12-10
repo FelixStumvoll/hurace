@@ -93,12 +93,9 @@ namespace Hurace.Core.Simulation
                 lock (_lockObj) _terminated = value;
             }
         }
-
-        private DateTime _clockTime = DateTime.Now.Date;
-        private DateTime _startTime;
-        private object _lockObj = new object();
-        private Thread _clockThread;
-        private ManualResetEvent mrse = new ManualResetEvent(false);
+        
+        private readonly object _lockObj = new object();
+        private readonly ManualResetEvent mrse = new ManualResetEvent(false);
         private bool _terminated;
         private int _deviation;
         private int _average;
@@ -109,15 +106,14 @@ namespace Hurace.Core.Simulation
 
         public MockRaceClock()
         {
-            _clockThread = new Thread(() =>
+            var clockThread = new Thread(() =>
             {
-                _startTime = _clockTime;
                 while (!Terminated)
                 {
                     mrse.WaitOne();
                     if (SkipNext)
                     {
-                        TimingTriggered?.Invoke(CurrentSensor, _clockTime);
+                        TimingTriggered?.Invoke(CurrentSensor, DateTime.Now);
                         SkipNext = false;
                         CurrentSensor++;
                     }
@@ -126,11 +122,12 @@ namespace Hurace.Core.Simulation
                     var time = normalDist.Sample();
 
                     Thread.Sleep((int) time);
-                    _clockTime += DateTime.Now - _clockTime;
                 }
             });
-            
-            _clockThread.Start();
+
+            TimingTriggered += (id, time) => Console.WriteLine($"{id}: {time}");
+
+            clockThread.Start();
         }
 
         public void Start()
@@ -145,7 +142,7 @@ namespace Hurace.Core.Simulation
 
         public void TriggerSensor(int sensorId)
         {
-            TimingTriggered?.Invoke(CurrentSensor, _clockTime);
+            TimingTriggered?.Invoke(sensorId, DateTime.Now);
         }
     }
 }

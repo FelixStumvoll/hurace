@@ -35,6 +35,19 @@ namespace Hurace.Dal.Dao
                 ("@raceId", raceId));
         }
 
+        public async Task<IEnumerable<TimeData>> GetRankingForSensor(int raceId, int sensorId, int count = 0)
+        {
+            var topSection = count <= 0 ? "" : $" top {count}";
+            return await QueryAsync<TimeData>(
+                $@"select{topSection} * from hurace.SensorRanking where raceId=@rid and sensorNumber=@sid",
+                new MapperConfig()
+                    .Include<StartList>()
+                    .AddMapping<Country>(("countryId", nameof(Country.Id)))
+                    .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
+                    .AddMapping<Gender>(("genderId", nameof(Gender.Id))), ("@rid", raceId),
+                ("@sid", sensorId));
+        }
+
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
             await ExecuteAsync($"delete from {TableName} where skierId=@sId and raceId=@rId and sensorId=@sensorId",
                                ("@sid", skierId), ("@rId", raceId), ("@sensorId", sensorId));
@@ -63,7 +76,14 @@ namespace Hurace.Dal.Dao
                                 .Where<StartList>((nameof(StartList.RaceId), raceId),
                                                   (nameof(StartList.SkierId), skierId)).Build());
 
-        public Task<int> CountTimeDataForRace(int raceId) => 
+        public async Task<TimeData?> GetTimeDataForSensor(int skierId, int raceId, int sensorId) =>
+            (await GeneratedQueryAsync(DefaultSelectQuery().Where<TimeData>((nameof(TimeData.SkierId), skierId),
+                                                                            (nameof(TimeData.RaceId), raceId),
+                                                                            (nameof(TimeData.SensorId),
+                                                                                sensorId)).Build()))
+            .SingleOrDefault();
+
+        public Task<int> CountTimeDataForRace(int raceId) =>
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
     }
 }

@@ -26,6 +26,7 @@ namespace Hurace.Core.Api.RaceControl
         Task<StartList> GetCurrentSkier();
         Task CancelSkier(int skierId);
         Task<IEnumerable<StartList>> GetRemainingStartList();
+        Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
         void CancelRace();
     }
 }

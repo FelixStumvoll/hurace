@@ -28,12 +28,13 @@ namespace Hurace.Core.Api.RaceControl
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
         private readonly ISkierEventDao _skierEventDao;
-        private ITimeDataDao _timeDataDao;
+        private readonly ITimeDataDao _timeDataDao;
+        private readonly ISensorDao _sensorDao;
         private IRaceClock _raceClock;
         public int RaceId { get; set; }
 
         public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
-            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao)
+            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, ISensorDao sensorDao)
         {
             _raceDao = raceDao;
             _startListDao = startListDao;
@@ -41,6 +42,7 @@ namespace Hurace.Core.Api.RaceControl
             _raceDataDao = raceDataDao;
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
+            _sensorDao = sensorDao;
             _raceClock = RaceClockProvider.Instance.RaceClock;
         }
 
@@ -83,6 +85,18 @@ namespace Hurace.Core.Api.RaceControl
         public async Task<IEnumerable<StartList>> GetRemainingStartList() =>
             (await _startListDao.GetStartListForRace(RaceId)).Where(
                 sl => sl.StartStateId == (int) Constants.StartState.Upcoming);
+
+        public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData)
+        {
+            var first = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1)).FirstOrDefault();
+            var current = (await _timeDataDao.FindByIdAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId));
+            if(first == null) return TimeSpan.Zero;
+            var leaderTime =
+                await _timeDataDao.GetTimeDataForSensor(first.SkierId, first.RaceId, timeData.SensorId);
+
+            if (leaderTime == null) return null;
+            return leaderTime.Time - current.Time;
+        }
 
         public void CancelRace()
         {
