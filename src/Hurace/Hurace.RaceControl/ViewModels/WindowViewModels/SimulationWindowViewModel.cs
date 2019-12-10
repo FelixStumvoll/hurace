@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using Hurace.Core.Api;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.Util;
@@ -12,6 +13,9 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         private MockRaceClock _clock;
         private bool _enabled;
 
+        public ICommand StartClockCommand { get; set; }
+        public ICommand PauseClockCommand { get; set; }
+        
         public bool Enabled
         {
             get => _enabled;
