@@ -10,7 +10,7 @@ using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
     public class RacePageViewModel : NotifyPropertyChanged, IPageViewModel
     {

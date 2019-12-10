@@ -25,15 +25,18 @@ namespace Hurace.Core.Api
         private void BuildContainer(IConfiguration config, string configName)
         {
             var builder = new ContainerBuilder();
+            
+            //Load Daos
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Dal.Dao"))
                    .Where(t => t.Name.EndsWith("Dao") && (!t.Namespace?.Contains("Base") ?? false))
                    .As(t => t.GetInterface($"I{t.Name}"));
 
+            //Load Services
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Api"))
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
+            //Load StatementFactory & ConnectionFactory
             var connectionStringSection = config.GetSection("ConnectionStrings").GetSection(configName);
-
             builder.RegisterInstance(
                        new ConcreteConnectionFactory(DbUtil.GetProviderFactory(connectionStringSection["ProviderName"]),
                                                      connectionStringSection["ConnectionString"]))

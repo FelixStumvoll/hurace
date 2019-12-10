@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.PageViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.WindowViewModels
 {
     public class MainViewModel : NotifyPropertyChanged
     {

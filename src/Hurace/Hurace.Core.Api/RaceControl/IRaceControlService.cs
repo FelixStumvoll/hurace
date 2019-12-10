@@ -19,9 +19,8 @@ namespace Hurace.Core.Api.RaceControl
         event Action<TimeData> OnSplitTime;
         event Action OnRaceCanceled;
         event Action OnRaceFinished;
-      
         
-        
+        Task InitializeAsync();
         Task EnableRaceForSkier();
         Task<StartList> GetCurrentSkier();
         Task CancelSkier(int skierId);

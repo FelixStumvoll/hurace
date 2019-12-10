@@ -29,19 +29,23 @@ namespace Hurace.Core.Api.RaceControl
         {
             Instance = new ActiveRaceHandler();
             var provider = ServiceProvider.Instance;
-            Instance._activeRaces.AddRange((await Instance._raceDao.GetActiveRaces()).Select(r =>
+
+            foreach (var race in await Instance._raceDao.GetActiveRaces())
             {
                 var rcs = provider.ResolveService<IRaceControlService>();
-                rcs.RaceId = r.Id;
-                return rcs;
-            }));
+                await rcs.InitializeAsync();
+                rcs.RaceId = race.Id;
+                Instance._activeRaces.Add(rcs);
+            }
         }
         
         public async Task<IRaceControlService> StartRace(int raceId)
         {
+            await RaceClockProvider.Instance.GetRaceClock();
             await ChangeRaceState(raceId, Constants.RaceState.Running);
             var service = ServiceProvider.Instance.ResolveService<IRaceControlService>();
             service.RaceId = raceId;
+            await service.InitializeAsync();
             _activeRaces.Add(service);
             return service;
         }

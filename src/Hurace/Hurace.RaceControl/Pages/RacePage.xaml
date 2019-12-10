@@ -8,7 +8,8 @@
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
-             d:DataContext="{d:DesignInstance vm:RacePageViewModel}"
+             xmlns:pageViewModels="clr-namespace:Hurace.RaceControl.ViewModels.PageViewModels"
+             d:DataContext="{d:DesignInstance pageViewModels:RacePageViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />

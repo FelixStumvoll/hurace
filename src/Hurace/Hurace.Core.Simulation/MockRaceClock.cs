@@ -9,6 +9,8 @@ namespace Hurace.Core.Simulation
     {
         public event TimingTriggeredHandler TimingTriggered;
 
+        public static MockRaceClock Instance { get; private set; }
+
         public int Average
         {
             get
@@ -18,6 +20,18 @@ namespace Hurace.Core.Simulation
             set
             {
                 lock (_lockObj) _average = value;
+            }
+        }
+
+        public int SensorCount
+        {
+            get
+            {
+                lock (_lockObj) return _sensorCount;
+            }
+            set
+            {
+                lock (_lockObj) _sensorCount = value;
             }
         }
 
@@ -39,7 +53,7 @@ namespace Hurace.Core.Simulation
             {
                 lock (_lockObj) return _running;
             }
-            set
+            private set
             {
                 lock (_lockObj) _running = value;
             }
@@ -93,16 +107,17 @@ namespace Hurace.Core.Simulation
                 lock (_lockObj) _terminated = value;
             }
         }
-        
+
         private readonly object _lockObj = new object();
         private readonly ManualResetEvent mrse = new ManualResetEvent(false);
         private bool _terminated;
-        private int _deviation;
-        private int _average;
+        private int _deviation = 500;
+        private int _average = 20000;
         private bool _running;
         private int _currentSensor;
-        private int _maxSensor;
+        private int _maxSensor = 5;
         private bool _skipNext;
+        private int _sensorCount;
 
         public MockRaceClock()
         {
@@ -111,11 +126,17 @@ namespace Hurace.Core.Simulation
                 while (!Terminated)
                 {
                     mrse.WaitOne();
-                    if (SkipNext)
+                    if (!SkipNext)
                     {
                         TimingTriggered?.Invoke(CurrentSensor, DateTime.Now);
                         SkipNext = false;
+                       
                         CurrentSensor++;
+                        if (CurrentSensor > MaxSensor)
+                        {
+                            CurrentSensor = 0;
+                            mrse.Reset();
+                        }
                     }
 
                     var normalDist = new Normal(Average, Deviation);
@@ -128,16 +149,19 @@ namespace Hurace.Core.Simulation
             TimingTriggered += (id, time) => Console.WriteLine($"{id}: {time}");
 
             clockThread.Start();
+            Instance = this;
         }
 
         public void Start()
         {
             mrse.Set();
+            Running = true;
         }
 
         public void Stop()
         {
             mrse.Reset();
+            Running = false;
         }
 
         public void TriggerSensor(int sensorId)

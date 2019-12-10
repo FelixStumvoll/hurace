@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Pages"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:pageViewModels="clr-namespace:Hurace.RaceControl.ViewModels.PageViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vm:MainPageViewModel}">
+             d:DataContext="{d:DesignInstance pageViewModels:MainPageViewModel}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />

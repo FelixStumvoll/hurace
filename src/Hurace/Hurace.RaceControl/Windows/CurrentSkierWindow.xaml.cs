@@ -2,6 +2,7 @@
 using Hurace.Core.Api;
 using Hurace.Core.Api.RaceCrud;
 using Hurace.RaceControl.ViewModels;
+using Hurace.RaceControl.ViewModels.WindowViewModels;
 
 namespace Hurace.RaceControl.Windows
 {

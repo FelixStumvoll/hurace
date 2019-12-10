@@ -43,8 +43,10 @@ namespace Hurace.Core.Api.RaceControl
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
             _sensorDao = sensorDao;
-            _raceClock = RaceClockProvider.Instance.RaceClock;
+            
         }
+
+        public async Task InitializeAsync() => _raceClock = await RaceClockProvider.Instance.GetRaceClock();
 
         public async Task EnableRaceForSkier()
         {

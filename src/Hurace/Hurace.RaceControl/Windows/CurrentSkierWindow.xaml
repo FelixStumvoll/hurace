@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:Hurace.RaceControl.Windows"
         xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
         xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+        xmlns:windowViewModels="clr-namespace:Hurace.RaceControl.ViewModels.WindowViewModels"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance vm:CurrentSkierWindowViewModel}"
+        d:DataContext="{d:DesignInstance windowViewModels:CurrentSkierWindowViewModel}"
         Title="CurrentSkierWindow" Height="450" Width="800">
 
     <Window.Resources>

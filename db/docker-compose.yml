@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  mssql:
+    env_file: 
+      - ./mssql/db.env   
+    build: ./mssql
+    container_name: mssqlDB
+    ports:
+      - "1433:1433"
+    restart: always
+    # volumes:
+    #   - mssqlserver:/var/opt/mssql
+# volumes:
+#   mssqlserver:

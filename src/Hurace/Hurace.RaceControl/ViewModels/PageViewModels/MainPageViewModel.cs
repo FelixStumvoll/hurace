@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Hurace.Core.Api;
 using Hurace.Core.Api.RaceCrud;
-using Hurace.Core.Simulation;
-using Hurace.RaceControl.Pages;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.Windows;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
     public class MainPageViewModel : IPageViewModel
     {
@@ -29,6 +26,7 @@ namespace Hurace.RaceControl.ViewModels
 
         private void LaunchSimulator()
         {
+            
             new SimulatorWindow().Show();
         }
         

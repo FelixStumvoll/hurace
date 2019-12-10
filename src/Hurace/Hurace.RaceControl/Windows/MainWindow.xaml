@@ -8,7 +8,9 @@
         xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
         xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
         xmlns:pages="clr-namespace:Hurace.RaceControl.Pages"
-        d:DataContext="{d:DesignInstance vm:MainViewModel}"
+        xmlns:windowViewModels="clr-namespace:Hurace.RaceControl.ViewModels.WindowViewModels"
+        xmlns:pageViewModels="clr-namespace:Hurace.RaceControl.ViewModels.PageViewModels"
+        d:DataContext="{d:DesignInstance windowViewModels:MainViewModel}"
         mc:Ignorable="d"
         x:Name="Main"
         Title="Hurace RaceControl" Height="450" Width="800">
@@ -39,10 +41,10 @@
         <ContentControl HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch" Grid.Row="1" Content="{Binding CurrentPage}">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type vm:RacePageViewModel}">
+                <DataTemplate DataType="{x:Type pageViewModels:RacePageViewModel}">
                     <pages:RacePage />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:MainPageViewModel}">
+                <DataTemplate DataType="{x:Type pageViewModels:MainPageViewModel}">
                     <pages:MainPage DataContext="{Binding ElementName=Main, Path=DataContext.CurrentPage}" />
                 </DataTemplate>
             </ContentControl.Resources>

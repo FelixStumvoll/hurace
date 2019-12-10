@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Hurace.Core.Api.RaceControl;
 using Hurace.RaceControl.ViewModels;
+using Hurace.RaceControl.ViewModels.WindowViewModels;
 
 namespace Hurace.RaceControl.Windows
 {

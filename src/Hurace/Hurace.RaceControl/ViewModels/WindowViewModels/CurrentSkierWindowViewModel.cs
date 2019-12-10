@@ -5,7 +5,7 @@ using Hurace.Core.Api.RaceCrud;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Util;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.WindowViewModels
 {
     public class CurrentSkierWindowViewModel : NotifyPropertyChanged
     {
