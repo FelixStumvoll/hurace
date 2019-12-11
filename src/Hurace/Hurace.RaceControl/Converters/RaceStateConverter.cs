@@ -9,14 +9,9 @@ namespace Hurace.RaceControl.Converters
 {
     public class RaceStateConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (int) (value ?? 0);
-        }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            (int) (value ?? 0);
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }
 }
