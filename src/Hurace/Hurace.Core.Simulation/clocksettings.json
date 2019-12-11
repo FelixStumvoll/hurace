@@ -1,0 +1,7 @@
+{
+    "ClockSettings": {
+        "Mean" : 5,
+        "Deviation" : 0,
+        "MaxSensorsOnStart" : 5
+    }
+}

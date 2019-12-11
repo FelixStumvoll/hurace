@@ -2,6 +2,7 @@
 using System.Threading;
 using Hurace.Core.Timer;
 using MathNet.Numerics.Distributions;
+using Microsoft.Extensions.Configuration;
 
 namespace Hurace.Core.Simulation
 {
@@ -11,31 +12,19 @@ namespace Hurace.Core.Simulation
 
         public static MockRaceClock Instance { get; private set; }
 
-        public int Average
+        public double Mean
         {
             get
             {
-                lock (_lockObj) return _average;
+                lock (_lockObj) return _mean;
             }
             set
             {
-                lock (_lockObj) _average = value;
+                lock (_lockObj) _mean = value;
             }
         }
 
-        public int SensorCount
-        {
-            get
-            {
-                lock (_lockObj) return _sensorCount;
-            }
-            set
-            {
-                lock (_lockObj) _sensorCount = value;
-            }
-        }
-
-        public int Deviation
+        public double Deviation
         {
             get
             {
@@ -83,19 +72,6 @@ namespace Hurace.Core.Simulation
             }
         }
 
-        public bool SkipNext
-        {
-            get
-            {
-                lock (_lockObj) return _skipNext;
-            }
-            set
-            {
-                lock (_lockObj) _skipNext = value;
-            }
-        }
-
-
         public bool Terminated
         {
             get
@@ -109,64 +85,77 @@ namespace Hurace.Core.Simulation
         }
 
         private readonly object _lockObj = new object();
-        private readonly ManualResetEvent mrse = new ManualResetEvent(false);
+        private readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
         private bool _terminated;
-        private int _deviation = 500;
-        private int _average = 20000;
+        private double _deviation;
+        private double _mean = 20000;
         private bool _running;
         private int _currentSensor;
         private int _maxSensor = 5;
-        private bool _skipNext;
-        private int _sensorCount;
 
         public MockRaceClock()
         {
-            var clockThread = new Thread(() =>
+            ConfigureClock();
+            new Thread(ClockFunc).Start();
+            Instance = this;
+        }
+
+        private void ClockFunc()
+        {
+            while (!Terminated)
             {
-                while (!Terminated)
+                _resetEvent.WaitOne();
+                if (CurrentSensor <= MaxSensor) TimingTriggered?.Invoke(CurrentSensor, DateTime.Now);
+                CurrentSensor++;
+
+                if (CurrentSensor > MaxSensor)
                 {
-                    mrse.WaitOne();
-                    if (!SkipNext)
-                    {
-                        TimingTriggered?.Invoke(CurrentSensor, DateTime.Now);
-                        SkipNext = false;
-                       
-                        CurrentSensor++;
-                        if (CurrentSensor > MaxSensor)
-                        {
-                            CurrentSensor = 0;
-                            mrse.Reset();
-                        }
-                    }
-
-                    var normalDist = new Normal(Average, Deviation);
+                    CurrentSensor = 0;
+                    _resetEvent.Reset();
+                }
+                else
+                {
+                    var normalDist = new Normal(Mean * 1000, Deviation * 1000);
                     var time = normalDist.Sample();
-
                     Thread.Sleep((int) time);
                 }
-            });
+            }
+        }
 
-            TimingTriggered += (id, time) => Console.WriteLine($"{id}: {time}");
-
-            clockThread.Start();
-            Instance = this;
+        private void ConfigureClock()
+        {
+            var config = new ConfigurationBuilder().AddJsonFile("clocksettings.json").Build();
+            var section = config.GetSection("ClockSettings");
+            Mean = Convert.ToDouble(section["Mean"]);
+            Deviation = Convert.ToDouble(section["Deviation"]);
+            MaxSensor = Convert.ToInt32(section["MaxSensorsOnStart"]);
         }
 
         public void Start()
         {
-            mrse.Set();
+            _resetEvent.Set();
             Running = true;
         }
 
         public void Stop()
         {
-            mrse.Reset();
+            _resetEvent.Reset();
             Running = false;
         }
 
         public void TriggerSensor(int sensorId)
         {
             TimingTriggered?.Invoke(sensorId, DateTime.Now);
+        }
+
+        public void Reset()
+        {
+            CurrentSensor = 0;
+        }
+
+        public void SkipNext()
+        {
+            CurrentSensor++;
         }
     }
 }

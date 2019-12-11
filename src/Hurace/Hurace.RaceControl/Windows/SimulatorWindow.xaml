@@ -4,23 +4,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels.WindowViewModels"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
+        SizeToContent="Height"
+        Width="500"
         Title="SimulatorWindow" d:DataContext="{d:DesignInstance vm:SimulationWindowViewModel}">
-    <Grid>
+    <Grid IsEnabled="{Binding Enabled}">
         <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="5" />
             </Style>
 
-            <Style TargetType="ComboBox">
+            <Style TargetType="xctk:UIntegerUpDown">
                 <Setter Property="Margin" Value="5" />
             </Style>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Margin" Value="5" />
             </Style>
-            
+
             <Style TargetType="TextBox">
                 <Setter Property="Margin" Value="5" />
             </Style>
@@ -33,24 +35,56 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="1" Grid.Column="0" Command="{Binding StartClockCommand}" Content="Start Clock" />
-        <Button Grid.Row="1" Grid.Column="1" Command="{Binding PauseClockCommand}" Content="Pause Clock" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" />
-        <TextBox Grid.Row="2" Grid.Column="1"></TextBox>
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Deviation" />
-        <TextBox Grid.Row="3" Grid.Column="1"></TextBox>
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Max Sensor Nr:" />
-        <TextBox Grid.Row="4" Grid.Column="1" Text="1" />
-        <Button Grid.Row="5" Grid.Column="0" Content="Skip Next Sensor" />
-        <Button Grid.Row="5" Grid.Column="1" Content="Reset Id" />
+        <Button Grid.Row="1" Grid.Column="0">
+            <Button.Style>
+                <Style TargetType="Button">
 
-        <ComboBox Grid.Row="6" Grid.Column="0" />
-        <Button Grid.Row="6" Grid.Column="1" Content="Trigger Sensor" />
+                    <Setter Property="Margin" Value="5" />
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Running}" Value="True">
+                            <Setter Property="Content" Value="Pause Clock" />
+                            <Setter Property="Command" Value="{Binding PauseClockCommand}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Running}" Value="False">
+                            <Setter Property="Content" Value="Resume Clock" />
+                            <Setter Property="Command" Value="{Binding StartClockCommand}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="1" Command="{Binding RestartSenorCommand}" Content="Restart Sensor" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" />
+        <xctk:UIntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Clock.Mean}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Deviation" />
+        <xctk:UIntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Clock.Deviation}" />
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Max Sensor Nr:" />
+        <xctk:UIntegerUpDown Grid.Row="4" Grid.Column="1" Value="{Binding Clock.MaxSensor}" />
+        <Button Grid.Row="5" Grid.Column="0" Content="Skip Next Sensor" Command="{Binding SkipNextSensorCommand}" />
+
+        <xctk:UIntegerUpDown Minimum="0" Maximum="{Binding Clock.MaxSensor}" Value="{Binding SensorToTrigger}"
+                             Grid.Row="6" Grid.Column="0" />
+        <Button Grid.Row="6" Grid.Column="1" Content="Trigger Sensor" Command="{Binding TriggerSensorCommand}" />
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Sensor Feed:" />
+        <ListBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Height="300" ItemsSource="{Binding SensorEntries}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding SensorId}" FontWeight="Bold" />
+                        <TextBlock Text="-" Margin="5,0" />
+                        <TextBlock Text="{Binding DateTime}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
