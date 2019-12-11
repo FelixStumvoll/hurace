@@ -1,1 +1,1 @@
-./init.sh & /opt/mssql/bin/sqlservr
+/usr/local/bin/init.sh & /opt/mssql/bin/sqlservr
