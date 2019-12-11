@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
-using Hurace.Core.Timer;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Microsoft.Extensions.Configuration;

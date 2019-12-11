@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Hurace.Dal.Domain;
-using static Hurace.Dal.Domain.Constants;
-using RaceState = Hurace.Dal.Domain.RaceState;
 
 namespace Hurace.RaceControl.Converters
 {

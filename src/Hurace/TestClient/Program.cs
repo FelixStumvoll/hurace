@@ -1,7 +1,4 @@
-﻿using System;
-using Hurace.Core.Api;
-
-namespace TestClient
+﻿namespace TestClient
 {
     class Program
     {

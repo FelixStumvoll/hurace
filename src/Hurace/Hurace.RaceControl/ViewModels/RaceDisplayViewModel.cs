@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.Windows;

@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Api.RaceControl.Events;
 using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.RaceControl

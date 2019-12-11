@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Printing;
 
 namespace Hurace.RaceControl.ViewModels.Commands
 {

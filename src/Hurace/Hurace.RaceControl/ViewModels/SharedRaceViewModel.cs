@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Util;
 

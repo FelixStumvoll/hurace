@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Api.RaceControl.Events;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
-using RaceEvent = Hurace.Dal.Domain.RaceEvent;
 using SkierEvent = Hurace.Dal.Domain.SkierEvent;
 
 namespace Hurace.Core.Api.RaceControl
