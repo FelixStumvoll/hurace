@@ -207,7 +207,7 @@ namespace Hurace.DataGenerator
                         RaceDataId = eventId
                     });
 
-                    var splitTime = race.RaceDate.AddMinutes(-race.RaceDate.Minute).AddHours(-race.RaceDate.Hour);
+                    var splitTime = 0;
                     foreach (var sensor in sensors.Where(s => s.RaceId == race.Id))
                     {
                         var raceDataId = await _raceDataDao.InsertGetIdAsync(new RaceData
@@ -233,9 +233,9 @@ namespace Hurace.DataGenerator
                             SkierEventId = skierEventId
                         });
 
-                        var splitSeconds = GetRandomSplitTime();
-                        splitTime = splitTime.AddMilliseconds(splitSeconds);
-                        raceTime = raceTime.AddMilliseconds(splitSeconds);
+                        var splitMillis = GetRandomSplitTime();
+                        splitTime += splitMillis;
+                        raceTime = raceTime.AddMilliseconds(splitMillis);
                     }
 
                     eventId = await _raceDataDao.InsertGetIdAsync(new RaceData

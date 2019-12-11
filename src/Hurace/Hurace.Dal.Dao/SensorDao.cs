@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
@@ -26,5 +27,11 @@ namespace Hurace.Dal.Dao
 
         public Task<int> GetMaxSensorNr(int raceId) =>
             ExecuteScalarAsync($"select max(sensorNumber) from {TableName} where raceId = @rid", ("@rid", raceId));
+
+        public async Task<Sensor> GetSensorForSensorNumber(int sensorNumber, int raceId) =>
+            (await GeneratedQueryAsync(DefaultSelectQuery()
+                                       .Where<Sensor>((nameof(Sensor.SensorNumber), sensorNumber),
+                                                      (nameof(Sensor.RaceId), raceId)).Build()))
+            .FirstOrDefault();
     }
 }

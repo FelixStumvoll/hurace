@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,5 +86,26 @@ namespace Hurace.Dal.Dao
 
         public Task<int> CountTimeDataForRace(int raceId) =>
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
+
+        public async Task<int> GetAverageTimeForSensor(int raceId, int sensorNumber) =>
+            await ExecuteScalarAsync(
+                @$"select AVG(td.time) from {TableName} as td 
+                            inner join hurace.Sensor as s on s.id = td.sensorId
+                            where td.raceId=@rid and s.sensorNumber = @sn",
+                ("@rid", raceId), ("@sn", sensorNumber));
+
+        public async Task<DateTime> GetStartTimeForStartList(int skierId, int raceId) =>
+            (await QueryAsync<RaceData>(@"select 
+            rd.id,
+            rd.eventDateTime,
+            rd.eventTypeId,
+            rd.raceId
+            from hurace.RaceData as rd
+            join hurace.SkierEvent as se on rd.id = se.raceDataId
+            join hurace.TimeData as td on se.id = td.skierEventId
+            join hurace.Sensor as s on s.id = td.sensorId
+            where s.sensorNumber = 0 and rd.eventTypeId = 8 and td.skierId = @sid and td.raceId = @rid",
+                                        queryParams: new QueryParam[] {("@sid", skierId), ("@rid", raceId)}))
+            .FirstOrDefault()?.EventDateTime ?? DateTime.MinValue;
     }
 }

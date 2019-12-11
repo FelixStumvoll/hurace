@@ -18,7 +18,7 @@ namespace Hurace.Dal.Test
         {
             var timeData = (await TimeDataDao.FindAllAsync()).ToList();
             Assert.AreEqual(30, timeData.Count());
-            Assert.AreEqual(DateTime.Today, timeData.First().Time.Date);
+            Assert.AreEqual(DateTime.Today.Millisecond, timeData.First().Time);
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace Hurace.Dal.Test
             Assert.NotNull(timeData?.SkierEvent);
             Assert.NotNull(timeData?.SkierEvent?.RaceData);
             Assert.NotNull(timeData?.Sensor);
-            Assert.AreEqual(DateTime.Today, timeData?.Time.Date);
+            Assert.AreEqual(DateTime.Today.Millisecond, timeData?.Time);
         }
 
         [Test]
@@ -45,12 +45,12 @@ namespace Hurace.Dal.Test
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
             if (timeData != null)
             {
-                timeData.Time = new DateTime(2018, 11, 6);
+                timeData.Time = new DateTime(2018, 11, 6).Millisecond;
                 await TimeDataDao.UpdateAsync(timeData);
                 timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
                 Assert.AreEqual(new DateTime(2018, 11, 6), timeData?.Time);
-            }else Assert.Fail("TimeData was null");
-            
+            }
+            else Assert.Fail("TimeData was null");
         }
 
         [Test]
@@ -66,14 +66,14 @@ namespace Hurace.Dal.Test
                 SkierEventId = skierEventId,
                 RaceId = race.Id,
                 SensorId = newSensorId,
-                Time = new DateTime(2019, 11, 6),
+                Time = new DateTime(2019, 11, 6).Millisecond,
                 SkierId = skier.Id
             });
 
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, newSensorId);
 
             Assert.NotNull(timeData);
-            Assert.AreEqual(new DateTime(2019, 11, 6), timeData?.Time);
+            Assert.AreEqual(new DateTime(2019, 11, 6).Millisecond, timeData?.Time);
         }
 
         [Test]

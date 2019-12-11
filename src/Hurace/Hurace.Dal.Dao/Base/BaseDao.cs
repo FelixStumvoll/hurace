@@ -1,3 +1,4 @@
+using System;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.Extensions;
 using Hurace.Dal.Common.Mapper;
@@ -42,7 +43,10 @@ namespace Hurace.Dal.Dao.Base
             await ConnectionFactory.UseConnection(statement,
                                                   queryParams,
                                                   async command =>
-                                                      (int) await command.ExecuteScalarAsync());
+                                                  {
+                                                      var scalar = await command.ExecuteScalarAsync();
+                                                      return  scalar is DBNull ? -1 : (int)scalar;
+                                                  });
 
         private async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
             await ExecuteScalarAsync($"{statement};SELECT CAST(scope_identity() AS int)",

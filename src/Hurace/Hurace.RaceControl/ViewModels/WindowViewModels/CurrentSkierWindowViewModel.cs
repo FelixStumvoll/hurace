@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Hurace.Core.Api.RaceControl;
-using Hurace.Core.Api.RaceCrud;
+using Hurace.Core.Api.RaceControlService;
+using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Util;
 

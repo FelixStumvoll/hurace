@@ -7,7 +7,7 @@ using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using SkierEvent = Hurace.Dal.Domain.SkierEvent;
 
-namespace Hurace.Core.Api.RaceControl
+namespace Hurace.Core.Api.RaceControlService
 {
     public class RaceControlService : IRaceControlService
     {
@@ -20,7 +20,7 @@ namespace Hurace.Core.Api.RaceControl
         public event Action<TimeData> OnSplitTime;
         public event Action OnRaceCanceled;
         public event Action OnRaceFinished;
-
+        
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
         private readonly IRaceEventDao _raceEventDao;
@@ -30,6 +30,8 @@ namespace Hurace.Core.Api.RaceControl
         private readonly ISensorDao _sensorDao;
         private IRaceClock _raceClock;
         public int RaceId { get; set; }
+        private int _maxSensorNr;
+        private int _maxDiffToAverage;
 
         public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
             IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, ISensorDao sensorDao)
@@ -41,10 +43,73 @@ namespace Hurace.Core.Api.RaceControl
             _skierEventDao = skierEventDao;
             _timeDataDao = timeDataDao;
             _sensorDao = sensorDao;
-            
         }
 
-        public async Task InitializeAsync() => _raceClock = await RaceClockProvider.Instance.GetRaceClock();
+        public async Task InitializeAsync()
+        {
+            _raceClock = await RaceClockProvider.Instance.GetRaceClock();
+            _raceClock.TimingTriggered +=
+                async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
+            _maxSensorNr = await _sensorDao.GetMaxSensorNr(RaceId);
+        }
+
+        private async Task OnTimingTriggered(int sensorId, DateTime dateTime)
+        {
+            if (sensorId < 0 || sensorId > _maxSensorNr) return;
+
+
+            Console.WriteLine("Timer succeeds min max check");
+            var currentSkier = await GetCurrentSkier();
+            var sensorTimeData =
+                await _timeDataDao.GetTimeDataForSensor(currentSkier.SkierId, currentSkier.RaceId, sensorId);
+
+            if (sensorTimeData != null)
+            {
+            }
+
+            //var sensorReadings = await _timeDataDao.GetTimeDataForStartList(ski)
+        }
+
+        private async Task<bool> ValidateSensorValue(int sensorNumber, DateTime dateTime)
+        {
+            //fixme cache current skier
+            var currentSkier = await GetCurrentSkier();
+            var startTime = (await _timeDataDao.GetStartTimeForStartList(currentSkier.SkierId, RaceId));
+            
+            var average = await _timeDataDao.GetAverageTimeForSensor(RaceId, sensorNumber);
+            var currentSkierSplitTime = dateTime - startTime;
+            
+            if (average == -1)
+            {
+                
+            }
+            else
+            {
+                if (Math.Abs(currentSkierSplitTime.Milliseconds - average) > _maxDiffToAverage)
+                {
+                    
+                }
+                else
+                {
+                    await InsertTimeData(sensorNumber, dateTime);
+                    return true;
+                }
+            }
+
+            /*
+             * Load Average
+             * Check íf out of average
+             * if out of average -> previous sensors out of average
+             * if true -> correct
+             * if not -> not correct
+             * if first check with 
+             */
+            return false;
+        }
+
+        private async Task InsertTimeData(int sensorNumber, DateTime dateTime)
+        {
+        }
 
         public async Task EnableRaceForSkier()
         {
@@ -88,14 +153,16 @@ namespace Hurace.Core.Api.RaceControl
 
         public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData)
         {
-            var first = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1)).FirstOrDefault();
+            var first = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1))
+                .FirstOrDefault();
             var current = (await _timeDataDao.FindByIdAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId));
-            if(first == null) return TimeSpan.Zero;
+            if (first == null) return TimeSpan.Zero;
             var leaderTime =
                 await _timeDataDao.GetTimeDataForSensor(first.SkierId, first.RaceId, timeData.SensorId);
 
             if (leaderTime == null) return null;
-            return leaderTime.Time - current.Time;
+
+            return TimeSpan.FromMilliseconds(leaderTime.Time - current.Time);
         }
 
         public void CancelRace()

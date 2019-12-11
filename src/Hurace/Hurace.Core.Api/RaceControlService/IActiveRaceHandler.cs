@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Hurace.Core.Api.RaceControl
+namespace Hurace.Core.Api.RaceControlService
 {
     public interface IActiveRaceHandler
     {

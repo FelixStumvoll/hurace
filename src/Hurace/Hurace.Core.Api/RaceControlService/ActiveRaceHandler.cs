@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Api.RaceControl
+namespace Hurace.Core.Api.RaceControlService
 {
     public class ActiveRaceHandler : IActiveRaceHandler
     {

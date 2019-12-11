@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Api.RaceCrud
+namespace Hurace.Core.Api.RaceService
 {
     internal class RaceService : IRaceService
     {
@@ -35,7 +35,7 @@ namespace Hurace.Core.Api.RaceCrud
         }
 
 
-        public Task<Race> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
+        public Task<Dal.Domain.Race> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
 
         public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
 
@@ -43,8 +43,8 @@ namespace Hurace.Core.Api.RaceCrud
 
         public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
 
-        public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
-        public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
+        public Task<IEnumerable<Dal.Domain.Race>> GetAllRaces() => _raceDao.FindAllAsync();
+        public Task<IEnumerable<Dal.Domain.Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
 
         public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
 
@@ -54,7 +54,7 @@ namespace Hurace.Core.Api.RaceCrud
         public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
 
-        public async Task<bool> InsertOrUpdateRace(Race race, int sensorCount)
+        public async Task<bool> InsertOrUpdateRace(Dal.Domain.Race race, int sensorCount)
         {
             if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
             else await _raceDao.UpdateAsync(race);
@@ -73,7 +73,7 @@ namespace Hurace.Core.Api.RaceCrud
 
         public async Task<int> GetSensorCount(int raceId) => (await _sensorDao.FindAllSensorsForRace(raceId)).Count();
 
-        public async Task<bool> RemoveRace(Race race)
+        public async Task<bool> RemoveRace(Dal.Domain.Race race)
         {
             if (await _raceDao.FindByIdAsync(race.Id) == null ||
                 (await _startListDao.CountStartListForRace(race.Id)) != 0 ||
@@ -101,7 +101,7 @@ namespace Hurace.Core.Api.RaceCrud
             return timeRanking.Concat(disqualifiedSkiers);
         }
 
-        public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList)
+        public async Task<bool> UpdateStartList(Dal.Domain.Race race, IEnumerable<StartList> startList)
         {
             await _startListDao.DeleteAllForRace(race.Id);
             foreach (var sl in startList) await _startListDao.InsertAsync(sl);

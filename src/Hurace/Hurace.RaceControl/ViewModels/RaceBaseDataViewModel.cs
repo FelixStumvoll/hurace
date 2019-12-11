@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Hurace.Core.Api.RaceCrud;
+using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;

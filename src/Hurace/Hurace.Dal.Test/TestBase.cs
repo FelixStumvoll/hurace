@@ -77,7 +77,7 @@ namespace Hurace.Dal.Test
                     var sensorId = await InsertSensor(raceId);
                     var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.SplitTime);
                     var skierEventId = await InsertSkierEvent(raceDataId, skierId, raceId);
-                    await InsertTimeData(raceId, skierId, sensorId, skierEventId, dt);
+                    await InsertTimeData(raceId, skierId, sensorId, skierEventId, dt.Millisecond);
                 }
             }
         }
@@ -248,7 +248,7 @@ namespace Hurace.Dal.Test
                 RaceStateId = (int) Constants.RaceEvent.Finished
             });
 
-        private Task InsertTimeData(int raceId, int skierId, int sensorId, int skierEventId, DateTime time) =>
+        private Task InsertTimeData(int raceId, int skierId, int sensorId, int skierEventId, int time) =>
             TimeDataDao.InsertAsync(new TimeData
             {
                 RaceId = raceId,

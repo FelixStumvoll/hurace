@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Api.RaceControl
+namespace Hurace.Core.Api.RaceControlService
 {
     public interface IRaceControlService
     {
