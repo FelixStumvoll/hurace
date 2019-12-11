@@ -88,10 +88,15 @@ namespace Hurace.Dal.Dao
         public Task<bool> DeleteAllForRace(int raceId) =>
             ExecuteAsync($"delete from {TableName} where raceId=@rid", ("@rid", raceId));
 
-        public async Task<IEnumerable<StartList>> GetDisqualifiedSkierForRace(int raceId)
-        {
-            return Enumerable.Empty<StartList>(); //TODO implement query
-        }
+        public async Task<IEnumerable<StartList>> GetDisqualifiedSkierForRace(int raceId) =>
+            await QueryAsync<StartList>(
+                "select * from hurace.StartListQuery where startListState = @ssi or startListState = @ssii",
+                new MapperConfig()
+                    .AddMapping<Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
+                    .AddMapping<Country>((nameof(Skier.CountryId), nameof(Country.Id)))
+                    .AddMapping<Gender>((nameof(Skier.GenderId), nameof(Gender.Id)))
+                    .AddMapping<StartState>((nameof(StartList.StartStateId), nameof(StartState.Id))),
+                ("@ssi", (int) Constants.StartState.Canceled), ("@ssii", (int) Constants.StartState.Disqualified));
 
         public async Task<StartList> GetSkierForRace(int skierId, int raceId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
