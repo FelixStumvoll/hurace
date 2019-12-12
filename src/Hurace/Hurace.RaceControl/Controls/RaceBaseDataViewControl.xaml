@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance  vm:RaceBaseDataViewModel}">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance  vm:RaceBaseDataViewModel}">
 
     <UserControl.Resources>
         <Style x:Key="CrudButtonStyle" TargetType="StackPanel">
@@ -42,9 +44,6 @@
                         <TextBlock Text="Zustand:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
-                        <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
-                    </Border>
-                    <Border>
                         <TextBlock Text="Geschlecht:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
@@ -52,6 +51,21 @@
                     </Border>
                     <Border>
                         <TextBlock Text="Ort:" VerticalAlignment="Center" />
+                    </Border>
+                    <Border>
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource {x:Type Border}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
+                                        <Setter Property="Margin" Value="0,160,0,0" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
+                                        <Setter Property="Margin" Value="0,5,0,0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
                     </Border>
                 </StackPanel>
                 <!-- Inputs -->
@@ -99,18 +113,15 @@
                         <Style TargetType="xctk:DateTimePicker" BasedOn="{StaticResource InputStyle}" />
                     </StackPanel.Resources>
                     <!-- Race Description -->
-                    <TextBox Margin="0" Style="{StaticResource TextBoxStyle}" Text="{Binding RaceState.Race.RaceDescription}" />
+                    <TextBox Margin="0" Style="{StaticResource TextBoxStyle}"
+                             Text="{Binding RaceState.Race.RaceDescription}" />
                     <!-- DatePicker -->
                     <xctk:DateTimePicker Value="{Binding RaceState.Race.RaceDate}" Minimum="{Binding Season.StartDate}"
                                          Maximum="{Binding Season.EndDate}" />
                     <Border>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding RaceState.Race.RaceState.RaceStateDescription}" />
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding RaceState.Race.RaceState.RaceStateDescription}" />
                     </Border>
-
-                    <!-- Discipline Selection -->
-                    <ComboBox ItemsSource="{Binding SharedRaceViewModel.Disciplines.ViewItems}"
-                              DisplayMemberPath="DisciplineName"
-                              SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
                     <!-- Gender Selection -->
                     <ComboBox ItemsSource="{Binding SharedRaceViewModel.Genders.ViewItems}"
                               DisplayMemberPath="GenderDescription"
@@ -137,6 +148,11 @@
                     <!-- Location SelectBox -->
                     <ListBox ItemsSource="{Binding SharedRaceViewModel.Locations.ViewItems}"
                              SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:PropertyChangedTrigger Binding="{Binding SelectedLocation}">
+                                <i:InvokeCommandAction Command="{Binding LocationChangedCommand}" />
+                            </i:PropertyChangedTrigger>
+                        </i:Interaction.Triggers>
                         <ListBox.Style>
                             <Style TargetType="ListBox" BasedOn="{StaticResource InputStyle}">
                                 <Setter Property="Height" Value="150" />
@@ -161,6 +177,10 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                    <!-- Discipline Selection -->
+                    <ComboBox ItemsSource="{Binding Disciplines}"
+                              DisplayMemberPath="DisciplineName"
+                              SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
 
                 </StackPanel>
             </StackPanel>

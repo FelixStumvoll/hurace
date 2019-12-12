@@ -35,78 +35,238 @@ namespace Hurace.Core.Api.RaceService
         }
 
 
-        public Task<Dal.Domain.Race> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
-
-        public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
-
-        public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
-
-        public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
-
-        public Task<IEnumerable<Dal.Domain.Race>> GetAllRaces() => _raceDao.FindAllAsync();
-        public Task<IEnumerable<Dal.Domain.Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
-
-        public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
-
-        public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
-            _skierDao.FindAvailableSkiersForRace(raceId);
-
-        public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
-            _startListDao.GetStartListForRace(raceId);
-
-        public async Task<bool> InsertOrUpdateRace(Dal.Domain.Race race, int sensorCount)
+        public Task<Race> GetRaceById(int raceId)
         {
-            if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
-            else await _raceDao.UpdateAsync(race);
-
-            var sensors = (await _sensorDao.FindAllSensorsForRace(race.Id)).ToList();
-
-            if (sensors.Count > sensorCount)
-                foreach (var s in sensors.Where(s => s.SensorNumber >= sensorCount))
-                    await _sensorDao.DeleteAsync(s.Id);
-            else
-                for (var i = sensors.Count; i < sensorCount; i++)
-                    await _sensorDao.InsertAsync(new Sensor {RaceId = race.Id, SensorNumber = i});
-
-            return true;
+            try
+            {
+                return _raceDao.FindByIdAsync(raceId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public async Task<int> GetSensorCount(int raceId) => (await _sensorDao.FindAllSensorsForRace(raceId)).Count();
-
-        public async Task<bool> RemoveRace(Dal.Domain.Race race)
+        public Task<IEnumerable<Gender>> GetGenders()
         {
-            if (await _raceDao.FindByIdAsync(race.Id) == null ||
-                (await _startListDao.CountStartListForRace(race.Id)) != 0 ||
-                (await _timeDataDao.CountTimeDataForRace(race.Id) != 0))
+            try
+            {
+                return _genderDao.FindAllAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<Location>> GetLocations()
+        {
+            try
+            {
+                return _locationDao.FindAllAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<Discipline>> GetDisciplines()
+        {
+            try
+            {
+                return _disciplineDao.FindAllAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
+
+        public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId)
+        {
+            try
+            {
+                return _raceDao.GetRaceForSeasonId(seasonId);
+            }
+            catch (Exception )
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<Season>> GetAllSeasons()
+        {
+            try
+            {
+                return _seasonDao.FindAllAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId)
+        {
+            try
+            {
+                return _skierDao.FindAvailableSkiersForRace(raceId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<StartList>> GetStartListForRace(int raceId)
+        {
+            try
+            {
+                return _startListDao.GetStartListForRace(raceId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<RaceUpdateState> InsertOrUpdateRace(Race race, int sensorCount)
+        {
+            try
+            {
+                if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
+                else if (!await UpdateInvalid(race)) await _raceDao.UpdateAsync(race);
+                else return RaceUpdateState.StartListDefined;
+
+                var sensors = (await _sensorDao.FindAllSensorsForRace(race.Id)).ToList();
+
+                if (sensors.Count > sensorCount)
+                    foreach (var s in sensors.Where(s => s.SensorNumber >= sensorCount))
+                        await _sensorDao.DeleteAsync(s.Id);
+                else
+                    for (var i = sensors.Count; i < sensorCount; i++)
+                        await _sensorDao.InsertAsync(new Sensor {RaceId = race.Id, SensorNumber = i});
+
+                return RaceUpdateState.Ok;
+            }
+            catch (Exception)
+            {
+                return RaceUpdateState.Err;
+            }
+            
+        }
+        
+        private async Task<bool> UpdateInvalid(Race race)
+        {
+            var ogRace = await _raceDao.FindByIdAsync(race.Id);
+            var slDefined = await StartListDefined(race.Id);
+            return slDefined && (ogRace.DisciplineId != race.DisciplineId || ogRace.GenderId != race.GenderId);
+        }
+
+        public async Task<int> GetSensorCount(int raceId)
+        {
+            try
+            {
+                return (await _sensorDao.FindAllSensorsForRace(raceId)).Count();
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        public async Task<bool> RemoveRace(Race race)
+        {
+            try
+            {
+                if (await _raceDao.FindByIdAsync(race.Id) == null ||
+                    (await _startListDao.CountStartListForRace(race.Id)) != 0 ||
+                    (await _timeDataDao.CountTimeDataForRace(race.Id) != 0))
+                    return false;
+                await _sensorDao.DeleteAllSensorsForRace(race.Id);
+                await _raceDao.DeleteAsync(race.Id);
+                return true;
+            }
+            catch (Exception)
+            {
                 return false;
-            await _sensorDao.DeleteAllSensorsForRace(race.Id);
-            await _raceDao.DeleteAsync(race.Id);
-            return true;
+            }
         }
 
-        public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId) =>
-            _timeDataDao.GetTimeDataForStartList(skierId, raceId);
+        public async Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId)
+        {
+            try
+            {
+                return await _timeDataDao.GetTimeDataForStartList(skierId, raceId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
+        }
+
+        public async Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId)
+        {
+            try
+            {
+                return await _locationDao.GetPossibleDisciplinesForLocation(locationId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> StartListDefined(int raceId)
+        {
+            try
+            {
+                return await _startListDao.CountStartListForRace(raceId) > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public async Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId)
         {
-            var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
-            var disqualifiedSkiers = (await _startListDao.GetDisqualifiedSkierForRace(raceId)).Select(
-                sl => new RaceRanking
-                {
-                    Skier = sl.Skier,
-                    StartList = sl,
-                    RaceId = raceId, RaceTime = DateTime.MinValue
-                });
+            try
+            {
+                var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
+                var disqualifiedSkiers = (await _startListDao.GetDisqualifiedSkierForRace(raceId)).Select(
+                    sl => new RaceRanking
+                    {
+                        Skier = sl.Skier,
+                        StartList = sl,
+                        RaceId = raceId, RaceTime = DateTime.MinValue
+                    });
 
-            return timeRanking.Concat(disqualifiedSkiers);
+                return timeRanking.Concat(disqualifiedSkiers);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public async Task<bool> UpdateStartList(Dal.Domain.Race race, IEnumerable<StartList> startList)
+        public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList)
         {
-            await _startListDao.DeleteAllForRace(race.Id);
-            foreach (var sl in startList) await _startListDao.InsertAsync(sl);
+            try
+            {
+                await _startListDao.DeleteAllForRace(race.Id);
+                foreach (var sl in startList) await _startListDao.InsertAsync(sl);
 
-            return true;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

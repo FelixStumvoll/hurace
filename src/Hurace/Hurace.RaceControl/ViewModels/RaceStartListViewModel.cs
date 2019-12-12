@@ -25,6 +25,7 @@ namespace Hurace.RaceControl.ViewModels
         public ICommand EditCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand CancelEditCommand { get; set; }
+
         public StartList SelectedStartList
         {
             get => _selectedStartList;
@@ -58,14 +59,22 @@ namespace Hurace.RaceControl.ViewModels
                                                           RaceState.Edit);
             AvailableSkiers =
                 new FilterableObservableCollection<Skier>(SkierFilterFunc, s => s.OrderBy(sk => sk.LastName));
-            StartList = new FilterableObservableCollection<StartList>((sl, st) => SkierFilterFunc(sl.Skier, st),
+            StartList = new FilterableObservableCollection<StartList>((sl, term) => SkierFilterFunc(sl.Skier, term),
                                                                       l => l.OrderBy(sl => sl.StartNumber));
         }
 
         public async Task SetupAsync()
         {
-            AvailableSkiers.UpdateDataSource(await _logic.GetAvailableSkiersForRace(RaceState.Race.Id));
-            StartList.UpdateDataSource(await _logic.GetStartListForRace(RaceState.Race.Id));
+            var skiers = await _logic.GetAvailableSkiersForRace(RaceState.Race.Id);
+            var startLists = await _logic.GetStartListForRace(RaceState.Race.Id);
+            if (skiers == null || startLists == null)
+            {
+                ErrorNotifier.OnLoadError();
+                return;
+            }
+
+            AvailableSkiers.UpdateDataSource(skiers);
+            StartList.UpdateDataSource(startLists);
             AvailableSkiers.Apply();
             StartList.Apply();
         }
@@ -117,10 +126,15 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-        private Task SaveStartList()
+        private async Task SaveStartList()
         {
-            RaceState.Edit = false;
-            return _logic.UpdateStartList(RaceState.Race, StartList.DataSource);
+            if (await _logic.UpdateStartList(RaceState.Race, StartList.DataSource))
+            {
+                RaceState.Edit = false;
+                return;
+            }
+
+            ErrorNotifier.OnSaveError();
         }
 
         private Task CancelEditStartList()
