@@ -10,7 +10,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
     {
         private IPageViewModel _currentPage;
         private bool _backVisible;
-        private MainPageViewModel _mainPageViewModel;
+        private readonly MainPageViewModel _mainPageViewModel;
         public ICommand BackToMainCommand { get; set; }
 
         public bool BackVisible

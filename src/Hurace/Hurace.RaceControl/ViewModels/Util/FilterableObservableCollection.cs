@@ -25,7 +25,8 @@ namespace Hurace.RaceControl.ViewModels.Util
         private readonly Func<T, string, bool> _predicate;
         private readonly Func<IEnumerable<T>, IEnumerable<T>> _modifiers;
 
-        public FilterableObservableCollection(Func<T, string, bool> predicate, Func<IEnumerable<T>, IEnumerable<T>> modifiers = null)
+        public FilterableObservableCollection(Func<T, string, bool> predicate,
+            Func<IEnumerable<T>, IEnumerable<T>> modifiers = null)
         {
             _predicate = predicate;
             _modifiers = modifiers;
@@ -35,7 +36,8 @@ namespace Hurace.RaceControl.ViewModels.Util
         {
             ViewItems.Clear();
             var loweredSearch = SearchTerm?.ToLower();
-            var filtered = DataSource.Where(t => string.IsNullOrEmpty(SearchTerm) || _predicate(t, loweredSearch));
+            var filtered = DataSource
+                .Where(t => string.IsNullOrEmpty(SearchTerm) || _predicate(t, loweredSearch));
             ViewItems.AddRange(_modifiers?.Invoke(filtered) ?? filtered);
         }
 

@@ -39,6 +39,17 @@ namespace Hurace.RaceControl.ViewModels
             SetupCommands();
         }
 
+        private bool CanMoveUp() =>
+            SelectedStartList != null &&
+            StartList.DataSource.IndexOf(SelectedStartList) != 0 &&
+            RaceState.Edit;
+
+        private bool CanMoveDown() =>
+            SelectedStartList != null &&
+            StartList.DataSource.IndexOf(SelectedStartList) !=
+            StartList.DataSource.Count - 1 &&
+            RaceState.Edit;
+
         private void SetupCommands()
         {
             EditCommand = new ActionCommand(_ => EditStartList());
@@ -49,18 +60,17 @@ namespace Hurace.RaceControl.ViewModels
             RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => RaceState.Edit);
 
             StartListUpCommand = new ActionCommand(_ => MoveStartList(i => i - 1),
-                                                   _ => SelectedStartList != null &&
-                                                        StartList.DataSource.IndexOf(SelectedStartList) != 0 &&
-                                                        RaceState.Edit);
+                                                   _ => CanMoveUp());
             StartListDownCommand = new ActionCommand(_ => MoveStartList(i => i + 1),
-                                                     _ => SelectedStartList != null &&
-                                                          StartList.DataSource.IndexOf(SelectedStartList) !=
-                                                          StartList.DataSource.Count - 1 &&
-                                                          RaceState.Edit);
+                                                     _ => CanMoveDown());
             AvailableSkiers =
-                new FilterableObservableCollection<Skier>(SkierFilterFunc, s => s.OrderBy(sk => sk.LastName));
-            StartList = new FilterableObservableCollection<StartList>((sl, term) => SkierFilterFunc(sl.Skier, term),
-                                                                      l => l.OrderBy(sl => sl.StartNumber));
+                new FilterableObservableCollection<Skier>(SkierFilterFunc,
+                                                          s =>
+                                                              s.OrderBy(sk => sk.LastName));
+            StartList = new FilterableObservableCollection<StartList>((sl, term) =>
+                                                                          SkierFilterFunc(sl.Skier, term),
+                                                                      l =>
+                                                                          l.OrderBy(sl => sl.StartNumber));
         }
 
         public async Task SetupAsync()
@@ -96,10 +106,11 @@ namespace Hurace.RaceControl.ViewModels
             SelectedStartList = prev;
         }
 
-        private void AddSkier(object param)
+        private void AddSkier(object skierId)
         {
-            var skier = AvailableSkiers.DataSource.SingleOrDefault(s => s.Id == (int) param);
+            var skier = AvailableSkiers.DataSource.SingleOrDefault(s => s.Id == (int) skierId);
             if (skier == null) return;
+
             StartList.DataSource.Add(new StartList
             {
                 Race = RaceState.Race,
@@ -115,13 +126,15 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-        private void RemoveStartList(object param)
+        private void RemoveStartList(object skierId)
         {
-            var startList = StartList.DataSource.SingleOrDefault(s => s.SkierId == (int) param);
+            var startList = StartList.DataSource.SingleOrDefault(s => s.SkierId == (int) skierId);
             if (startList == null) return;
+
             AvailableSkiers.DataSource.Add(startList.Skier);
             StartList.DataSource.Remove(startList);
-            foreach (var sl in StartList.DataSource.Where(s => s.StartNumber > startList.StartNumber)) sl.StartNumber--;
+            foreach (var sl in StartList.DataSource
+                                        .Where(s => s.StartNumber > startList.StartNumber)) sl.StartNumber--;
             AvailableSkiers.Apply();
             StartList.Apply();
         }

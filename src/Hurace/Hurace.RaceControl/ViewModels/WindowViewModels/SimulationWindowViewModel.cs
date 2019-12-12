@@ -118,7 +118,8 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             SkipNextSensorCommand = new ActionCommand(_ => Clock.SkipNext());
             RestartSenorCommand = new ActionCommand(_ => Clock.Reset());
             TriggerSensorCommand = new ActionCommand(_ => Clock.TriggerSensor(SensorToTrigger),
-                                                     _ => SensorToTrigger >= 0 && SensorToTrigger <= Clock.MaxSensor);
+                                                     _ => SensorToTrigger >= 0 && 
+                                                          SensorToTrigger <= Clock.MaxSensor);
         }
     }
 }

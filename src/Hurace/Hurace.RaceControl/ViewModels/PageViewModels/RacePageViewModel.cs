@@ -15,7 +15,6 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
     public class RacePageViewModel : NotifyPropertyChanged, IPageViewModel
     {
         private RaceViewModel _selectedRace;
-
         private readonly IRaceService _logic;
         private readonly SharedRaceViewModel _sharedRaceViewModel;
         private Season _selectedSeason;
@@ -23,7 +22,6 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         public ObservableCollection<RaceViewModel> Races { get; set; } = new ObservableCollection<RaceViewModel>();
         public ObservableCollection<Season> Seasons { get; set; } = new ObservableCollection<Season>();
-
         public ICommand AddRaceCommand { get; set; }
         public ICommand SelectedRaceChangedCommand { get; set; }
 
@@ -70,8 +68,9 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private async Task LoadRaces()
         {
-            var races = (await _logic.GetRacesForSeason(SelectedSeason.Id)).Select(
-                r => new RaceViewModel(_logic, new SharedRaceStateViewModel {Race = r}, _sharedRaceViewModel));
+            var races = (await _logic.GetRacesForSeason(SelectedSeason.Id))
+                .Select(r => 
+                            new RaceViewModel(_logic, new SharedRaceStateViewModel {Race = r}, _sharedRaceViewModel));
             Races.Clear();
             foreach (var raceViewModel in races)
             {
@@ -82,33 +81,34 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private void SetupCommands()
         {
-            AddRaceCommand = new ActionCommand(_ =>
-            {
-                var rvm = new RaceViewModel(
-                    _logic,
-                    new SharedRaceStateViewModel
-                    {
-                        Race = new Race
-                        {
-                            Id = -1,
-                            RaceStateId = (int) Constants.RaceState.Upcoming,
-                            RaceDate = DateTime.Now,
-                            SeasonId = SelectedSeason.Id,
-                            Season = SelectedSeason
-                        },
-                        Edit = true
-                    },
-                    _sharedRaceViewModel);
-                rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
-                Races.Add(rvm);
-                SelectedRace = rvm;
-            });
-
+            AddRaceCommand = new ActionCommand(_ => AddRace());
             SelectedRaceChangedCommand = new AsyncCommand(async _ =>
             {
                 if (SelectedRace == null) return;
                 await SelectedRace.SetupAsync();
             });
+        }
+
+        private void AddRace()
+        {
+            var rvm = new RaceViewModel(
+                _logic,
+                new SharedRaceStateViewModel
+                {
+                    Race = new Race
+                    {
+                        Id = -1,
+                        RaceStateId = (int) Constants.RaceState.Upcoming,
+                        RaceDate = DateTime.Now,
+                        SeasonId = SelectedSeason.Id,
+                        Season = SelectedSeason
+                    },
+                    Edit = true
+                },
+                _sharedRaceViewModel);
+            rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
+            Races.Add(rvm);
+            SelectedRace = rvm;
         }
 
         private async Task DeleteRace(RaceViewModel rvm)
@@ -125,7 +125,6 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                                 MessageBoxImage.Error);
                 return;
             }
-
             DeleteRaceViewModel(rvm);
         }
 

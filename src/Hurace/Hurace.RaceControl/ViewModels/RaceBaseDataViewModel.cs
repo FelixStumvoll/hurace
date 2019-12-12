@@ -15,16 +15,16 @@ namespace Hurace.RaceControl.ViewModels
     public class RaceBaseDataViewModel : NotifyPropertyChanged
     {
         private readonly IRaceService _logic;
-        private int _sensorCount = 1;
+        private int _sensorCount;
         private Discipline _selectedDiscipline;
         public event Action OnUnsavedCancel;
+        public SharedRaceViewModel SharedRaceViewModel { get; set; }
+        public SharedRaceStateViewModel RaceState { get; set; }
+        public ObservableCollection<Discipline> Disciplines { get; set; } = new ObservableCollection<Discipline>();
         public ICommand StartEditCommand { get; set; }
         public ICommand SaveEditCommand { get; set; }
         public ICommand CancelEditCommand { get; set; }
         public ICommand LocationChangedCommand { get; set; }
-        public SharedRaceViewModel SharedRaceViewModel { get; set; }
-        public SharedRaceStateViewModel RaceState { get; set; }
-        public ObservableCollection<Discipline> Disciplines { get; set; } = new ObservableCollection<Discipline>();
 
         public Discipline SelectedDiscipline
         {
@@ -73,10 +73,10 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            StartEditCommand = new ActionCommand(StartEdit);
-            CancelEditCommand = new AsyncCommand(CancelEdit);
-            SaveEditCommand = new AsyncCommand(SaveEdit, SaveValidator);
-            LocationChangedCommand = new AsyncCommand(_ => LoadDisciplinesForLocation());
+            StartEditCommand = new ActionCommand(_ => StartEdit());
+            CancelEditCommand = new AsyncCommand(_ => CancelEdit());
+            SaveEditCommand = new AsyncCommand(_ => SaveEdit(), _ => SaveValidator());
+            LocationChangedCommand = new AsyncCommand(_ => SetDisciplinesForLocation());
         }
 
         public async Task SetupAsync()
@@ -94,16 +94,32 @@ namespace Hurace.RaceControl.ViewModels
 
         private async Task SetSelectedProps()
         {
-            SelectedGender =
-                SharedRaceViewModel.Genders.DataSource.SingleOrDefault(g => g.Id == RaceState.Race.GenderId);
-            SelectedLocation =
-                SharedRaceViewModel.Locations.DataSource.SingleOrDefault(l => l.Id == RaceState.Race.LocationId);
-            await LoadDisciplinesForLocation();
+            SelectedGender = SharedRaceViewModel.Genders.DataSource
+                                                .SingleOrDefault(g => g.Id == RaceState.Race.GenderId);
+            SelectedLocation = SharedRaceViewModel.Locations.DataSource
+                                                  .SingleOrDefault(l => l.Id == RaceState.Race.LocationId);
+            await SetDisciplinesForLocation();
         }
 
-        private void StartEdit(object param) => RaceState.Edit = true;
+        private async Task SetDisciplinesForLocation()
+        {
+            if (SelectedLocation == null) return;
+            var disciplines = await _logic.GetDisciplinesForLocation(SelectedLocation.Id);
+            
+            if (disciplines == null)
+            {
+                ErrorNotifier.OnLoadError();
+                return;
+            }
 
-        private async Task CancelEdit(object _)
+            Disciplines.Clear();
+            Disciplines.AddRange(disciplines);
+            SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
+        }
+
+        private void StartEdit() => RaceState.Edit = true;
+
+        private async Task CancelEdit()
         {
             RaceState.Edit = false;
             if (RaceState.Race.Id == -1)
@@ -116,15 +132,7 @@ namespace Hurace.RaceControl.ViewModels
             await SetSelectedProps();
         }
 
-        private async Task<bool> UpdateRace()
-        {
-            RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
-            if (RaceState.Race != null) return true;
-            ErrorNotifier.OnLoadError();
-            return false;
-        }
-
-        private async Task SaveEdit(object _)
+        private async Task SaveEdit()
         {
             RaceState.Race.DisciplineId = _selectedDiscipline.Id;
             RaceState.Race.Discipline = _selectedDiscipline;
@@ -135,15 +143,15 @@ namespace Hurace.RaceControl.ViewModels
                     await UpdateRace();
                     break;
                 case RaceUpdateState.Err:
-                    MessageBox.Show("Fehler beim Speichern des Rennens", 
-                                    "Fehler", 
+                    MessageBox.Show("Fehler beim Speichern des Rennens",
+                                    "Fehler",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                     break;
                 case RaceUpdateState.StartListDefined:
                     MessageBox.Show("Geschlecht und Disziplin können nicht geändert werden, " +
-                                    "wenn eine Startliste definiert ist", 
-                                    "Fehler", 
+                                    "wenn eine Startliste definiert ist",
+                                    "Fehler",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                     break;
@@ -152,21 +160,15 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
-        private async Task LoadDisciplinesForLocation()
+        private async Task<bool> UpdateRace()
         {
-            if (SelectedLocation == null) return;
-            var disciplines = await _logic.GetDisciplinesForLocation(SelectedLocation.Id);
-            if (disciplines == null)
-            {
-                ErrorNotifier.OnLoadError();
-                return;
-            }
-            Disciplines.Clear();
-            Disciplines.AddRange(disciplines);
-            SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
+            RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
+            if (RaceState.Race != null) return true;
+            ErrorNotifier.OnLoadError();
+            return false;
         }
 
-        private bool SaveValidator(object _) =>
+        private bool SaveValidator() =>
             RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 &&
             (_selectedDiscipline != null && _selectedDiscipline.Id != -1) &&
             !RaceState.Race.RaceDescription.IsNullOrEmpty() &&

@@ -10,7 +10,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
     public class CurrentSkierWindowViewModel : NotifyPropertyChanged
     {
         private int _raceId;
-        private IRaceControlService _raceControlService;
+        private readonly IRaceControlService _raceControlService;
         private IRaceService _raceService;
         private StartList _currentSkier;
         private string _message;

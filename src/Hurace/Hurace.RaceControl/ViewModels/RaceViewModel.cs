@@ -35,7 +35,6 @@ namespace Hurace.RaceControl.ViewModels
             RaceDisplayViewModel = new RaceDisplayViewModel(RaceState);
 
             SetupCommands();
-            RegisterPropagationHooks();
         }
 
         private void SetupCommands()
@@ -47,33 +46,7 @@ namespace Hurace.RaceControl.ViewModels
             TabSelectionChangedCommand = new AsyncCommand(_ => OnTabSelectionChanged());
         }
 
-        private void RegisterPropagationHooks()
-        {
-//            RaceBaseDataViewModel.PropertyChanged += (sender, args) =>
-//            {
-//                switch (args.PropertyName)
-//                {
-//                    case nameof(RaceBaseDataViewModel.Edit):
-//                        InvokePropertyChanged(nameof(RaceState.));
-//                        break;
-//                }
-//            };
-//
-//            RaceStartListViewModel.PropertyChanged += (sender, args) =>
-//            {
-//                switch (args.PropertyName)
-//                {
-//                    case nameof(RaceStartListViewModel.Edit):
-//                        InvokePropertyChanged(nameof(Edit));
-//                        break;
-//                }
-//            };
-        }
-
-        public async Task SetupAsync()
-        {
-            await SetupTab();
-        }
+        public async Task SetupAsync() => await SetupTab();
 
         private async Task OnTabSelectionChanged(bool ignoreSameTab = true)
         {

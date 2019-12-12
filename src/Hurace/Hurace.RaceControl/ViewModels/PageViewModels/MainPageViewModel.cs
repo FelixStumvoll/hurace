@@ -10,33 +10,30 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
     public class MainPageViewModel : IPageViewModel
     {
-        private readonly Func<IPageViewModel, Task> _changePage;
+        private readonly Func<IPageViewModel, Task> _changePageFunc;
         public ICommand SelectPageCommand { get; set; }
         public ICommand LaunchSimulatorCommand { get; set; }
         private readonly RacePageViewModel _racePageViewModel;
 
-        public MainPageViewModel(Func<IPageViewModel, Task> changePage)
+        public MainPageViewModel(Func<IPageViewModel, Task> changePageFunc)
         {
             var provider = ServiceProvider.Instance;
             _racePageViewModel = new RacePageViewModel(provider.ResolveService<IRaceService>());
-            _changePage = changePage;
+            _changePageFunc = changePageFunc;
+            
             SelectPageCommand = new ActionCommand(index => SelectPage((int) index));
             LaunchSimulatorCommand = new ActionCommand(_ => LaunchSimulator());
         }
 
-        private void LaunchSimulator()
-        {
-            
-            new SimulatorWindow().Show();
-        }
-        
+        private static void LaunchSimulator() => new SimulatorWindow().Show();
+
         private void SelectPage(int pageIndex) =>
-            _changePage?.Invoke(pageIndex switch
+            _changePageFunc?.Invoke(pageIndex switch
             {
                 0 => (IPageViewModel) _racePageViewModel,
                 _ => this
             });
 
-        public Task SetupAsync() => Task.CompletedTask;
+        public Task SetupAsync() => Task.CompletedTask; //NOOP
     }
 }
