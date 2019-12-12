@@ -5,7 +5,7 @@ using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.RaceControlService
 {
-    public interface IRaceControlService
+    public interface IActiveRaceControlService
     {
         int RaceId { get; set; }
         event Action<TimeData> OnTimeData;

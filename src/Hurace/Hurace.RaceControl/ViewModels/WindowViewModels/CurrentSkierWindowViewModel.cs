@@ -10,7 +10,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
     public class CurrentSkierWindowViewModel : NotifyPropertyChanged
     {
         private int _raceId;
-        private readonly IRaceControlService _raceControlService;
+        private readonly IActiveRaceControlService _activeRaceControlService;
         private IRaceService _raceService;
         private StartList _currentSkier;
         private string _message;
@@ -40,11 +40,11 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         {
             _raceId = raceId;
             _raceService = raceService;
-            _raceControlService = ActiveRaceHandler.Instance[raceId];
-            _raceControlService.OnSkierFinished += OnSkierFinished;
-            _raceControlService.OnSkierStarted += OnSkierStarted;
-            _raceControlService.OnCurrentSkierDisqualified += OnCurrentSkierDisqualified;
-            _raceControlService.OnSplitTime += OnSplitTime;
+            _activeRaceControlService = ActiveRaceResolver.Instance[raceId];
+            _activeRaceControlService.OnSkierFinished += OnSkierFinished;
+            _activeRaceControlService.OnSkierStarted += OnSkierStarted;
+            _activeRaceControlService.OnCurrentSkierDisqualified += OnCurrentSkierDisqualified;
+            _activeRaceControlService.OnSplitTime += OnSplitTime;
         }
 
         private void OnSkierFinished(StartList startList)

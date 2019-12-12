@@ -9,7 +9,7 @@ using SkierEvent = Hurace.Dal.Domain.SkierEvent;
 
 namespace Hurace.Core.Api.RaceControlService
 {
-    public class RaceControlService : IRaceControlService
+    public class ActiveRaceControlService : IActiveRaceControlService
     {
         public event Action<TimeData> OnTimeData;
         public event Action<StartList> OnSkierStarted;
@@ -33,7 +33,7 @@ namespace Hurace.Core.Api.RaceControlService
         private int _maxSensorNr;
         private int _maxDiffToAverage;
 
-        public RaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
+        public ActiveRaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
             IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, ISensorDao sensorDao)
         {
             _raceDao = raceDao;

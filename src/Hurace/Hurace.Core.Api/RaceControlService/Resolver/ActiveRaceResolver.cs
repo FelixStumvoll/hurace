@@ -7,17 +7,17 @@ using Hurace.Dal.Interface;
 
 namespace Hurace.Core.Api.RaceControlService
 {
-    public class ActiveRaceHandler : IActiveRaceHandler
+    public class ActiveRaceResolver : IActiveRaceResolver
     {
-        private List<IRaceControlService> _activeRaces = new List<IRaceControlService>();
+        private List<IActiveRaceControlService> _activeRaces = new List<IActiveRaceControlService>();
 
         private readonly IRaceDao _raceDao;
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
 
-        public static ActiveRaceHandler Instance { get; private set; }
+        public static ActiveRaceResolver Instance { get; private set; }
 
-        private ActiveRaceHandler()
+        private ActiveRaceResolver()
         {
             var serviceProvider = ServiceProvider.Instance;
             _raceDao = serviceProvider.ResolveService<IRaceDao>();
@@ -29,12 +29,12 @@ namespace Hurace.Core.Api.RaceControlService
         {
             try
             {
-                Instance = new ActiveRaceHandler();
+                Instance = new ActiveRaceResolver();
                 var provider = ServiceProvider.Instance;
 
                 foreach (var race in await Instance._raceDao.GetActiveRaces())
                 {
-                    var rcs = provider.ResolveService<IRaceControlService>();
+                    var rcs = provider.ResolveService<IActiveRaceControlService>();
                     await rcs.InitializeAsync();
                     rcs.RaceId = race.Id;
                     Instance._activeRaces.Add(rcs);
@@ -48,13 +48,13 @@ namespace Hurace.Core.Api.RaceControlService
             }
         }
 
-        public async Task<IRaceControlService?> StartRace(int raceId)
+        public async Task<IActiveRaceControlService?> StartRace(int raceId)
         {
             try
             {
                 await RaceClockProvider.Instance.GetRaceClock();
                 await ChangeRaceState(raceId, Constants.RaceState.Running);
-                var service = ServiceProvider.Instance.ResolveService<IRaceControlService>();
+                var service = ServiceProvider.Instance.ResolveService<IActiveRaceControlService>();
                 service.RaceId = raceId;
                 await service.InitializeAsync();
                 _activeRaces.Add(service);
@@ -66,7 +66,8 @@ namespace Hurace.Core.Api.RaceControlService
             }
         }
 
-        public IRaceControlService this[int raceId] => _activeRaces.SingleOrDefault(r => r.RaceId == raceId);
+        public IActiveRaceControlService this[int raceId] => _activeRaces
+            .SingleOrDefault(r => r.RaceId == raceId);
 
         private async Task ChangeRaceState(int raceId, Constants.RaceState state)
         {

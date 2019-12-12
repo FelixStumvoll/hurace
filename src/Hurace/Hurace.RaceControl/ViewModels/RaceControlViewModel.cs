@@ -14,7 +14,7 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceControlViewModel : NotifyPropertyChanged
     {
-        private IRaceControlService _raceControlService;
+        private IActiveRaceControlService _activeRaceControlService;
         private StartList _currentSkier;
         private readonly IRaceService _logic;
 
@@ -42,7 +42,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             async Task ReloadStartList()
             {
-                var newStartList = await _raceControlService.GetRemainingStartList();
+                var newStartList = await _activeRaceControlService.GetRemainingStartList();
                 if (newStartList == null)
                 {
                     ErrorNotifier.OnLoadError();
@@ -52,36 +52,36 @@ namespace Hurace.RaceControl.ViewModels
                 StartList.AddRange(newStartList);
             }
 
-            _raceControlService.OnSkierStarted += async startList =>
+            _activeRaceControlService.OnSkierStarted += async startList =>
             {
                 CurrentSkier = startList;
                 await ReloadStartList();
             };
 
-            _raceControlService.OnSkierCanceled += async startList => await ReloadStartList();
-            _raceControlService.OnSkierFinished += startList => { CurrentSkier = null; };
+            _activeRaceControlService.OnSkierCanceled += async startList => await ReloadStartList();
+            _activeRaceControlService.OnSkierFinished += startList => { CurrentSkier = null; };
         }
 
         private void SetupCommands()
         {
             StartRaceCommand = new AsyncCommand(StartRace);
-            ReadyTrackCommand = new AsyncCommand(async _ => { await _raceControlService.EnableRaceForSkier(); },
+            ReadyTrackCommand = new AsyncCommand(async _ => { await _activeRaceControlService.EnableRaceForSkier(); },
                                                  _ => StartList.Any());
-            CancelSkier = new AsyncCommand(async skierId => await _raceControlService.CancelSkier((int) skierId));
+            CancelSkier = new AsyncCommand(async skierId => await _activeRaceControlService.CancelSkier((int) skierId));
         }
 
         public async Task SetupAsync()
         {
-            _raceControlService ??= ActiveRaceHandler.Instance[RaceState.Race.Id];
-            if (_raceControlService != null)
+            _activeRaceControlService ??= ActiveRaceResolver.Instance[RaceState.Race.Id];
+            if (_activeRaceControlService != null)
                 await SetupRaceControl();
         }
 
         private async Task SetupRaceControl()
         {
             SetupRaceHooks();
-            CurrentSkier = await _raceControlService.GetCurrentSkier();
-            var startList = await _raceControlService.GetRemainingStartList();
+            CurrentSkier = await _activeRaceControlService.GetCurrentSkier();
+            var startList = await _activeRaceControlService.GetRemainingStartList();
             if (CurrentSkier == null || startList == null)
             {
                 ErrorNotifier.OnLoadError();
@@ -96,8 +96,8 @@ namespace Hurace.RaceControl.ViewModels
             if (MessageBox.Show("Rennen kann nach dem Starten nicht mehr bearbeitet werden. Fortfahren ?",
                                 "Warnung", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
-            _raceControlService = await ActiveRaceHandler.Instance.StartRace(RaceState.Race.Id);
-            if (_raceControlService == null)
+            _activeRaceControlService = await ActiveRaceResolver.Instance.StartRace(RaceState.Race.Id);
+            if (_activeRaceControlService == null)
             {
                 ErrorNotifier.OnLoadError();
                 return;
