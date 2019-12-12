@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
-using SkierEvent = Hurace.Dal.Domain.SkierEvent;
+using static Hurace.Core.Api.ExceptionWrapper;
 
-namespace Hurace.Core.Api.RaceControlService
+namespace Hurace.Core.Api.RaceControlService.Service
 {
     public class ActiveRaceControlService : IActiveRaceControlService
     {
@@ -109,20 +109,14 @@ namespace Hurace.Core.Api.RaceControlService
         {
         }
 
-        public async Task<bool> EnableRaceForSkier()
-        {
-            try
+        public async Task<bool> EnableRaceForSkier() =>
+            await Try(async () =>
             {
                 var startList = await _startListDao.GetNextSkierForRace(RaceId);
                 await UpdateStartListState(startList, Constants.StartState.Running);
                 OnSkierStarted?.Invoke(startList);
                 return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+            });
 
         private async Task UpdateStartListState(StartList startList, Constants.StartState state)
         {
@@ -148,35 +142,21 @@ namespace Hurace.Core.Api.RaceControlService
 
         public async Task<bool> CancelSkier(int skierId)
         {
-            try
+            return await Try(async () =>
             {
                 var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
                 await UpdateStartListState(startList, Constants.StartState.Canceled);
                 OnSkierCanceled?.Invoke(startList);
                 return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            });
         }
 
-        public async Task<IEnumerable<StartList>?> GetRemainingStartList()
-        {
-            try
-            {
-                return (await _startListDao.GetStartListForRace(RaceId)).Where(
-                    sl => sl.StartStateId == (int) Constants.StartState.Upcoming);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+        public async Task<IEnumerable<StartList>?> GetRemainingStartList() =>
+            await Try(async () => (await _startListDao.GetStartListForRace(RaceId))
+                          .Where(sl => sl.StartStateId == (int) Constants.StartState.Upcoming));
 
-        public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData)
-        {
-            try
+        public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData) =>
+            await TryStruct<TimeSpan>(async () =>
             {
                 var first = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1))
                     .FirstOrDefault();
@@ -188,12 +168,7 @@ namespace Hurace.Core.Api.RaceControlService
                 if (leaderTime == null) return null;
 
                 return TimeSpan.FromMilliseconds(leaderTime.Time - current.Time);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+            });
 
         public async Task<bool> CancelRace()
         {
