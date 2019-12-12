@@ -19,11 +19,11 @@ namespace Hurace.Core.Api.RaceControlService
         event Action OnRaceFinished;
         
         Task InitializeAsync();
-        Task EnableRaceForSkier();
+        Task<bool> EnableRaceForSkier();
         Task<StartList> GetCurrentSkier();
-        Task CancelSkier(int skierId);
-        Task<IEnumerable<StartList>> GetRemainingStartList();
+        Task<bool> CancelSkier(int skierId);
+        Task<IEnumerable<StartList>?> GetRemainingStartList();
         Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
-        void CancelRace();
+        Task<bool> CancelRace();
     }
 }

@@ -43,6 +43,11 @@ namespace Hurace.RaceControl.ViewModels
             async Task ReloadStartList()
             {
                 var newStartList = await _raceControlService.GetRemainingStartList();
+                if (newStartList == null)
+                {
+                    ErrorNotifier.OnLoadError();
+                    return;
+                }
                 StartList.Clear();
                 StartList.AddRange(newStartList);
             }
@@ -67,7 +72,7 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            _raceControlService = ActiveRaceHandler.Instance[RaceState.Race.Id];
+            _raceControlService ??= ActiveRaceHandler.Instance[RaceState.Race.Id];
             if (_raceControlService != null)
                 await SetupRaceControl();
         }
@@ -77,6 +82,11 @@ namespace Hurace.RaceControl.ViewModels
             SetupRaceHooks();
             CurrentSkier = await _raceControlService.GetCurrentSkier();
             var startList = await _raceControlService.GetRemainingStartList();
+            if (CurrentSkier == null || startList == null)
+            {
+                ErrorNotifier.OnLoadError();
+                return;
+            }
             StartList.Clear();
             StartList.AddRange(startList);
         }
@@ -87,6 +97,11 @@ namespace Hurace.RaceControl.ViewModels
                                 "Warnung", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
             _raceControlService = await ActiveRaceHandler.Instance.StartRace(RaceState.Race.Id);
+            if (_raceControlService == null)
+            {
+                ErrorNotifier.OnLoadError();
+                return;
+            }
             RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
             await SetupRaceControl();
         }

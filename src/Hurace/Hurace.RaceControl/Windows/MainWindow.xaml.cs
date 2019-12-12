@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Hurace.Core.Api.RaceControlService;
+using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
 
 namespace Hurace.RaceControl.Windows
@@ -11,9 +12,13 @@ namespace Hurace.RaceControl.Windows
     {
         public MainWindow()
         {
-            ActiveRaceHandler.InitializeActiveRaceHandler();
             var vm = new MainViewModel();
             DataContext = vm;
+            Loaded += async (sender, args) =>
+            {
+                if (!await ActiveRaceHandler.InitializeActiveRaceHandler()) ErrorNotifier.OnLoadError();
+            };
+            
             InitializeComponent();
         }
     }
