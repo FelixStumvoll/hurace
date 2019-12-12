@@ -101,7 +101,7 @@ namespace Hurace.Core.Api.RaceService
             {
                 return _raceDao.GetRaceForSeasonId(seasonId);
             }
-            catch (Exception )
+            catch (Exception)
             {
                 return null;
             }
@@ -166,9 +166,8 @@ namespace Hurace.Core.Api.RaceService
             {
                 return RaceUpdateState.Err;
             }
-            
         }
-        
+
         private async Task<bool> UpdateInvalid(Race race)
         {
             var ogRace = await _raceDao.FindByIdAsync(race.Id);
@@ -216,7 +215,6 @@ namespace Hurace.Core.Api.RaceService
             {
                 return null;
             }
-            
         }
 
         public async Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId)
@@ -231,25 +229,17 @@ namespace Hurace.Core.Api.RaceService
             }
         }
 
-        public async Task<bool> StartListDefined(int raceId)
-        {
-            try
-            {
-                return await _startListDao.CountStartListForRace(raceId) > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        private async Task<bool> StartListDefined(int raceId) => 
+            await _startListDao.CountStartListForRace(raceId) > 0;
 
         public async Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId)
         {
             try
             {
                 var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
-                var disqualifiedSkiers = (await _startListDao.GetDisqualifiedSkierForRace(raceId)).Select(
-                    sl => new RaceRanking
+                var disqualifiedSkiers =
+                    (await _startListDao.GetDisqualifiedSkierForRace(raceId))
+                    .Select(sl => new RaceRanking
                     {
                         Skier = sl.Skier,
                         StartList = sl,

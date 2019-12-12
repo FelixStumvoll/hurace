@@ -11,7 +11,8 @@ namespace Hurace.Core.Api
     {
         private IContainer _container;
 
-        private static readonly Lazy<ServiceProvider> Lazy = new Lazy<ServiceProvider>(() => new ServiceProvider());
+        private static readonly Lazy<ServiceProvider> Lazy = 
+            new Lazy<ServiceProvider>(() => new ServiceProvider());
         
         public static ServiceProvider Instance => Lazy.Value;
         

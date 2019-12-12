@@ -22,6 +22,5 @@ namespace Hurace.Core.Api.RaceService
         Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId);
         Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId, int skierId);
         Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId);
-        Task<bool> StartListDefined(int raceId);
     }
 }
