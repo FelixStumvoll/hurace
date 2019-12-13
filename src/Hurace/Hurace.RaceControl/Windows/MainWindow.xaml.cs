@@ -17,7 +17,7 @@ namespace Hurace.RaceControl.Windows
             DataContext = vm;
             Loaded += async (sender, args) =>
             {
-                if (!await ActiveRaceResolver.InitializeActiveRaceHandler()) ErrorNotifier.OnLoadError();
+                if ((await ActiveRaceResolver.InitializeActiveRaceHandler()).Failure) ErrorNotifier.OnLoadError();
             };
             
             InitializeComponent();

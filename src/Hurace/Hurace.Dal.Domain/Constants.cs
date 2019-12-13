@@ -25,8 +25,7 @@ namespace Hurace.Dal.Domain
             Running = 2,
             Finished = 3,
             Disqualified = 4,
-            Canceled = 5, 
-            DrawReady = 6
+            Canceled = 5
         }
 
         public enum Gender

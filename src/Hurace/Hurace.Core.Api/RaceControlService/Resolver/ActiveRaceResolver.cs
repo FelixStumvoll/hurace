@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Api.RaceControlService.Service;
+using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
-using static Hurace.Core.Api.ExceptionWrapper;
+using static Hurace.Core.Api.Util.ExceptionWrapper;
 
 namespace Hurace.Core.Api.RaceControlService.Resolver
 {
@@ -27,7 +28,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
             _raceEventDao = serviceProvider.ResolveService<IRaceEventDao>();
         }
 
-        public static async Task<bool> InitializeActiveRaceHandler() =>
+        public static async Task<Result<bool,Exception>> InitializeActiveRaceHandler() =>
             await Try(async () =>
             {
                 Instance = new ActiveRaceResolver();
@@ -44,7 +45,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
                 return true;
             });
 
-        public async Task<IActiveRaceControlService?> StartRace(int raceId) =>
+        public async Task<Result<IActiveRaceControlService, Exception>> StartRace(int raceId) =>
             await Try(async () =>
             {
                 await RaceClockProvider.Instance.GetRaceClock();
@@ -77,7 +78,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
             });
         }
 
-        public async Task<bool> EndRace(int raceId) =>
+        public async Task<Result<bool,Exception>> EndRace(int raceId) =>
             await Try(async () =>
             {
                 await ChangeRaceState(raceId, Constants.RaceState.Finished);

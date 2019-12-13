@@ -1,12 +1,14 @@
+using System;
 using System.Threading.Tasks;
 using Hurace.Core.Api.RaceControlService.Service;
+using Hurace.Core.Api.Util;
 
 namespace Hurace.Core.Api.RaceControlService.Resolver
 {
     public interface IActiveRaceResolver
     {
-        Task<IActiveRaceControlService?> StartRace(int raceId); 
+        Task<Result<IActiveRaceControlService, Exception>> StartRace(int raceId);
         IActiveRaceControlService this[int raceId] { get; }
-        Task<bool> EndRace(int raceId);
+        Task<Result<bool,Exception>> EndRace(int raceId);
     }
 }

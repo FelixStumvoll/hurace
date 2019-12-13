@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
-using static Hurace.Core.Api.ExceptionWrapper;
+using static Hurace.Core.Api.Util.ExceptionWrapper;
 
 namespace Hurace.Core.Api.RaceService
 {
@@ -34,30 +35,32 @@ namespace Hurace.Core.Api.RaceService
             _timeDataDao = timeDataDao;
             _seasonDao = seasonDao;
         }
+        
+        public async Task<Result<Race, Exception>> GetRaceById(int raceId) => 
+            await Try(() => _raceDao.FindByIdAsync(raceId));
 
+        public async Task<Result<IEnumerable<Gender>, Exception>> GetGenders() =>
+            await Try(_genderDao.FindAllAsync);
 
-        public async Task<Race> GetRaceById(int raceId) => await Try(() => _raceDao.FindByIdAsync(raceId));
+        public async Task<Result<IEnumerable<Location>, Exception>> GetLocations() =>
+            await Try(_locationDao.FindAllAsync);
 
-        public async Task<IEnumerable<Gender>?> GetGenders() => await Try(_genderDao.FindAllAsync);
-
-        public async Task<IEnumerable<Location>?> GetLocations() => await Try(_locationDao.FindAllAsync);
-
-        public async Task<IEnumerable<Discipline>?> GetDisciplines() => 
+        public async Task<Result<IEnumerable<Discipline>, Exception>> GetDisciplines() =>
             await Try(_disciplineDao.FindAllAsync);
 
-        public async Task<IEnumerable<Race>?> GetAllRaces() => 
+        public async Task<Result<IEnumerable<Race>, Exception>> GetAllRaces() =>
             await Try(_raceDao.FindAllAsync);
 
-        public async Task<IEnumerable<Race>?> GetRacesForSeason(int seasonId) => 
+        public async Task<Result<IEnumerable<Race>, Exception>> GetRacesForSeason(int seasonId) =>
             await Try(async () => await _raceDao.GetRaceForSeasonId(seasonId));
 
-        public async Task<IEnumerable<Season>?> GetAllSeasons() => 
+        public async Task<Result<IEnumerable<Season>, Exception>> GetAllSeasons() =>
             await Try(_seasonDao.FindAllAsync);
 
-        public async Task<IEnumerable<Skier>?> GetAvailableSkiersForRace(int raceId) => 
+        public async Task<Result<IEnumerable<Skier>, Exception>> GetAvailableSkiersForRace(int raceId) =>
             await Try(() => _skierDao.FindAvailableSkiersForRace(raceId));
 
-        public async Task<IEnumerable<StartList>?> GetStartListForRace(int raceId) => 
+        public async Task<Result<IEnumerable<StartList>, Exception>> GetStartListForRace(int raceId) =>
             await Try(() => _startListDao.GetStartListForRace(raceId));
 
         public async Task<RaceUpdateState> InsertOrUpdateRace(Race race, int sensorCount)
@@ -92,10 +95,10 @@ namespace Hurace.Core.Api.RaceService
             return slDefined && (ogRace.DisciplineId != race.DisciplineId || ogRace.GenderId != race.GenderId);
         }
 
-        public async Task<int?> GetSensorCount(int raceId) => 
+        public async Task<Result<int, Exception>> GetSensorCount(int raceId) =>
             await Try(async () => (await _sensorDao.FindAllSensorsForRace(raceId)).Count());
 
-        public async Task<bool> RemoveRace(Race race) =>
+        public async Task<Result<bool,Exception>> RemoveRace(Race race) =>
             await Try(async () =>
             {
                 if (await _raceDao.FindByIdAsync(race.Id) == null ||
@@ -107,16 +110,17 @@ namespace Hurace.Core.Api.RaceService
                 return true;
             });
 
-        public async Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId, int skierId) => 
+        public async Task<Result<IEnumerable<TimeData>, Exception>> GetTimeDataForStartList(int raceId,
+            int skierId) =>
             await Try(() => _timeDataDao.GetTimeDataForStartList(skierId, raceId));
 
-        public async Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId) => 
+        public async Task<Result<IEnumerable<Discipline>, Exception>> GetDisciplinesForLocation(int locationId) =>
             await Try(async () => await _locationDao.GetPossibleDisciplinesForLocation(locationId));
 
         private async Task<bool> StartListDefined(int raceId) =>
             await _startListDao.CountStartListForRace(raceId) > 0;
 
-        public async Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId) =>
+        public async Task<Result<IEnumerable<RaceRanking>, Exception>> GetRankingForRace(int raceId) =>
             await Try(async () =>
             {
                 var timeRanking = await _timeDataDao.GetRankingForRace(raceId);
@@ -132,7 +136,7 @@ namespace Hurace.Core.Api.RaceService
                 return timeRanking.Concat(disqualifiedSkiers);
             });
 
-        public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList) =>
+        public async Task<Result<bool,Exception>> UpdateStartList(Race race, IEnumerable<StartList> startList) =>
             await Try(async () =>
             {
                 await _startListDao.DeleteAllForRace(race.Id);

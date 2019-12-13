@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api.RaceService;
+using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -52,32 +55,43 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         public async Task SetupAsync()
         {
-            var seasons = (await _logic.GetAllSeasons()).OrderByDescending(s => s.StartDate);
-            Seasons.Clear();
-            Seasons.AddRange(seasons);
-            if (!Seasons.Any()) return;
-            SelectedSeason = Seasons[0];
-            await LoadRaces();
-
-            _sharedRaceViewModel.Disciplines.UpdateDataSource(await _logic.GetDisciplines());
-            _sharedRaceViewModel.Genders.UpdateDataSource(await _logic.GetGenders());
-            _sharedRaceViewModel.Locations.UpdateDataSource(await _logic.GetLocations());
-
-            if (SeasonChangedCommand == null) SeasonChangedCommand = new AsyncCommand(async _ => await LoadRaces());
+            (await _logic.GetAllSeasons())
+                .Map(seasons =>
+                {
+                    var seasonList = seasons.ToList();
+                    if (!seasonList.Any()) return Result<object, Exception>.Err(null);
+                    Seasons.Clear();
+                    Seasons.AddRange(seasonList.OrderByDescending(s => s.StartDate));
+                    SelectedSeason = Seasons[0];
+                    SeasonChangedCommand ??=
+                        new AsyncCommand(async _ => (await LoadRaces()).OrElse(_ => ErrorNotifier.OnLoadError()));
+                    return Result<object, Exception>.Ok(null);
+                })
+                .And(await LoadRaces())
+                .And(await _logic.GetDisciplines(), disciplines =>
+                         _sharedRaceViewModel.Disciplines.UpdateDataSource(disciplines))
+                .And(await _logic.GetGenders(), genders =>
+                         _sharedRaceViewModel.Genders.UpdateDataSource(genders))
+                .And(await _logic.GetLocations(), locations =>
+                         _sharedRaceViewModel.Locations.UpdateDataSource(locations))
+                .OrElse(_ => ErrorNotifier.OnLoadError());
         }
 
-        private async Task LoadRaces()
-        {
-            var races = (await _logic.GetRacesForSeason(SelectedSeason.Id))
-                .Select(r => 
-                            new RaceViewModel(_logic, new SharedRaceStateViewModel {Race = r}, _sharedRaceViewModel));
-            Races.Clear();
-            foreach (var raceViewModel in races)
+        private async Task<Result<IEnumerable<Race>, Exception>> LoadRaces() =>
+            (await _logic.GetRacesForSeason(SelectedSeason.Id))
+            .AndThen(races =>
             {
-                raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
-                Races.Add(raceViewModel);
-            }
-        }
+                Races.Clear();
+                foreach (var raceViewModel in races
+                    .Select(r =>
+                                new RaceViewModel(
+                                    _logic, new SharedRaceStateViewModel {Race = r},
+                                    _sharedRaceViewModel)))
+                {
+                    raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
+                    Races.Add(raceViewModel);
+                }
+            });
 
         private void SetupCommands()
         {
@@ -117,7 +131,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                                 "Löschen ?",
                                 MessageBoxButton.YesNo,
                                 MessageBoxImage.Information) != MessageBoxResult.Yes) return;
-            if (rvm.RaceState.Race.Id != -1 && !await _logic.RemoveRace(rvm.RaceState.Race))
+            if (rvm.RaceState.Race.Id != -1 && (await _logic.RemoveRace(rvm.RaceState.Race)).Failure)
             {
                 MessageBox.Show("Rennen konnte nicht gelöscht werden!",
                                 "Fehler",
@@ -125,6 +139,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                                 MessageBoxImage.Error);
                 return;
             }
+
             DeleteRaceViewModel(rvm);
         }
 

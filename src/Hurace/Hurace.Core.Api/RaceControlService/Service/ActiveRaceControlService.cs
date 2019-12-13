@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hurace.Core.Api.Util;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
+using Hurace.Dal.Domain.Enums;
 using Hurace.Dal.Interface;
-using static Hurace.Core.Api.ExceptionWrapper;
+using static Hurace.Core.Api.Util.ExceptionWrapper;
 
 namespace Hurace.Core.Api.RaceControlService.Service
 {
@@ -53,19 +55,26 @@ namespace Hurace.Core.Api.RaceControlService.Service
             _maxSensorNr = await _sensorDao.GetMaxSensorNr(RaceId);
         }
 
-        private async Task OnTimingTriggered(int sensorId, DateTime dateTime)
+        private async Task OnTimingTriggered(int sensorNumber, DateTime dateTime)
         {
-            if (sensorId < 0 || sensorId > _maxSensorNr) return;
+            if (sensorNumber < 0 || sensorNumber > _maxSensorNr) return;
 
 
-            Console.WriteLine("Timer succeeds min max check");
-            var currentSkier = await GetCurrentSkier();
+            await AddTimeData(sensorNumber, dateTime);
+
+            if (sensorNumber == _maxSensorNr)
+            {
+                await CurrentSkierFinished();
+            }
+
+            // Console.WriteLine("Timer succeeds min max check");
+            /*var currentSkier = await GetCurrentSkier();
             var sensorTimeData =
-                await _timeDataDao.GetTimeDataForSensor(currentSkier.SkierId, currentSkier.RaceId, sensorId);
+                await _timeDataDao.GetTimeDataForSensor(currentSkier.SkierId, currentSkier.RaceId, sensorNumber);
 
             if (sensorTimeData != null)
             {
-            }
+            }*/
 
             //var sensorReadings = await _timeDataDao.GetTimeDataForStartList(ski)
         }
@@ -74,7 +83,8 @@ namespace Hurace.Core.Api.RaceControlService.Service
         {
             //fixme cache current skier
             var currentSkier = await GetCurrentSkier();
-            var startTime = (await _timeDataDao.GetStartTimeForStartList(currentSkier.SkierId, RaceId));
+            if (currentSkier.Failure) return false;
+            var startTime = (await _timeDataDao.GetStartTimeForStartList(currentSkier.Value.SkierId, RaceId));
 
             var average = await _timeDataDao.GetAverageTimeForSensor(RaceId, sensorNumber);
             var currentSkierSplitTime = dateTime - startTime;
@@ -89,7 +99,7 @@ namespace Hurace.Core.Api.RaceControlService.Service
                 }
                 else
                 {
-                    await InsertTimeData(sensorNumber, dateTime);
+                    await AddTimeData(sensorNumber, dateTime);
                     return true;
                 }
             }
@@ -105,57 +115,89 @@ namespace Hurace.Core.Api.RaceControlService.Service
             return false;
         }
 
-        private async Task InsertTimeData(int sensorNumber, DateTime dateTime)
+        private async Task AddTimeData(int sensorNumber, DateTime dateTime)
         {
+            var currentSkier = await GetCurrentSkier();
+            if(currentSkier.Failure) return;
+            var raceDataId = await InsertRaceData(RaceDataEvent.SkierSplitTime, RaceId);
+            var skierEventId = await InsertSkierEvent(currentSkier.Value.SkierId, currentSkier.Value.RaceId, raceDataId);
+            var sensor = await _sensorDao.GetSensorForSensorNumber(sensorNumber, RaceId);
+            var startTime = await _timeDataDao.GetStartTimeForStartList(currentSkier.Value.SkierId, RaceId);
+
+            await InsertTimeData(new TimeData
+            {
+                RaceId = RaceId,
+                SensorId = sensor.Id,
+                SkierId = currentSkier.Value.SkierId,
+                SkierEventId = skierEventId,
+                Time = (dateTime - startTime).Milliseconds
+            });
         }
 
-        public async Task<bool> EnableRaceForSkier() =>
+        public async Task<Result<bool,Exception>> EnableRaceForSkier() =>
             await Try(async () =>
             {
                 var startList = await _startListDao.GetNextSkierForRace(RaceId);
-                await UpdateStartListState(startList, Constants.StartState.Running);
+                await UpdateStartListState(startList, RaceDataEvent.SkierStarted, Constants.StartState.Running);
                 OnSkierStarted?.Invoke(startList);
                 return true;
             });
 
-        private async Task UpdateStartListState(StartList startList, Constants.StartState state)
+        private async Task UpdateStartListState(StartList startList, RaceDataEvent eventType,
+            Constants.StartState state)
         {
             startList.StartStateId = (int) state;
             await _startListDao.UpdateAsync(startList);
-            var raceData = new RaceData
-            {
-                EventTypeId = (int) state,
-                RaceId = startList.RaceId,
-                EventDateTime = DateTime.Now
-            };
-
-            raceData.Id = await _raceDataDao.InsertGetIdAsync(raceData);
-            await _skierEventDao.InsertAsync(new SkierEvent
-            {
-                RaceId = startList.RaceId,
-                SkierId = startList.SkierId,
-                RaceDataId = raceData.Id
-            });
+            var raceDataId = await InsertRaceData(eventType, RaceId);
+            await InsertSkierEvent(startList.SkierId, startList.RaceId, raceDataId);
         }
 
-        public async Task<StartList> GetCurrentSkier() => await _startListDao.GetCurrentSkierForRace(RaceId);
+        private async Task<int> InsertRaceData(RaceDataEvent eventType, int raceId) =>
+            await _raceDataDao.InsertGetIdAsync(new RaceData
+            {
+                EventTypeId = (int) eventType,
+                RaceId = raceId,
+                EventDateTime = DateTime.Now
+            });
 
-        public async Task<bool> CancelSkier(int skierId)
+        private async Task InsertTimeData(TimeData timeData) => await _timeDataDao.InsertAsync(timeData);
+
+        private async Task<int> InsertSkierEvent(int skierId, int raceId, int raceDataId) =>
+            await _skierEventDao.InsertGetIdAsync(new SkierEvent
+            {
+                RaceId = raceId,
+                SkierId = skierId,
+                RaceDataId = raceDataId
+            });
+
+        private async Task CurrentSkierFinished()
+        {
+            var currentSkier = await GetCurrentSkier();
+            if (currentSkier.Failure) return;
+            
+            await UpdateStartListState(currentSkier.Value, RaceDataEvent.SkierFinished,
+                                       Constants.StartState.Finished);
+        }
+
+        public async Task<Result<StartList, Exception>> GetCurrentSkier() =>
+            await Try(() => _startListDao.GetCurrentSkierForRace(RaceId));
+
+        public async Task<Result<bool,Exception>> CancelSkier(int skierId)
         {
             return await Try(async () =>
             {
                 var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
-                await UpdateStartListState(startList, Constants.StartState.Canceled);
+                await UpdateStartListState(startList, RaceDataEvent.SkierCanceled, Constants.StartState.Canceled);
                 OnSkierCanceled?.Invoke(startList);
                 return true;
             });
         }
 
-        public async Task<IEnumerable<StartList>?> GetRemainingStartList() =>
+        public async Task<Result<IEnumerable<StartList>, Exception>> GetRemainingStartList() =>
             await Try(async () => (await _startListDao.GetStartListForRace(RaceId))
                           .Where(sl => sl.StartStateId == (int) Constants.StartState.Upcoming));
 
-        public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData) =>
+        public async Task<Result<TimeSpan?, Exception>> GetDifferenceToLeader(TimeData timeData) =>
             await TryStruct<TimeSpan>(async () =>
             {
                 var first = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1))
@@ -170,9 +212,9 @@ namespace Hurace.Core.Api.RaceControlService.Service
                 return TimeSpan.FromMilliseconds(leaderTime.Time - current.Time);
             });
 
-        public async Task<bool> CancelRace()
+        public async Task<Result<bool,Exception>> CancelRace()
         {
-            return false;
+            return Result<bool,Exception>.Err(null);
         }
     }
 }

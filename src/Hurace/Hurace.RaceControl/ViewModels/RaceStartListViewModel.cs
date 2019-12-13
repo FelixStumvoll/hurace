@@ -73,21 +73,19 @@ namespace Hurace.RaceControl.ViewModels
                                                                           l.OrderBy(sl => sl.StartNumber));
         }
 
-        public async Task SetupAsync()
-        {
-            var skiers = await _logic.GetAvailableSkiersForRace(RaceState.Race.Id);
-            var startLists = await _logic.GetStartListForRace(RaceState.Race.Id);
-            if (skiers == null || startLists == null)
+        public async Task SetupAsync() =>
+            (await _logic.GetAvailableSkiersForRace(RaceState.Race.Id))
+            .AndThen(skiers =>
             {
-                ErrorNotifier.OnLoadError();
-                return;
-            }
-
-            AvailableSkiers.UpdateDataSource(skiers);
-            StartList.UpdateDataSource(startLists);
-            AvailableSkiers.Apply();
-            StartList.Apply();
-        }
+                AvailableSkiers.UpdateDataSource(skiers);
+                AvailableSkiers.Apply();
+            }).And(await _logic.GetStartListForRace(
+                       RaceState.Race.Id), startList =>
+                   {
+                       StartList.UpdateDataSource(startList);
+                       StartList.Apply();
+                   })
+            .OrElse(_ => ErrorNotifier.OnLoadError());
 
         private static bool SkierFilterFunc(Skier skier, string text) =>
             skier.FirstName.ToLower().Contains(text) ||
@@ -139,16 +137,10 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-        private async Task SaveStartList()
-        {
-            if (await _logic.UpdateStartList(RaceState.Race, StartList.DataSource))
-            {
-                RaceState.Edit = false;
-                return;
-            }
-
-            ErrorNotifier.OnSaveError();
-        }
+        private async Task SaveStartList() =>
+            (await _logic.UpdateStartList(RaceState.Race, StartList.DataSource))
+            .AndThen(_ => RaceState.Edit = false)
+            .OrElse(_ => ErrorNotifier.OnSaveError());
 
         private Task CancelEditStartList()
         {
