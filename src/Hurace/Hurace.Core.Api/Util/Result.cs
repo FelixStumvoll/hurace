@@ -21,7 +21,7 @@ namespace Hurace.Core.Api.Util
                 Value = value
             };
 
-        public Result<TVal, TErr> AndThen(Action<TVal> action)
+        public Result<TVal, TErr> Then(Action<TVal> action)
         {
             if(!Failure) action.Invoke(Value);
             return this;

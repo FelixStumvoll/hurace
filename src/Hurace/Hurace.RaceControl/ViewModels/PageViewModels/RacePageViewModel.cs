@@ -79,7 +79,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private async Task<Result<IEnumerable<Race>, Exception>> LoadRaces() =>
             (await _logic.GetRacesForSeason(SelectedSeason.Id))
-            .AndThen(races =>
+            .Then(races =>
             {
                 Races.Clear();
                 foreach (var raceViewModel in races

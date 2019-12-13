@@ -37,8 +37,8 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
                 foreach (var race in await Instance._raceDao.GetActiveRaces())
                 {
                     var rcs = provider.ResolveService<IActiveRaceControlService>();
-                    await rcs.InitializeAsync();
                     rcs.RaceId = race.Id;
+                    await rcs.InitializeAsync();
                     Instance._activeRaces.Add(rcs);
                 }
 

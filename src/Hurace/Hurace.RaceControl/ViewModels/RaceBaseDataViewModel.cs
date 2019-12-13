@@ -106,7 +106,7 @@ namespace Hurace.RaceControl.ViewModels
             if (SelectedLocation == null) return;
 
             (await _logic.GetDisciplinesForLocation(SelectedLocation.Id))
-                .AndThen(disciplines =>
+                .Then(disciplines =>
                 {
                     Disciplines.Clear();
                     Disciplines.AddRange(disciplines);
@@ -159,7 +159,7 @@ namespace Hurace.RaceControl.ViewModels
 
         private async Task UpdateRace() =>
             (await _logic.GetRaceById(RaceState.Race.Id))
-             .AndThen(race => RaceState.Race = race)
+             .Then(race => RaceState.Race = race)
              .OrElse(_ => ErrorNotifier.OnLoadError());
 
         private bool SaveValidator() =>

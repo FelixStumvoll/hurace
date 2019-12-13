@@ -40,7 +40,7 @@ namespace Hurace.Dal.Dao
         {
             var topSection = count <= 0 ? "" : $" top {count}";
             return await QueryAsync<TimeData>(
-                $@"select{topSection} * from hurace.SensorRanking where raceId=@rid and sensorNumber=@sid",
+                $@"select{topSection} * from hurace.SensorRanking where RaceId=@rid and sensorNumber=@sid",
                 new MapperConfig()
                     .Include<StartList>()
                     .AddMapping<Country>(("countryId", nameof(Country.Id)))

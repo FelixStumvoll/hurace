@@ -75,7 +75,7 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync() =>
             (await _logic.GetAvailableSkiersForRace(RaceState.Race.Id))
-            .AndThen(skiers =>
+            .Then(skiers =>
             {
                 AvailableSkiers.UpdateDataSource(skiers);
                 AvailableSkiers.Apply();
@@ -139,7 +139,7 @@ namespace Hurace.RaceControl.ViewModels
 
         private async Task SaveStartList() =>
             (await _logic.UpdateStartList(RaceState.Race, StartList.DataSource))
-            .AndThen(_ => RaceState.Edit = false)
+            .Then(_ => RaceState.Edit = false)
             .OrElse(_ => ErrorNotifier.OnSaveError());
 
         private Task CancelEditStartList()

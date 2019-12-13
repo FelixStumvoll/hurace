@@ -58,9 +58,9 @@ namespace Hurace.Core.Api.RaceControlService.Service
         private async Task OnTimingTriggered(int sensorNumber, DateTime dateTime)
         {
             if (sensorNumber < 0 || sensorNumber > _maxSensorNr) return;
-
-
-            await AddTimeData(sensorNumber, dateTime);
+            
+            var timeData = await AddTimeData(sensorNumber, dateTime);
+            OnSplitTime?.Invoke(timeData);
 
             if (sensorNumber == _maxSensorNr)
             {
@@ -115,23 +115,25 @@ namespace Hurace.Core.Api.RaceControlService.Service
             return false;
         }
 
-        private async Task AddTimeData(int sensorNumber, DateTime dateTime)
+        private async Task<TimeData> AddTimeData(int sensorNumber, DateTime dateTime)
         {
             var currentSkier = await GetCurrentSkier();
-            if(currentSkier.Failure) return;
+            if(currentSkier.Failure) return null;
             var raceDataId = await InsertRaceData(RaceDataEvent.SkierSplitTime, RaceId);
             var skierEventId = await InsertSkierEvent(currentSkier.Value.SkierId, currentSkier.Value.RaceId, raceDataId);
             var sensor = await _sensorDao.GetSensorForSensorNumber(sensorNumber, RaceId);
             var startTime = await _timeDataDao.GetStartTimeForStartList(currentSkier.Value.SkierId, RaceId);
 
-            await InsertTimeData(new TimeData
+            var ret = new TimeData
             {
                 RaceId = RaceId,
                 SensorId = sensor.Id,
                 SkierId = currentSkier.Value.SkierId,
                 SkierEventId = skierEventId,
                 Time = (dateTime - startTime).Milliseconds
-            });
+            };
+            await InsertTimeData(ret);
+            return ret;
         }
 
         public async Task<Result<bool,Exception>> EnableRaceForSkier() =>
@@ -216,5 +218,24 @@ namespace Hurace.Core.Api.RaceControlService.Service
         {
             return Result<bool,Exception>.Err(null);
         }
+
+        public async Task<Result<IEnumerable<TimeDifference>, Exception>> GetTimeDataForSkierWithDifference(int skierId, int raceId) =>
+            await Try(async () =>
+            {
+                var timeDataList = await _timeDataDao.GetTimeDataForStartList(skierId, raceId);
+                var retVal = new List<TimeDifference>();
+                foreach (var timeData in timeDataList)
+                {
+                    var res = await GetDifferenceToLeader(timeData);
+                    if(res.Failure || !res.Value.HasValue) continue;
+                    retVal.Add(new TimeDifference
+                    {
+                        TimeData = timeData,
+                        DifferenceToLeader = res.Value.Value.Milliseconds
+                    });
+                }
+
+                return (IEnumerable<TimeDifference>) retVal; 
+            });
     }
 }

@@ -26,5 +26,8 @@ namespace Hurace.Core.Api.RaceControlService.Service
         Task<Result<IEnumerable<StartList>, Exception>> GetRemainingStartList();
         Task<Result<TimeSpan?, Exception>> GetDifferenceToLeader(TimeData timeData);
         Task<Result<bool,Exception>> CancelRace();
+
+        Task<Result<IEnumerable<TimeDifference>, Exception>>
+            GetTimeDataForSkierWithDifference(int skierId, int raceId);
     }
 }

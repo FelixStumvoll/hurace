@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Hurace.Core.Api;
 using Hurace.Core.Api.RaceControlService;
 using Hurace.Core.Api.RaceControlService.Resolver;
 using Hurace.Core.Api.RaceControlService.Service;
@@ -25,7 +26,10 @@ namespace Hurace.RaceControl.ViewModels
 
         public SharedRaceStateViewModel RaceState { get; set; }
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
-        public ObservableCollection<TimeData> SkierTimeData { get; set; } = new ObservableCollection<TimeData>();
+
+        public ObservableCollection<TimeDifference> SkierTimeData { get; set; } =
+            new ObservableCollection<TimeDifference>();
+
         public ICommand StartRaceCommand { get; set; }
         public ICommand ReadyTrackCommand { get; set; }
         public ICommand CancelSkier { get; set; }
@@ -43,18 +47,13 @@ namespace Hurace.RaceControl.ViewModels
             SetupCommands();
         }
 
-        private async Task ReloadStartList()
-        {
-            var newStartList = await _activeRaceControlService.GetRemainingStartList();
-            if (newStartList.Failure)
+        private async Task ReloadStartList() =>
+            (await _activeRaceControlService.GetRemainingStartList())
+            .Then(startList =>
             {
-                ErrorNotifier.OnLoadError();
-                return;
-            }
-
-            StartList.Clear();
-            StartList.AddRange(newStartList.Value);
-        }
+                StartList.Clear();
+                StartList.AddRange(startList);
+            }).OrElse(_ => ErrorNotifier.OnLoadError());
 
         private void SetupRaceHooks()
         {
@@ -63,9 +62,17 @@ namespace Hurace.RaceControl.ViewModels
                 CurrentSkier = startList;
                 await ReloadStartList();
             };
-            _activeRaceControlService.OnSplitTime += async _ =>
+            _activeRaceControlService.OnSplitTime += async timeData =>
             {
-                
+                (await _activeRaceControlService.GetDifferenceToLeader(timeData)).Then(difference =>
+                {
+                    if (difference == null) return;
+                    Application.Current.Dispatcher?.Invoke(() => SkierTimeData.Add(new TimeDifference
+                    {
+                        TimeData = timeData,
+                        DifferenceToLeader = difference.Value.Milliseconds
+                    }));
+                });
             };
             _activeRaceControlService.OnSkierCanceled += async _ => await ReloadStartList();
             _activeRaceControlService.OnSkierFinished += _ => { CurrentSkier = null; };
@@ -93,7 +100,7 @@ namespace Hurace.RaceControl.ViewModels
             SetupRaceHooks();
 
             return (await _activeRaceControlService.GetCurrentSkier())
-                   .AndThen(currentSkier => { CurrentSkier = currentSkier; })
+                   .Then(currentSkier => { CurrentSkier = currentSkier; })
                    .And(await _activeRaceControlService.GetRemainingStartList(), startList =>
                    {
                        StartList.Clear();
@@ -108,7 +115,7 @@ namespace Hurace.RaceControl.ViewModels
                 MessageBoxResult.Yes) return;
 
             (await ActiveRaceResolver.Instance.StartRace(RaceState.Race.Id))
-                .AndThen(arc => _activeRaceControlService = arc)
+                .Then(arc => _activeRaceControlService = arc)
                 .And(await _logic.GetRaceById(RaceState.Race.Id), race => RaceState.Race = race)
                 .And(await SetupRaceControl())
                 .OrElse(_ => ErrorNotifier.OnLoadError());
