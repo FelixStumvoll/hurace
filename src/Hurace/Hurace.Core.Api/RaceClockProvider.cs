@@ -20,7 +20,7 @@ namespace Hurace.Core.Api
             if (_raceClock == null)
                 await Task.Run(() =>
                 {
-                    var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                    var config = ServiceProvider.Instance.ResolveService<IConfiguration>();
                     var clockSection = config.GetSection("Clock");
                     var type = Assembly.Load(clockSection["Assembly"])
                                        .GetType($"{clockSection["Assembly"]}.{clockSection["ClassName"]}");

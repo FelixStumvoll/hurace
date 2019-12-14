@@ -39,16 +39,16 @@ namespace Hurace.Dal.Dao.Base
             (string statement, MapperConfig config, IEnumerable<QueryParam> queryParams) data) =>
             await QueryAsync<T>(data.statement, data.config, data.queryParams.ToArray());
 
-        private protected async Task<int> ExecuteScalarAsync(string statement, params QueryParam[] queryParams) =>
+        private protected async Task<int?> ExecuteScalarAsync(string statement, params QueryParam[] queryParams) =>
             await ConnectionFactory.UseConnection(statement,
                                                   queryParams,
                                                   async command =>
                                                   {
                                                       var scalar = await command.ExecuteScalarAsync();
-                                                      return  scalar is DBNull ? -1 : (int)scalar;
+                                                      return scalar is DBNull ? null : (int?) scalar;
                                                   });
 
-        private async Task<int> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
+        private async Task<int?> ExecuteGetIdAsync(string statement, params QueryParam[] queryParams) =>
             await ExecuteScalarAsync($"{statement};SELECT CAST(scope_identity() AS int)",
                                      queryParams);
 
@@ -62,7 +62,7 @@ namespace Hurace.Dal.Dao.Base
             await ExecuteAsync(data.statement, data.queryParams.ToArray());
 
 
-        private protected async Task<int>
+        private protected async Task<int?>
             GeneratedNonQueryGetIdAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>
             await ExecuteGetIdAsync(data.statement, data.queryParams.ToArray());
     }

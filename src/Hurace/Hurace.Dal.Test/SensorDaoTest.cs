@@ -40,7 +40,7 @@ namespace Hurace.Dal.Test
                 RaceId = raceId,
                 SensorDescription = "Description123"
             });
-            var sensor = await SensorDao.FindByIdAsync(id);
+            var sensor = await SensorDao.FindByIdAsync(id.Value);
             Assert.AreEqual("Description123", sensor.SensorDescription);
             Assert.AreEqual(raceId, sensor.RaceId);
         }

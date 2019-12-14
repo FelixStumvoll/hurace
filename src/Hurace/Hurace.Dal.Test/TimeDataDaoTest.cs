@@ -65,12 +65,12 @@ namespace Hurace.Dal.Test
             {
                 SkierEventId = skierEventId,
                 RaceId = race.Id,
-                SensorId = newSensorId,
+                SensorId = newSensorId.Value,
                 Time = new DateTime(2019, 11, 6).Millisecond,
                 SkierId = skier.Id
             });
 
-            var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, newSensorId);
+            var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, newSensorId.Value);
 
             Assert.NotNull(timeData);
             Assert.AreEqual(new DateTime(2019, 11, 6).Millisecond, timeData?.Time);

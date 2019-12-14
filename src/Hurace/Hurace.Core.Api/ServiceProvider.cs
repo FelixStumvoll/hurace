@@ -26,6 +26,9 @@ namespace Hurace.Core.Api
         {
             var builder = new ContainerBuilder();
             
+            //Load Congfig 
+            builder.Register(ctx => config).As<IConfiguration>().SingleInstance();
+            
             //Load Daos
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Dal.Dao"))
                    .Where(t => t.Name.EndsWith("Dao") && (!t.Namespace?.Contains("Base") ?? false))

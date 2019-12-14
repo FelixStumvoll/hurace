@@ -47,7 +47,7 @@ namespace Hurace.Dal.Test
                 EventTypeId = (int) Constants.RaceEvent.Finished
             });
 
-            var raceDataById = await RaceDataDao.FindByIdAsync(raceDataId);
+            var raceDataById = await RaceDataDao.FindByIdAsync(raceDataId.Value);
             Assert.AreEqual(raceId, raceDataById.RaceId);
             Assert.AreEqual(new DateTime(1969,4,20),raceDataById.EventDateTime );
             Assert.AreEqual((int) Constants.RaceEvent.Finished, raceDataById.EventTypeId);

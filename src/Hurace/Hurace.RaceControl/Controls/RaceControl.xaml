@@ -140,6 +140,7 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type api:TimeDifference}">
                                     <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding TimeData.Sensor.SensorNumber}" Margin="0,0,25,0" />
                                         <TextBlock Text="{Binding TimeData.Time}" Margin="0,0,25,0" />
                                         <TextBlock Text="{Binding DifferenceToLeader}" />
                                     </StackPanel>

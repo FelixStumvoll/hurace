@@ -30,7 +30,7 @@ namespace Hurace.Dal.Test
             {
                 DisciplineName = "XXX"
             });
-            var disciplineById = await DisciplineDao.FindByIdAsync(disciplineId);
+            var disciplineById = await DisciplineDao.FindByIdAsync(disciplineId.Value);
             Assert.AreEqual("XXX", disciplineById?.DisciplineName);
         }
         

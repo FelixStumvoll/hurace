@@ -9,7 +9,7 @@ namespace Hurace.Dal.Interface
     {
         Task<IEnumerable<Sensor>> FindAllSensorsForRace(int raceId);
         Task<bool> DeleteAllSensorsForRace(int raceId);
-        Task<int> GetMaxSensorNr(int raceId);
+        Task<int?> GetMaxSensorNr(int raceId);
         Task<Sensor> GetSensorForSensorNumber(int sensorNumber, int raceId);
     }
 }

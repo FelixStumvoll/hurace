@@ -40,7 +40,7 @@ namespace Hurace.Dal.Test
                 StartDate = new DateTime(1969,4,20),
                 EndDate = new DateTime(2069,4,20)
             });
-            var season = await SeasonDao.FindByIdAsync(id);
+            var season = await SeasonDao.FindByIdAsync(id.Value);
             Assert.AreEqual(new DateTime(1969,4,20), season.StartDate);
             Assert.AreEqual(new DateTime(2069,4,20), season.EndDate);
         }

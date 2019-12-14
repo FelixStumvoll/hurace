@@ -190,7 +190,7 @@ namespace Hurace.DataGenerator
 
                 await _raceEventDao.InsertAsync(new RaceEvent
                 {
-                    RaceDataId = raceEventId
+                    RaceDataId = raceEventId.Value
                 });
                 
                 foreach (var startListSkier in startList.Where(sl => sl.RaceId == race.Id).OrderBy(s => s.StartNumber))
@@ -204,7 +204,7 @@ namespace Hurace.DataGenerator
                     {
                         RaceId = startListSkier.RaceId,
                         SkierId = startListSkier.SkierId,
-                        RaceDataId = eventId
+                        RaceDataId = eventId.Value
                     });
 
                     var splitTime = 0;
@@ -221,7 +221,7 @@ namespace Hurace.DataGenerator
                         {
                             RaceId = startListSkier.RaceId,
                             SkierId = startListSkier.SkierId,
-                            RaceDataId = raceDataId
+                            RaceDataId = raceDataId.Value
                         });
 
                         await _timeDataDao.InsertAsync(new TimeData
@@ -230,7 +230,7 @@ namespace Hurace.DataGenerator
                             RaceId = race.Id,
                             SensorId = sensor.Id,
                             SkierId = startListSkier.SkierId,
-                            SkierEventId = skierEventId
+                            SkierEventId = skierEventId.Value
                         });
 
                         var splitMillis = GetRandomSplitTime();
@@ -249,7 +249,7 @@ namespace Hurace.DataGenerator
                     {
                         RaceId = startListSkier.RaceId,
                         SkierId = startListSkier.SkierId,
-                        RaceDataId = eventId
+                        RaceDataId = eventId.Value
                     });
                 }
 
@@ -261,7 +261,7 @@ namespace Hurace.DataGenerator
                 });
                 await _raceEventDao.InsertAsync(new RaceEvent
                 {
-                    RaceDataId = raceEventId
+                    RaceDataId = raceEventId.Value
                 });
             }
         }
@@ -269,7 +269,7 @@ namespace Hurace.DataGenerator
         private static async Task PersistEntity<T>(IEnumerable<T> entities, IDefaultCrudDao<T> dao)
             where T : class, ISinglePkEntity, new()
         {
-            foreach (var dto in entities) dto.Id = await dao.InsertGetIdAsync(dto);
+            foreach (var dto in entities) dto.Id = (await dao.InsertGetIdAsync(dto)).Value;
         }
 
         private static async Task PersistEntity<T>(IEnumerable<T> entities, ICrudDao<T> dao) where T : class, new()
@@ -330,7 +330,7 @@ namespace Hurace.DataGenerator
                 StartDate = new DateTime(2018, 10, 28),
                 EndDate = new DateTime(2022, 3, 17)
             };
-            _season.Id = await _seasonDao.InsertGetIdAsync(_season);
+            _season.Id = (await _seasonDao.InsertGetIdAsync(_season)).Value;
 
             Console.WriteLine("Creating Skiers");
             var skiers = GenerateSkiers();

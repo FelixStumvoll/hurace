@@ -28,7 +28,7 @@ namespace Hurace.Dal.Test
                 CountryName = "TestCountry"
             });
 
-            var country = await CountryDao.FindByIdAsync(id);
+            var country = await CountryDao.FindByIdAsync(id.Value);
             Assert.AreEqual("XY", country?.CountryCode);
             Assert.AreEqual("TestCountry", country?.CountryName ?? "");
         }

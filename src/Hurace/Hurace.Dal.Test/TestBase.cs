@@ -69,61 +69,61 @@ namespace Hurace.Dal.Test
             for (var i = 0; i < 5; i++)
             {
                 var skierId = await SetupSkier();
-                await InsertStartList(skierId, raceId);
+                await InsertStartList(skierId, raceId.Value);
                 var dt = DateTime.Today;
                 for (var j = 0; j < 6; j++)
                 {
                     dt = dt.AddMilliseconds(rand.Next(2000, 4000));
-                    var sensorId = await InsertSensor(raceId);
-                    var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.SplitTime);
-                    var skierEventId = await InsertSkierEvent(raceDataId, skierId, raceId);
-                    await InsertTimeData(raceId, skierId, sensorId, skierEventId, dt.Millisecond);
+                    var sensorId = await InsertSensor(raceId.Value);
+                    var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.SkierEvent.SplitTime);
+                    var skierEventId = await InsertSkierEvent(raceDataId.Value, skierId, raceId.Value);
+                    await InsertTimeData(raceId.Value, skierId, sensorId.Value, skierEventId.Value, dt.Millisecond);
                 }
             }
         }
 
-        protected async Task<int> SetupRaceEvent()
+        protected async Task<int?> SetupRaceEvent()
         {
             var raceId = await SetupRace();
-            var raceDataId = await InsertRaceData(raceId, (int) Constants.RaceEvent.Started);
-            return await InsertRaceEvent(raceDataId);
+            var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.RaceEvent.Started);
+            return await InsertRaceEvent(raceDataId.Value);
         }
 
-        protected async Task<int> SetupSkierEvent()
+        protected async Task<int?> SetupSkierEvent()
         {
             var raceId = await SetupRace();
             var countryId = await InsertCountry();
-            var skierId = await InsertSkier(countryId);
-            await InsertStartList(skierId, raceId);
-            var raceDataId = await InsertRaceData(raceId, (int) Constants.SkierEvent.Started);
-            return await InsertSkierEvent(raceDataId, skierId, raceId);
+            var skierId = await InsertSkier(countryId.Value);
+            await InsertStartList(skierId.Value, raceId.Value);
+            var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.SkierEvent.Started);
+            return await InsertSkierEvent(raceDataId.Value, skierId.Value, raceId.Value);
         }
 
         protected async Task<int> SetupSkier()
         {
             var countryId = await InsertCountry();
             var disciplineId = await InsertDiscipline();
-            var skierId = await InsertSkier(countryId);
+            var skierId = await InsertSkier(countryId.Value);
 
-            await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId);
-            return skierId;
+            await SkierDao.InsertPossibleDisciplineForSkier(skierId.Value, disciplineId.Value);
+            return skierId.Value;
         }
 
-        protected async Task<int> SetupSensor()
+        protected async Task<int?> SetupSensor()
         {
             var raceId = await SetupRace();
-            return await InsertSensor(raceId);
+            return await InsertSensor(raceId.Value);
         }
 
-        protected async Task<int> SetupSeason()
+        protected async Task<int?> SetupSeason()
         {
             return await InsertSeason();
         }
 
-        protected async Task<int> SetupRaceData()
+        protected async Task<int?> SetupRaceData()
         {
             var raceId = await SetupRace();
-            return await InsertRaceData(raceId, (int) Constants.RaceEvent.Finished);
+            return await InsertRaceData(raceId.Value, (int) Constants.RaceEvent.Finished);
         }
 
         protected async Task SetupLocation()
@@ -133,8 +133,8 @@ namespace Hurace.Dal.Test
 
             for (var i = 0; i < 3; i++)
             {
-                var lid = await InsertLocation(countryId, $"L{i}");
-                await LocationDao.InsertPossibleDisciplineForLocation(lid, disciplineId);
+                var lid = await InsertLocation(countryId.Value, $"L{i}");
+                await LocationDao.InsertPossibleDisciplineForLocation(lid.Value, disciplineId.Value);
             }
         }
 
@@ -148,56 +148,54 @@ namespace Hurace.Dal.Test
             await InsertCountry("FR", "France");
         }
 
-        protected async Task<int> SetupRace()
+        protected async Task<int?> SetupRace()
         {
             var seasonId = await InsertSeason();
             var countryId = await InsertCountry();
-            var locationId = await InsertLocation(countryId);
+            var locationId = await InsertLocation(countryId.Value);
             var disciplineId = await InsertDiscipline();
-            return await InsertRace(disciplineId, locationId, seasonId);
+            return await InsertRace(disciplineId.Value, locationId.Value, seasonId.Value);
         }
 
         protected async Task SetupStartList()
         {
             var skierId = await SetupSkier();
             var raceId = await SetupRace();
-            await InsertStartList(skierId, raceId);
+            await InsertStartList(skierId, raceId.Value);
         }
 
         #endregion
 
         #region Insert
 
-        private async Task<int> InsertRaceData(int raceId, int type)
-        {
-            return await RaceDataDao.InsertGetIdAsync(new RaceData
+        private async Task<int?> InsertRaceData(int raceId, int type) =>
+            await RaceDataDao.InsertGetIdAsync(new RaceData
             {
                 EventTypeId = type,
                 RaceId = raceId,
                 EventDateTime = DateTime.Now
             });
-        }
 
-        private Task<int> InsertCountry(string code = "AT", string name = "Austria") =>
+        private Task<int?> InsertCountry(string code = "AT", string name = "Austria") =>
             CountryDao.InsertGetIdAsync(new Country {CountryCode = code, CountryName = name});
 
-        private Task<int> InsertLocation(int countryId, string locationName = "Kitzbühl") =>
+        private Task<int?> InsertLocation(int countryId, string locationName = "Kitzbühl") =>
             LocationDao.InsertGetIdAsync(new Location
             {
                 CountryId = countryId,
                 LocationName = locationName
             });
 
-        private Task<int> InsertDiscipline(string disciplineName = "Super-G") =>
+        private Task<int?> InsertDiscipline(string disciplineName = "Super-G") =>
             DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = disciplineName});
 
-        private Task<int> InsertSeason() => SeasonDao.InsertGetIdAsync(new Season
+        private Task<int?> InsertSeason() => SeasonDao.InsertGetIdAsync(new Season
         {
             EndDate = DateTime.Now.AddDays(1),
             StartDate = DateTime.Now
         });
 
-        private Task<int> InsertSensor(int raceId) => SensorDao.InsertGetIdAsync(new Sensor
+        private Task<int?> InsertSensor(int raceId) => SensorDao.InsertGetIdAsync(new Sensor
         {
             RaceId = raceId,
             SensorDescription = "Description"
@@ -213,13 +211,13 @@ namespace Hurace.Dal.Test
             });
 
 
-        private Task<int> InsertRaceEvent(int raceDataId) =>
+        private Task<int?> InsertRaceEvent(int raceDataId) =>
             RaceEventDao.InsertGetIdAsync(new RaceEvent
             {
                 RaceDataId = raceDataId
             });
 
-        private Task<int> InsertSkierEvent(int raceDataId, int skierId, int raceId) => SkierEventDao.InsertGetIdAsync(
+        private Task<int?> InsertSkierEvent(int raceDataId, int skierId, int raceId) => SkierEventDao.InsertGetIdAsync(
             new SkierEvent
             {
                 RaceId = raceId,
@@ -227,7 +225,7 @@ namespace Hurace.Dal.Test
                 RaceDataId = raceDataId
             });
 
-        protected Task<int> InsertSkier(int countryId) => SkierDao.InsertGetIdAsync(new Skier
+        protected Task<int?> InsertSkier(int countryId) => SkierDao.InsertGetIdAsync(new Skier
         {
             CountryId = countryId,
             GenderId = (int) Constants.Gender.Male,
@@ -236,7 +234,7 @@ namespace Hurace.Dal.Test
             DateOfBirth = DateTime.Now
         });
 
-        private Task<int> InsertRace(int disciplineId, int locationId, int seasonId) =>
+        private Task<int?> InsertRace(int disciplineId, int locationId, int seasonId) =>
             RaceDao.InsertGetIdAsync(new Race
             {
                 DisciplineId = disciplineId,

@@ -67,7 +67,12 @@ namespace Hurace.Core.Api.RaceService
         {
             try
             {
-                if (race.Id == -1) race.Id = await _raceDao.InsertGetIdAsync(race);
+                if (race.Id == -1)
+                {
+                    var raceId = await _raceDao.InsertGetIdAsync(race);
+                    if (raceId.HasValue) race.Id = raceId.Value;
+                    else return RaceUpdateState.Err;
+                }
                 else if (!await UpdateInvalid(race)) await _raceDao.UpdateAsync(race);
                 else return RaceUpdateState.StartListDefined;
 

@@ -19,7 +19,7 @@ namespace Hurace.Dal.Dao.Base
             (await GeneratedQueryAsync(DefaultSelectQuery().Where<T>((nameof(ISinglePkEntity.Id), id)).Build()))
             .SingleOrDefault();
 
-        public virtual Task<int> InsertGetIdAsync(T obj) =>
+        public virtual Task<int?> InsertGetIdAsync(T obj) =>
             GeneratedNonQueryGetIdAsync(StatementFactory.Insert<T>().Build(obj));
 
         public virtual Task<bool> DeleteAsync(int id) =>

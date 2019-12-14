@@ -27,7 +27,7 @@ namespace Hurace.Dal.Test
             {
                 DisciplineName = "XYZ"
             });
-            await LocationDao.InsertPossibleDisciplineForLocation(location.Id, disciplineId);
+            await LocationDao.InsertPossibleDisciplineForLocation(location.Id, disciplineId.Value);
             Assert.AreEqual(2, (await LocationDao.GetPossibleDisciplinesForLocation(location.Id)).Count());
         }
 
@@ -86,8 +86,8 @@ namespace Hurace.Dal.Test
             });
 
             Assert.AreEqual(4, (await LocationDao.FindAllAsync()).Count());
-            Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId))?.LocationName);
-            Assert.NotNull((await LocationDao.FindByIdAsync(locationId))?.Country);
+            Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId.Value))?.LocationName);
+            Assert.NotNull((await LocationDao.FindByIdAsync(locationId.Value))?.Country);
         }
 
         [Test]

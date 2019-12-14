@@ -71,7 +71,9 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
                 RaceId = race.Id,
                 EventDateTime = DateTime.Now
             };
-            raceData.Id = await _raceDataDao.InsertGetIdAsync(raceData);
+            var raceDataId = await _raceDataDao.InsertGetIdAsync(raceData);
+            if(!raceDataId.HasValue) return;
+            raceData.Id = raceDataId.Value;
             await _raceEventDao.InsertAsync(new RaceEvent
             {
                 RaceDataId = raceData.Id

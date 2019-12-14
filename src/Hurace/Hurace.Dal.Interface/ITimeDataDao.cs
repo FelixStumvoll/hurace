@@ -14,8 +14,8 @@ namespace Hurace.Dal.Interface
         Task<TimeData?> FindByIdAsync(int skierId, int raceId, int sensorId);
         Task<IEnumerable<TimeData>> GetTimeDataForStartList(int skierId, int raceId);
         Task<TimeData?> GetTimeDataForSensor(int skierId, int raceId, int sensorId);
-        Task<int> CountTimeDataForRace(int raceId);
-        Task<int> GetAverageTimeForSensor(int raceId, int sensorId);
-        Task<DateTime> GetStartTimeForStartList(int skierId, int raceId);
+        Task<int?> CountTimeDataForRace(int raceId);
+        Task<int?> GetAverageTimeForSensor(int raceId, int sensorId);
+        Task<DateTime?> GetStartTimeForStartList(int skierId, int raceId);
     }
 }

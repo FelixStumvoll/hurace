@@ -31,10 +31,10 @@ namespace Hurace.Dal.Test
             var skierId = await InsertSkier((await CountryDao.FindAllAsync()).First().Id);
             await StartListDao.InsertAsync(new StartList
             {
-                RaceId = skierEvent.RaceData?.RaceId ?? -1, SkierId = skierId, StartNumber = 50,
+                RaceId = skierEvent.RaceData?.RaceId ?? -1, SkierId = skierId.Value, StartNumber = 50,
                 StartStateId = (int) Constants.StartState.Finished
             });
-            skierEvent.SkierId = skierId;
+            skierEvent.SkierId = skierId.Value;
             await SkierEventDao.UpdateAsync(skierEvent);
             Assert.AreEqual(skierEvent.SkierId, (await SkierEventDao.FindByIdAsync(skierEvent.Id))?.SkierId);
         }

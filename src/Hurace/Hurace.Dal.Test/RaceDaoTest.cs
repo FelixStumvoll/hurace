@@ -46,7 +46,7 @@ namespace Hurace.Dal.Test
                 RaceDate = new DateTime(2019, 11, 15)
             });
 
-            var raceById = await RaceDao.FindByIdAsync(raceId);
+            var raceById = await RaceDao.FindByIdAsync(raceId.Value);
             Assert.AreEqual(disciplineId, raceById.DisciplineId);
             Assert.AreEqual((int) Constants.Gender.Male, raceById.GenderId);
             Assert.AreEqual(locationId, raceById.LocationId);

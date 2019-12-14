@@ -48,7 +48,7 @@ namespace Hurace.Dal.Test
                 DateOfBirth = new DateTime(1969,4,20)
             });
 
-            var skier = await SkierDao.FindByIdAsync(skierId);
+            var skier = await SkierDao.FindByIdAsync(skierId.Value);
             Assert.AreEqual(countryId, skier.CountryId);
             Assert.AreEqual("Test", skier.FirstName);
             Assert.AreEqual("pacito", skier.LastName);
@@ -88,7 +88,7 @@ namespace Hurace.Dal.Test
                 DisciplineName = "TestDiscipline"
             });
             var skierId = (await SkierDao.FindAllAsync()).First().Id;
-            await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId);
+            await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId.Value);
             Assert.AreEqual(2, (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).Count());
         }
         
