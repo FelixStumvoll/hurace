@@ -9,5 +9,11 @@ namespace Hurace.RaceControl.Extensions
         {
             foreach (var obj in enumerable) collection.Add(obj);
         }
+
+        public static void Repopulate<T>(this ObservableCollection<T> collection, IEnumerable<T> enumerable)
+        {
+            collection.Clear();
+            collection.AddRange(enumerable);
+        }
     }
 }

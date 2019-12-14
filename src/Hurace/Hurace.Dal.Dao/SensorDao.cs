@@ -16,7 +16,7 @@ namespace Hurace.Dal.Dao
         {
         }
 
-        public Task<IEnumerable<Sensor>> FindAllSensorsForRace(int raceId) =>
+        public Task<IEnumerable<Sensor>?> FindAllSensorsForRace(int raceId) =>
             GeneratedQueryAsync(StatementFactory
                                 .Select<Sensor>()
                                 .Where<Sensor>((nameof(Sensor.RaceId), raceId))

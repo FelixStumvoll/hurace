@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api.RaceService;
-using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -55,32 +52,31 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         public async Task SetupAsync()
         {
-            (await _logic.GetAllSeasons())
-                .Map(seasons =>
-                {
-                    var seasonList = seasons.ToList();
-                    if (!seasonList.Any()) return Result<object, Exception>.Err(null);
-                    Seasons.Clear();
-                    Seasons.AddRange(seasonList.OrderByDescending(s => s.StartDate));
-                    SelectedSeason = Seasons[0];
-                    SeasonChangedCommand ??=
-                        new AsyncCommand(async _ => (await LoadRaces()).OrElse(_ => ErrorNotifier.OnLoadError()));
-                    return Result<object, Exception>.Ok(null);
-                })
-                .And(await LoadRaces())
-                .And(await _logic.GetDisciplines(), disciplines =>
-                         _sharedRaceViewModel.Disciplines.UpdateDataSource(disciplines))
-                .And(await _logic.GetGenders(), genders =>
-                         _sharedRaceViewModel.Genders.UpdateDataSource(genders))
-                .And(await _logic.GetLocations(), locations =>
-                         _sharedRaceViewModel.Locations.UpdateDataSource(locations))
-                .OrElse(_ => ErrorNotifier.OnLoadError());
+            try
+            {
+                var seasons = await _logic.GetAllSeasons();
+                var seasonList = seasons.ToList();
+                if (!seasonList.Any()) return;
+                Seasons.Repopulate(seasonList.OrderByDescending(s => s.StartDate));
+                SelectedSeason = Seasons[0];
+                SeasonChangedCommand ??=
+                    new AsyncCommand(async _ => await LoadRaces());
+                await LoadRaces();
+                _sharedRaceViewModel.Disciplines.UpdateDataSource(await _logic.GetDisciplines());
+                _sharedRaceViewModel.Genders.UpdateDataSource(await _logic.GetGenders());
+                _sharedRaceViewModel.Locations.UpdateDataSource(await _logic.GetLocations());
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnLoadError();
+            }
         }
 
-        private async Task<Result<IEnumerable<Race>, Exception>> LoadRaces() =>
-            (await _logic.GetRacesForSeason(SelectedSeason.Id))
-            .Then(races =>
+        private async Task LoadRaces()
+        {
+            try
             {
+                var races = await _logic.GetRacesForSeason(SelectedSeason.Id);
                 Races.Clear();
                 foreach (var raceViewModel in races
                     .Select(r =>
@@ -91,7 +87,12 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                     raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
                     Races.Add(raceViewModel);
                 }
-            });
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnSaveError();
+            }
+        }
 
         private void SetupCommands()
         {
@@ -131,7 +132,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                                 "Löschen ?",
                                 MessageBoxButton.YesNo,
                                 MessageBoxImage.Information) != MessageBoxResult.Yes) return;
-            if (rvm.RaceState.Race.Id != -1 && (await _logic.RemoveRace(rvm.RaceState.Race)).Failure)
+            if (rvm.RaceState.Race.Id != -1 && !await _logic.RemoveRace(rvm.RaceState.Race))
             {
                 MessageBox.Show("Rennen konnte nicht gelöscht werden!",
                                 "Fehler",

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.RaceControlService.Service
@@ -20,14 +19,11 @@ namespace Hurace.Core.Api.RaceControlService.Service
         event Action OnRaceFinished;
 
         Task InitializeAsync();
-        Task<Result<bool,Exception>> EnableRaceForSkier();
-        Task<Result<StartList, Exception>> GetCurrentSkier();
-        Task<Result<bool,Exception>> CancelSkier(int skierId);
-        Task<Result<IEnumerable<StartList>, Exception>> GetRemainingStartList();
-        Task<Result<TimeSpan?, Exception>> GetDifferenceToLeader(TimeData timeData);
-        Task<Result<bool,Exception>> CancelRace();
-
-        Task<Result<IEnumerable<TimeDifference>, Exception>>
-            GetTimeDataForSkierWithDifference(int skierId, int raceId);
+        Task<bool> EnableRaceForSkier();
+        Task<StartList?> GetCurrentSkier();
+        Task<bool> CancelSkier(int skierId);
+        Task<IEnumerable<StartList>?> GetRemainingStartList();
+        
+        Task<bool> CancelRace();
     }
 }

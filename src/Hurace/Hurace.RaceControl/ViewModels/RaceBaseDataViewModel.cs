@@ -104,14 +104,15 @@ namespace Hurace.RaceControl.ViewModels
         private async Task SetDisciplinesForLocation()
         {
             if (SelectedLocation == null) return;
-
-            (await _logic.GetDisciplinesForLocation(SelectedLocation.Id))
-                .Then(disciplines =>
-                {
-                    Disciplines.Clear();
-                    Disciplines.AddRange(disciplines);
-                    SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
-                }).OrElse(_ => ErrorNotifier.OnLoadError());
+            try
+            {
+                Disciplines.Repopulate(await _logic.GetDisciplinesForLocation(SelectedLocation.Id));
+                SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnLoadError();
+            }
         }
 
         private void StartEdit() => RaceState.Edit = true;
@@ -157,10 +158,17 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
-        private async Task UpdateRace() =>
-            (await _logic.GetRaceById(RaceState.Race.Id))
-             .Then(race => RaceState.Race = race)
-             .OrElse(_ => ErrorNotifier.OnLoadError());
+        private async Task UpdateRace()
+        {
+            try
+            {
+                RaceState.Race =await _logic.GetRaceById(RaceState.Race.Id);
+            }
+            catch (Exception e)
+            {
+                ErrorNotifier.OnLoadError();
+            }
+        }
 
         private bool SaveValidator() =>
             RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 &&

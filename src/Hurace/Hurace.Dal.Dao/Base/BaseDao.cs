@@ -24,16 +24,14 @@ namespace Hurace.Dal.Dao.Base
 
         private protected async Task<IEnumerable<TResult>> QueryAsync<TResult>(string statement,
             MapperConfig? mapperConfig = null,
-            params QueryParam[] queryParams) where TResult : class, new()
-        {
-            return await ConnectionFactory.UseConnection(statement, queryParams, async command =>
+            params QueryParam[] queryParams) where TResult : class, new() =>
+            await ConnectionFactory.UseConnection(statement, queryParams, async command =>
             {
                 var items = new List<TResult>();
                 await using var reader = await command.ExecuteReaderAsync();
                 while (reader.Read()) items.Add(reader.MapTo<TResult>(mapperConfig));
                 return items;
             });
-        }
 
         private protected async Task<IEnumerable<T>> GeneratedQueryAsync(
             (string statement, MapperConfig config, IEnumerable<QueryParam> queryParams) data) =>

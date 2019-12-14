@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Hurace.Core.Api.RaceControlService;
 using Hurace.Core.Api.RaceControlService.Resolver;
 using Hurace.Core.Api.RaceControlService.Service;
 using Hurace.Core.Api.RaceService;

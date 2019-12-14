@@ -73,19 +73,22 @@ namespace Hurace.RaceControl.ViewModels
                                                                           l.OrderBy(sl => sl.StartNumber));
         }
 
-        public async Task SetupAsync() =>
-            (await _logic.GetAvailableSkiersForRace(RaceState.Race.Id))
-            .Then(skiers =>
+        public async Task SetupAsync()
+        {
+            try
             {
+                var skiers = await _logic.GetAvailableSkiersForRace(RaceState.Race.Id);
                 AvailableSkiers.UpdateDataSource(skiers);
                 AvailableSkiers.Apply();
-            }).And(await _logic.GetStartListForRace(
-                       RaceState.Race.Id), startList =>
-                   {
-                       StartList.UpdateDataSource(startList);
-                       StartList.Apply();
-                   })
-            .OrElse(_ => ErrorNotifier.OnLoadError());
+                var startList = await _logic.GetStartListForRace(RaceState.Race.Id);
+                StartList.UpdateDataSource(startList);
+                StartList.Apply();
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnLoadError();
+            }
+        }
 
         private static bool SkierFilterFunc(Skier skier, string text) =>
             skier.FirstName.ToLower().Contains(text) ||
@@ -137,10 +140,18 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-        private async Task SaveStartList() =>
-            (await _logic.UpdateStartList(RaceState.Race, StartList.DataSource))
-            .Then(_ => RaceState.Edit = false)
-            .OrElse(_ => ErrorNotifier.OnSaveError());
+        private async Task SaveStartList()
+        {
+            try
+            {
+                await _logic.UpdateStartList(RaceState.Race, StartList.DataSource);
+                RaceState.Edit = false;
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnSaveError();
+            }
+        }
 
         private Task CancelEditStartList()
         {

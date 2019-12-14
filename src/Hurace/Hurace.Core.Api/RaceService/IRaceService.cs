@@ -1,28 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.RaceService
 {
     public interface IRaceService
     {
-        Task<Result<Race, Exception>> GetRaceById(int raceId);
-        Task<Result<IEnumerable<Gender>, Exception>> GetGenders();
-        Task<Result<IEnumerable<Location>, Exception>> GetLocations();
-        Task<Result<IEnumerable<Discipline>,Exception>> GetDisciplines();
-        Task<Result<IEnumerable<Race>,Exception>> GetAllRaces();
-        Task<Result<IEnumerable<Race>, Exception>> GetRacesForSeason(int seasonId);
-        Task<Result<IEnumerable<Season>, Exception>> GetAllSeasons();
-        Task<Result<IEnumerable<Skier>, Exception>> GetAvailableSkiersForRace(int raceId);
-        Task<Result<IEnumerable<StartList>, Exception>> GetStartListForRace(int raceId);
+        Task<Race?> GetRaceById(int raceId);
+        Task<IEnumerable<Gender>?> GetGenders();
+        Task<IEnumerable<Location>?> GetLocations();
+        Task<IEnumerable<Discipline>?> GetDisciplines();
+        Task<IEnumerable<Race>?> GetAllRaces();
+        Task<IEnumerable<Race>?> GetRacesForSeason(int seasonId);
+        Task<IEnumerable<Season>?> GetAllSeasons();
+        Task<IEnumerable<Skier>?> GetAvailableSkiersForRace(int raceId);
+        Task<IEnumerable<StartList>?> GetStartListForRace(int raceId);
         Task<RaceUpdateState> InsertOrUpdateRace(Race race, int sensorCount);
-        Task<Result<int, Exception>> GetSensorCount(int raceId);
-        Task<Result<bool,Exception>> RemoveRace(Race race);
-        Task<Result<bool,Exception>> UpdateStartList(Race race, IEnumerable<StartList> startList);
-        Task<Result<IEnumerable<RaceRanking>, Exception>> GetRankingForRace(int raceId);
-        Task<Result<IEnumerable<TimeData>, Exception>> GetTimeDataForStartList(int raceId, int skierId);
-        Task<Result<IEnumerable<Discipline>, Exception>> GetDisciplinesForLocation(int locationId);
+        Task<int?> GetSensorCount(int raceId);
+        Task<bool> RemoveRace(Race race);
+        Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList);
+        Task<IEnumerable<TimeData>?> GetRankingForRace(int raceId);
+        Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId);
+        Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId, int skierId);
+        Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId);
+        Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
+        Task<IEnumerable<TimeDifference>?> GetTimeDataForSkierWithDifference(int skierId, int raceId);
     }
 }

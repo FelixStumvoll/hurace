@@ -45,6 +45,7 @@ namespace Hurace.Core.Api
                                                      connectionStringSection["ConnectionString"]))
                    .As<IConnectionFactory>();
             builder.RegisterInstance(new StatementFactory("hurace")).AsSelf();
+
             _container = builder.Build();
         }
 

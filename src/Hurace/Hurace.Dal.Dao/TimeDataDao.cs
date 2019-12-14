@@ -21,22 +21,7 @@ namespace Hurace.Dal.Dao
 
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
-
-        public Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId, int count = 0)
-        {
-            var topSection = count <= 0 ? "" : $" top {count}";
-            return QueryAsync<RaceRanking>(
-                $@"select{topSection} * from hurace.TimeDataRanking where raceId=@raceId
-                                                order by raceTime asc",
-                new MapperConfig()
-                    .AddMapping<Country>(("countryId", nameof(Country.Id)))
-                    .Include<StartList>()
-                    .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
-                    .AddMapping<Gender>(("genderId", nameof(Gender.Id))),
-                ("@raceId", raceId));
-        }
-
-        public async Task<IEnumerable<TimeData>> GetRankingForSensor(int raceId, int sensorId, int count = 0)
+        public async Task<IEnumerable<TimeData>?> GetRankingForSensor(int raceId, int sensorId, int count = 0)
         {
             var topSection = count <= 0 ? "" : $" top {count}";
             return await QueryAsync<TimeData>(

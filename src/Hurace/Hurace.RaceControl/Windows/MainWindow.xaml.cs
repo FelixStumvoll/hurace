@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Hurace.Core.Api.RaceControlService;
 using Hurace.Core.Api.RaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
@@ -17,7 +16,7 @@ namespace Hurace.RaceControl.Windows
             DataContext = vm;
             Loaded += async (sender, args) =>
             {
-                if ((await ActiveRaceResolver.InitializeActiveRaceHandler()).Failure) ErrorNotifier.OnLoadError();
+                if (!await ActiveRaceResolver.InitializeActiveRaceHandler()) ErrorNotifier.OnLoadError();
             };
             
             InitializeComponent();

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using Hurace.Dal.Domain.Attributes;
 
