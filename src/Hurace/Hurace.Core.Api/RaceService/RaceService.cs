@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hurace.Core.Api.Models;
 using Hurace.Core.Api.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
@@ -107,23 +108,51 @@ namespace Hurace.Core.Api.RaceService
             return true;
         }
 
-        public Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId) => 
+        public Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId) =>
             _startListDao.GetDisqualifiedSkierForRace(raceId);
 
         public Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId,
             int skierId) => _timeDataDao.GetTimeDataForStartList(skierId, raceId);
 
         public Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId) =>
-             _locationDao.GetPossibleDisciplinesForLocation(locationId);
+            _locationDao.GetPossibleDisciplinesForLocation(locationId);
 
         private async Task<bool> StartListDefined(int raceId) =>
             await _startListDao.CountStartListForRace(raceId) > 0;
 
-        public async Task<IEnumerable<TimeData>?> GetRankingForRace(int raceId)
+        public async Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId)
         {
             var maxSensorNr = await _sensorDao.GetMaxSensorNr(raceId);
-            return
-                (await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value));
+
+            var ranking = new List<RaceRanking>();
+
+            var position = 0;
+            var equalityIncrease = 1;
+            foreach (var timeData in await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value))
+            {
+                if (position != 0)
+                    if (ranking[position - 1].Time == timeData.Time) equalityIncrease++;
+                    else
+                    {
+                        position += equalityIncrease;
+                        equalityIncrease = 1;
+                    }
+                else position++;
+
+                ranking.Add(new RaceRanking
+                {
+                    StartList = timeData.StartList,
+                    Time = timeData.Time,
+                    Position = position,
+                    TimeToLeader = timeData.Time - ranking.FirstOrDefault()?.Time ?? 0
+                });
+            }
+            ranking.AddRange((await GetDisqualifiedSkiers(raceId))
+                             .Select(sl => new RaceRanking
+                             {
+                                 StartList = sl
+                             }));
+            return ranking;
         }
 
         public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList)
@@ -133,11 +162,13 @@ namespace Hurace.Core.Api.RaceService
 
             return true;
         }
-        
+
         public async Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData)
         {
-            var leader = (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1)).FirstOrDefault();
-            var currentSkierTimeData = (await _timeDataDao.FindByIdAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId));
+            var leader =
+                (await _timeDataDao.GetRankingForSensor(timeData.RaceId, timeData.SensorId, 1)).FirstOrDefault();
+            var currentSkierTimeData =
+                (await _timeDataDao.FindByIdAsync(timeData.SkierId, timeData.RaceId, timeData.SensorId));
             if (leader == null) return TimeSpan.Zero; //no leader
             var leaderTime =
                 await _timeDataDao.GetTimeDataForSensor(leader.SkierId, leader.RaceId, timeData.SensorId);
@@ -145,7 +176,7 @@ namespace Hurace.Core.Api.RaceService
             if (leaderTime == null) return null; //no leader time
             return TimeSpan.FromMilliseconds(leaderTime.Time - currentSkierTimeData.Time);
         }
-        
+
         public async Task<IEnumerable<TimeDifference>?> GetTimeDataForSkierWithDifference(int skierId, int raceId)
         {
             var timeDataList = await _timeDataDao.GetTimeDataForStartList(skierId, raceId);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hurace.Core.Api.Models;
 using Hurace.Dal.Domain;
 
 namespace Hurace.Core.Api.RaceService
@@ -20,7 +21,7 @@ namespace Hurace.Core.Api.RaceService
         Task<int?> GetSensorCount(int raceId);
         Task<bool> RemoveRace(Race race);
         Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList);
-        Task<IEnumerable<TimeData>?> GetRankingForRace(int raceId);
+        Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId);
         Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId);
         Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId, int skierId);
         Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId);

@@ -199,6 +199,7 @@ namespace Hurace.Core.Api.RaceControlService.Service
 
             await UpdateStartListState(currentSkier, RaceDataEvent.SkierFinished,
                                        Constants.StartState.Finished);
+            OnSkierFinished?.Invoke(currentSkier);
         }
 
         public Task<StartList?> GetCurrentSkier() => _startListDao.GetCurrentSkierForRace(RaceId);

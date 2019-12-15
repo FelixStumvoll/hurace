@@ -9,6 +9,7 @@
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:pageViewModels="clr-namespace:Hurace.RaceControl.ViewModels.PageViewModels"
+             xmlns:resources="clr-namespace:Hurace.RaceControl.Resources"
              d:DataContext="{d:DesignInstance pageViewModels:RacePageViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -70,7 +71,8 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <!-- Race Lists -->
-            <TextBlock Grid.Row="2" Text="Alle Rennen:" Style="{StaticResource ListLabel}" />
+            <TextBlock Grid.Row="2" Text="{x:Static resources:StringResources.AllRacesLabel}"
+                       Style="{StaticResource ListLabel}" />
             <ListBox Grid.Row="3" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
                      BorderThickness="0,0,0,1">
                 <i:Interaction.Triggers>
@@ -84,7 +86,8 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Grid.Row="4" Content="Create Race" Margin="10" Command="{Binding AddRaceCommand}" />
+            <Button Grid.Row="4" Content="{x:Static resources:StringResources.CreateRaceLabel}" Margin="10"
+                    Command="{Binding AddRaceCommand}" />
         </Grid>
 
         <GridSplitter Grid.Column="0" Background="Gray" Width="1" VerticalAlignment="Stretch"
@@ -99,7 +102,7 @@
 
                 <DataTemplate x:Key="NoSelection">
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="35"
-                               Text="Plox Select Race ÓwÒ" />
+                               Text="{x:Static resources:StringResources.SelectRaceLabel}" />
                 </DataTemplate>
             </ContentPresenter.Resources>
 

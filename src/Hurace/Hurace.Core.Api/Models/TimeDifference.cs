@@ -1,6 +1,6 @@
 ﻿using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Api
+namespace Hurace.Core.Api.Models
 {
     public class TimeDifference
     {
