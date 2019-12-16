@@ -75,7 +75,7 @@ namespace Hurace.Dal.Test
                 {
                     dt = dt.AddMilliseconds(rand.Next(2000, 4000));
                     var sensorId = await InsertSensor(raceId.Value);
-                    var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.SkierEvent.SplitTime);
+                    var raceDataId = await InsertRaceData(raceId.Value, (int) Dal.Domain.Enums.RaceDataEvent.SkierSplitTime);
                     var skierEventId = await InsertSkierEvent(raceDataId.Value, skierId, raceId.Value);
                     await InsertTimeData(raceId.Value, skierId, sensorId.Value, skierEventId.Value, dt.Millisecond);
                 }
@@ -85,7 +85,7 @@ namespace Hurace.Dal.Test
         protected async Task<int?> SetupRaceEvent()
         {
             var raceId = await SetupRace();
-            var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.RaceEvent.Started);
+            var raceDataId = await InsertRaceData(raceId.Value, (int) Dal.Domain.Enums.RaceDataEvent.RaceStarted);
             return await InsertRaceEvent(raceDataId.Value);
         }
 
@@ -95,7 +95,7 @@ namespace Hurace.Dal.Test
             var countryId = await InsertCountry();
             var skierId = await InsertSkier(countryId.Value);
             await InsertStartList(skierId.Value, raceId.Value);
-            var raceDataId = await InsertRaceData(raceId.Value, (int) Constants.SkierEvent.Started);
+            var raceDataId = await InsertRaceData(raceId.Value, (int) Dal.Domain.Enums.RaceDataEvent.SkierStarted);
             return await InsertSkierEvent(raceDataId.Value, skierId.Value, raceId.Value);
         }
 
@@ -123,7 +123,7 @@ namespace Hurace.Dal.Test
         protected async Task<int?> SetupRaceData()
         {
             var raceId = await SetupRace();
-            return await InsertRaceData(raceId.Value, (int) Constants.RaceEvent.Finished);
+            return await InsertRaceData(raceId.Value, (int) Dal.Domain.Enums.RaceDataEvent.RaceFinished);
         }
 
         protected async Task SetupLocation()
@@ -207,7 +207,7 @@ namespace Hurace.Dal.Test
                 RaceId = raceId,
                 SkierId = skierId,
                 StartNumber = 1,
-                StartStateId = (int) Constants.StartState.Finished
+                StartStateId = (int) Dal.Domain.Enums.StartState.Finished
             });
 
 
@@ -228,7 +228,7 @@ namespace Hurace.Dal.Test
         protected Task<int?> InsertSkier(int countryId) => SkierDao.InsertGetIdAsync(new Skier
         {
             CountryId = countryId,
-            GenderId = (int) Constants.Gender.Male,
+            GenderId = (int) Dal.Domain.Enums.Gender.Male,
             FirstName = "Test",
             LastName = "Pacito",
             DateOfBirth = DateTime.Now
@@ -238,12 +238,12 @@ namespace Hurace.Dal.Test
             RaceDao.InsertGetIdAsync(new Race
             {
                 DisciplineId = disciplineId,
-                GenderId = (int) Constants.Gender.Male,
+                GenderId = (int) Dal.Domain.Enums.Gender.Male,
                 LocationId = locationId,
                 RaceDate = DateTime.Now,
                 RaceDescription = "Description",
                 SeasonId = seasonId,
-                RaceStateId = (int) Constants.RaceEvent.Finished
+                RaceStateId = (int) Dal.Domain.Enums.RaceDataEvent.RaceFinished
             });
 
         private Task InsertTimeData(int raceId, int skierId, int sensorId, int skierEventId, int time) =>

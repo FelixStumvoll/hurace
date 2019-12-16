@@ -113,7 +113,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                     Race = new Race
                     {
                         Id = -1,
-                        RaceStateId = (int) Constants.RaceState.Upcoming,
+                        RaceStateId = (int) Dal.Domain.Enums.RaceState.Upcoming,
                         RaceDate = DateTime.Now,
                         SeasonId = SelectedSeason.Id,
                         Season = SelectedSeason

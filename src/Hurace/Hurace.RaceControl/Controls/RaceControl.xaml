@@ -16,15 +16,17 @@
 
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
-        <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
+        <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
         <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
     </UserControl.Resources>
 
     <ContentPresenter Content="{Binding}">
         <ContentPresenter.Resources>
             <DataTemplate x:Key="Upcoming">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
                     <Button Command="{Binding StartRaceCommand}" Padding="10,0" Content="Start Race" />
+                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0" Style="{StaticResource ErrorMessage}"
+                               Visibility="{Binding StartListDefined, Converter={StaticResource StartListEmptyToVisibilityConverter}}" />
                 </StackPanel>
             </DataTemplate>
 

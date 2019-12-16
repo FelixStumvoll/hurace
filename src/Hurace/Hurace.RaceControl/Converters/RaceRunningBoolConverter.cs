@@ -8,7 +8,7 @@ namespace Hurace.RaceControl.Converters
     public class RaceRunningBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-            ((Race) value)?.RaceStateId == (int) Constants.RaceState.Running;
+            ((Race) value)?.RaceStateId == (int) Dal.Domain.Enums.RaceState.Running;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }

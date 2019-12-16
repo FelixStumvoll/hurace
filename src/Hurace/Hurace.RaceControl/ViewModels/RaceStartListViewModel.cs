@@ -6,6 +6,7 @@ using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
+using StartState = Hurace.Dal.Domain.Enums.StartState;
 
 namespace Hurace.RaceControl.ViewModels
 {
@@ -52,7 +53,9 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            EditCommand = new ActionCommand(_ => EditStartList());
+            EditCommand = new ActionCommand(_ => EditStartList(),
+                                            _ => RaceState.Race.RaceStateId ==
+                                                 (int) Dal.Domain.Enums.RaceState.Upcoming);
             SaveCommand = new AsyncCommand(_ => SaveStartList());
             CancelEditCommand = new AsyncCommand(_ => CancelEditStartList());
 
@@ -118,7 +121,7 @@ namespace Hurace.RaceControl.ViewModels
                 RaceId = RaceState.Race.Id,
                 Skier = skier,
                 SkierId = skier.Id,
-                StartStateId = (int) Constants.StartState.Upcoming,
+                StartStateId = (int) StartState.Upcoming,
                 StartNumber = StartList.DataSource.Count + 1
             });
 

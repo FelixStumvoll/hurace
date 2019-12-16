@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Hurace.Dal.Domain.Interfaces;
 using Hurace.Dal.Interface;
 using Hurace.Dal.Interface.Base;
 using Hurace.DataGenerator.JsonEntities;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator
@@ -71,8 +73,8 @@ namespace Hurace.DataGenerator
         private static int GetGenderId(string gender) =>
             gender switch
             {
-                "f" => (int) Constants.Gender.Female,
-                "m" => (int) Constants.Gender.Male,
+                "f" => (int)Dal.Domain.Enums.Gender.Female,
+                "m" => (int) Dal.Domain.Enums.Gender.Male,
                 _ => -1,
             };
 
@@ -138,10 +140,10 @@ namespace Hurace.DataGenerator
             _locations.SelectMany(location => _disciplines,
                                   (location, discipline) => new Race
                                   {
-                                      GenderId = (int) Constants.Gender.Male,
+                                      GenderId = (int) Dal.Domain.Enums.Gender.Male,
                                       DisciplineId = discipline.Id,
                                       SeasonId = _season.Id,
-                                      RaceStateId = (int) Constants.RaceState.Finished,
+                                      RaceStateId = (int) Dal.Domain.Enums.RaceState.Finished,
                                       RaceDate = GetRandomRaceDate(),
                                       LocationId = location.Id,
                                       RaceDescription =
@@ -184,7 +186,7 @@ namespace Hurace.DataGenerator
                 var raceEventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                 {
                     RaceId = race.Id,
-                    EventTypeId = (int) Constants.RaceEvent.Started,
+                    EventTypeId = (int) Dal.Domain.Enums.RaceDataEvent.RaceStarted,
                     EventDateTime = race.RaceDate
                 });
 
@@ -197,7 +199,7 @@ namespace Hurace.DataGenerator
                 {
                     var eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                     {
-                        RaceId = race.Id, EventDateTime = raceTime, EventTypeId = (int) Constants.SkierEvent.Started
+                        RaceId = race.Id, EventDateTime = raceTime, EventTypeId = (int) Dal.Domain.Enums.RaceDataEvent.SkierStarted
                     });
 
                     await _skierEventDao.InsertAsync(new SkierEvent
@@ -214,7 +216,7 @@ namespace Hurace.DataGenerator
                         {
                             RaceId = race.Id,
                             EventDateTime = raceTime,
-                            EventTypeId = (int) Constants.SkierEvent.SplitTime
+                            EventTypeId = (int) Dal.Domain.Enums.RaceDataEvent.SkierSplitTime
                         });
 
                         var skierEventId = await _skierEventDao.InsertGetIdAsync(new SkierEvent
@@ -241,7 +243,7 @@ namespace Hurace.DataGenerator
                     eventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                     {
                         RaceId = race.Id,
-                        EventTypeId = (int) Constants.SkierEvent.Finished,
+                        EventTypeId = (int) Dal.Domain.Enums.RaceDataEvent.SkierFinished,
                         EventDateTime = raceTime
                     });
 
@@ -256,7 +258,7 @@ namespace Hurace.DataGenerator
                 raceEventId = await _raceDataDao.InsertGetIdAsync(new RaceData
                 {
                     RaceId = race.Id,
-                    EventTypeId = (int) Constants.RaceEvent.Finished,
+                    EventTypeId = (int) Dal.Domain.Enums.RaceDataEvent.RaceFinished,
                     EventDateTime = raceTime
                 });
                 await _raceEventDao.InsertAsync(new RaceEvent

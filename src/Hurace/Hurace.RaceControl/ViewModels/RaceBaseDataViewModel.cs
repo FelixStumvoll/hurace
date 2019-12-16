@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
+using Hurace.RaceControl.Validators;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class RaceBaseDataViewModel : NotifyPropertyChanged
+    public class RaceBaseDataViewModel : ValidatorViewModel<RaceBaseDataViewModel,RaceValidator>
     {
         private readonly IRaceService _logic;
         private int _sensorCount;
@@ -59,8 +61,7 @@ namespace Hurace.RaceControl.ViewModels
             get => _sensorCount;
             set => Set(ref _sensorCount, value);
         }
-
-
+        
         public Season Season => RaceState.Race.Season;
 
         public RaceBaseDataViewModel(IRaceService logic, SharedRaceViewModel svm, SharedRaceStateViewModel raceState)
@@ -69,18 +70,20 @@ namespace Hurace.RaceControl.ViewModels
             RaceState = raceState;
             SharedRaceViewModel = svm;
             SetupCommands();
+            RegisterValidator(this);
         }
-
+        
         private void SetupCommands()
         {
             StartEditCommand = new ActionCommand(_ => StartEdit());
             CancelEditCommand = new AsyncCommand(_ => CancelEdit());
-            SaveEditCommand = new AsyncCommand(_ => SaveEdit(), _ => SaveValidator());
+            SaveEditCommand = new AsyncCommand(_ => SaveEdit(), _ => ValidatorIsValid);
             LocationChangedCommand = new AsyncCommand(_ => SetDisciplinesForLocation());
         }
 
         public async Task SetupAsync()
         {
+            ValidatorEnabled = false;
             var sensorCount = await _logic.GetSensorCount(RaceState.Race.Id);
             if (sensorCount == null)
             {
@@ -90,6 +93,7 @@ namespace Hurace.RaceControl.ViewModels
 
             SensorCount = sensorCount.Value;
             await SetSelectedProps();
+            ValidatorEnabled = true;
         }
 
         private async Task SetSelectedProps()
@@ -106,7 +110,9 @@ namespace Hurace.RaceControl.ViewModels
             if (SelectedLocation == null) return;
             try
             {
-                Disciplines.Repopulate(await _logic.GetDisciplinesForLocation(SelectedLocation.Id));
+                var disciplines = await _logic.GetDisciplinesForLocation(SelectedLocation.Id);
+                Disciplines.Clear();
+                Disciplines.AddRange(disciplines);
                 SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
             }
             catch (Exception)
@@ -170,11 +176,11 @@ namespace Hurace.RaceControl.ViewModels
             }
         }
 
-        private bool SaveValidator() =>
-            RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 &&
-            (_selectedDiscipline != null && _selectedDiscipline.Id != -1) &&
-            !RaceState.Race.RaceDescription.IsNullOrEmpty() &&
-            RaceState.Race.RaceDate != DateTime.MinValue &&
-            SensorCount > 0;
+        // private bool SaveValidator() =>
+        //     RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 &&
+        //     (_selectedDiscipline != null && _selectedDiscipline.Id != -1) &&
+        //     !RaceState.Race.RaceDescription.IsNullOrEmpty() &&
+        //     RaceState.Race.RaceDate != DateTime.MinValue &&
+        //     SensorCount > 0;
     }
 }
