@@ -5,9 +5,13 @@
              xmlns:dto="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:pages="clr-namespace:Hurace.RaceControl.Pages"
-             StartupUri="Windows/MainWindow.xaml"
-             >
+             xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
+             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+             StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
+        <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
+        <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
+
         <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Country.CountryCode}" />
@@ -15,6 +19,51 @@
                 <TextBlock Text="{Binding FirstName}" Margin="0,0,5,0" />
                 <TextBlock Text="{Binding LastName}" />
             </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type models:RaceRanking}">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <TextBlock Text="{Binding Position}" Width="25" Margin="0,0,10,0" />
+                    <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                                      Content="{Binding StartList.Skier}" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <ContentPresenter Content="{Binding}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate x:Key="Disqualified">
+                                <TextBlock Text="Disqualified" />
+                            </DataTemplate>
+                            <DataTemplate x:Key="Valid">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
+                                        Margin="0,0,10,0" />
+                                    <TextBlock Text="+" />
+                                    <TextBlock
+                                        Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+
+                        <ContentPresenter.Style>
+                            <Style TargetType="ContentPresenter">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Disqualified}" Value="True">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource Disqualified}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Disqualified}" Value="False">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource Valid}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentPresenter.Style>
+                    </ContentPresenter>
+
+                </StackPanel>
+            </DockPanel>
         </DataTemplate>
 
     </Application.Resources>

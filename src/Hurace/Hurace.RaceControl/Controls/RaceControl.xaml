@@ -17,6 +17,7 @@
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
         <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
+        <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
     </UserControl.Resources>
 
     <ContentPresenter Content="{Binding}">
@@ -157,27 +158,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Rangliste" />
-                        <ListBox Grid.Row="1" ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel LastChildFill="False">
-                                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Position}" Margin="0,0,10,0" />
-                                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
-                                                              Content="{Binding StartList.Skier}" />
-                                        </StackPanel>
-
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                            <TextBlock
-                                                Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
-                                                Margin="0,0,10,0" />
-                                            <TextBlock
-                                                Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
-                                        </StackPanel>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch" />
                     </Grid>
 
                     <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="0,10,5,0"
