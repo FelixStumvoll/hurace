@@ -186,36 +186,43 @@
             </StackPanel>
         </ScrollViewer>
 
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <ContentPresenter Content="{Binding}" Grid.Row="1" Margin="10">
-            <ContentPresenter.Resources>
-                <DataTemplate x:Key="InEdit">
-                    <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0"
-                                Margin="0,0,10,0" />
-                        <Button Content="Speichern" Command="{Binding SaveEditCommand}" Padding="5,0" />
-                    </StackPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="View">
-                    <StackPanel Style="{StaticResource CrudButtonStyle}">
-                        <Button Content="Bearbeiten" Command="{Binding StartEditCommand}" Padding="5,0" />
-                    </StackPanel>
-                </DataTemplate>
-            </ContentPresenter.Resources>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource ErrorMessage}" Text="{Binding ValidationMessage}" />
 
-            <ContentPresenter.Style>
-                <Style TargetType="{x:Type ContentPresenter}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
-                            <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
-                            <Setter Property="ContentTemplate" Value="{StaticResource View}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentPresenter.Style>
-        </ContentPresenter>
+            <ContentPresenter Content="{Binding}" Grid.Column="1">
+                <ContentPresenter.Resources>
+                    <DataTemplate x:Key="InEdit">
+                        <StackPanel Style="{StaticResource CrudButtonStyle}">
+                            <Button Content="Abbrechen" Command="{Binding CancelEditCommand}" Padding="5,0"
+                                    Margin="0,0,10,0" />
+                            <Button Content="Speichern" Command="{Binding SaveEditCommand}" Padding="5,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="View">
+                        <StackPanel Style="{StaticResource CrudButtonStyle}">
+                            <Button Content="Bearbeiten" Command="{Binding StartEditCommand}" Padding="5,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentPresenter.Resources>
 
+                <ContentPresenter.Style>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
+                                <Setter Property="ContentTemplate" Value="{StaticResource InEdit}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
+                                <Setter Property="ContentTemplate" Value="{StaticResource View}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentPresenter.Style>
+            </ContentPresenter>
+        </Grid>
     </Grid>
 </UserControl>

@@ -47,7 +47,7 @@ namespace Hurace.Dal.Dao
                                         ("@id", raceId));
 
         private async Task<IEnumerable<StartList>> GetStartListEntriesByState(int raceId,
-            Constants.StartState startListState) =>
+            Domain.Enums.StartState startListState) =>
             await GeneratedQueryAsync(DefaultSelectQuery()
                                       .Where<StartList>(
                                           (nameof(StartList.StartStateId), (int) startListState),
@@ -58,7 +58,7 @@ namespace Hurace.Dal.Dao
         {
             var builtStatementData = DefaultSelectQuery()
                                      .Where<StartList>((nameof(StartList.StartStateId),
-                                                           (int) Constants.StartState.Upcoming),
+                                                           (int) Domain.Enums.StartState.Upcoming),
                                                        (nameof(StartList.RaceId), raceId)).Build();
             builtStatementData.statement = builtStatementData.statement.Replace("select", "select top 1");
             builtStatementData.statement = builtStatementData.statement +=
@@ -96,7 +96,7 @@ namespace Hurace.Dal.Dao
                     .AddMapping<Country>((nameof(Skier.CountryId), nameof(Country.Id)))
                     .AddMapping<Gender>((nameof(Skier.GenderId), nameof(Gender.Id)))
                     .AddMapping<StartState>((nameof(StartList.StartStateId), nameof(StartState.Id))),
-                ("@ssi", (int) Constants.StartState.Canceled), ("@ssii", (int) Constants.StartState.Disqualified));
+                ("@ssi", (int) Domain.Enums.StartState.Canceled), ("@ssii", (int) Domain.Enums.StartState.Disqualified));
 
         public async Task<StartList> GetSkierForRace(int skierId, int raceId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
@@ -108,7 +108,7 @@ namespace Hurace.Dal.Dao
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
 
         public async Task<StartList?> GetCurrentSkierForRace(int raceId) =>
-            (await GetStartListEntriesByState(raceId, Constants.StartState.Running)).SingleOrDefault();
+            (await GetStartListEntriesByState(raceId, Domain.Enums.StartState.Running)).SingleOrDefault();
 
         public override async Task<bool> InsertAsync(StartList obj) =>
             await GeneratedNonQueryAsync(StatementFactory

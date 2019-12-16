@@ -22,6 +22,7 @@ namespace Hurace.RaceControl.ViewModels
         private StartList _currentSkier;
         private readonly IRaceService _logic;
         private bool _setupDone;
+        private bool _startListDefined;
 
         public SharedRaceStateViewModel RaceState { get; set; }
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
@@ -41,6 +42,12 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _currentSkier, value);
         }
 
+        public bool StartListDefined
+        {
+            get => _startListDefined;
+            set => Set(ref _startListDefined, value);
+        }
+
         public RaceControlViewModel(SharedRaceStateViewModel raceState, IRaceService logic)
         {
             RaceState = raceState;
@@ -50,7 +57,7 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            StartRaceCommand = new AsyncCommand(_ => StartRace());
+            StartRaceCommand = new AsyncCommand(_ => StartRace(), _ => StartListDefined);
             ReadyTrackCommand = new AsyncCommand(async _ => await _activeRaceControlService.EnableRaceForSkier(),
                                                  _ => CurrentSkier == null && StartList.Any());
             CancelSkier = new AsyncCommand(async skierId =>
@@ -60,6 +67,7 @@ namespace Hurace.RaceControl.ViewModels
         public async Task SetupAsync()
         {
             _activeRaceControlService ??= ActiveRaceResolver.Instance[RaceState.Race.Id];
+            StartListDefined = await _logic.IsStartListDefined(RaceState.Race.Id) ?? false;
             if (_activeRaceControlService == null) return;
             if (!_setupDone) SetupRaceEvents();
             await LoadData();
@@ -75,6 +83,7 @@ namespace Hurace.RaceControl.ViewModels
 
                 //startlist
                 StartList.Repopulate(await _activeRaceControlService.GetRemainingStartList());
+                InvokePropertyChanged(nameof(StartListDefined));
 
                 //timedata for current
                 if (CurrentSkier != null)
@@ -82,7 +91,6 @@ namespace Hurace.RaceControl.ViewModels
                         .Repopulate(
                             await _logic.GetTimeDataForSkierWithDifference(CurrentSkier.SkierId, RaceState.Race.Id));
 
-               
 
                 Ranking.Repopulate(await _logic.GetRankingForRace(RaceState.Race.Id));
             }

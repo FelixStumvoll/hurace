@@ -31,9 +31,9 @@ namespace Hurace.Dal.Test
         public async Task UpdateTest()
         {
             var raceData = (await RaceDataDao.FindAllAsync()).First();
-            raceData.EventTypeId = (int) Constants.RaceEvent.Canceled;
+            raceData.EventTypeId = (int) Domain.Enums.RaceDataEvent.RaceCanceled;
             await RaceDataDao.UpdateAsync(raceData);
-            Assert.AreEqual((int)Constants.RaceEvent.Canceled,(await RaceDataDao.FindByIdAsync(raceData.Id))?.EventTypeId);
+            Assert.AreEqual((int)Domain.Enums.RaceDataEvent.RaceCanceled,(await RaceDataDao.FindByIdAsync(raceData.Id))?.EventTypeId);
         }
 
         [Test]
@@ -44,13 +44,13 @@ namespace Hurace.Dal.Test
             {
                 RaceId = raceId,
                 EventDateTime = new DateTime(1969,4,20),
-                EventTypeId = (int) Constants.RaceEvent.Finished
+                EventTypeId = (int) Domain.Enums.RaceDataEvent.RaceFinished
             });
 
             var raceDataById = await RaceDataDao.FindByIdAsync(raceDataId.Value);
             Assert.AreEqual(raceId, raceDataById.RaceId);
             Assert.AreEqual(new DateTime(1969,4,20),raceDataById.EventDateTime );
-            Assert.AreEqual((int) Constants.RaceEvent.Finished, raceDataById.EventTypeId);
+            Assert.AreEqual((int)Domain.Enums.RaceDataEvent.RaceFinished, raceDataById.EventTypeId);
         }
         
         [Test]

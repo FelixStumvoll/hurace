@@ -27,5 +27,6 @@ namespace Hurace.Core.Api.RaceService
         Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId);
         Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
         Task<IEnumerable<TimeDifference>?> GetTimeDataForSkierWithDifference(int skierId, int raceId);
+        Task<bool?> IsStartListDefined(int raceId);
     }
 }

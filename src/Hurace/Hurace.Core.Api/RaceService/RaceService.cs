@@ -147,6 +147,7 @@ namespace Hurace.Core.Api.RaceService
                     TimeToLeader = timeData.Time - ranking.FirstOrDefault()?.Time ?? 0
                 });
             }
+
             ranking.AddRange((await GetDisqualifiedSkiers(raceId))
                              .Select(sl => new RaceRanking
                              {
@@ -194,5 +195,8 @@ namespace Hurace.Core.Api.RaceService
 
             return retVal;
         }
+
+        public async Task<bool?> IsStartListDefined(int raceId) => 
+            (await _startListDao.CountStartListForRace(raceId) ?? 0) != 0;
     }
 }

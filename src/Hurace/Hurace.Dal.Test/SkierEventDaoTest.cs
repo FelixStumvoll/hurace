@@ -32,7 +32,7 @@ namespace Hurace.Dal.Test
             await StartListDao.InsertAsync(new StartList
             {
                 RaceId = skierEvent.RaceData?.RaceId ?? -1, SkierId = skierId.Value, StartNumber = 50,
-                StartStateId = (int) Constants.StartState.Finished
+                StartStateId = (int) Dal.Domain.Enums.StartState.Finished
             });
             skierEvent.SkierId = skierId.Value;
             await SkierEventDao.UpdateAsync(skierEvent);

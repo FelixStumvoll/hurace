@@ -12,9 +12,10 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <converters:RaceRunningBoolConverter x:Key="RaceRunningBoolConverter"/>
+        <converters:RaceRunningBoolConverter x:Key="RaceRunningBoolConverter" />
+        <converters:RaceIdToBoolConverter x:Key="RaceIdToBoolConverter" />
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -35,13 +36,16 @@
             <TabItem Header="Stammdaten">
                 <local:RaceBaseDataViewControl DataContext="{Binding RaceBaseDataViewModel}" />
             </TabItem>
-            <TabItem Header="Startliste">
+            <TabItem Header="Startliste"
+                     IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
                 <local:RaceStartListControl DataContext="{Binding RaceStartListViewModel}" />
             </TabItem>
-            <TabItem Header="Race Control">
+            <TabItem Header="Race Control"
+                     IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
                 <local:RaceControl DataContext="{Binding RaceControlViewModel}" />
             </TabItem>
-            <TabItem Header="Anzeigekontrolle" IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">
+            <TabItem Header="Anzeigekontrolle"
+                     IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">
                 <local:RaceDisplayControl DataContext="{Binding RaceDisplayViewModel}" />
             </TabItem>
         </TabControl>

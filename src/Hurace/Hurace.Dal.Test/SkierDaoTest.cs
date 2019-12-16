@@ -44,7 +44,7 @@ namespace Hurace.Dal.Test
                 CountryId = countryId,
                 FirstName = "Test",
                 LastName = "pacito",
-                GenderId = (int) Constants.Gender.Male,
+                GenderId = (int) Domain.Enums.Gender.Male,
                 DateOfBirth = new DateTime(1969,4,20)
             });
 
@@ -52,7 +52,7 @@ namespace Hurace.Dal.Test
             Assert.AreEqual(countryId, skier.CountryId);
             Assert.AreEqual("Test", skier.FirstName);
             Assert.AreEqual("pacito", skier.LastName);
-            Assert.AreEqual((int) Constants.Gender.Male, skier.GenderId);
+            Assert.AreEqual((int) Domain.Enums.Gender.Male, skier.GenderId);
             Assert.AreEqual(new DateTime(1969,4,20), skier.DateOfBirth);
             Assert.NotNull(skier.Country);
             Assert.NotNull(skier.Gender);

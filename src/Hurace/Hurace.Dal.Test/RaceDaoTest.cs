@@ -38,21 +38,21 @@ namespace Hurace.Dal.Test
             var raceId = await RaceDao.InsertGetIdAsync(new Race
             {
                 DisciplineId = disciplineId,
-                GenderId = (int) Constants.Gender.Male,
+                GenderId = (int) Domain.Enums.Gender.Male,
                 LocationId = locationId,
                 RaceDescription = "Description",
                 SeasonId = seasonId,
-                RaceStateId = (int) Constants.RaceEvent.Finished,
+                RaceStateId = (int)Domain.Enums.RaceDataEvent.RaceFinished,
                 RaceDate = new DateTime(2019, 11, 15)
             });
 
             var raceById = await RaceDao.FindByIdAsync(raceId.Value);
             Assert.AreEqual(disciplineId, raceById.DisciplineId);
-            Assert.AreEqual((int) Constants.Gender.Male, raceById.GenderId);
+            Assert.AreEqual((int) Domain.Enums.Gender.Male, raceById.GenderId);
             Assert.AreEqual(locationId, raceById.LocationId);
             Assert.AreEqual("Description", raceById.RaceDescription);
             Assert.AreEqual(seasonId, raceById.SeasonId);
-            Assert.AreEqual((int) Constants.RaceEvent.Finished, raceById.RaceStateId);
+            Assert.AreEqual((int) Domain.Enums.RaceDataEvent.RaceFinished, raceById.RaceStateId);
             Assert.AreEqual(new DateTime(2019, 11, 15), raceById.RaceDate);
             Assert.NotNull(raceById.Location);
             Assert.NotNull(raceById.Gender);

@@ -26,7 +26,7 @@ namespace Hurace.Dal.Dao
 
         public Task<IEnumerable<Race>> GetActiveRaces() =>
             GeneratedQueryAsync(DefaultSelectQuery()
-                                .Where<RaceState>((nameof(RaceState.Id), (int) Constants.RaceState.Running)).Build());
+                                .Where<RaceState>((nameof(RaceState.Id), (int) Domain.Enums.RaceState.Running)).Build());
 
         public Task<IEnumerable<Race>> GetRaceForSeasonId(int seasonId) =>
             GeneratedQueryAsync(DefaultSelectQuery().Where<Race>((nameof(Race.SeasonId), seasonId)).Build());

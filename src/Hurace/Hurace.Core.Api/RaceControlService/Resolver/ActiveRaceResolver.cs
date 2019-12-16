@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Api.RaceControlService.Service;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
+using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
 namespace Hurace.Core.Api.RaceControlService.Resolver
 {
@@ -45,7 +46,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
         public async Task<IActiveRaceControlService> StartRace(int raceId)
         {
             await RaceClockProvider.Instance.GetRaceClock();
-            await ChangeRaceState(raceId, Constants.RaceState.Running);
+            await ChangeRaceState(raceId, RaceState.Running);
             var service = ServiceProvider.Instance.ResolveService<IActiveRaceControlService>();
             service.RaceId = raceId;
             await service.InitializeAsync();
@@ -56,7 +57,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
         public IActiveRaceControlService this[int raceId] => _activeRaces
             .SingleOrDefault(r => r.RaceId == raceId);
 
-        private async Task ChangeRaceState(int raceId, Constants.RaceState state)
+        private async Task ChangeRaceState(int raceId, RaceState state)
         {
             var race = await _raceDao.FindByIdAsync(raceId);
             race.RaceStateId = (int) state;
@@ -78,7 +79,7 @@ namespace Hurace.Core.Api.RaceControlService.Resolver
 
         public async Task<bool> EndRace(int raceId)
         {
-            await ChangeRaceState(raceId, Constants.RaceState.Finished);
+            await ChangeRaceState(raceId, RaceState.Finished);
             _activeRaces = _activeRaces.Where(r => r.RaceId != raceId).ToList();
             return true;
         }

@@ -8,6 +8,7 @@ using Hurace.Dal.Domain;
 using Hurace.Dal.Domain.Enums;
 using Hurace.Dal.Interface;
 using Microsoft.Extensions.Configuration;
+using StartState = Hurace.Dal.Domain.Enums.StartState;
 
 namespace Hurace.Core.Api.RaceControlService.Service
 {
@@ -160,13 +161,13 @@ namespace Hurace.Core.Api.RaceControlService.Service
         public async Task<bool> EnableRaceForSkier()
         {
             var startList = await _startListDao.GetNextSkierForRace(RaceId);
-            await UpdateStartListState(startList, RaceDataEvent.SkierStarted, Constants.StartState.Running);
+            await UpdateStartListState(startList, RaceDataEvent.SkierStarted, StartState.Running);
             OnSkierStarted?.Invoke(startList);
             return true;
         }
 
         private async Task UpdateStartListState(StartList startList, RaceDataEvent eventType,
-            Constants.StartState state)
+            StartState state)
         {
             startList.StartStateId = (int) state;
             await _startListDao.UpdateAsync(startList);
@@ -198,7 +199,7 @@ namespace Hurace.Core.Api.RaceControlService.Service
             if (currentSkier == null) return;
 
             await UpdateStartListState(currentSkier, RaceDataEvent.SkierFinished,
-                                       Constants.StartState.Finished);
+                                       StartState.Finished);
             OnSkierFinished?.Invoke(currentSkier);
         }
 
@@ -207,14 +208,14 @@ namespace Hurace.Core.Api.RaceControlService.Service
         public async Task<bool> CancelSkier(int skierId)
         {
             var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
-            await UpdateStartListState(startList, RaceDataEvent.SkierCanceled, Constants.StartState.Canceled);
+            await UpdateStartListState(startList, RaceDataEvent.SkierCanceled,StartState.Canceled);
             OnSkierCanceled?.Invoke(startList);
             return true;
         }
 
         public async Task<IEnumerable<StartList>?> GetRemainingStartList() =>
             (await _startListDao.GetStartListForRace(RaceId))
-            .Where(sl => sl.StartStateId == (int) Constants.StartState.Upcoming);
+            .Where(sl => sl.StartStateId == (int)StartState.Upcoming);
         
         public async Task<bool> CancelRace()
         {

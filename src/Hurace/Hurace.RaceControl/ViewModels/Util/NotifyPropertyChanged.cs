@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using FluentValidation;
 
 namespace Hurace.RaceControl.ViewModels.Util
 {
@@ -16,7 +19,7 @@ namespace Hurace.RaceControl.ViewModels.Util
             field = value;
             InvokePropertyChanged(propertyName);
         }
-
+        
         protected void InvokePropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

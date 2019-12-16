@@ -12,6 +12,11 @@
         <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
         <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
 
+        <Style x:Key="ErrorMessage" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="Crimson" />
+        </Style>
+
         <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Country.CountryCode}" />
