@@ -42,7 +42,7 @@
             </TabItem>
             <TabItem Header="Race Control"
                      IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
-                <local:RaceControl DataContext="{Binding RaceControlViewModel}" />
+                <local:RaceControl DataContext="{Binding ActiveRaceControlViewModel}" />
             </TabItem>
             <TabItem Header="Anzeigekontrolle"
                      IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">

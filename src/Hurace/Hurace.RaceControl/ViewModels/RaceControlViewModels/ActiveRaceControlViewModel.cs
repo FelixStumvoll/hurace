@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Hurace.Core.Api;
 using Hurace.Core.Api.Models;
 using Hurace.Core.Api.RaceControlService.Resolver;
 using Hurace.Core.Api.RaceControlService.Service;
@@ -14,15 +13,16 @@ using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 {
-    public class RaceControlViewModel : NotifyPropertyChanged
+    public class ActiveRaceControlViewModel : NotifyPropertyChanged
     {
         private IActiveRaceControlService _activeRaceControlService;
         private StartList _currentSkier;
         private readonly IRaceService _logic;
         private bool _setupDone;
         private bool _startListDefined;
+        private bool _raceControlEnabled = true;
 
         public SharedRaceStateViewModel RaceState { get; set; }
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
@@ -34,7 +34,8 @@ namespace Hurace.RaceControl.ViewModels
 
         public ICommand StartRaceCommand { get; set; }
         public ICommand ReadyTrackCommand { get; set; }
-        public ICommand CancelSkier { get; set; }
+        public ICommand CancelSkierCommand { get; set; }
+        public ICommand CancelRaceCommand { get; set; }
 
         public StartList CurrentSkier
         {
@@ -48,7 +49,13 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _startListDefined, value);
         }
 
-        public RaceControlViewModel(SharedRaceStateViewModel raceState, IRaceService logic)
+        public bool RaceControlEnabled
+        {
+            get => _raceControlEnabled;
+            set => Set(ref _raceControlEnabled, value);
+        }
+
+        public ActiveRaceControlViewModel(SharedRaceStateViewModel raceState, IRaceService logic)
         {
             RaceState = raceState;
             _logic = logic;
@@ -57,11 +64,13 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            StartRaceCommand = new AsyncCommand(_ => StartRace(), _ => StartListDefined);
+            StartRaceCommand = new AsyncCommand(_ => StartRace(), _ => StartListDefined && RaceControlEnabled);
             ReadyTrackCommand = new AsyncCommand(async _ => await _activeRaceControlService.EnableRaceForSkier(),
-                                                 _ => CurrentSkier == null && StartList.Any());
-            CancelSkier = new AsyncCommand(async skierId =>
-                                               await _activeRaceControlService.CancelSkier((int) skierId));
+                                                 _ => CurrentSkier == null && StartList.Any() && RaceControlEnabled);
+            CancelSkierCommand = new AsyncCommand(async skierId =>
+                                                      await _activeRaceControlService.CancelSkier((int) skierId),
+                                                  _ => RaceControlEnabled);
+            CancelRaceCommand = new AsyncCommand(async _ => await CancelRace(), _ => RaceControlEnabled);
         }
 
         public async Task SetupAsync()
@@ -83,7 +92,7 @@ namespace Hurace.RaceControl.ViewModels
 
                 //startlist
                 StartList.Repopulate(await _activeRaceControlService.GetRemainingStartList());
-                InvokePropertyChanged(nameof(StartListDefined));
+                                                                                InvokePropertyChanged(nameof(StartListDefined));
 
                 //timedata for current
                 if (CurrentSkier != null)
@@ -132,6 +141,8 @@ namespace Hurace.RaceControl.ViewModels
             _activeRaceControlService.OnLateDisqualification += async _ => await LoadDataInViewThread();
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ => await LoadDataInViewThread();
             _activeRaceControlService.OnSkierFinished += async _ => await LoadDataInViewThread();
+            _activeRaceControlService.OnRaceCanceled += () => RaceControlEnabled = false;
+            _activeRaceControlService.OnRaceFinished += () => RaceControlEnabled = false;
         }
 
         private async Task StartRace()
@@ -149,6 +160,22 @@ namespace Hurace.RaceControl.ViewModels
             catch (Exception)
             {
                 ErrorNotifier.OnLoadError();
+            }
+        }
+
+        private async Task CancelRace()
+        {
+            if (MessageBox.Show("Rennen abbrechen ?\nDas Rennen kann danach nicht mehr fortgesetzt werden",
+                                "Abbrechen ?", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
+                MessageBoxResult.Yes) return;
+
+            try
+            {
+                await _activeRaceControlService.CancelRace();
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnSaveError();
             }
         }
 

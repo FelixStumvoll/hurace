@@ -10,9 +10,10 @@
              xmlns:raceControl="clr-namespace:Hurace.RaceControl"
              xmlns:api="clr-namespace:Hurace.Core.Api;assembly=Hurace.Core.Api"
              xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
+             xmlns:raceControlViewModels="clr-namespace:Hurace.RaceControl.ViewModels.RaceControlViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance vm:RaceControlViewModel}">
+             d:DataContext="{d:DesignInstance raceControlViewModels:ActiveRaceControlViewModel}">
 
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
@@ -25,16 +26,16 @@
             <DataTemplate x:Key="Upcoming">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
                     <Button Command="{Binding StartRaceCommand}" Padding="10,0" Content="Start Race" />
-                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0" Style="{StaticResource ErrorMessage}"
+                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0"
+                               Style="{StaticResource ErrorMessage}"
                                Visibility="{Binding StartListDefined, Converter={StaticResource StartListEmptyToVisibilityConverter}}" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="Running">
-                <Grid Margin="10">
+                <Grid Margin="10" IsEnabled="{Binding RaceControlEnabled}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="200" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -45,37 +46,106 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <!-- Current Skier -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Aktueller Läufer:" />
-                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="Gray"
+                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="Gray"
                             Margin="0,0,5,0">
-                        <ContentPresenter Margin="5" Height="30" Content="{Binding}">
+                        <ContentPresenter Margin="5" Content="{Binding}">
                             <ContentPresenter.Resources>
                                 <DataTemplate x:Key="Skier">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="150" />
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Row="0" VerticalAlignment="Center" FontSize="25"
-                                                   FontWeight="Bold" Text="{Binding CurrentSkier.StartNumber}" />
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
-                                            <StackPanel.Resources>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="FontSize" Value="20" />
-                                                </Style>
-                                            </StackPanel.Resources>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontSize" Value="25" />
+                                            </Style>
+
+                                            <Style TargetType="DockPanel">
+                                                <Setter Property="Margin" Value="5,0,0,0" />
+                                            </Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="5,0,0,0" />
+                                            </Style>
+                                        </Grid.Resources>
+
+                                        <Rectangle Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Margin="0,0,5,0"
+                                                   Fill="Red" />
+
+                                        <DockPanel Grid.Column="1" Grid.Row="1">
+                                            <TextBlock FontSize="25" Text="Startnummer:" />
+                                            <TextBlock HorizontalAlignment="Right"
+                                                       FontWeight="Bold" Text="{Binding CurrentSkier.StartNumber}" />
+                                        </DockPanel>
+
+                                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                                             <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" Margin="0,0,5,0" />
                                             <TextBlock Text="{Binding CurrentSkier.Skier.LastName}" />
-                                            <TextBlock Margin="5,0" Text="-" />
-                                            <TextBlock Text="{Binding CurrentSkier.Skier.Country.CountryCode}" />
-                                            <Button Height="25" Content="Disqualifizieren" Margin="20,0,0,0" />
                                         </StackPanel>
+                                        <Separator Grid.Row="0" Grid.Column="1" Margin="5,10,0,0"
+                                                   VerticalAlignment="Bottom" />
+
+                                        <ContentPresenter Grid.Column="1" Grid.Row="3" Margin="5,0,0,50"
+                                                          Content="{Binding}">
+                                            <ContentPresenter.Resources>
+                                                <DataTemplate x:Key="InTransit">
+                                                    <DockPanel>
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   Text="Vorläufige Position:" />
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   HorizontalAlignment="Right" Width="40" TextAlignment="Center"
+                                                                   Text="1" />
+                                                    </DockPanel>
+                                                </DataTemplate>
+
+                                                <DataTemplate x:Key="Finished">
+                                                    <DockPanel>
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   Text="Position:" />
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   Width="40" HorizontalAlignment="Right"
+                                                                   TextAlignment="Center" Background="Green" Text="1" />
+                                                    </DockPanel>
+                                                </DataTemplate>
+
+                                                <DataTemplate x:Key="Failure">
+                                                    <DockPanel>
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   Text="Ergebnis:" />
+                                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                                   HorizontalAlignment="Right" Text="Ausgeschieden" />
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ContentPresenter.Resources>
+
+                                            <ContentPresenter.Style>
+                                                <Style TargetType="ContentPresenter">
+                                                    <Setter Property="ContentTemplate"
+                                                            Value="{StaticResource Finished}" />
+                                                </Style>
+                                            </ContentPresenter.Style>
+                                        </ContentPresenter>
+
+
+                                        <DockPanel Grid.Column="1" Grid.Row="4">
+                                            <TextBlock Text="Zeit:" />
+                                            <TextBlock HorizontalAlignment="Right" Text="TIMER" />
+                                        </DockPanel>
+
                                     </Grid>
                                 </DataTemplate>
                                 <DataTemplate x:Key="NoSkier">
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock FontSize="15" FontWeight="Bold"
+                                        <TextBlock FontSize="25" FontWeight="Bold"
                                                    Text="Derzeit kein Rennläufer auf der Strecke" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -103,13 +173,15 @@
 
                     </Border>
                     <!-- Controls -->
-                    <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
                         <Button Height="25" VerticalAlignment="Center"
                                 Content="Strecke freigeben" Command="{Binding ReadyTrackCommand}" />
+                        <Button Height="25" Margin="0,10,0,0" VerticalAlignment="Center"
+                                Content="Fahrer disqualifizieren" />
                     </StackPanel>
 
                     <!-- Lists -->
-                    <Grid Grid.Row="2" Grid.Column="0" Margin="0,10,5,0">
+                    <Grid Grid.Row="1" Grid.Column="0" Margin="0,10,5,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -135,7 +207,7 @@
                         </ListBox>
                     </Grid>
 
-                    <Grid Grid.Row="2" Grid.Column="1" Margin="0,10,5,0">
+                    <Grid Grid.Row="1" Grid.Column="1" Margin="0,10,5,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -154,7 +226,7 @@
                         </ListBox>
                     </Grid>
 
-                    <Grid Grid.Row="2" Grid.Column="2" Margin="0,10,5,0">
+                    <Grid Grid.Row="1" Grid.Column="2" Margin="0,10,5,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -163,7 +235,7 @@
                         <ListBox Grid.Row="1" ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch" />
                     </Grid>
 
-                    <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="0,10,5,0"
+                    <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,10,5,0"
                                 HorizontalAlignment="Right">
                         <Button Height="25" VerticalAlignment="Center" Margin="5,0,0,0"
                                 Content="Rennen abbrechen" />
