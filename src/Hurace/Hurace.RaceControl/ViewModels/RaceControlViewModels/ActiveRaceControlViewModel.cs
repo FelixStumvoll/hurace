@@ -62,19 +62,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private void SetupCommands()
         {
-            ReadyTrackCommand = new AsyncCommand(async _ =>
-                                                 {
-                                                     try
-                                                     {
-                                                         await _activeRaceControlService.EnableRaceForSkier();
-                                                         await LoadSplitTimes();
-                                                         InvokeButtonCanExecuteChanged();
-                                                     }
-                                                     catch (Exception)
-                                                     {
-                                                         // ignored
-                                                     }
-                                                 },
+            ReadyTrackCommand = new AsyncCommand(async _ => await ReadyTrack(),
                                                  _ =>
                                                      (CurrentSkier == null || CurrentSkier != null &&
                                                       (CurrentSkier.StartStateId ==
@@ -197,6 +185,20 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                     InvokeButtonCanExecuteChanged();
                 });
             _eventsSetup = true;
+        }
+
+        private async Task ReadyTrack()
+        {
+            try
+            {
+                await _activeRaceControlService.EnableRaceForSkier();
+                await LoadSplitTimes();
+                InvokeButtonCanExecuteChanged();
+            }
+            catch (Exception)
+            {
+                ErrorNotifier.OnLoadError();
+            }
         }
 
         private async Task OnSplitTime(TimeData timeData)
