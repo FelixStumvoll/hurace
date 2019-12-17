@@ -22,11 +22,13 @@ namespace Hurace.Core.Api.RaceService
         Task<bool> RemoveRace(Race race);
         Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList);
         Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId);
+        Task<IEnumerable<RaceRanking>?> GetFinishedSkierRanking(int raceId);
         Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId);
         Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId, int skierId);
         Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId);
         Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
         Task<IEnumerable<TimeDifference>?> GetTimeDataForSkierWithDifference(int skierId, int raceId);
+        Task<DateTime?> GetStartTimeForSkier(int skierId, int raceId);
         Task<bool?> IsStartListDefined(int raceId);
     }
 }

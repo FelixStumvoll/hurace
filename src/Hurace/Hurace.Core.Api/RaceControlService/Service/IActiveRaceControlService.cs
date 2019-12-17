@@ -8,7 +8,6 @@ namespace Hurace.Core.Api.RaceControlService.Service
     public interface IActiveRaceControlService
     {
         int RaceId { get; set; }
-        event Action<TimeData> OnTimeData;
         event Action<StartList> OnSkierStarted;
         event Action<StartList> OnSkierFinished;
         event Action<StartList> OnSkierCanceled;
@@ -23,7 +22,9 @@ namespace Hurace.Core.Api.RaceControlService.Service
         Task<StartList?> GetCurrentSkier();
         Task<bool> CancelSkier(int skierId);
         Task<IEnumerable<StartList>?> GetRemainingStartList();
-        
+        Task<bool> DisqualifyCurrentSkier();
+        Task<bool> DisqualifyFinishedSkier(int skierId);
+        Task<int?> GetPossiblePositionForCurrentSkier();
         Task<bool> CancelRace();
     }
 }

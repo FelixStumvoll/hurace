@@ -1,0 +1,56 @@
+<UserControl x:Class="Hurace.RaceControl.Controls.RCControls.RaceControlBaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hurace.RaceControl.Controls.RCControls"
+             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels.RaceControlViewModels"
+             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:RaceControlBaseViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300" x:Name="Base">
+
+    <ContentPresenter Content="{Binding}">
+        <ContentPresenter.Resources>
+            <DataTemplate x:Key="RaceNotStarted">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                    <Button Command="{Binding StartRaceCommand}" Padding="10,0" Content="Rennen starten" />
+                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0"
+                               Style="{StaticResource ErrorMessage}"
+                               Visibility="{Binding StartListDefined, Converter={StaticResource StartListEmptyToVisibilityConverter}}" />
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="RaceStartedOrFinished">
+                <ContentControl Content="{Binding RaceControlViewModel}">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type vm:ActiveRaceControlViewModel}">
+                            <local:ActiveRaceControl
+                                DataContext="{Binding ElementName=Base, Path=DataContext.RaceControlViewModel}" />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:ReadonlyRaceControlViewModel}">
+                            <local:ReadonlyRaceControl
+                                DataContext="{Binding ElementName=Base, Path=DataContext.RaceControlViewModel}" />
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+            </DataTemplate>
+        </ContentPresenter.Resources>
+
+        <ContentPresenter.Style>
+            <Style TargetType="ContentPresenter">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RaceControlViewModel, Converter={StaticResource IsNullConverter}}"
+                                 Value="True">
+                        <Setter Property="ContentTemplate" Value="{StaticResource RaceNotStarted}" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding RaceControlViewModel, Converter={StaticResource IsNullConverter}}"
+                                 Value="False">
+                        <Setter Property="ContentTemplate" Value="{StaticResource RaceStartedOrFinished}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentPresenter.Style>
+    </ContentPresenter>
+</UserControl>

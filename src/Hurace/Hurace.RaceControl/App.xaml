@@ -11,6 +11,10 @@
     <Application.Resources>
         <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
         <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
+        <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
+        <converters:IsNullConverter x:Key="IsNullConverter" />
+        <converters:IntIsOneConverter x:Key="IntIsOneConverter" />
+        <converters:IntToDifferenceEnumConverter x:Key="IntToDifferenceEnumConverter" />
 
         <Style x:Key="ErrorMessage" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />

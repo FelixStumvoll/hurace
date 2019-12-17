@@ -22,7 +22,7 @@ namespace Hurace.Dal.Dao
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
-        public async Task<IEnumerable<TimeData>?> GetRankingForSensor(int raceId, int sensorId, int count = 0)
+        public async Task<IEnumerable<TimeData>?> GetRankingForSensor(int raceId, int sensorNumber, int count = 0)
         {
             var topSection = count <= 0 ? "" : $" top {count}";
             return await QueryAsync<TimeData>(
@@ -32,7 +32,7 @@ namespace Hurace.Dal.Dao
                     .AddMapping<Country>(("countryId", nameof(Country.Id)))
                     .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
                     .AddMapping<Gender>(("genderId", nameof(Gender.Id))), ("@rid", raceId),
-                ("@sid", sensorId));
+                ("@sid", sensorNumber));
         }
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
@@ -62,13 +62,6 @@ namespace Hurace.Dal.Dao
             GeneratedQueryAsync(DefaultSelectQuery()
                                 .Where<StartList>((nameof(StartList.RaceId), raceId),
                                                   (nameof(StartList.SkierId), skierId)).Build());
-
-        public async Task<TimeData?> GetTimeDataForSensor(int skierId, int raceId, int sensorId) =>
-            (await GeneratedQueryAsync(DefaultSelectQuery().Where<TimeData>((nameof(TimeData.SkierId), skierId),
-                                                                            (nameof(TimeData.RaceId), raceId),
-                                                                            (nameof(TimeData.SensorId),
-                                                                                sensorId)).Build()))
-            .SingleOrDefault();
 
         public Task<int?> CountTimeDataForRace(int raceId) =>
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));

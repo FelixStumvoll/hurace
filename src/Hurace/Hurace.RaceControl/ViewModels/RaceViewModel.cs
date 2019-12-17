@@ -15,7 +15,7 @@ namespace Hurace.RaceControl.ViewModels
         public event Action<RaceViewModel> OnDelete;
         public RaceStartListViewModel RaceStartListViewModel { get; set; }
         public RaceBaseDataViewModel RaceBaseDataViewModel { get; set; }
-        public ActiveRaceControlViewModel ActiveRaceControlViewModel { get; set; }
+        public RaceControlBaseViewModel RaceControlBaseViewModel { get; set; }
         public RaceDisplayViewModel RaceDisplayViewModel { get; set; }
         public SharedRaceStateViewModel RaceState { get; set; }
         public ICommand DeleteCommand { get; set; }
@@ -32,7 +32,7 @@ namespace Hurace.RaceControl.ViewModels
             RaceState = raceState;
             RaceStartListViewModel = new RaceStartListViewModel(logic, RaceState);
             RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, svm,RaceState);
-            ActiveRaceControlViewModel = new ActiveRaceControlViewModel(RaceState, logic);
+            RaceControlBaseViewModel = new RaceControlBaseViewModel(RaceState, logic);
             RaceDisplayViewModel = new RaceDisplayViewModel(RaceState);
 
             SetupCommands();
@@ -67,7 +67,7 @@ namespace Hurace.RaceControl.ViewModels
                     await RaceStartListViewModel.SetupAsync();
                     break;
                 case 2:
-                    await ActiveRaceControlViewModel.SetupAsync();
+                    await RaceControlBaseViewModel.SetupAsync();
                     break;
                 case 4: break;
                 default: return;
