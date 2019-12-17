@@ -17,6 +17,7 @@ namespace Hurace.Core.Api.RaceService
         Task<IEnumerable<Season>?> GetAllSeasons();
         Task<IEnumerable<Skier>?> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>?> GetStartListForRace(int raceId);
+        Task<StartList?> GetStartListById(int skierId, int raceId);
         Task<RaceUpdateState> InsertOrUpdateRace(Race race, int sensorCount);
         Task<int?> GetSensorCount(int raceId);
         Task<bool> RemoveRace(Race race);

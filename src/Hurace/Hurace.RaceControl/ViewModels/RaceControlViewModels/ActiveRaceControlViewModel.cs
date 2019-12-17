@@ -33,9 +33,9 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         public ObservableCollection<RaceRanking> Ranking { get; set; } = new ObservableCollection<RaceRanking>();
 
-        public ICommand ReadyTrackCommand { get; set; }
+        public AsyncCommand ReadyTrackCommand { get; set; }
         public ICommand CancelSkierCommand { get; set; }
-        public ICommand DisqualifyCurrentSkierCommand { get; set; }
+        public AsyncCommand DisqualifyCurrentSkierCommand { get; set; }
         public ICommand CancelRaceCommand { get; set; }
 
         public StartList CurrentSkier
@@ -68,6 +68,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                      {
                                                          await _activeRaceControlService.EnableRaceForSkier();
                                                          await LoadSplitTimes();
+                                                         InvokeButtonCanExecuteChanged();
                                                      }
                                                      catch (Exception)
                                                      {
@@ -75,15 +76,23 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                      }
                                                  },
                                                  _ =>
+                                                     (CurrentSkier == null || CurrentSkier != null &&
+                                                      (CurrentSkier.StartStateId ==
+                                                       (int) Dal.Domain.Enums.RaceState
+                                                                .Finished ||
+                                                       CurrentSkier.StartStateId ==
+                                                       (int) Dal.Domain.Enums.RaceState
+                                                                .Disqualified)) &&
                                                      StartList.Any());
             CancelSkierCommand = new AsyncCommand(async skierId => await CancelSkier((int) skierId));
             CancelRaceCommand = new AsyncCommand(async _ => await CancelRace());
             DisqualifyCurrentSkierCommand = new AsyncCommand(async _ =>
-                                                             {
-                                                                 Timer.Reset();
-                                                                 await _activeRaceControlService
-                                                                     .DisqualifyCurrentSkier();
-                                                             });
+            {
+                Timer.Reset();
+                await _activeRaceControlService
+                    .DisqualifyCurrentSkier();
+            }, _ => CurrentSkier != null &&
+                    CurrentSkier.StartStateId == (int) Dal.Domain.Enums.RaceState.Running);
         }
 
         public async Task SetupAsync()
@@ -133,37 +142,60 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         private async Task LoadRanking() =>
             Ranking.Repopulate(await _logic.GetRankingForRace(RaceState.Race.Id));
 
+        private async Task UpdateCurrentSkier() =>
+            CurrentSkier = await _logic.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
+
+        private static Task ExecuteInUiThreadAsync(Func<Task> func) =>
+            Application.Current.Dispatcher?.Invoke(async () => await func());
+        // private void ExecuteInUiThread(Action func) => Application.Current.Dispatcher?.Invoke(func);
+
+        private void InvokeButtonCanExecuteChanged()
+        {
+            ReadyTrackCommand.RaiseCanExecuteChanged();
+            DisqualifyCurrentSkierCommand.RaiseCanExecuteChanged();
+        }
+
         private void SetupRaceEvents()
         {
-            static Task UpdateInUiThread(Func<Task> func) =>
-                Application.Current.Dispatcher?.Invoke(async () => await func());
-
             _activeRaceControlService.OnSkierStarted += async startList =>
             {
-                CurrentSkier = startList;
-                try
+                await ExecuteInUiThreadAsync(async () =>
                 {
-                    await LoadStartList();
-                    Timer.Start();
-                }
-                catch (Exception)
-                {
-                    ErrorNotifier.OnLoadError();
-                }
+                    try
+                    {
+                        CurrentSkier = startList;
+                        await LoadStartList();
+                        Timer.Start();
+                        InvokeButtonCanExecuteChanged();
+                    }
+                    catch (Exception)
+                    {
+                        ErrorNotifier.OnLoadError();
+                    }
+                });
             };
-            _activeRaceControlService.OnSplitTime += async timeData => await OnSplitTime(timeData);
-            _activeRaceControlService.OnSkierCanceled += async _ => await UpdateInUiThread(LoadStartList);
-            _activeRaceControlService.OnLateDisqualification += async _ => await UpdateInUiThread(LoadRanking);
+            _activeRaceControlService.OnSplitTime +=
+                async timeData => await ExecuteInUiThreadAsync(() => OnSplitTime(timeData));
+            _activeRaceControlService.OnSkierCanceled += async _ => await ExecuteInUiThreadAsync(LoadStartList);
+            _activeRaceControlService.OnLateDisqualification += async _ => await ExecuteInUiThreadAsync(LoadRanking);
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ =>
             {
-                await UpdateInUiThread(LoadRanking);
-                Timer.Reset();
+                await ExecuteInUiThreadAsync(async () =>
+                {
+                    await LoadRanking();
+                    await UpdateCurrentSkier();
+                    Timer.Reset();
+                    InvokeButtonCanExecuteChanged();
+                });
             };
-            _activeRaceControlService.OnSkierFinished += async _ =>
-            {
-                Timer.Reset();
-                await UpdateInUiThread(LoadRanking);
-            };
+            _activeRaceControlService.OnSkierFinished += async finishedSkier =>
+                await ExecuteInUiThreadAsync(async () =>
+                {
+                    CurrentSkier = finishedSkier;
+                    Timer.Reset();
+                    await LoadRanking();
+                    InvokeButtonCanExecuteChanged();
+                });
             _eventsSetup = true;
         }
 
@@ -178,11 +210,11 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 var difference = await _logic.GetDifferenceToLeader(timeData);
                 if (difference == null) return;
 
-                Application.Current.Dispatcher?.Invoke(() => SkierTimeData.Add(new TimeDifference
+                SkierTimeData.Add(new TimeDifference
                 {
                     TimeData = timeData,
                     DifferenceToLeader = difference.Value.Milliseconds
-                }));
+                });
             }
             catch (Exception)
             {

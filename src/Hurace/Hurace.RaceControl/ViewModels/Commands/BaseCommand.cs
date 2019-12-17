@@ -17,5 +17,6 @@ namespace Hurace.RaceControl.ViewModels.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
 
+        public void RaiseCanExecuteChanged() => CommandManager.InvalidateRequerySuggested();
     }
 }

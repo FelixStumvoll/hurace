@@ -56,6 +56,9 @@ namespace Hurace.Core.Api.RaceService
         public Task<IEnumerable<StartList>?> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
 
+        public Task<StartList?> GetStartListById(int skierId, int raceId) =>
+            _startListDao.FindByIdAsync(skierId, raceId);
+
         public async Task<RaceUpdateState> InsertOrUpdateRace(Race race, int sensorCount)
         {
             try
@@ -173,10 +176,13 @@ namespace Hurace.Core.Api.RaceService
         {
             var maxSensorNr = await _sensorDao.GetMaxSensorNr(timeData.RaceId);
             if (maxSensorNr == null) return null;
-            var leader = 
-                (await _timeDataDao.GetRankingForSensor(timeData.RaceId, maxSensorNr.Value, 1)).FirstOrDefault();
-            if (leader == null) return TimeSpan.Zero; //no leader
-            var leaderTime = await _timeDataDao.FindByIdAsync(leader.SkierId, leader.RaceId, timeData.SensorId);
+            var leader =
+                (await _timeDataDao.GetRankingForSensor(timeData.RaceId, maxSensorNr.Value, 1))?.ToList();
+            if (leader == null || !leader.Any()) return TimeSpan.Zero; //no leader
+
+            var index = 0;
+            if (leader[0].SkierId == timeData.SkierId && leader.Count > 1) index = 1;
+            var leaderTime = await _timeDataDao.FindByIdAsync(leader[index].SkierId, leader[index].RaceId, timeData.SensorId);
 
             if (leaderTime == null) return null; //no leader time
             return TimeSpan.FromMilliseconds(timeData.Time - leaderTime.Time);
@@ -193,7 +199,7 @@ namespace Hurace.Core.Api.RaceService
                 retVal.Add(new TimeDifference
                 {
                     TimeData = timeData,
-                    DifferenceToLeader = (int)res.Value.TotalMilliseconds
+                    DifferenceToLeader = (int) res.Value.TotalMilliseconds
                 });
             }
 

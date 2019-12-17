@@ -5,6 +5,7 @@
         Upcoming = 1, 
         Running = 2,
         Finished = 3,
-        Canceled = 4
+        Disqualified = 4,
+        Canceled = 5
     }
 }
