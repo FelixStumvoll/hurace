@@ -14,7 +14,7 @@
         <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
         <converters:IsNullConverter x:Key="IsNullConverter" />
         <converters:IntIsOneConverter x:Key="IntIsOneConverter" />
-        <converters:IntToDifferenceEnumConverter x:Key="IntToDifferenceEnumConverter" />
+        <converters:TimespanDifferenceEnumConverter x:Key="TimespanToDifferenceEnumConverter" />
 
         <Style x:Key="ErrorMessage" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />

@@ -15,7 +15,6 @@ namespace Hurace.Core.Api.RaceControlService.Service
 {
     public class ActiveRaceControlService : IActiveRaceControlService
     {
-        public event Action<TimeData> OnTimeData;
         public event Action<StartList> OnSkierStarted;
         public event Action<StartList> OnSkierFinished;
         public event Action<StartList> OnSkierCanceled;
@@ -60,7 +59,7 @@ namespace Hurace.Core.Api.RaceControlService.Service
             _raceClock = await RaceClockProvider.Instance.GetRaceClock();
             _raceClock.TimingTriggered +=
                 async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
-            _maxSensorNr = await _sensorDao.GetMaxSensorNr(RaceId) ?? -1;
+            _maxSensorNr = await _sensorDao.GetLastSensorNumber(RaceId) ?? -1;
         }
 
         private async Task OnTimingTriggered(int sensorNumber, DateTime dateTime)

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.PageViewModels;
 using Hurace.RaceControl.ViewModels.Util;

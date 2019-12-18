@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 using StartState = Hurace.Dal.Domain.Enums.StartState;
 

@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-             xmlns:rcControls="clr-namespace:Hurace.RaceControl.Controls.RCControls"
+             xmlns:raceControlViews="clr-namespace:Hurace.RaceControl.Controls.RaceControlViews"
              d:DataContext="{d:DesignInstance vm:RaceViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -43,7 +43,7 @@
             </TabItem>
             <TabItem Header="Race Control"
                      IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
-                <rcControls:RaceControlBaseView DataContext="{Binding RaceControlBaseViewModel}" />
+                <raceControlViews:RaceControlBaseView DataContext="{Binding RaceControlBaseViewModel}" />
             </TabItem>
             <TabItem Header="Anzeigekontrolle"
                      IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">

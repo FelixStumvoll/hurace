@@ -1,0 +1,97 @@
+<UserControl x:Class="Hurace.RaceControl.Controls.SubViews.SplitTimeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hurace.RaceControl.Controls.SubViews"
+             xmlns:u="clr-namespace:Hurace.RaceControl.ViewModels.Util"
+             xmlns:vi="clr-namespace:Hurace.RaceControl.ViewModels.ViewModelInterfaces"
+             xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vi:ISplitTimeVm}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ListBox ItemsSource="{Binding SplitTimeList}" HorizontalContentAlignment="Stretch">
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type models:TimeDifference}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                    Value="{x:Static u:DifferenceType.Higher}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="Crimson" Opacity="0.5" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                    Value="{x:Static u:DifferenceType.Lower}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="ForestGreen" Opacity="0.5" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                    Value="{x:Static u:DifferenceType.Equal}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="ForestGreen" Opacity="0.5" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                        <TextBlock Text="Sensor:" Margin="5,0,5,0" />
+                        <TextBlock Text="{Binding TimeData.Sensor.SensorNumber}" />
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal">
+                        <TextBlock
+                            Text="{Binding TimeData.Time,Converter={StaticResource IntToTimespanConverter}, 
+                                    StringFormat={}{0:mm}:{0:ss}:{0:fff}}" />
+                        <TextBlock Margin="10,0,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                            Value="{x:Static u:DifferenceType.Equal}">
+                                            <Setter Property="Text" Value="=" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                            Value="{x:Static u:DifferenceType.Lower}">
+                                            <Setter Property="Text" Value="-" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding DifferenceToLeader, 
+                                                    Converter={StaticResource TimespanToDifferenceEnumConverter}}"
+                                            Value="{x:Static u:DifferenceType.Higher}">
+                                            <Setter Property="Text" Value="+" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock
+                            Margin="0,0,5,0"
+                            Text="{Binding DifferenceToLeader,
+                                    StringFormat={}{0:mm}:{0:ss}:{0:fff}}" />
+                    </StackPanel>
+                </DockPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

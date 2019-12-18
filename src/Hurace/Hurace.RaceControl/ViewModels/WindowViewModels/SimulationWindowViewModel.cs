@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Api;
 using Hurace.Core.Simulation;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.Util;
 

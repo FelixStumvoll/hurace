@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Hurace.RaceControl.Extensions;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 
 namespace Hurace.RaceControl.ViewModels.Util
 {

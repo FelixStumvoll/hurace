@@ -26,6 +26,7 @@ namespace Hurace.Dal.Dao
                                                 s.lastName,
                                                 s.dateOfBirth,
                                                 s.genderId,
+                                                s.imageUrl,
                                                 s.countryId,
                                                 c.countryName,
                                                 c.countryCode,

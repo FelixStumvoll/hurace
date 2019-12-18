@@ -25,7 +25,7 @@ namespace Hurace.Dal.Dao
         public Task<bool> DeleteAllSensorsForRace(int raceId) =>
             ExecuteAsync($"Delete from {TableName} where raceId=@rid", ("@rid", raceId));
 
-        public Task<int?> GetMaxSensorNr(int raceId) =>
+        public Task<int?> GetLastSensorNumber(int raceId) =>
             ExecuteScalarAsync($"select max(sensorNumber) from {TableName} where raceId = @rid", ("@rid", raceId));
 
         public async Task<Sensor> GetSensorForSensorNumber(int sensorNumber, int raceId) =>

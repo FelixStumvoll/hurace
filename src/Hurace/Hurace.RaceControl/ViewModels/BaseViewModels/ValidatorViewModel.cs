@@ -1,9 +1,7 @@
-using System;
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Results;
 
-namespace Hurace.RaceControl.ViewModels.Util
+namespace Hurace.RaceControl.ViewModels.BaseViewModels
 {
     public abstract class ValidatorViewModel<TContext,TValidator> : NotifyPropertyChanged where TValidator : AbstractValidator<TContext>, new()
     {

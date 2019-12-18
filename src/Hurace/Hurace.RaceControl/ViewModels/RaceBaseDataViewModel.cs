@@ -9,12 +9,14 @@ using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.Validators;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels
 {
-    public class RaceBaseDataViewModel : ValidatorViewModel<RaceBaseDataViewModel,RaceValidator>
+    public class RaceBaseDataViewModel : ValidatorViewModel<RaceBaseDataViewModel, RaceValidator>
     {
         private readonly IRaceService _logic;
         private int _sensorCount;
@@ -61,7 +63,7 @@ namespace Hurace.RaceControl.ViewModels
             get => _sensorCount;
             set => Set(ref _sensorCount, value);
         }
-        
+
         public Season Season => RaceState.Race.Season;
 
         public RaceBaseDataViewModel(IRaceService logic, SharedRaceViewModel svm, SharedRaceStateViewModel raceState)
@@ -72,7 +74,7 @@ namespace Hurace.RaceControl.ViewModels
             SetupCommands();
             RegisterValidator(this);
         }
-        
+
         private void SetupCommands()
         {
             StartEditCommand = new ActionCommand(_ => StartEdit());
@@ -168,9 +170,9 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                RaceState.Race =await _logic.GetRaceById(RaceState.Race.Id);
+                RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 ErrorNotifier.OnLoadError();
             }

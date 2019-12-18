@@ -1,7 +1,7 @@
 ﻿using Hurace.Dal.Domain;
-using Hurace.RaceControl.ViewModels.Util;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 
-namespace Hurace.RaceControl.ViewModels
+namespace Hurace.RaceControl.ViewModels.SharedViewModels
 {
     public class SharedRaceStateViewModel : NotifyPropertyChanged
     {

@@ -1,0 +1,210 @@
+<UserControl x:Class="Hurace.RaceControl.Controls.SubViews.CurrentSkierView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hurace.RaceControl.Controls.SubViews"
+             xmlns:vi="clr-namespace:Hurace.RaceControl.ViewModels.ViewModelInterfaces"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vi:ICurrentSkierVm}">
+    <Border BorderThickness="1" BorderBrush="Gray"
+            Margin="0,0,5,0">
+        <ContentPresenter Margin="5" Content="{Binding}">
+            <ContentPresenter.Resources>
+                <DataTemplate x:Key="CurrentSkierSet">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="25" />
+                            </Style>
+
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Margin" Value="5,0,0,0" />
+                            </Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Margin" Value="5,0,0,0" />
+                            </Style>
+                        </Grid.Resources>
+
+                        <ContentPresenter Content="{Binding}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="5"
+                                          Margin="0,0,5,0">
+                            <ContentPresenter.Resources>
+                                <DataTemplate x:Key="SkierImageAvailable">
+                                    <Image Source="{Binding CurrentSkier.Skier.ImageUrl}" />
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="SkierNoImage">
+                                    <Border BorderThickness="1" BorderBrush="Gray">
+                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center" Text="Kein Bild verfügbar"
+                                                   FontWeight="Bold" Foreground="Crimson" />
+                                    </Border>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                            <ContentPresenter.Style>
+                                <Style TargetType="ContentPresenter">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding CurrentSkier.Skier.ImageUrl,
+                                                Converter={StaticResource IsNullConverter}}"
+                                            Value="False">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource SkierImageAvailable}" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding CurrentSkier.Skier.ImageUrl,
+                                                Converter={StaticResource IsNullConverter}}"
+                                            Value="True">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource SkierNoImage}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentPresenter.Style>
+
+                        </ContentPresenter>
+
+                        <DockPanel Grid.Column="1" Grid.Row="1">
+                            <TextBlock FontSize="25" Text="Startnummer:" />
+                            <TextBlock HorizontalAlignment="Right"
+                                       FontWeight="Bold" Width="40" TextAlignment="Center"
+                                       Text="{Binding CurrentSkier.StartNumber}" />
+                        </DockPanel>
+
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding CurrentSkier.Skier.LastName}" />
+                        </StackPanel>
+                        <Separator Grid.Row="0" Grid.Column="1" Margin="5,10,0,0"
+                                   VerticalAlignment="Bottom" />
+
+                        <ContentPresenter Grid.Column="1" Grid.Row="3" Margin="5,0,0,50"
+                                          Content="{Binding}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate x:Key="SkierRunning">
+                                    <DockPanel>
+                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                   Text="Vorläufige Position:" />
+                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                   HorizontalAlignment="Right" Width="40" TextAlignment="Center"
+                                                   Text="{Binding Position}" />
+                                    </DockPanel>
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="SkierFinished">
+                                    <DockPanel>
+                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                   Text="Position:" />
+                                        <TextBlock
+                                            Width="40" HorizontalAlignment="Right"
+                                            TextAlignment="Center"
+                                            Text="{Binding Position}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock"
+                                                       BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding Position,
+                                                            Converter={StaticResource IntIsOneConverter}}"
+                                                            Value="True">
+                                                            <Setter Property="Background" Value="ForestGreen" />
+                                                            <Setter Property="Foreground" Value="White" />
+                                                        </DataTrigger>
+                                                        <DataTrigger
+                                                            Binding="{Binding Position,
+                                                        Converter={StaticResource IntIsOneConverter}}"
+                                                            Value="False">
+                                                            <Setter Property="Background" Value="Crimson" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+
+                                        </TextBlock>
+                                    </DockPanel>
+                                </DataTemplate>
+
+                                <DataTemplate x:Key="SkierDisqualified">
+                                    <DockPanel>
+                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                   Text="Ergebnis:" />
+                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                   HorizontalAlignment="Right" Text="Ausgeschieden" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+
+                            <ContentPresenter.Style>
+                                <Style TargetType="ContentPresenter">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentSkier.StartStateId}" Value="3">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource SkierFinished}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentSkier.StartStateId}" Value="2">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource SkierRunning}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentSkier.StartStateId}" Value="4">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource SkierDisqualified}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </ContentPresenter.Style>
+                        </ContentPresenter>
+
+
+                        <DockPanel Grid.Column="1" Grid.Row="4">
+                            <TextBlock Text="Zeit:" />
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding RaceTime,TargetNullValue={x:Static system:String.Empty},
+                                       StringFormat={}{0:mm}:{0:ss}:{0:fff}}" />
+                        </DockPanel>
+
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="NoSkier">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontSize="25" FontWeight="Bold"
+                                   Text="Derzeit kein Rennläufer auf der Strecke" />
+                    </StackPanel>
+                </DataTemplate>
+
+            </ContentPresenter.Resources>
+
+            <ContentPresenter.Style>
+                <Style TargetType="ContentPresenter">
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding CurrentSkier, Converter={StaticResource IsNullConverter}}"
+                            Value="True">
+                            <Setter Property="ContentTemplate" Value="{StaticResource NoSkier}" />
+                        </DataTrigger>
+
+                        <DataTrigger
+                            Binding="{Binding CurrentSkier, Converter={StaticResource IsNullConverter}}"
+                            Value="False">
+                            <Setter Property="ContentTemplate" Value="{StaticResource CurrentSkierSet}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentPresenter.Style>
+        </ContentPresenter>
+    </Border>
+</UserControl>

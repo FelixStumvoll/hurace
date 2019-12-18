@@ -5,7 +5,9 @@ using System.Windows.Input;
 using Hurace.Core.Api.RaceControlService.Resolver;
 using Hurace.Core.Api.RaceControlService.Service;
 using Hurace.Core.Api.RaceService;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
+using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.RaceControlViewModels

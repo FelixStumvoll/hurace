@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using FluentValidation;
 
-namespace Hurace.RaceControl.ViewModels.Util
+namespace Hurace.RaceControl.ViewModels.BaseViewModels
 {
     public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     {

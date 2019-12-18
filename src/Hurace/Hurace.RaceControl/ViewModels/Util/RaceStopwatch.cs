@@ -1,32 +1,27 @@
 using System;
 using System.Windows.Threading;
+using Hurace.RaceControl.ViewModels.BaseViewModels;
 
 namespace Hurace.RaceControl.ViewModels.Util
 {
-    public class RtTimer : NotifyPropertyChanged
+    public class RaceStopwatch
     {
         private readonly DispatcherTimer _dispatcherTimer;
-        private TimeSpan _clockTime;
+
+        public event Action<TimeSpan> OnTimerElapsed;
 
         public DateTime? StartTime { get; set; }
-        
-        public TimeSpan ClockTime
-        {
-            get => _clockTime;
-            set => Set(ref _clockTime, value);
-        }
 
-
-        public RtTimer()
+        public RaceStopwatch()
         {
-            _dispatcherTimer = new DispatcherTimer{Interval = TimeSpan.FromMilliseconds(10)};
+            _dispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(10)};
             _dispatcherTimer.Tick += (sender, args) => OnTick();
         }
 
         private void OnTick()
         {
             if (StartTime == null) return;
-            ClockTime = StartTime.Value - DateTime.Now;
+            OnTimerElapsed?.Invoke(StartTime.Value - DateTime.Now);
         }
 
         public void Start() => _dispatcherTimer.Start();
