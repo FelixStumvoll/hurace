@@ -22,7 +22,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
 
         private bool _enabled = true;
         private bool _running;
-        private MockRaceClock _clock;
+        private MockRaceClockV2 _clock;
         private ICommand _startClockCommand;
         private ICommand _pauseClockCommand;
         private ICommand _skipNextSensorCommand;
@@ -32,7 +32,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         public ObservableCollection<SensorEntry> SensorEntries { get; set; } = new ObservableCollection<SensorEntry>();
         public int SensorToTrigger { get; set; }
 
-        public MockRaceClock Clock
+        public MockRaceClockV2 Clock
         {
             get => _clock;
             set => Set(ref _clock, value);
@@ -83,7 +83,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         public async Task InitializeAsync()
         {
             var resolvedRace = await RaceClockProvider.Instance.GetRaceClock();
-            if (!(resolvedRace is MockRaceClock mockRaceClock))
+            if (!(resolvedRace is MockRaceClockV2 mockRaceClock))
             {
                 MessageBox.Show("Simulator kann nicht gestartet werden",
                                 "Fehler",
@@ -93,7 +93,6 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             }
             
             Clock = mockRaceClock;
-            Clock.TimingTriggered += (id, time) => Console.WriteLine($"{id}: {time}");
             Clock.TimingTriggered += (id, time) =>
                 Application
                     .Current
@@ -116,11 +115,11 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
                 Clock.Stop();
                 Running = false;
             }, _ => Clock.Running);
-            SkipNextSensorCommand = new ActionCommand(_ => Clock.SkipNext());
+            SkipNextSensorCommand = new ActionCommand(_ => Clock.SkipNextSensor());
             RestartSenorCommand = new ActionCommand(_ => Clock.Reset());
             TriggerSensorCommand = new ActionCommand(_ => Clock.TriggerSensor(SensorToTrigger),
                                                      _ => SensorToTrigger >= 0 && 
-                                                          SensorToTrigger <= Clock.MaxSensor);
+                                                          SensorToTrigger < Clock.SensorCount);
         }
     }
 }

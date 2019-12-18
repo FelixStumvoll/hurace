@@ -11,7 +11,6 @@ namespace Hurace.RaceControl.ViewModels
     {
         public ICommand OpenCurrentSkierWindowCommand { get; set; }
         public SharedRaceStateViewModel RaceState { get; set; }
-
         public RaceDisplayViewModel(SharedRaceStateViewModel raceState)
         {
             RaceState = raceState;
