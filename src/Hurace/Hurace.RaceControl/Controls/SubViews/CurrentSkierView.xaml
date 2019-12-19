@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls.SubViews"
-             xmlns:vi="clr-namespace:Hurace.RaceControl.ViewModels.ViewModelInterfaces"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vi:ICurrentSkierVm}">
+             x:Name="Uc"
+             d:DataContext="{d:DesignInstance subViewModels:CurrentSkierViewModel}">
     <Border BorderThickness="1" BorderBrush="Gray"
             Margin="0,0,5,0">
         <ContentPresenter Margin="5" Content="{Binding}">

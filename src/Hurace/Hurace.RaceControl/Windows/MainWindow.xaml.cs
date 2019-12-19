@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Hurace.Core.Api.RaceControlService.Resolver;
+using Hurace.Core.Api.ActiveRaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
 

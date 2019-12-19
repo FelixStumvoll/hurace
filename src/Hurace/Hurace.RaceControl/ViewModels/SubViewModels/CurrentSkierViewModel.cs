@@ -1,24 +1,26 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using Hurace.Core.Api.ActiveRaceControlService.Service;
 using Hurace.Core.Api.Models;
-using Hurace.Core.Api.RaceControlService.Service;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
+using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
+using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
-using Hurace.RaceControl.ViewModels.ViewModelInterfaces;
 
 namespace Hurace.RaceControl.ViewModels.SubViewModels
 {
-    public class CurrentSkierViewModel : NotifyPropertyChanged, ICurrentSkierVm, ISplitTimeVm
+    public class CurrentSkierViewModel : NotifyPropertyChanged
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
-        private readonly IRaceService _raceService;
+        private readonly IRaceService _logic;
         private int? _position;
         private TimeSpan? _raceTime;
-        private RaceStopwatch _stopwatch;
+        private readonly RaceStopwatch _stopwatch;
         private StartList _currentSkier;
 
         public StartList CurrentSkier
@@ -42,11 +44,12 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
         public ObservableCollection<TimeDifference> SplitTimeList { get; set; } =
             new ObservableCollection<TimeDifference>();
 
-        public CurrentSkierViewModel(IRaceService raceService, IActiveRaceControlService activeRaceControlService)
+        public CurrentSkierViewModel(IRaceService logic, IActiveRaceControlService activeRaceControlService)
         {
-            _raceService = raceService;
+            _logic = logic;
             _activeRaceControlService = activeRaceControlService;
             _stopwatch = new RaceStopwatch();
+            _stopwatch.OnTimerElapsed += timespan => RaceTime = timespan;
 
             _activeRaceControlService.OnSplitTime += timeData =>
                 UiExecutor.ExecuteInUiThreadAsync(() => OnSplitTime(timeData));
@@ -72,7 +75,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             _activeRaceControlService.OnCurrentSkierDisqualified += async startList =>
                 await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
-                    CurrentSkier = await _raceService.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
+                    CurrentSkier = await _logic.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
                     _stopwatch.Reset();
                 });
         }
@@ -87,7 +90,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             {
                 await LoadPossiblePosition();
                 _stopwatch.StartTime ??= timeData.SkierEvent.RaceData.EventDateTime;
-                var difference = await _raceService.GetDifferenceToLeader(timeData);
+                var difference = await _logic.GetDifferenceToLeader(timeData);
                 if (difference == null) return;
 
                 SplitTimeList.Add(new TimeDifference
@@ -102,6 +105,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             }
         }
 
+
         public async Task InitializeAsync()
         {
             try
@@ -111,14 +115,13 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                 {
                     if (SplitTimeList.Count > 1)
                         Position = await _activeRaceControlService.GetPossiblePositionForCurrentSkier();
-                    _stopwatch.StartTime =
-                        await _raceService.GetStartTimeForSkier(CurrentSkier.SkierId, CurrentSkier.RaceId);
+                    
+                    _stopwatch.StartTime = await _logic.GetStartTimeForSkier(CurrentSkier.SkierId, CurrentSkier.RaceId);
+                    SplitTimeList.Repopulate(
+                            await _logic.GetTimeDataForSkierWithDifference(CurrentSkier.SkierId, CurrentSkier.RaceId));
+                    _stopwatch.Start();
                 }
-                else
-                {
-                    Position = null;
-                    _stopwatch = null;
-                }
+                else Position = null;
             }
             catch (Exception)
             {

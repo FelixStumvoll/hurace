@@ -11,7 +11,7 @@ using Hurace.Dal.Interface;
 using Microsoft.Extensions.Configuration;
 using StartState = Hurace.Dal.Domain.Enums.StartState;
 
-namespace Hurace.Core.Api.RaceControlService.Service
+namespace Hurace.Core.Api.ActiveRaceControlService.Service
 {
     public class ActiveRaceControlService : IActiveRaceControlService
     {

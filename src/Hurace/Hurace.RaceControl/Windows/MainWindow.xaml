@@ -14,13 +14,6 @@
         d:DataContext="{d:DesignInstance windowViewModels:MainViewModel}"
         mc:Ignorable="d"
         x:Name="Main"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Hurace RaceControl" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>

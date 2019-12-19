@@ -3,15 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
-             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
-             xmlns:domain="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
-             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-             xmlns:raceControl="clr-namespace:Hurace.RaceControl"
-             xmlns:api="clr-namespace:Hurace.Core.Api;assembly=Hurace.Core.Api"
              xmlns:s="clr-namespace:Hurace.RaceControl.Controls.SubViews"
-             xmlns:u="clr-namespace:Hurace.RaceControl.ViewModels.Util"
-             xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
              xmlns:raceControlViewModels="clr-namespace:Hurace.RaceControl.ViewModels.RaceControlViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
@@ -30,7 +22,8 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <!-- Current Skier -->
-        <s:CurrentSkierView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+        <s:CurrentSkierView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                            DataContext="{Binding CurrentSkierViewModel}" />
         <!-- Controls -->
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
             <Button Height="25" VerticalAlignment="Center"
@@ -75,7 +68,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Zwischenzeiten:" Margin="0,0,5,0" />
-            <s:SplitTimeView Grid.Row="1" />
+            <s:SplitTimeView Grid.Row="1" DataContext="{Binding CurrentSkierViewModel}" />
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="2" Margin="0,10,5,0">
@@ -84,7 +77,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Rangliste" />
-            <ListBox Grid.Row="1" ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch" />
+            <s:RankingView Grid.Row="1" DataContext="{Binding RankingViewModel}" />
         </Grid>
 
         <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,10,5,0"

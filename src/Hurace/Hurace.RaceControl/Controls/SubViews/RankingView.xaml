@@ -6,7 +6,5 @@
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls.SubViews"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
-    </Grid>
+    <ListBox ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch" />
 </UserControl>

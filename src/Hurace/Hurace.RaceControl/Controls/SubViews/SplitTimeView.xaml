@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Hurace.RaceControl.Controls.SubViews"
              xmlns:u="clr-namespace:Hurace.RaceControl.ViewModels.Util"
-             xmlns:vi="clr-namespace:Hurace.RaceControl.ViewModels.ViewModelInterfaces"
              xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
+             xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vi:ISplitTimeVm}"
+             d:DataContext="{d:DesignInstance subViewModels:CurrentSkierViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <ListBox ItemsSource="{Binding SplitTimeList}" HorizontalContentAlignment="Stretch">
         <ListBox.ItemTemplate>

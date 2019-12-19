@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Api.RaceControlService.Service;
+using Hurace.Core.Api.ActiveRaceControlService.Service;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
-namespace Hurace.Core.Api.RaceControlService.Resolver
+namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
 {
     public class ActiveRaceResolver : IActiveRaceResolver
     {

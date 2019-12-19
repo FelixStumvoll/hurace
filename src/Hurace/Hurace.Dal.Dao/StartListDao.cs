@@ -91,13 +91,14 @@ namespace Hurace.Dal.Dao
 
         public async Task<IEnumerable<StartList>> GetDisqualifiedSkierForRace(int raceId) =>
             await QueryAsync<StartList>(
-                "select * from hurace.StartListQuery where startStateId = @ssi or startStateId = @ssii",
+                "select * from hurace.StartListQuery where raceId = @rid and (startStateId = @ssi or startStateId = @ssii)",
                 new MapperConfig()
                     .AddMapping<Skier>((nameof(StartList.SkierId), nameof(Skier.Id)))
                     .AddMapping<Country>((nameof(Skier.CountryId), nameof(Country.Id)))
                     .AddMapping<Gender>((nameof(Skier.GenderId), nameof(Gender.Id)))
                     .AddMapping<StartState>((nameof(StartList.StartStateId), nameof(StartState.Id))),
-                ("@ssi", (int) Domain.Enums.StartState.Canceled), ("@ssii", (int) Domain.Enums.StartState.Disqualified));
+                ("@rid", raceId), ("@ssi", (int) Domain.Enums.StartState.Canceled),
+                ("@ssii", (int) Domain.Enums.StartState.Disqualified));
 
         public async Task<StartList> GetSkierForRace(int skierId, int raceId) =>
             (await GeneratedQueryAsync(DefaultSelectQuery()
