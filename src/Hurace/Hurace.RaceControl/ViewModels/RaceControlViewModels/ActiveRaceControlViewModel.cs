@@ -29,7 +29,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         private bool _eventsSetup;
         private int? _position;
         private TimeSpan? _raceTime;
-        private readonly RaceStopwatch _timer;
+        public RaceStopwatch Stopwatch { get; set; }
         public SharedRaceStateViewModel RaceState { get; set; }
         public ObservableCollection<StartList> StartList { get; set; } = new ObservableCollection<StartList>();
 
@@ -67,8 +67,8 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             RaceState = raceState;
             _logic = logic;
             _activeRaceControlService = activeRaceControlService;
-            _timer = new RaceStopwatch();
-            _timer.OnTimerElapsed += timespan => RaceTime = timespan;
+            Stopwatch = new RaceStopwatch();
+            Stopwatch.OnTimerElapsed += timespan => RaceTime = timespan;
             SetupCommands();
         }
 
@@ -86,7 +86,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             CancelRaceCommand = new AsyncCommand(async _ => await CancelRace());
             DisqualifyCurrentSkierCommand = new AsyncCommand(async _ =>
             {
-                _timer.Reset();
+                Stopwatch.Reset();
                 await _activeRaceControlService
                     .DisqualifyCurrentSkier();
             }, _ => CurrentSkier != null &&
@@ -97,7 +97,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         {
             if (!_eventsSetup) SetupRaceEvents();
             await LoadData();
-            if (CurrentSkier != null) _timer.Start();
+            if (CurrentSkier != null) Stopwatch.Start();
         }
 
         private async Task LoadData()
@@ -112,7 +112,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 {
                     if (SplitTimeList.Count > 1)
                         Position = await _activeRaceControlService.GetPossiblePositionForCurrentSkier();
-                    _timer.StartTime = await _logic.GetStartTimeForSkier(CurrentSkier.SkierId, RaceState.Race.Id);
+                    Stopwatch.StartTime = await _logic.GetStartTimeForSkier(CurrentSkier.SkierId, RaceState.Race.Id);
                 }
                 else
                 {
@@ -144,7 +144,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             }
             else SplitTimeList.Clear();
 
-            _timer.StartTime = startTime;
+            Stopwatch.StartTime = startTime;
         }
 
         private async Task LoadRanking() =>
@@ -152,9 +152,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private async Task LoadPossiblePosition() =>
             Position = await _activeRaceControlService.GetPossiblePositionForCurrentSkier();
-
-        private static Task ExecuteInUiThreadAsync(Func<Task> func) =>
-            Application.Current.Dispatcher?.Invoke(async () => await func());
+        
 
         private void InvokeButtonCanExecuteChanged()
         {
@@ -166,13 +164,13 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         {
             _activeRaceControlService.OnSkierStarted += async startList =>
             {
-                await ExecuteInUiThreadAsync(async () =>
+                await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
                     try
                     {
                         CurrentSkier = startList;
                         await LoadStartList();
-                        _timer.Start();
+                        Stopwatch.Start();
                         InvokeButtonCanExecuteChanged();
                     }
                     catch (Exception)
@@ -182,24 +180,24 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 });
             };
             _activeRaceControlService.OnSplitTime +=
-                async timeData => await ExecuteInUiThreadAsync(() => OnSplitTime(timeData));
-            _activeRaceControlService.OnSkierCanceled += async _ => await ExecuteInUiThreadAsync(LoadStartList);
-            _activeRaceControlService.OnLateDisqualification += async _ => await ExecuteInUiThreadAsync(LoadRanking);
+                async timeData => await UiExecutor.ExecuteInUiThreadAsync(() => OnSplitTime(timeData));
+            _activeRaceControlService.OnSkierCanceled += async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadStartList);
+            _activeRaceControlService.OnLateDisqualification += async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadRanking);
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ =>
             {
-                await ExecuteInUiThreadAsync(async () =>
+                await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
                     await LoadRanking();
                     CurrentSkier = await _logic.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
-                    _timer.Reset();
+                    Stopwatch.Reset();
                     InvokeButtonCanExecuteChanged();
                 });
             };
             _activeRaceControlService.OnSkierFinished += async finishedSkier =>
-                await ExecuteInUiThreadAsync(async () =>
+                await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
                     CurrentSkier = finishedSkier;
-                    _timer.Reset();
+                    Stopwatch.Reset();
                     await LoadRanking();
                     InvokeButtonCanExecuteChanged();
                 });
@@ -213,7 +211,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 Position = null;
                 RaceTime = null;
                 await _activeRaceControlService.EnableRaceForSkier();
-                await LoadSplitTimes();
+                SplitTimeList.Clear();
                 InvokeButtonCanExecuteChanged();
             }
             catch (Exception)
@@ -227,7 +225,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             try
             {
                 await LoadPossiblePosition();
-                _timer.StartTime ??= timeData.SkierEvent.RaceData.EventDateTime;
+                Stopwatch.StartTime ??= timeData.SkierEvent.RaceData.EventDateTime;
                 var difference = await _logic.GetDifferenceToLeader(timeData);
                 if (difference == null) return;
 

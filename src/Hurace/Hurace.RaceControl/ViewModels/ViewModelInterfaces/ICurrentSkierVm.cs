@@ -1,5 +1,6 @@
 using System;
 using Hurace.Dal.Domain;
+using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.ViewModelInterfaces
 {
