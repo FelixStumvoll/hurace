@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Api.RaceService;
-using Hurace.Core.Api.Util;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStatService;
+using Hurace.Core.Logic.Util;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Domain.Enums;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 using StartState = Hurace.Dal.Domain.Enums.StartState;
 
-namespace Hurace.Core.Api.ActiveRaceControlService.Service
+namespace Hurace.Core.Logic.ActiveRaceControlService.Service
 {
     public class ActiveRaceControlService : IActiveRaceControlService
     {
@@ -24,8 +25,8 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Service
         public event Action<TimeData>? OnSplitTime;
         public event Action<Race>? OnRaceCanceled;
         public event Action<Race>? OnRaceFinished;
-
-        private readonly IRaceService _raceService;
+        
+        private readonly IRaceStatService _statService;
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
         private readonly IRaceEventDao _raceEventDao;
@@ -41,11 +42,11 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Service
 
         public ActiveRaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
             IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, ISensorDao sensorDao,
-            IConfiguration configuration, IRaceService raceService)
+            IConfiguration configuration, IRaceStatService statService)
         {
             _maxDiffToAverage = Convert.ToInt32(configuration.GetSection("RaceSettings")["MaxDiffToAverage"]);
             _configuration = configuration;
-            _raceService = raceService;
+            _statService = statService;
             _raceDao = raceDao;
             _startListDao = startListDao;
             _raceEventDao = raceEventDao;
@@ -124,15 +125,12 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Service
             var timeDataList =
                 (await _timeDataDao
                     .GetTimeDataForStartList(currentSkier.SkierId, currentSkier.RaceId)).ToList();
-
-            var currentSkierSplitTime = dateTime - (startTime ?? dateTime);
-            var validSeries = ValidSensorSeries(timeDataList, sensorNumber);
-            var averageCheck = IsTimeInBoundAverage(currentSkierSplitTime.Milliseconds, average);
-
-            return validSeries switch
+            
+            return ValidSensorSeries(timeDataList, sensorNumber) switch
             {
                 SensorSeriesResult.Ok => true,
-                SensorSeriesResult.SensorMissing => averageCheck,
+                SensorSeriesResult.SensorMissing => IsTimeInBoundAverage(
+                    (dateTime - (startTime ?? dateTime)).Milliseconds, average),
                 SensorSeriesResult.SensorAlreadyHasValue => false,
                 SensorSeriesResult.SensorAfterwardsSet => false,
                 _ => false
@@ -250,10 +248,10 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Service
                 .OrderByDescending(td => td?.Sensor?.SensorNumber)
                 .First();
 
-            var diff = await _raceService.GetDifferenceToLeader(lastTimeData);
+            var diff = await _statService.GetDifferenceToLeader(lastTimeData);
             if (diff == null) return 1;
 
-            var ranking = await _raceService.GetFinishedSkierRanking(RaceId);
+            var ranking = await _statService.GetFinishedSkierRanking(RaceId);
 
             return 1 + ranking
                        .TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)

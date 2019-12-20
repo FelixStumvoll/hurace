@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic.RaceBaseDataService;
+using Hurace.Core.Logic.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.Validators;
@@ -18,7 +19,7 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceBaseDataViewModel : ValidatorViewModel<RaceBaseDataViewModel, RaceValidator>
     {
-        private readonly IRaceService _logic;
+        private readonly IRaceBaseDataService _baseDataService;
         private int _sensorCount;
         private Discipline _selectedDiscipline;
         public event Action OnUnsavedCancel;
@@ -66,10 +67,10 @@ namespace Hurace.RaceControl.ViewModels
 
         public Season Season => RaceState.Race.Season;
 
-        public RaceBaseDataViewModel(IRaceService logic, SharedRaceViewModel svm, SharedRaceStateViewModel raceState)
+        public RaceBaseDataViewModel(SharedRaceViewModel svm, SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService)
         {
-            _logic = logic;
             RaceState = raceState;
+            _baseDataService = baseDataService;
             SharedRaceViewModel = svm;
             SetupCommands();
             RegisterValidator(this);
@@ -86,7 +87,7 @@ namespace Hurace.RaceControl.ViewModels
         public async Task SetupAsync()
         {
             ValidatorEnabled = false;
-            var sensorCount = await _logic.GetSensorCount(RaceState.Race.Id);
+            var sensorCount = await _baseDataService.GetSensorCount(RaceState.Race.Id);
             if (sensorCount == null)
             {
                 ErrorNotifier.OnLoadError();
@@ -112,7 +113,7 @@ namespace Hurace.RaceControl.ViewModels
             if (SelectedLocation == null) return;
             try
             {
-                var disciplines = await _logic.GetDisciplinesForLocation(SelectedLocation.Id);
+                var disciplines = await _baseDataService.GetDisciplinesForLocation(SelectedLocation.Id);
                 Disciplines.Clear();
                 Disciplines.AddRange(disciplines);
                 SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
@@ -142,7 +143,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceState.Race.DisciplineId = _selectedDiscipline.Id;
             RaceState.Race.Discipline = _selectedDiscipline;
-            switch (await _logic.InsertOrUpdateRace(RaceState.Race, SensorCount))
+            switch (await _baseDataService.InsertOrUpdateRace(RaceState.Race, SensorCount))
             {
                 case RaceUpdateState.Ok:
                     RaceState.Edit = false;
@@ -170,19 +171,12 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                RaceState.Race = await _logic.GetRaceById(RaceState.Race.Id);
+                RaceState.Race = await _baseDataService.GetRaceById(RaceState.Race.Id);
             }
             catch (Exception)
             {
                 ErrorNotifier.OnLoadError();
             }
         }
-
-        // private bool SaveValidator() =>
-        //     RaceState.Race.LocationId != -1 && RaceState.Race.GenderId != -1 &&
-        //     (_selectedDiscipline != null && _selectedDiscipline.Id != -1) &&
-        //     !RaceState.Race.RaceDescription.IsNullOrEmpty() &&
-        //     RaceState.Race.RaceDate != DateTime.MinValue &&
-        //     SensorCount > 0;
     }
 }

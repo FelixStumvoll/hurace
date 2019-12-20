@@ -1,6 +1,6 @@
 ﻿using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Api.Models
+namespace Hurace.Core.Logic.Models
 {
     public class RaceRanking
     {

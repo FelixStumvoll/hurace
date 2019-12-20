@@ -1,4 +1,4 @@
-﻿using Hurace.Core.Api.ActiveRaceControlService.Resolver;
+﻿using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
 

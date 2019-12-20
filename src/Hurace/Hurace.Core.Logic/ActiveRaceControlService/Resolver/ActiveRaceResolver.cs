@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Api.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.ActiveRaceControlService.Service;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
-namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
+namespace Hurace.Core.Logic.ActiveRaceControlService.Resolver
 {
     public class ActiveRaceResolver : IActiveRaceResolver
     {
@@ -19,6 +19,7 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
 
         public static ActiveRaceResolver? Instance { get; private set; }
 
+        //todo needs to be initialized @ app start
         internal ActiveRaceResolver(IRaceDao raceDao, IRaceEventDao raceEventDao, IRaceDataDao raceDataDao)
         {
             _raceDao = raceDao;
@@ -33,7 +34,7 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
             if (Instance == null) return false;
             foreach (var race in await Instance._raceDao.GetActiveRaces())
             {
-                var rcs = provider.ResolveService<IActiveRaceControlService>();
+                var rcs = provider.Resolve<IActiveRaceControlService>();
                 if(rcs == null) continue;
                 rcs.RaceId = race.Id;
                 await rcs.InitializeAsync();
@@ -47,7 +48,7 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
         {
             await RaceClockProvider.Instance.GetRaceClock();
             await ChangeRaceState(raceId, RaceState.Running);
-            var service = ServiceProvider.Instance.ResolveService<IActiveRaceControlService>();
+            var service = ServiceProvider.Instance.Resolve<IActiveRaceControlService>();
             if (service == null) return null;
             service.RaceId = raceId;
             await service.InitializeAsync();

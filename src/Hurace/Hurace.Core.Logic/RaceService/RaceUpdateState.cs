@@ -1,4 +1,4 @@
-namespace Hurace.Core.Api.RaceService
+namespace Hurace.Core.Logic.RaceService
 {
     public enum RaceUpdateState
     {

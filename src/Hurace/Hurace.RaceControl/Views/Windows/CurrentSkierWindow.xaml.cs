@@ -1,6 +1,9 @@
-﻿using Hurace.Core.Api;
-using Hurace.Core.Api.ActiveRaceControlService.Resolver;
-using Hurace.Core.Api.RaceService;
+﻿using Hurace.Core.Logic;
+using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
+using Hurace.Core.Logic.RaceBaseDataService;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.RaceStatService;
 using Hurace.RaceControl.ViewModels.SubViewModels;
 
 namespace Hurace.RaceControl.Views.Windows
@@ -9,8 +12,10 @@ namespace Hurace.RaceControl.Views.Windows
     {
         public CurrentSkierWindow(int raceId)
         {
-            var vm = new CurrentSkierViewModel(ServiceProvider.Instance.ResolveService<IRaceService>(),
-                                               ActiveRaceResolver.Instance[raceId]);
+            var vm = new CurrentSkierViewModel(ActiveRaceResolver.Instance[raceId],
+                                               ServiceProvider.Instance.Resolve<IRaceStatService>(),
+                                               ServiceProvider.Instance.Resolve<IRaceStartListService>()
+            );
             DataContext = vm;
             InitializeComponent();
             Loaded += async (sender, args) => await vm.InitializeAsync();

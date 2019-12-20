@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Api.Models;
-using Hurace.Core.Api.Util;
+using Hurace.Core.Logic.Models;
+using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Api.RaceService
+namespace Hurace.Core.Logic.RaceService
 {
     internal class RaceService : IRaceService
     {
@@ -41,11 +41,9 @@ namespace Hurace.Core.Api.RaceService
         public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
 
         public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
-
-        public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
-        public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
-
-        public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
+        // public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRacesForSeasonId(seasonId);
+        //
+        // public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
 
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);

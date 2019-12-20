@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
-using Hurace.Core.Api.ActiveRaceControlService.Resolver;
+using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Microsoft.Extensions.Configuration;
 
-namespace Hurace.Core.Api
+namespace Hurace.Core.Logic
 {
     public sealed class ServiceProvider
     {
@@ -36,7 +36,7 @@ namespace Hurace.Core.Api
                    .As(t => t.GetInterface($"I{t.Name}"));
 
             //Load Services
-            builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Api"))
+            builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Logic"))
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
             builder.RegisterType<ActiveRaceResolver>().As<IActiveRaceResolver>();
@@ -52,6 +52,6 @@ namespace Hurace.Core.Api
             _container = builder.Build();
         }
 
-        public T? ResolveService<T>() where T : class => _container?.Resolve<T>();
+        public T? Resolve<T>() where T : class => _container?.Resolve<T>();
     }
 }

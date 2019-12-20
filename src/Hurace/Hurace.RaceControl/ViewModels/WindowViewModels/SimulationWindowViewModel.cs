@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Api;
+using Hurace.Core.Logic;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 

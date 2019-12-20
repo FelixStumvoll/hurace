@@ -2,7 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic;
+using Hurace.Core.Logic.RaceBaseDataService;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStartListService;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.RaceControlViewModels;
@@ -29,12 +32,14 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedTab, value);
         }
 
-        public RaceViewModel(IRaceService logic, SharedRaceStateViewModel raceState, SharedRaceViewModel svm)
+        public RaceViewModel(SharedRaceStateViewModel raceState, SharedRaceViewModel svm)
         {
             RaceState = raceState;
-            RaceStartListViewModel = new RaceStartListViewModel(logic, RaceState);
-            RaceBaseDataViewModel = new RaceBaseDataViewModel(logic, svm,RaceState);
-            RaceControlBaseViewModel = new RaceControlBaseViewModel(RaceState, logic);
+            var provider = ServiceProvider.Instance;
+            RaceStartListViewModel = new RaceStartListViewModel(RaceState, provider.Resolve<IRaceStartListService>());
+            RaceBaseDataViewModel = new RaceBaseDataViewModel(svm, RaceState, provider.Resolve<IRaceBaseDataService>());
+            RaceControlBaseViewModel = new RaceControlBaseViewModel(RaceState, provider.Resolve<IRaceBaseDataService>(),
+                                                                    provider.Resolve<IRaceStartListService>());
             RaceDisplayViewModel = new RaceDisplayViewModel(RaceState);
 
             SetupCommands();
@@ -44,7 +49,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new RelayCommand(() => OnDelete?.Invoke(this),
-                                              () => RaceState.Race.Id !=
+                                             () => RaceState.Race.Id !=
                                                    -1); // && Race.RaceStateId == (int) Constants.RaceState.Upcoming
             TabSelectionChangedCommand = new AsyncCommand(OnTabSelectionChanged);
         }

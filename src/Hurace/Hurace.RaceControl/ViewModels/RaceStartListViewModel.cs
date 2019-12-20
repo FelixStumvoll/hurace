@@ -3,7 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStartListService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -15,7 +16,7 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceStartListViewModel : NotifyPropertyChanged
     {
-        private readonly IRaceService _logic;
+        private readonly IRaceStartListService _startListService;
         private StartList _selectedStartList;
 
         public SharedRaceStateViewModel RaceState { get; set; }
@@ -36,10 +37,10 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedStartList, value);
         }
 
-        public RaceStartListViewModel(IRaceService logic, SharedRaceStateViewModel raceState)
+        public RaceStartListViewModel(SharedRaceStateViewModel raceState, IRaceStartListService startListService)
         {
-            _logic = logic;
             RaceState = raceState;
+            _startListService = startListService;
             SetupCommands();
         }
 
@@ -81,10 +82,10 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                var skiers = await _logic.GetAvailableSkiersForRace(RaceState.Race.Id);
+                var skiers = await _startListService.GetAvailableSkiersForRace(RaceState.Race.Id);
                 AvailableSkiers.UpdateDataSource(skiers);
                 AvailableSkiers.Apply();
-                var startList = await _logic.GetStartListForRace(RaceState.Race.Id);
+                var startList = await _startListService.GetStartListForRace(RaceState.Race.Id);
                 StartList.UpdateDataSource(startList);
                 StartList.Apply();
             }
@@ -148,7 +149,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                await _logic.UpdateStartList(RaceState.Race, StartList.DataSource);
+                await _startListService.UpdateStartList(RaceState.Race, StartList.DataSource);
                 RaceState.Edit = false;
             }
             catch (Exception)

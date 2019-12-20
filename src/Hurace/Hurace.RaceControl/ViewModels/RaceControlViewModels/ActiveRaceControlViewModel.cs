@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Hurace.Core.Api.ActiveRaceControlService.Service;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic;
+using Hurace.Core.Logic.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -20,7 +23,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
     public class ActiveRaceControlViewModel : NotifyPropertyChanged, IRaceControlViewModel
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
-        private readonly IRaceService _logic;
+        private readonly IRaceStartListService _startListService;
         private bool _eventsSetup;
         private StartList _currentSkier;
         public SharedRaceStateViewModel RaceState { get; set; }
@@ -31,15 +34,17 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         public ICommand CancelSkierCommand { get; set; }
         public AsyncCommand DisqualifyCurrentSkierCommand { get; set; }
         public ICommand CancelRaceCommand { get; set; }
-        
-        public ActiveRaceControlViewModel(SharedRaceStateViewModel raceState, IRaceService logic,
-            IActiveRaceControlService activeRaceControlService)
+
+        public ActiveRaceControlViewModel(SharedRaceStateViewModel raceState,
+            IActiveRaceControlService activeRaceControlService, IRaceStartListService startListService)
         {
             RaceState = raceState;
-            _logic = logic;
             _activeRaceControlService = activeRaceControlService;
-            CurrentSkierViewModel = new CurrentSkierViewModel(logic, activeRaceControlService);
-            RankingViewModel = new RankingViewModel(logic, activeRaceControlService);
+            _startListService = startListService;
+            var statService = ServiceProvider.Instance.Resolve<IRaceStatService>();
+            CurrentSkierViewModel =
+                new CurrentSkierViewModel(activeRaceControlService, statService, _startListService);
+            RankingViewModel = new RankingViewModel(activeRaceControlService, statService);
             SetupCommands();
         }
 
@@ -60,7 +65,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 await _activeRaceControlService
                     .DisqualifyCurrentSkier();
             }, () => _currentSkier != null &&
-                    _currentSkier.StartStateId == (int) StartState.Running);
+                     _currentSkier.StartStateId == (int) StartState.Running);
         }
 
         public async Task SetupAsync()
@@ -87,7 +92,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private async Task LoadStartList() =>
             StartList.Repopulate(await _activeRaceControlService.GetRemainingStartList());
-        
+
         private void InvokeButtonCanExecuteChanged()
         {
             AsyncCommand.RaiseCanExecuteChanged();
@@ -112,12 +117,14 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                     }
                 });
             };
-            _activeRaceControlService.OnSkierCanceled += async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadStartList);
+            _activeRaceControlService.OnSkierCanceled +=
+                async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadStartList);
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ =>
             {
                 await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
-                    _currentSkier = await _logic.GetStartListById(_currentSkier.SkierId, _currentSkier.RaceId);
+                    _currentSkier =
+                        await _startListService.GetStartListById(_currentSkier.SkierId, _currentSkier.RaceId);
                     InvokeButtonCanExecuteChanged();
                 });
             };
@@ -142,7 +149,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 ErrorNotifier.OnLoadError();
             }
         }
-        
+
         private async Task CancelSkier(int skierId)
         {
             if (MessageBox.Show("Rennfahrer entfernen?\nDer Fahrer kann danach nicht mehr antreten",

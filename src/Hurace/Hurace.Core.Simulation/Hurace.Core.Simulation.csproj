@@ -3,10 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Hurace.Core\Hurace.Core.Timer\Hurace.Core.Timer.csproj" />
-    </ItemGroup>
+    
 
     <ItemGroup>
       <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
@@ -19,6 +16,10 @@
       <None Update="clocksettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Hurace.Core.Timer\Hurace.Core.Timer.csproj" />
     </ItemGroup>
 
 </Project>

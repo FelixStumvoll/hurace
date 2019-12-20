@@ -1,6 +1,6 @@
 ﻿using System.Transactions;
 
-namespace Hurace.Core.Api.Util
+namespace Hurace.Core.Logic.Util
 {
     public static class ScopeBuilder
     {

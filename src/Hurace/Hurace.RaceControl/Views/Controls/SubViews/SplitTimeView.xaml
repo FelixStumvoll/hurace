@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:u="clr-namespace:Hurace.RaceControl.ViewModels.Util"
-             xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
+             xmlns:models="clr-namespace:Hurace.Core.Logic.Models;assembly=Hurace.Core.Logic"
              xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance subViewModels:CurrentSkierViewModel}"

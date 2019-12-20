@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Api;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic;
+using Hurace.Core.Logic.RaceBaseDataService;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.SeasonService;
 using Hurace.RaceControl.Views.Windows;
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels
@@ -18,9 +20,10 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
         public MainPageViewModel(Func<IPageViewModel, Task> changePageFunc)
         {
             var provider = ServiceProvider.Instance;
-            _racePageViewModel = new RacePageViewModel(provider.ResolveService<IRaceService>());
+            _racePageViewModel = new RacePageViewModel(provider.Resolve<IRaceBaseDataService>(),
+                                                       provider.Resolve<ISeasonService>());
             _changePageFunc = changePageFunc;
-            
+
             SelectPageCommand = new RelayCommand<int>(SelectPage);
             LaunchSimulatorCommand = new RelayCommand(LaunchSimulator);
         }

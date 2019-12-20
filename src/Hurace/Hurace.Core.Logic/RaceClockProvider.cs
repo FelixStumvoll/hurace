@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Timer;
 using Microsoft.Extensions.Configuration;
 
-namespace Hurace.Core.Api
+namespace Hurace.Core.Logic
 {
     public class RaceClockProvider
     {
@@ -20,7 +20,7 @@ namespace Hurace.Core.Api
             if (_raceClock == null)
                 await Task.Run(() =>
                 {
-                    var config = ServiceProvider.Instance.ResolveService<IConfiguration>();
+                    var config = ServiceProvider.Instance.Resolve<IConfiguration>();
                     var clockSection = config?.GetSection("Clock");
                     if (clockSection == null) return;
                     var type = Assembly.Load(clockSection["Assembly"])

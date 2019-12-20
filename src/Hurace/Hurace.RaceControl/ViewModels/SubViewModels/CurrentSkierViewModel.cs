@@ -1,9 +1,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Hurace.Core.Api.ActiveRaceControlService.Service;
-using Hurace.Core.Api.Models;
-using Hurace.Core.Api.RaceService;
+using Hurace.Core.Logic.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Models;
+using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -14,7 +16,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
     public class CurrentSkierViewModel : NotifyPropertyChanged
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
-        private readonly IRaceService _logic;
+        private readonly IRaceStatService _statService;
         private int? _position;
         private TimeSpan? _raceTime;
         private readonly RaceStopwatch _stopwatch;
@@ -41,10 +43,11 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
         public ObservableCollection<TimeDifference> SplitTimeList { get; set; } =
             new ObservableCollection<TimeDifference>();
 
-        public CurrentSkierViewModel(IRaceService logic, IActiveRaceControlService activeRaceControlService)
+        public CurrentSkierViewModel(IActiveRaceControlService activeRaceControlService, IRaceStatService statService,
+            IRaceStartListService startListService)
         {
-            _logic = logic;
             _activeRaceControlService = activeRaceControlService;
+            _statService = statService;
             _stopwatch = new RaceStopwatch();
             _stopwatch.OnTimerElapsed += timespan => RaceTime = timespan;
 
@@ -72,7 +75,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             _activeRaceControlService.OnCurrentSkierDisqualified += async startList =>
                 await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
-                    CurrentSkier = await _logic.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
+                    CurrentSkier = await startListService.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
                     _stopwatch.Reset();
                 });
         }
@@ -87,7 +90,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             {
                 await LoadPossiblePosition();
                 _stopwatch.StartTime ??= timeData.SkierEvent.RaceData.EventDateTime;
-                var difference = await _logic.GetDifferenceToLeader(timeData);
+                var difference = await _statService.GetDifferenceToLeader(timeData);
                 if (difference == null) return;
 
                 SplitTimeList.Add(new TimeDifference(timeData, difference.Value));
@@ -108,10 +111,12 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                 {
                     if (SplitTimeList.Count > 1)
                         Position = await _activeRaceControlService.GetPossiblePositionForCurrentSkier();
-                    
-                    _stopwatch.StartTime = await _logic.GetStartTimeForSkier(CurrentSkier.SkierId, CurrentSkier.RaceId);
+
+                    _stopwatch.StartTime =
+                        await _statService.GetStartTimeForSkier(CurrentSkier.SkierId, CurrentSkier.RaceId);
                     SplitTimeList.Repopulate(
-                            await _logic.GetTimeDataForSkierWithDifference(CurrentSkier.SkierId, CurrentSkier.RaceId));
+                        await _statService.GetTimeDataForSkierWithDifference(
+                            CurrentSkier.SkierId, CurrentSkier.RaceId));
                     _stopwatch.Start();
                 }
                 else Position = null;
