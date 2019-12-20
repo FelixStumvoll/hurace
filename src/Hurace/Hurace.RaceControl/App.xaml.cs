@@ -9,9 +9,6 @@ namespace Hurace.RaceControl
     /// </summary>
     public partial class App
     {
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-        }
+        protected override void OnStartup(StartupEventArgs e) => RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
     }
 }

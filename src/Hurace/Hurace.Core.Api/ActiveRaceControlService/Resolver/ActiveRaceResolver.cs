@@ -17,21 +17,20 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
         private readonly IRaceEventDao _raceEventDao;
         private readonly IRaceDataDao _raceDataDao;
 
-        public static ActiveRaceResolver Instance { get; private set; }
+        public static ActiveRaceResolver? Instance { get; private set; }
 
-        private ActiveRaceResolver()
+        internal ActiveRaceResolver(IRaceDao raceDao, IRaceEventDao raceEventDao, IRaceDataDao raceDataDao)
         {
-            var serviceProvider = ServiceProvider.Instance;
-            _raceDao = serviceProvider.ResolveService<IRaceDao>();
-            _raceDataDao = serviceProvider.ResolveService<IRaceDataDao>();
-            _raceEventDao = serviceProvider.ResolveService<IRaceEventDao>();
+            _raceDao = raceDao;
+            _raceEventDao = raceEventDao;
+            _raceDataDao = raceDataDao;
+            Instance = this;
         }
 
         public static async Task<bool> InitializeActiveRaceHandler()
         {
-            Instance = new ActiveRaceResolver();
             var provider = ServiceProvider.Instance;
-
+            if (Instance == null) return false;
             foreach (var race in await Instance._raceDao.GetActiveRaces())
             {
                 var rcs = provider.ResolveService<IActiveRaceControlService>();

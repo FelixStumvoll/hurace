@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
+using Hurace.Core.Api.ActiveRaceControlService.Resolver;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,7 @@ namespace Hurace.Core.Api
         {
             var builder = new ContainerBuilder();
             
-            //Load Congfig 
+            //Load Config 
             builder.Register(ctx => config).As<IConfiguration>().SingleInstance();
             
             //Load Daos
@@ -38,6 +39,8 @@ namespace Hurace.Core.Api
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Core.Api"))
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
+            builder.RegisterType<ActiveRaceResolver>().As<IActiveRaceResolver>();
+            
             //Load StatementFactory & ConnectionFactory
             var connectionStringSection = config.GetSection("ConnectionStrings").GetSection(configName);
             builder.RegisterInstance(
