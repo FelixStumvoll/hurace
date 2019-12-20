@@ -1,21 +1,14 @@
-﻿<UserControl x:Class="Hurace.RaceControl.Pages.RacePage"
+﻿<UserControl x:Class="Hurace.RaceControl.Views.Pages.RacePage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Hurace.RaceControl.Pages"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-             xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
-             xmlns:controls="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:pageViewModels="clr-namespace:Hurace.RaceControl.ViewModels.PageViewModels"
              xmlns:resources="clr-namespace:Hurace.RaceControl.Resources"
+             xmlns:controls="clr-namespace:Hurace.RaceControl.Views.Controls"
              d:DataContext="{d:DesignInstance pageViewModels:RacePageViewModel}"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:IsNullConverter x:Key="IsNullConverter" />
-    </UserControl.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />

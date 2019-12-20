@@ -1,10 +1,8 @@
 ﻿using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
-using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.SharedViewModels;
-using Hurace.RaceControl.ViewModels.Util;
-using Hurace.RaceControl.Windows;
+using Hurace.RaceControl.Views.Windows;
 
 namespace Hurace.RaceControl.ViewModels
 {

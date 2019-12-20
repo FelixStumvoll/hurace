@@ -1,15 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows;
 using Hurace.Core.Api.ActiveRaceControlService.Service;
 using Hurace.Core.Api.Models;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
-using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.SubViewModels
@@ -93,11 +90,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                 var difference = await _logic.GetDifferenceToLeader(timeData);
                 if (difference == null) return;
 
-                SplitTimeList.Add(new TimeDifference
-                {
-                    TimeData = timeData,
-                    DifferenceToLeader = difference.Value
-                });
+                SplitTimeList.Add(new TimeDifference(timeData, difference.Value));
             }
             catch (Exception)
             {

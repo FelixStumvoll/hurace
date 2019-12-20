@@ -5,10 +5,13 @@ namespace Hurace.Dal.Common.StatementBuilder
         public string ForeignColumn { get; set; }
         public string SelfColumn { get; set; }
 
-        public static implicit operator JoinParam((string selfColumn, string foreignColumn) joinParam) => new JoinParam
+        private JoinParam(string foreignColumn, string selfColumn)
         {
-            ForeignColumn = joinParam.foreignColumn,
-            SelfColumn = joinParam.selfColumn
-        };
+            ForeignColumn = foreignColumn;
+            SelfColumn = selfColumn;
+        }
+
+        public static implicit operator JoinParam((string selfColumn, string foreignColumn) joinParam) =>
+            new JoinParam(joinParam.foreignColumn, joinParam.selfColumn);
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Threading;
-using Hurace.RaceControl.ViewModels.BaseViewModels;
 
 namespace Hurace.RaceControl.ViewModels.Util
 {

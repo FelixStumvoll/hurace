@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
-
-namespace Hurace.RaceControl.Pages
+﻿namespace Hurace.RaceControl.Views.Pages
 {
-    public partial class RacePage : UserControl
+    public partial class RacePage
     {
         public RacePage()
         {

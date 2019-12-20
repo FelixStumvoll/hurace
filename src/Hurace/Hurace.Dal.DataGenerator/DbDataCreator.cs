@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ using Hurace.Dal.Domain.Interfaces;
 using Hurace.Dal.Interface;
 using Hurace.Dal.Interface.Base;
 using Hurace.DataGenerator.JsonEntities;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 
 namespace Hurace.DataGenerator

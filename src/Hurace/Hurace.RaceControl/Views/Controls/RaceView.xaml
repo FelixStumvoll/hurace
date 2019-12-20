@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="Hurace.RaceControl.Controls.RaceView"
+﻿<UserControl x:Class="Hurace.RaceControl.Views.Controls.RaceView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Hurace.RaceControl.Controls"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels"
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-             xmlns:raceControlViews="clr-namespace:Hurace.RaceControl.Controls.RaceControlViews"
+             xmlns:controls="clr-namespace:Hurace.RaceControl.Views.Controls"
+             xmlns:raceControlViews="clr-namespace:Hurace.RaceControl.Views.Controls.RaceControlViews"
              d:DataContext="{d:DesignInstance vm:RaceViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -35,11 +35,11 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <TabItem Header="Stammdaten">
-                <local:RaceBaseDataViewControl DataContext="{Binding RaceBaseDataViewModel}" />
+                <controls:RaceBaseDataViewControl DataContext="{Binding RaceBaseDataViewModel}" />
             </TabItem>
             <TabItem Header="Startliste"
                      IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
-                <local:RaceStartListControl DataContext="{Binding RaceStartListViewModel}" />
+                <controls:RaceStartListControl DataContext="{Binding RaceStartListViewModel}" />
             </TabItem>
             <TabItem Header="Race Control"
                      IsEnabled="{Binding RaceState.Race.Id, Converter={StaticResource RaceIdToBoolConverter}}">
@@ -47,7 +47,7 @@
             </TabItem>
             <TabItem Header="Anzeigekontrolle"
                      IsEnabled="{Binding RaceState.Race, Converter={StaticResource RaceRunningBoolConverter}}">
-                <local:RaceDisplayControl DataContext="{Binding RaceDisplayViewModel}" />
+                <controls:RaceDisplayControl DataContext="{Binding RaceDisplayViewModel}" />
             </TabItem>
         </TabControl>
     </Grid>

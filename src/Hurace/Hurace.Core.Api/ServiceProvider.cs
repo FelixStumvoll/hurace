@@ -9,7 +9,7 @@ namespace Hurace.Core.Api
 {
     public sealed class ServiceProvider
     {
-        private IContainer _container;
+        private IContainer? _container;
 
         private static readonly Lazy<ServiceProvider> Lazy = 
             new Lazy<ServiceProvider>(() => new ServiceProvider());
@@ -49,6 +49,6 @@ namespace Hurace.Core.Api
             _container = builder.Build();
         }
 
-        public T ResolveService<T>() => _container.Resolve<T>();
+        public T? ResolveService<T>() where T : class => _container?.Resolve<T>();
     }
 }

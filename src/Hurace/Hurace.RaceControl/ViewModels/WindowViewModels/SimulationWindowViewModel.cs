@@ -7,8 +7,6 @@ using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
-using Hurace.RaceControl.ViewModels.Commands;
-using Hurace.RaceControl.ViewModels.Util;
 
 
 namespace Hurace.RaceControl.ViewModels.WindowViewModels

@@ -22,7 +22,7 @@ namespace Hurace.Dal.Dao
         public override async Task<bool> InsertAsync(TimeData obj) =>
             await GeneratedNonQueryAsync(StatementFactory.Insert<TimeData>().WithKey().Build(obj));
 
-        public async Task<IEnumerable<TimeData>?> GetRankingForSensor(int raceId, int sensorNumber, int count = 0)
+        public async Task<IEnumerable<TimeData>> GetRankingForSensor(int raceId, int sensorNumber, int count = 0)
         {
             var topSection = count <= 0 ? "" : $" top {count}";
             return await QueryAsync<TimeData>(

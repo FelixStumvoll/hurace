@@ -48,13 +48,13 @@ namespace Hurace.Dal.Test
                 SkierId = skierId,
                 RaceId = raceId,
                 StartNumber = 99,
-                StartStateId = (int) Dal.Domain.Enums.RaceState.Finished
+                StartStateId = (int) Domain.Enums.RaceState.Finished
             });
             var startList = await StartListDao.FindByIdAsync(skierId, raceId);
             
             Assert.AreEqual(skierId, startList.SkierId);
             Assert.AreEqual(raceId, startList.RaceId);
-            Assert.AreEqual((int) Dal.Domain.Enums.RaceState.Finished, startList.StartStateId);
+            Assert.AreEqual((int) Domain.Enums.RaceState.Finished, startList.StartStateId);
             Assert.NotNull(startList.Skier);
             Assert.NotNull(startList.StartState);
             Assert.NotNull(startList.Race);
@@ -86,7 +86,7 @@ namespace Hurace.Dal.Test
         public async Task GetCurrentSkierTest()
         {
             var startList = (await StartListDao.FindAllAsync()).First();
-            startList.StartStateId = (int) Dal.Domain.Enums.StartState.Running;
+            startList.StartStateId = (int) Domain.Enums.StartState.Running;
             await StartListDao.UpdateAsync(startList);
             Assert.AreEqual(startList.SkierId, (await StartListDao.GetCurrentSkierForRace(startList.RaceId))?.SkierId);
         }
@@ -95,7 +95,7 @@ namespace Hurace.Dal.Test
         public async Task GetNextSkierTest()
         {
             var startList = (await StartListDao.FindAllAsync()).First();
-            startList.StartStateId = (int) Dal.Domain.Enums.StartState.Upcoming;
+            startList.StartStateId = (int) Domain.Enums.StartState.Upcoming;
             await StartListDao.UpdateAsync(startList);
             Assert.AreEqual(startList.SkierId, (await StartListDao.GetNextSkierForRace(startList.RaceId))?.SkierId);
         }

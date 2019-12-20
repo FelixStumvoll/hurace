@@ -1,6 +1,5 @@
 using System;
 using FluentValidation;
-using Hurace.RaceControl.Controls;
 using Hurace.RaceControl.ViewModels;
 
 namespace Hurace.RaceControl.Validators

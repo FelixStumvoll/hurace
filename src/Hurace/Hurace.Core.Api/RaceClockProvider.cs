@@ -13,19 +13,20 @@ namespace Hurace.Core.Api
 
         public static RaceClockProvider Instance => LazyRaceClock.Value;
 
-        private IRaceClock _raceClock;
+        private IRaceClock? _raceClock;
 
-        public async Task<IRaceClock> GetRaceClock()
+        public async Task<IRaceClock?> GetRaceClock()
         {
             if (_raceClock == null)
                 await Task.Run(() =>
                 {
                     var config = ServiceProvider.Instance.ResolveService<IConfiguration>();
-                    var clockSection = config.GetSection("Clock");
+                    var clockSection = config?.GetSection("Clock");
+                    if (clockSection == null) return;
                     var type = Assembly.Load(clockSection["Assembly"])
                                        .GetType($"{clockSection["Assembly"]}.{clockSection["ClassName"]}");
-                    if (type.GetInterface(nameof(IRaceClock)) == null) return;
-                    _raceClock = (IRaceClock) Activator.CreateInstance(type);
+                    if (type == null || type.GetInterface(nameof(IRaceClock)) == null) return;
+                    _raceClock = (IRaceClock?) Activator.CreateInstance(type);
                 });
             return _raceClock;
         }

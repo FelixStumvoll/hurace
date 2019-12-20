@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Hurace.Core.Timer;
 using MathNet.Numerics.Distributions;
 using Microsoft.Extensions.Configuration;

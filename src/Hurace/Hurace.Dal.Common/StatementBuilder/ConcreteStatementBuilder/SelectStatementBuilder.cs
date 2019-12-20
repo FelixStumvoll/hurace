@@ -46,9 +46,9 @@ namespace Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder
 
         private TConfig GetConfig<TSelf, TRef, TConfig>() where TConfig : InnerJoinConfig, new()
         {
-            if (JoinCfg.JoinConfigs.TryGetValue((typeof(TSelf), typeof(TRef)), out var config)) return (TConfig) config;
+            if (JoinCfg!.JoinConfigs.TryGetValue((typeof(TSelf), typeof(TRef)), out var config)) return (TConfig) config;
             config = new TConfig();
-            JoinCfg.JoinConfigs.Add((typeof(TSelf), typeof(TRef)), config);
+            JoinCfg?.JoinConfigs.Add((typeof(TSelf), typeof(TRef)), config);
 
             return (TConfig) config;
         }

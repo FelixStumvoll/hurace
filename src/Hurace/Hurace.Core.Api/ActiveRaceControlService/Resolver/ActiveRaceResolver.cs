@@ -35,6 +35,7 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
             foreach (var race in await Instance._raceDao.GetActiveRaces())
             {
                 var rcs = provider.ResolveService<IActiveRaceControlService>();
+                if(rcs == null) continue;
                 rcs.RaceId = race.Id;
                 await rcs.InitializeAsync();
                 Instance._activeRaces.Add(rcs);
@@ -43,11 +44,12 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
             return true;
         }
 
-        public async Task<IActiveRaceControlService> StartRace(int raceId)
+        public async Task<IActiveRaceControlService?> StartRace(int raceId)
         {
             await RaceClockProvider.Instance.GetRaceClock();
             await ChangeRaceState(raceId, RaceState.Running);
             var service = ServiceProvider.Instance.ResolveService<IActiveRaceControlService>();
+            if (service == null) return null;
             service.RaceId = raceId;
             await service.InitializeAsync();
             _activeRaces.Add(service);
@@ -60,6 +62,7 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Resolver
         private async Task ChangeRaceState(int raceId, RaceState state)
         {
             var race = await _raceDao.FindByIdAsync(raceId);
+            if (race == null) return;
             race.RaceStateId = (int) state;
             await _raceDao.UpdateAsync(race);
             var raceData = new RaceData

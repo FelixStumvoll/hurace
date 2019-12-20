@@ -14,8 +14,8 @@ namespace Hurace.Core.Api.ActiveRaceControlService.Service
         event Action<StartList> OnCurrentSkierDisqualified;
         event Action<StartList> OnLateDisqualification;
         event Action<TimeData> OnSplitTime;
-        event Action OnRaceCanceled;
-        event Action OnRaceFinished;
+        event Action<Race> OnRaceCanceled;
+        event Action<Race> OnRaceFinished;
 
         Task InitializeAsync();
         Task<bool> EnableRaceForSkier();

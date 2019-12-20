@@ -1,9 +1,8 @@
-﻿using System.Windows;
-using Hurace.RaceControl.ViewModels.WindowViewModels;
+﻿using Hurace.RaceControl.ViewModels.WindowViewModels;
 
-namespace Hurace.RaceControl.Windows
+namespace Hurace.RaceControl.Views.Windows
 {
-    public partial class SimulatorWindow : Window
+    public partial class SimulatorWindow
     {
         public SimulatorWindow()
         {

@@ -1,14 +1,13 @@
-﻿using System.Windows;
-using Hurace.Core.Api.ActiveRaceControlService.Resolver;
+﻿using Hurace.Core.Api.ActiveRaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
 
-namespace Hurace.RaceControl.Windows
+namespace Hurace.RaceControl.Views.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {

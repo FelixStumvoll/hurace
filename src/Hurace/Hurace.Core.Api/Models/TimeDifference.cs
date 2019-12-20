@@ -7,5 +7,11 @@ namespace Hurace.Core.Api.Models
     {
         public TimeData TimeData { get; set; }
         public TimeSpan DifferenceToLeader { get; set; }
+
+        public TimeDifference(TimeData timeData, TimeSpan differenceToLeader)
+        {
+            TimeData = timeData;
+            DifferenceToLeader = differenceToLeader;
+        }
     }
 }

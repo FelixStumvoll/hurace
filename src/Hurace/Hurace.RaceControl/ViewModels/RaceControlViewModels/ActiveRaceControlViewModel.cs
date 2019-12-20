@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Hurace.Core.Api.ActiveRaceControlService.Service;
-using Hurace.Core.Api.Models;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
@@ -51,9 +49,9 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                  () =>
                                                      (_currentSkier == null || _currentSkier != null &&
                                                       (_currentSkier.StartStateId ==
-                                                       (int) Dal.Domain.Enums.RaceState.Finished ||
+                                                       (int) StartState.Finished ||
                                                        _currentSkier.StartStateId ==
-                                                       (int) Dal.Domain.Enums.RaceState.Disqualified)) &&
+                                                       (int) StartState.Disqualified)) &&
                                                      StartList.Any());
             CancelSkierCommand = new AsyncCommand<int>(async skierId => await CancelSkier(skierId));
             CancelRaceCommand = new AsyncCommand(CancelRace);
@@ -62,7 +60,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 await _activeRaceControlService
                     .DisqualifyCurrentSkier();
             }, () => _currentSkier != null &&
-                    _currentSkier.StartStateId == (int) Dal.Domain.Enums.RaceState.Running);
+                    _currentSkier.StartStateId == (int) StartState.Running);
         }
 
         public async Task SetupAsync()

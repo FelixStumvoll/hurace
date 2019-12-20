@@ -38,22 +38,19 @@ namespace Hurace.Core.Api.RaceService
 
         public Task<Race?> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
 
-        public Task<IEnumerable<Gender>?> GetGenders() => _genderDao.FindAllAsync();
+        public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
 
-        public Task<IEnumerable<Location>?> GetLocations() => _locationDao.FindAllAsync();
+        public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
 
-        public Task<IEnumerable<Discipline>?> GetDisciplines() => _disciplineDao.FindAllAsync();
+        public Task<IEnumerable<Discipline>> GetDisciplines() => _disciplineDao.FindAllAsync();
+        public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
 
-        public Task<IEnumerable<Race>?> GetAllRaces() => _raceDao.FindAllAsync();
+        public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
 
-        public Task<IEnumerable<Race>?> GetRacesForSeason(int seasonId) => _raceDao.GetRaceForSeasonId(seasonId);
-
-        public Task<IEnumerable<Season>?> GetAllSeasons() => _seasonDao.FindAllAsync();
-
-        public Task<IEnumerable<Skier>?> GetAvailableSkiersForRace(int raceId) =>
+        public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);
 
-        public Task<IEnumerable<StartList>?> GetStartListForRace(int raceId) =>
+        public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
 
         public Task<StartList?> GetStartListById(int skierId, int raceId) =>
@@ -94,6 +91,7 @@ namespace Hurace.Core.Api.RaceService
         private async Task<bool> UpdateInvalid(Race race)
         {
             var ogRace = await _raceDao.FindByIdAsync(race.Id);
+            if (ogRace == null) return false;
             var slDefined = await StartListDefined(race.Id);
             return slDefined && (ogRace.DisciplineId != race.DisciplineId || ogRace.GenderId != race.GenderId);
         }
@@ -111,14 +109,15 @@ namespace Hurace.Core.Api.RaceService
             return true;
         }
 
-        public async Task<IEnumerable<RaceRanking>?> GetFinishedSkierRanking(int raceId)
+        public async Task<IEnumerable<RaceRanking>> GetFinishedSkierRanking(int raceId)
         {
             var maxSensorNr = await _sensorDao.GetLastSensorNumber(raceId);
             var ranking = new List<RaceRanking>();
 
             var position = 0;
             var equalityIncrease = 1;
-            foreach (var timeData in await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value))
+            foreach (var timeData in (await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value)).Where(
+                td => td.StartList != null))
             {
                 if (position != 0)
                     if (ranking[position - 1].Time == timeData.Time) equalityIncrease++;
@@ -129,38 +128,30 @@ namespace Hurace.Core.Api.RaceService
                     }
                 else position++;
 
-                ranking.Add(new RaceRanking
-                {
-                    StartList = timeData.StartList,
-                    Time = timeData.Time,
-                    Position = position,
-                    TimeToLeader = timeData.Time - ranking.FirstOrDefault()?.Time ?? 0
-                });
+                ranking.Add(new RaceRanking(timeData.StartList!, timeData.Time, position,
+                                            timeData.Time - ranking.FirstOrDefault()?.Time ?? 0));
             }
 
             return ranking;
         }
 
-        public Task<IEnumerable<StartList>?> GetDisqualifiedSkiers(int raceId) =>
+        public Task<IEnumerable<StartList>> GetDisqualifiedSkiers(int raceId) =>
             _startListDao.GetDisqualifiedSkierForRace(raceId);
 
-        public Task<IEnumerable<TimeData>?> GetTimeDataForStartList(int raceId,
+        public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId,
             int skierId) => _timeDataDao.GetTimeDataForStartList(skierId, raceId);
 
-        public Task<IEnumerable<Discipline>?> GetDisciplinesForLocation(int locationId) =>
+        public Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId) =>
             _locationDao.GetPossibleDisciplinesForLocation(locationId);
 
         private async Task<bool> StartListDefined(int raceId) =>
             await _startListDao.CountStartListForRace(raceId) > 0;
 
-        public async Task<IEnumerable<RaceRanking>?> GetRankingForRace(int raceId)
+        public async Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId)
         {
             var ranking = (await GetFinishedSkierRanking(raceId)).ToList();
             ranking.AddRange((await GetDisqualifiedSkiers(raceId))
-                             .Select(sl => new RaceRanking
-                             {
-                                 StartList = sl
-                             }));
+                             .Select(sl => new RaceRanking(sl)));
             return ranking;
         }
 
@@ -189,7 +180,7 @@ namespace Hurace.Core.Api.RaceService
             return TimeSpan.FromMilliseconds(timeData.Time - leaderTime.Time);
         }
 
-        public async Task<IEnumerable<TimeDifference>?> GetTimeDataForSkierWithDifference(int skierId, int raceId)
+        public async Task<IEnumerable<TimeDifference>> GetTimeDataForSkierWithDifference(int skierId, int raceId)
         {
             var timeDataList = await _timeDataDao.GetTimeDataForStartList(skierId, raceId);
             var retVal = new List<TimeDifference>();
@@ -197,11 +188,7 @@ namespace Hurace.Core.Api.RaceService
             {
                 var res = await GetDifferenceToLeader(timeData);
                 if (!res.HasValue) continue;
-                retVal.Add(new TimeDifference
-                {
-                    TimeData = timeData,
-                    DifferenceToLeader = res.Value
-                });
+                retVal.Add(new TimeDifference(timeData, res.Value));
             }
 
             return retVal;
@@ -211,7 +198,7 @@ namespace Hurace.Core.Api.RaceService
         {
             var sensor = await _sensorDao.GetSensorForSensorNumber(0, raceId);
             return (await _timeDataDao.FindByIdAsync(skierId, raceId, sensor.Id))
-                   ?.SkierEvent.RaceData.EventDateTime;
+                   ?.SkierEvent?.RaceData?.EventDateTime;
         }
 
         public async Task<bool?> IsStartListDefined(int raceId) =>

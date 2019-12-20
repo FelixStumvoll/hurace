@@ -1,8 +1,6 @@
-using System.Windows.Controls;
-
-namespace Hurace.RaceControl.Controls.SubViews
+namespace Hurace.RaceControl.Views.Controls.SubViews
 {
-    public partial class RankingView : UserControl
+    public partial class RankingView
     {
         public RankingView()
         {

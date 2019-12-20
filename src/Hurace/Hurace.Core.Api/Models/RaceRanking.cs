@@ -9,5 +9,13 @@ namespace Hurace.Core.Api.Models
         public int? Position { get; set; }
         public int? TimeToLeader { get; set; }
         public bool Disqualified => !Position.HasValue;
+
+        public RaceRanking(StartList startList, int? time = null, int? position = null, int? timeToLeader = null)
+        {
+            StartList = startList;
+            Time = time;
+            Position = position;
+            TimeToLeader = timeToLeader;
+        }
     }
 }

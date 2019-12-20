@@ -1,12 +1,11 @@
-using System.Windows;
 using Hurace.Core.Api;
 using Hurace.Core.Api.ActiveRaceControlService.Resolver;
 using Hurace.Core.Api.RaceService;
 using Hurace.RaceControl.ViewModels.SubViewModels;
 
-namespace Hurace.RaceControl.Windows
+namespace Hurace.RaceControl.Views.Windows
 {
-    public partial class RankingWindow : Window
+    public partial class RankingWindow
     {
         public RankingWindow(int raceId)
         {

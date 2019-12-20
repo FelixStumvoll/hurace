@@ -1,8 +1,6 @@
-using System.Windows.Controls;
-
-namespace Hurace.RaceControl.Controls.RaceControlViews
+namespace Hurace.RaceControl.Views.Controls.RaceControlViews
 {
-    public partial class RaceControlBaseView : UserControl
+    public partial class RaceControlBaseView
     {
         public RaceControlBaseView()
         {
