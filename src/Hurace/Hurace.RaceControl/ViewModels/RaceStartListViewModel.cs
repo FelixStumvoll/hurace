@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -55,19 +56,17 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            EditCommand = new ActionCommand(_ => EditStartList(),
-                                            _ => RaceState.Race.RaceStateId ==
+            EditCommand = new RelayCommand(EditStartList,
+                                            () => RaceState.Race.RaceStateId ==
                                                  (int) Dal.Domain.Enums.RaceState.Upcoming);
-            SaveCommand = new AsyncCommand(_ => SaveStartList());
-            CancelEditCommand = new AsyncCommand(_ => CancelEditStartList());
+            SaveCommand = new AsyncCommand(SaveStartList);
+            CancelEditCommand = new AsyncCommand(CancelEditStartList);
 
-            AddSkierCommand = new ActionCommand(AddSkier, _ => RaceState.Edit);
-            RemoveStartListCommand = new ActionCommand(RemoveStartList, _ => RaceState.Edit);
+            AddSkierCommand = new RelayCommand<int>(AddSkier, _ => RaceState.Edit);
+            RemoveStartListCommand = new RelayCommand<int>(RemoveStartList, _ => RaceState.Edit);
 
-            StartListUpCommand = new ActionCommand(_ => MoveStartList(i => i - 1),
-                                                   _ => CanMoveUp());
-            StartListDownCommand = new ActionCommand(_ => MoveStartList(i => i + 1),
-                                                     _ => CanMoveDown());
+            StartListUpCommand = new RelayCommand(() => MoveStartList(i => i - 1), CanMoveUp);
+            StartListDownCommand = new RelayCommand(() => MoveStartList(i => i + 1), CanMoveDown);
             AvailableSkiers =
                 new FilterableObservableCollection<Skier>(SkierFilterFunc,
                                                           s =>
@@ -112,9 +111,9 @@ namespace Hurace.RaceControl.ViewModels
             SelectedStartList = prev;
         }
 
-        private void AddSkier(object skierId)
+        private void AddSkier(int skierId)
         {
-            var skier = AvailableSkiers.DataSource.SingleOrDefault(s => s.Id == (int) skierId);
+            var skier = AvailableSkiers.DataSource.SingleOrDefault(s => s.Id == skierId);
             if (skier == null) return;
 
             StartList.DataSource.Add(new StartList
@@ -132,9 +131,9 @@ namespace Hurace.RaceControl.ViewModels
             StartList.Apply();
         }
 
-        private void RemoveStartList(object skierId)
+        private void RemoveStartList(int skierId)
         {
-            var startList = StartList.DataSource.SingleOrDefault(s => s.SkierId == (int) skierId);
+            var startList = StartList.DataSource.SingleOrDefault(s => s.SkierId == skierId);
             if (startList == null) return;
 
             AvailableSkiers.DataSource.Add(startList.Skier);

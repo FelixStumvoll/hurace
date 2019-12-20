@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
@@ -62,7 +63,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                 Seasons.Repopulate(seasonList.OrderByDescending(s => s.StartDate));
                 SelectedSeason = Seasons[0];
                 SeasonChangedCommand ??=
-                    new AsyncCommand(async _ => await LoadRaces());
+                    new AsyncCommand(LoadRaces);
                 await LoadRaces();
                 _sharedRaceViewModel.Disciplines.UpdateDataSource(await _logic.GetDisciplines());
                 _sharedRaceViewModel.Genders.UpdateDataSource(await _logic.GetGenders());
@@ -98,8 +99,8 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private void SetupCommands()
         {
-            AddRaceCommand = new ActionCommand(_ => AddRace());
-            SelectedRaceChangedCommand = new AsyncCommand(async _ =>
+            AddRaceCommand = new RelayCommand(AddRace);
+            SelectedRaceChangedCommand = new AsyncCommand(async () =>
             {
                 if (SelectedRace == null) return;
                 await SelectedRace.SetupAsync();

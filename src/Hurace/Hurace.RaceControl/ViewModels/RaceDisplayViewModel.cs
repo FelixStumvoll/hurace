@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.SharedViewModels;
@@ -14,7 +15,7 @@ namespace Hurace.RaceControl.ViewModels
         public RaceDisplayViewModel(SharedRaceStateViewModel raceState)
         {
             RaceState = raceState;
-            OpenCurrentSkierWindowCommand = new ActionCommand(_ => OpenCurrentSkierWindow());
+            OpenCurrentSkierWindowCommand = new RelayCommand(OpenCurrentSkierWindow);
         }
 
         private void OpenCurrentSkierWindow()

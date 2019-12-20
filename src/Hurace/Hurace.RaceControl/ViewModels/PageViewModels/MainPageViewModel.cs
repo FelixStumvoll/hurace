@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api;
 using Hurace.Core.Api.RaceService;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -21,8 +22,8 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
             _racePageViewModel = new RacePageViewModel(provider.ResolveService<IRaceService>());
             _changePageFunc = changePageFunc;
             
-            SelectPageCommand = new ActionCommand(index => SelectPage((int) index));
-            LaunchSimulatorCommand = new ActionCommand(_ => LaunchSimulator());
+            SelectPageCommand = new RelayCommand<int>(SelectPage);
+            LaunchSimulatorCommand = new RelayCommand(LaunchSimulator);
         }
 
         private static void LaunchSimulator() => new SimulatorWindow().Show();

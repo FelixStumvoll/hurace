@@ -39,7 +39,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         {
             RaceState = raceState;
             _logic = logic;
-            StartRaceCommand = new AsyncCommand(_ => StartRace(), _ => StartListDefined);
+            StartRaceCommand = new AsyncCommand(StartRace, () => StartListDefined);
         }
 
         public async Task SetupAsync()

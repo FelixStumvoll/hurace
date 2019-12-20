@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Hurace.RaceControl.ViewModels.Commands
 {
-    public class AsyncCommand : ICommand
+    public class AsyncCommand<T> : ICommand
     {
-        private readonly Func<Task> _executeAsync;
+        private readonly Func<T, Task> _executeAsync;
 
-        private readonly Func<bool> _canExecute;
+        private readonly Predicate<T> _canExecute;
         
         public event EventHandler CanExecuteChanged
         {
@@ -16,14 +16,18 @@ namespace Hurace.RaceControl.ViewModels.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
 
-        public AsyncCommand(Func<Task> executeAsync, Func<bool> canExecute = null)
+        public AsyncCommand(Func<T, Task> executeAsync, Predicate<T> canExecute = null)
         {
             _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
             _canExecute = canExecute;
         }
 
-        public async void Execute(object parameter) => await _executeAsync();
-        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+        public async void Execute(object parameter) => await _executeAsync((T)parameter);
+        public bool CanExecute(object parameter)
+        {
+            if (parameter is T p1) return _canExecute?.Invoke(p1) ?? true;
+            return false;
+        }
 
         public static void RaiseCanExecuteChanged() => CommandManager.InvalidateRequerySuggested();
     }

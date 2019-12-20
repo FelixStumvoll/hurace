@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api.RaceService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
@@ -77,10 +78,10 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            StartEditCommand = new ActionCommand(_ => StartEdit());
-            CancelEditCommand = new AsyncCommand(_ => CancelEdit());
-            SaveEditCommand = new AsyncCommand(_ => SaveEdit(), _ => ValidatorIsValid);
-            LocationChangedCommand = new AsyncCommand(_ => SetDisciplinesForLocation());
+            StartEditCommand = new RelayCommand(StartEdit);
+            CancelEditCommand = new AsyncCommand(CancelEdit);
+            SaveEditCommand = new AsyncCommand(SaveEdit, () => ValidatorIsValid);
+            LocationChangedCommand = new AsyncCommand(SetDisciplinesForLocation);
         }
 
         public async Task SetupAsync()

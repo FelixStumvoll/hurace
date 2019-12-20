@@ -30,7 +30,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         {
             _mainPageViewModel = new MainPageViewModel(ChangePage);
             CurrentPage = _mainPageViewModel;
-            BackToMainCommand = new AsyncCommand(async _ => await ChangePage(_mainPageViewModel));
+            BackToMainCommand = new AsyncCommand(async () => await ChangePage(_mainPageViewModel));
         }
 
         private async Task ChangePage(IPageViewModel vm)

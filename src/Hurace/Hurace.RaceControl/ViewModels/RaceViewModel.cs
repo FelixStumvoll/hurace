@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api.RaceService;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
@@ -43,17 +44,17 @@ namespace Hurace.RaceControl.ViewModels
         private void SetupCommands()
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
-            DeleteCommand = new ActionCommand(_ => OnDelete?.Invoke(this),
-                                              _ => RaceState.Race.Id !=
+            DeleteCommand = new RelayCommand(() => OnDelete?.Invoke(this),
+                                              () => RaceState.Race.Id !=
                                                    -1); // && Race.RaceStateId == (int) Constants.RaceState.Upcoming
-            TabSelectionChangedCommand = new AsyncCommand(_ => OnTabSelectionChanged());
+            TabSelectionChangedCommand = new AsyncCommand(OnTabSelectionChanged);
         }
 
         public async Task SetupAsync() => await SetupTab();
 
-        private async Task OnTabSelectionChanged(bool ignoreSameTab = true)
+        private async Task OnTabSelectionChanged()
         {
-            if (_tempTabIndex == SelectedTab && ignoreSameTab) return;
+            if (_tempTabIndex == SelectedTab) return;
             await SetupTab();
             _tempTabIndex = SelectedTab;
         }

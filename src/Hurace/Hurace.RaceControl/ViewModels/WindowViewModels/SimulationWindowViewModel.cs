@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Api;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -91,7 +92,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
                                 MessageBoxImage.Error);
                 return;
             }
-            
+
             Clock = mockRaceClock;
             Clock.TimingTriggered += (id, time) =>
                 Application
@@ -105,20 +106,20 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
 
         private void SetupCommands()
         {
-            StartClockCommand = new ActionCommand(_ =>
+            StartClockCommand = new RelayCommand(() =>
             {
                 Clock.Start();
                 Running = true;
-            }, _ => !Clock.Running);
-            PauseClockCommand = new ActionCommand(_ =>
+            }, () => !Clock.Running);
+            PauseClockCommand = new RelayCommand(() =>
             {
                 Clock.Stop();
                 Running = false;
-            }, _ => Clock.Running);
-            SkipNextSensorCommand = new ActionCommand(_ => Clock.SkipNext());
-            RestartSenorCommand = new ActionCommand(_ => Clock.Reset());
-            TriggerSensorCommand = new ActionCommand(_ => Clock.TriggerSensor(SensorToTrigger),
-                                                     _ => SensorToTrigger >= 0 && 
+            }, () => Clock.Running);
+            SkipNextSensorCommand = new RelayCommand(() => Clock.SkipNext());
+            RestartSenorCommand = new RelayCommand(() => Clock.Reset());
+            TriggerSensorCommand = new RelayCommand(() => Clock.TriggerSensor(SensorToTrigger),
+                                                    () => SensorToTrigger >= 0 &&
                                                           SensorToTrigger < Clock.MaxSensor);
         }
     }

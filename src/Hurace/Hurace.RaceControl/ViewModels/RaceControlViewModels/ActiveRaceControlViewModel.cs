@@ -47,21 +47,21 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private void SetupCommands()
         {
-            ReadyTrackCommand = new AsyncCommand(async _ => await ReadyTrack(),
-                                                 _ =>
+            ReadyTrackCommand = new AsyncCommand(ReadyTrack,
+                                                 () =>
                                                      (_currentSkier == null || _currentSkier != null &&
                                                       (_currentSkier.StartStateId ==
                                                        (int) Dal.Domain.Enums.RaceState.Finished ||
                                                        _currentSkier.StartStateId ==
                                                        (int) Dal.Domain.Enums.RaceState.Disqualified)) &&
                                                      StartList.Any());
-            CancelSkierCommand = new AsyncCommand(async skierId => await CancelSkier((int) skierId));
-            CancelRaceCommand = new AsyncCommand(async _ => await CancelRace());
-            DisqualifyCurrentSkierCommand = new AsyncCommand(async _ =>
+            CancelSkierCommand = new AsyncCommand<int>(async skierId => await CancelSkier(skierId));
+            CancelRaceCommand = new AsyncCommand(CancelRace);
+            DisqualifyCurrentSkierCommand = new AsyncCommand(async () =>
             {
                 await _activeRaceControlService
                     .DisqualifyCurrentSkier();
-            }, _ => _currentSkier != null &&
+            }, () => _currentSkier != null &&
                     _currentSkier.StartStateId == (int) Dal.Domain.Enums.RaceState.Running);
         }
 
@@ -92,8 +92,8 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         
         private void InvokeButtonCanExecuteChanged()
         {
-            ReadyTrackCommand.RaiseCanExecuteChanged();
-            DisqualifyCurrentSkierCommand.RaiseCanExecuteChanged();
+            AsyncCommand.RaiseCanExecuteChanged();
+            AsyncCommand.RaiseCanExecuteChanged();
         }
 
         private void SetupRaceEvents()

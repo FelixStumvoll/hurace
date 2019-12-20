@@ -7,7 +7,7 @@
              xmlns:pages="clr-namespace:Hurace.RaceControl.Pages"
              xmlns:models="clr-namespace:Hurace.Core.Api.Models;assembly=Hurace.Core.Api"
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
-             StartupUri="Windows/MainWindow.xaml">
+             StartupUri="Views/Windows/MainWindow.xaml">
     <Application.Resources>
         <!-- <ResourceDictionary x:Key="Mat"> -->
         <!-- <ResourceDictionary.MergedDictionaries> -->
