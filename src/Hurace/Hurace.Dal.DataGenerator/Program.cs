@@ -8,7 +8,7 @@ namespace Hurace.DataGenerator
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
-        private static async Task Main()
+        private static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var section = config.GetSection("ConnectionStrings").GetSection("huraceProd");
@@ -19,7 +19,7 @@ namespace Hurace.DataGenerator
             await dbCreator.Cleanup();
             try
             {
-                await dbCreator.FillDatabase();
+                if (args.Length != 0) await dbCreator.FillDatabase();
             }
             catch (Exception e)
             {
