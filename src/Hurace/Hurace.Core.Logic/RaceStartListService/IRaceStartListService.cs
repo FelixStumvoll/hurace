@@ -6,7 +6,7 @@ namespace Hurace.Core.Logic.RaceStartListService
 {
     public interface IRaceStartListService
     {
-        Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList);
+        Task<bool> UpdateStartList(int raceId, IEnumerable<StartList> startList);
         Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId);
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
         Task<bool?> IsStartListDefined(int raceId);

@@ -1,6 +1,5 @@
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStatService;
 using Hurace.RaceControl.ViewModels.SubViewModels;
 

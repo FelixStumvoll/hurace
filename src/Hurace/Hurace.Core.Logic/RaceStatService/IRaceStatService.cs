@@ -9,7 +9,7 @@ namespace Hurace.Core.Logic.RaceStatService
     public interface IRaceStatService
     {
         Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId);
-        Task<IEnumerable<RaceRanking>> GetFinishedSkierRanking(int raceId);
+        Task<IEnumerable<RaceRanking>?> GetFinishedSkierRanking(int raceId);
         Task<IEnumerable<StartList>> GetDisqualifiedSkiers(int raceId);
         Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId, int skierId);
         Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);

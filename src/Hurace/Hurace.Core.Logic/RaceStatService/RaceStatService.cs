@@ -29,11 +29,11 @@ namespace Hurace.Core.Logic.RaceStatService
             return ranking;
         }
 
-        public async Task<IEnumerable<RaceRanking>> GetFinishedSkierRanking(int raceId)
+        public async Task<IEnumerable<RaceRanking>?> GetFinishedSkierRanking(int raceId)
         {
             var maxSensorNr = await _sensorDao.GetLastSensorNumber(raceId);
             var ranking = new List<RaceRanking>();
-
+            if (maxSensorNr == null) return null;
             var position = 0;
             var equalityIncrease = 1;
             foreach (var timeData in (await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value)).Where(

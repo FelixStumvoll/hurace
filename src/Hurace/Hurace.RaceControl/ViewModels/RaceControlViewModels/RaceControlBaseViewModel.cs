@@ -6,7 +6,6 @@ using Hurace.Core.Logic;
 using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
 using Hurace.Core.Logic.ActiveRaceControlService.Service;
 using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStartListService;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;

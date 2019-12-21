@@ -18,15 +18,16 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Resolver
         private readonly IRaceDataDao _raceDataDao;
 
         public static ActiveRaceResolver? Instance { get; private set; }
-
-        //todo needs to be initialized @ app start
+        
         internal ActiveRaceResolver(IRaceDao raceDao, IRaceEventDao raceEventDao, IRaceDataDao raceDataDao)
         {
             _raceDao = raceDao;
             _raceEventDao = raceEventDao;
             _raceDataDao = raceDataDao;
-            Instance = this;
         }
+
+        internal static void SetupActiveRaceHandler(IRaceDao raceDao, IRaceEventDao raceEventDao, IRaceDataDao raceDataDao) => 
+            Instance = new ActiveRaceResolver(raceDao, raceEventDao,raceDataDao);
 
         public static async Task<bool> InitializeActiveRaceHandler()
         {

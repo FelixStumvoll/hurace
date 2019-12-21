@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
@@ -16,11 +17,12 @@ namespace Hurace.Core.Logic.RaceStartListService
             _skierDao = skierDao;
         }
 
-        public async Task<bool> UpdateStartList(Race race, IEnumerable<StartList> startList)
+        public async Task<bool> UpdateStartList(int raceId, IEnumerable<StartList> startList)
         {
-            await _startListDao.DeleteAllForRace(race.Id);
+            using var scope = ScopeBuilder.BuildTransactionScope();
+            if (!await _startListDao.DeleteAllForRace(raceId)) return false;
             foreach (var sl in startList) await _startListDao.InsertAsync(sl);
-
+            scope.Complete();
             return true;
         }
 

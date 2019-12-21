@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.SeasonService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;

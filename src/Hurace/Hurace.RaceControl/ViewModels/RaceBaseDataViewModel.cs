@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceService;
+using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.Validators;
@@ -145,17 +145,17 @@ namespace Hurace.RaceControl.ViewModels
             RaceState.Race.Discipline = _selectedDiscipline;
             switch (await _baseDataService.InsertOrUpdateRace(RaceState.Race, SensorCount))
             {
-                case RaceUpdateState.Ok:
+                case RaceModificationResult.Ok:
                     RaceState.Edit = false;
                     await UpdateRace();
                     break;
-                case RaceUpdateState.Err:
+                case RaceModificationResult.Err:
                     MessageBox.Show("Fehler beim Speichern des Rennens",
                                     "Fehler",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                     break;
-                case RaceUpdateState.StartListDefined:
+                case RaceModificationResult.StartListDefined:
                     MessageBox.Show("Geschlecht und Disziplin können nicht geändert werden, " +
                                     "wenn eine Startliste definiert ist",
                                     "Fehler",

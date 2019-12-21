@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.ActiveRaceControlService.Service;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStartListService;
 using Hurace.Core.Logic.RaceStatService;
 using Hurace.Dal.Domain;

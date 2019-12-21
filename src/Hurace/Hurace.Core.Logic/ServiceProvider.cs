@@ -4,6 +4,7 @@ using Autofac;
 using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
+using Hurace.Dal.Interface;
 using Microsoft.Extensions.Configuration;
 
 namespace Hurace.Core.Logic
@@ -12,11 +13,11 @@ namespace Hurace.Core.Logic
     {
         private IContainer? _container;
 
-        private static readonly Lazy<ServiceProvider> Lazy = 
+        private static readonly Lazy<ServiceProvider> Lazy =
             new Lazy<ServiceProvider>(() => new ServiceProvider());
-        
+
         public static ServiceProvider Instance => Lazy.Value;
-        
+
         private ServiceProvider()
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -26,10 +27,10 @@ namespace Hurace.Core.Logic
         private void BuildContainer(IConfiguration config, string configName)
         {
             var builder = new ContainerBuilder();
-            
+
             //Load Config 
             builder.Register(ctx => config).As<IConfiguration>().SingleInstance();
-            
+
             //Load Daos
             builder.RegisterAssemblyTypes(Assembly.Load("Hurace.Dal.Dao"))
                    .Where(t => t.Name.EndsWith("Dao") && (!t.Namespace?.Contains("Base") ?? false))
@@ -40,16 +41,19 @@ namespace Hurace.Core.Logic
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
             builder.RegisterType<ActiveRaceResolver>().As<IActiveRaceResolver>();
-            
+
             //Load StatementFactory & ConnectionFactory
             var connectionStringSection = config.GetSection("ConnectionStrings").GetSection(configName);
             builder.RegisterInstance(
-                       new ConcreteConnectionFactory(DbUtil.GetProviderFactory(connectionStringSection["ProviderName"]),
-                                                     connectionStringSection["ConnectionString"]))
+                       new ConcreteConnectionFactory(
+                           DbUtil.GetProviderFactory(connectionStringSection["ProviderName"]),
+                           connectionStringSection["ConnectionString"]))
                    .As<IConnectionFactory>();
             builder.RegisterInstance(new StatementFactory("hurace")).AsSelf();
 
             _container = builder.Build();
+            ActiveRaceResolver.SetupActiveRaceHandler(Resolve<IRaceDao>(), Resolve<IRaceEventDao>(),
+                                                      Resolve<IRaceDataDao>());
         }
 
         public T? Resolve<T>() where T : class => _container?.Resolve<T>();

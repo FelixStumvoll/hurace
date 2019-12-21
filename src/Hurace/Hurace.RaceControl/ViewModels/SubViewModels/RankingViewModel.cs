@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.ActiveRaceControlService.Service;
 using Hurace.Core.Logic.Models;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStatService;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;

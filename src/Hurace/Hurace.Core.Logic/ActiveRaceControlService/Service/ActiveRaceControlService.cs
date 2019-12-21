@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStatService;
 using Hurace.Core.Logic.Util;
 using Hurace.Core.Timer;
@@ -252,10 +251,8 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             if (diff == null) return 1;
 
             var ranking = await _statService.GetFinishedSkierRanking(RaceId);
-
-            return 1 + ranking
-                       .TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)
-                       .Count();
+            return 1 + ranking?.TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)
+                              .Count();
         }
 
         public async Task<bool> CancelRace()

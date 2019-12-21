@@ -4,7 +4,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStartListService;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using Hurace.Core.Logic.RaceService;
 using Hurace.Core.Logic.RaceStartListService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -149,7 +148,7 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                await _startListService.UpdateStartList(RaceState.Race, StartList.DataSource);
+                await _startListService.UpdateStartList(RaceState.Race.Id, StartList.DataSource);
                 RaceState.Edit = false;
             }
             catch (Exception)
