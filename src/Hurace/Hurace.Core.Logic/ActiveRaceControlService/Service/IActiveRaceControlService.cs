@@ -10,11 +10,11 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
         int RaceId { get; set; }
         event Action<StartList> OnSkierStarted;
         event Action<StartList> OnSkierFinished;
-        event Action<StartList> OnSkierCanceled;
+        event Action<StartList> OnSkierCancelled;
         event Action<StartList> OnCurrentSkierDisqualified;
         event Action<StartList> OnLateDisqualification;
         event Action<TimeData> OnSplitTime;
-        event Action<Race> OnRaceCanceled;
+        event Action<Race> OnRaceCancelled;
         event Action<Race> OnRaceFinished;
 
         Task InitializeAsync();

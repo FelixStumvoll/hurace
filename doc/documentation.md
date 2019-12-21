@@ -273,3 +273,231 @@ Die Unit Tests decken jeweils die Methoden
 ab. Wobei bei lesenden Daos nur die ersten beiden getestet werden. 
 Der Test muss für alle Daos durchgeführt werden, obwohl die meisten Methoden generisch implementiert wurden,
 da diese auf unterschiedliche Tabellen zugreifen.
+
+## Businesslogik
+
+Die Businesslogik von Hurace wird in folgende Services aufgeteilt, diese greifen auf die Database Access Layer zu und werden von den ViewModels genutzt.
+
+### RaceBaseDataService
+
+In diesem Service sind folgende Methoden definiert, welche zum Modifizieren von Rennen benötigt werden.
+
+
+#### GetRace
+
+Liefert ein Rennen anhand einer Id
+
+#### InsertOrUpdateRace
+
+Fügt ein Rennen ein oder aktualisiert ein bestehendes Rennen.
+Ein Rennen kann nur aktualisiert werden, wenn keine Startliste definiert ist, oder sich Geschlecht und Disziplin nicht ändern.
+Weiters werden Sensoren hinzugefügt oder entfernt.
+
+#### GetSensorCount
+
+Liefert die Anzahl der Sensoren welche für ein Rennen sind.
+
+#### RemoveRace
+
+Entfernt ein Rennen. Dies ist nur möglich, falls keine Startliste definiert ist, bzw. keine Zeitdaten vorliegen.
+Sensoren werden mitgelöscht.
+
+#### GetGenders
+
+Liefert alle zur Auswahl stehenden Geschlechter.
+
+#### GetLocations
+
+Liefert alle zur Auswahl stehenden Rennorte.
+
+#### GetDisciplinesForLocations
+
+Liefert alle Disziplinen welche an einem Rennort möglich sind.
+
+
+### RaceStartListService
+
+In diesem Service werden Methoden zum Manipulieren der Startliste definiert.
+
+#### UpdateStartList
+
+In dieser Methode wird die Startliste eines Rennens aktualisiert. Dafür werden alle Einträge gelöscht. Anschließend werden die neuen Einträge eingefügt.
+
+#### GetAvailableSkiersForRace
+
+Liefert alle Skifahrer welche zu einer Startliste eines Rennens hinzugefügt werden können.
+
+#### GetStartListForRace
+
+Liefert die Startliste für ein Rennen
+
+#### IsStartListDefined
+
+Gibt an ob für ein Rennen eine Startliste definiert ist
+
+#### GetStartListById
+
+Liefert einen einzelnen Startlisteneintrag anhand dessen Id.
+
+### RaceStatService
+
+In diesem Service sind Methoden definiert, mit welchen Statistikdaten eines Rennens abgerufen werden können.
+
+#### GetRankingForRace
+
+In dieser Methode wird das komplette Ranking eines Rennens retourniert. Dabei werden ausgeschiedene Fahrer am Ende angeführt.
+
+#### GetFinishedSkierRanking
+
+Diese Methode liefert die Rangliste der Fahrer, welche das Rennen erfolgreich beendet haben. Dabei wird auch berücksichtigt, dass die Position entsprechend angepasst wird, falls zwei Fahrer die gleiche Zeit gefahren sind.
+
+#### GetDisqualifiedSkiers 
+
+Liefert die Rennfahrer, welche ausgeschieden sind.
+
+#### GetTimeDataForStartList
+
+Liefert alle Sensorwerte für einen Schirennläufer.
+
+#### GetDifferenceToLeader
+
+Liefert für eine Sensorauslösung den Unterschied zum Führenden. Falls der Fahrer selbst der Führende ist, wird der Abstand zum nächsten retourniert.
+
+#### GetTimeDataForSkierWithDifference
+
+Liefert alle Zwischenzeiten, mit dem Abstand zum Führenden.
+
+#### GetStartTimeForSkier
+
+Liefert den Zeitpunkt bei welchem der Skier gestartet ist.
+
+### SeasonService
+
+Dieser Service stellt Methoden zum Abfragen von Saisondaten zur Verfügung.
+
+#### GetRacesForSeason
+
+Liefert alle Rennen einer Saison
+
+#### GetAllSeasons 
+
+Liefert alle Saisons.
+
+### ActiveRaceControlService
+
+In diesem Service werden zum einen Events definiert, welche über Ereignisse informieren und zum anderen werden Methoden definiert, welche für den Rennablauf benötigt werden.
+
+#### Events
+
+##### OnSkierStarted
+
+Wird ausgelöst sobald die Rennstrecke freigegeben wurde. 
+
+##### OnSkierFinished
+
+Wird ausgelöst sobald ein Rennfahrer im Ziel angekommen ist.
+
+##### OnSkierCancelled
+
+Wird ausgelöst, wenn ein Rennfahrer nicht antritt.
+
+##### OnCurrentSkierDisqualified
+
+Wird ausgelöst, wenn der aktuelle Rennfahrer ausgeschieden ist.
+
+##### OnLateDisqualification
+
+Wird ausgelöst, wenn ein Rennfahrer im Nachhinein disqualifiziert wurde.
+
+##### OnSplitTime
+
+Wird ausgelöst, wenn ein ein Sensor ausgelöst wurde.
+
+##### OnRaceCancelled
+
+Wird ausgelöst, wenn ein ein Rennen abgebrochen wurde.
+
+##### OnRaceFinished
+
+Wird ausgelöst, wenn ein Rennen beendet wurde.
+
+#### Methoden
+
+##### OnTimingTriggered
+
+Diese Methode wird aufgerufen, wenn ein Sensor ausgelöst wurde.
+Zuerst wird mittels ```ValidateSensorValue``` geprüft ob der Wert valide ist und anschließend wird wird der Wert in der Datenbank abgelegt falls er valide war. Falls der ausgelöste Sensor der Zielsensor war, wird der Lauf des Skiers beendet und ```OnSkierFinished``` ausgelöst.
+
+##### ValidateSensorValue
+
+In dieser Methode wird geprüft, ob ein Sensor valide ist. Dafür wird zuerst geprüft, ob die Sensornummer kleiner als 0 oder größer als die des letzten definierten Sensors ist.
+Anschließend werden alle Sensordaten des Läufers überprüft. Falls ein Sensor mit einer höheren Nummer bereits ausgelöst wurde ist der Wert nicht gültig, gleiches gilt wenn der Sensor für den Skifahrer bereits ausgelöst wurde. Ansonsten wird geprüft ob sich der Wert im Durchschnitt befindet.
+
+##### EnableRaceForSkier
+
+Diese Methode gibt die Strecke für den nächsten Skier frei. Dabei wird auch ```OnSkierStarted``` ausgelöst. Zudem werden die Daten in die Datenbank übertragen.
+
+##### GetCurrentSkier
+
+Liefert den Rennfahrer, für welchen die Strecke freigegeben wurde.
+
+##### CancelSkier
+
+Entfernt einen Skier aus der Startliste eines Rennens. Zudem wird ```OnSkierCancelled``` ausgelöst.
+
+##### GetRemainingStartList
+
+Diese Methode liefert die verbleibende Startliste für ein Rennen. Dabei werden bereits gefahrene Fahrer sowie Fahrer die nicht angetreten sind ausgeschlossen.
+
+##### DisqualifyCurrentSkier
+
+Diese Methode disqualifiziert einen Läufer und beendet seine Fahrt. Zudem wird ```OnCurrentSkierDisqualified``` ausgelöst.
+
+##### DisqualifyFinishedSkier
+
+Diese Methode disqualifiziert einen Läufer welcher seinen Lauf bereits beendet hat. Zudem wird ```OnLateDisqualification``` ausgelöst.
+
+##### GetPossiblePositionForCurrentSkier
+
+Diese Methode liefert die mögliche Position basierend auf der letzten Zwischenzeit.
+Dabei wird zuerst die Differenz zum aktuellen Führenden an der jeweiligen Zwischenzeit berechnet.
+Anschließend wird die Rangliste durchlaufen und die Differenzen verglichen um die Position zu ermitteln.
+
+##### CancelRace 
+
+Mit dieser Methode kann ein Rennen abgebrochen werden. Dabei wird ```OnRaceCancelled``` ausgelöst.
+
+### ActiveRaceResolver
+
+Dieser Service ist dafür da, aktive Rennen zu verwalten.
+
+#### InitializeActiveRaceHandler
+
+Diese Methode initialisiert den ```ActiveRaceResolver```. Dabei werden alle aktiven Rennen aus der Datenbank geladen. 
+
+#### StartRace
+
+Diese Methode startet ein Rennen, dafür wird ein ```ActiceRaceControlService``` erzeugt und retourniert.
+
+#### Indexer 
+
+Mittels des Indexers kann ein ```ActiveRaceControlService``` eines bereits laufenden Rennens geladen werden.
+
+#### EndRace
+
+Beendet ein Rennen.
+
+### ServiceProvider
+
+Dieser Service dient als DI Provider, bei seiner Initialisierung werden alle Services sowie alle Daos geladen und können im Verlauf der Anwendung mittels Dependency Injection verwendet werden.
+
+### RaceClockProvider
+
+Dieser Service ist für die Instanzierung der ```IRaceClock``` zuständig, dafür kann mittels einer Config der Name sowie das Assembly einer Implementierung angegeben werden, welche verwendet werden soll.
+
+## Architekturüberblick
+
+Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:
+* Datenbankzugriffsschicht
+* Service Schicht / Businesslogik
+* View Model Schicht

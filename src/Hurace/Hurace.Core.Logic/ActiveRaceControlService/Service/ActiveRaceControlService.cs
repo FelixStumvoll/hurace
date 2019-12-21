@@ -18,13 +18,13 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
     {
         public event Action<StartList>? OnSkierStarted;
         public event Action<StartList>? OnSkierFinished;
-        public event Action<StartList>? OnSkierCanceled;
+        public event Action<StartList>? OnSkierCancelled;
         public event Action<StartList>? OnCurrentSkierDisqualified;
         public event Action<StartList>? OnLateDisqualification;
         public event Action<TimeData>? OnSplitTime;
-        public event Action<Race>? OnRaceCanceled;
+        public event Action<Race>? OnRaceCancelled;
         public event Action<Race>? OnRaceFinished;
-        
+
         private readonly IRaceStatService _statService;
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
@@ -124,12 +124,15 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             var timeDataList =
                 (await _timeDataDao
                     .GetTimeDataForStartList(currentSkier.SkierId, currentSkier.RaceId)).ToList();
-            
+
+            bool CheckAverage() =>
+                IsTimeInBoundAverage((dateTime - (startTime ?? dateTime)).Milliseconds,
+                                     average);
+
             return ValidSensorSeries(timeDataList, sensorNumber) switch
             {
-                SensorSeriesResult.Ok => true,
-                SensorSeriesResult.SensorMissing => IsTimeInBoundAverage(
-                    (dateTime - (startTime ?? dateTime)).Milliseconds, average),
+                SensorSeriesResult.Ok => CheckAverage(),
+                SensorSeriesResult.SensorMissing => CheckAverage(),
                 SensorSeriesResult.SensorAlreadyHasValue => false,
                 SensorSeriesResult.SensorAfterwardsSet => false,
                 _ => false
@@ -212,7 +215,7 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
         {
             var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
             await UpdateStartListState(startList, RaceDataEvent.SkierCanceled, StartState.Canceled);
-            OnSkierCanceled?.Invoke(startList);
+            OnSkierCancelled?.Invoke(startList);
             return true;
         }
 
@@ -251,17 +254,18 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             if (diff == null) return 1;
 
             var ranking = await _statService.GetFinishedSkierRanking(RaceId);
-            return 1 + ranking?.TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)
-                              .Count();
+            return 1 + ranking
+                       ?.TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)
+                       .Count();
         }
 
         public async Task<bool> CancelRace()
         {
             var race = await _raceDao.FindByIdAsync(RaceId);
             if (race == null) return false;
-            race.RaceStateId = (int) RaceState.Canceled;
+            race.RaceStateId = (int) RaceState.Cancelled;
             await _raceDao.UpdateAsync(race);
-            OnRaceCanceled?.Invoke(race);
+            OnRaceCancelled?.Invoke(race);
             return true;
         }
     }

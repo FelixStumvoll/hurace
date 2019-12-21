@@ -116,7 +116,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                     }
                 });
             };
-            _activeRaceControlService.OnSkierCanceled +=
+            _activeRaceControlService.OnSkierCancelled +=
                 async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadStartList);
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ =>
             {
