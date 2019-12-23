@@ -501,3 +501,7 @@ Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:
 * Datenbankzugriffsschicht
 * Service Schicht / Businesslogik
 * View Model Schicht
+
+Im folgenden Bild ist zu sehen, wie diese miteinander kommunizieren.
+Die ViewModels kommunizieren ausschließlich mit den Services der Businesslogik, welche wiederum mit der Datenbankschicht kommunizieren.
+![cursedImg](images/cursedStructure.png)

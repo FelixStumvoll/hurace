@@ -32,7 +32,11 @@
             <Button Height="25" Margin="0,10,0,0"
                     Command="{Binding DisqualifyCurrentSkierCommand, UpdateSourceTrigger=PropertyChanged}"
                     VerticalAlignment="Center"
-                    Content="Fahrer disqualifizieren" />
+                    Content="Aktuellen Fahrer disqualifizieren" />
+            <Button Height="25" Margin="0,10,0,0"
+                    Command="{Binding DisqualifyLateCommand, UpdateSourceTrigger=PropertyChanged}"
+                    VerticalAlignment="Center"
+                    Content="gefahrenen Fahrer disqualifizieren" />
         </StackPanel>
 
         <!-- Lists -->
@@ -80,10 +84,12 @@
             <subViews:RankingView Grid.Row="1" DataContext="{Binding RankingViewModel}" />
         </Grid>
 
-        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,10,5,0"
+        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,10,5,0"
                     HorizontalAlignment="Right">
             <Button Height="25" VerticalAlignment="Center" Margin="5,0,0,0"
-                    Content="Rennen abbrechen" />
+                    Content="Rennen abbrechen" Command="{Binding CancelRaceCommand}" />
+            <Button Height="25" VerticalAlignment="Center" Margin="10,0,0,0"
+                    Content="Rennen beenden" Command="{Binding EndRaceCommand}" />
         </StackPanel>
     </Grid>
 

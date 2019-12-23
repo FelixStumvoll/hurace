@@ -51,9 +51,9 @@ namespace Hurace.Dal.Dao.Base
                                      queryParams);
 
         private protected async Task<bool> ExecuteAsync(string statement, params QueryParam[] queryParams) =>
-            (await ConnectionFactory.UseConnection(statement, queryParams,
-                                                   async command =>
-                                                       await command.ExecuteNonQueryAsync())) == 1;
+            await ConnectionFactory.UseConnection(statement, queryParams,
+                                                  async command =>
+                                                      await command.ExecuteNonQueryAsync()) == 1;
 
         private protected async Task<bool>
             GeneratedNonQueryAsync((string statement, IEnumerable<QueryParam> queryParams) data) =>

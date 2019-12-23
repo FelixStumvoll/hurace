@@ -26,5 +26,6 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
         Task<bool> DisqualifyFinishedSkier(int skierId);
         Task<int?> GetPossiblePositionForCurrentSkier();
         Task<bool> CancelRace();
+        Task<bool> EndRace();
     }
 }

@@ -6,7 +6,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
     {
         public Task SetupAsync()
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.RaceBaseDataService;
 using Hurace.Core.Logic.SeasonService;

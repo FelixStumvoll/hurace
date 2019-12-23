@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.RaceBaseDataService;
 using Hurace.Core.Logic.RaceStartListService;
@@ -48,8 +48,9 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceBaseDataViewModel.OnUnsavedCancel += () => OnDelete?.Invoke(this);
             DeleteCommand = new RelayCommand(() => OnDelete?.Invoke(this),
-                                             () => RaceState.Race.Id !=
-                                                   -1); // && Race.RaceStateId == (int) Constants.RaceState.Upcoming
+                                             () => RaceState.Race.Id != -1 &&
+                                                   RaceState.Race.RaceStateId ==
+                                                   (int) Dal.Domain.Enums.RaceState.Upcoming);
             TabSelectionChangedCommand = new AsyncCommand(OnTabSelectionChanged);
         }
 

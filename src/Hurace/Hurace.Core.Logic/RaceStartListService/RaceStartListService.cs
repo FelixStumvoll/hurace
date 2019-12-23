@@ -20,7 +20,7 @@ namespace Hurace.Core.Logic.RaceStartListService
         public async Task<bool> UpdateStartList(int raceId, IEnumerable<StartList> startList)
         {
             using var scope = ScopeBuilder.BuildTransactionScope();
-            if (!await _startListDao.DeleteAllForRace(raceId)) return false;
+            await _startListDao.DeleteAllForRace(raceId);
             foreach (var sl in startList) await _startListDao.InsertAsync(sl);
             scope.Complete();
             return true;

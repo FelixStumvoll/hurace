@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic.RaceStartListService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -163,6 +163,10 @@ namespace Hurace.RaceControl.ViewModels
             return SetupAsync();
         }
 
-        private void EditStartList() => RaceState.Edit = true;
+        private void EditStartList()
+        {
+            RaceState.Edit = true;
+            AsyncCommand.RaiseCanExecuteChanged();
+        }
     }
 }

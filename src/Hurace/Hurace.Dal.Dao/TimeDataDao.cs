@@ -9,6 +9,7 @@ using Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder;
 using Hurace.Dal.Dao.Base;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
+using StartState = Hurace.Dal.Domain.Enums.StartState;
 
 namespace Hurace.Dal.Dao
 {
@@ -26,13 +27,13 @@ namespace Hurace.Dal.Dao
         {
             var topSection = count <= 0 ? "" : $" top {count}";
             return await QueryAsync<TimeData>(
-                $@"select{topSection} * from hurace.SensorRanking where RaceId=@rid and sensorNumber=@sid order by time",
+                $@"select{topSection} * from hurace.SensorRanking where RaceId=@rid and sensorNumber=@sid and startStateId=@ssid order by time",
                 new MapperConfig()
                     .Include<StartList>()
                     .AddMapping<Country>(("countryId", nameof(Country.Id)))
                     .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
                     .AddMapping<Gender>(("genderId", nameof(Gender.Id))), ("@rid", raceId),
-                ("@sid", sensorNumber));
+                ("@sid", sensorNumber), ("@ssid", (int) StartState.Finished));
         }
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>

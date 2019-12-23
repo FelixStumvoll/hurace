@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance subViewModels:RankingViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <ListBox ItemsSource="{Binding Ranking}" HorizontalContentAlignment="Stretch" />
+    <ListBox ItemsSource="{Binding Ranking}" SelectedItem="{Binding SelectedRaceRanking}"
+             HorizontalContentAlignment="Stretch" />
 </UserControl>

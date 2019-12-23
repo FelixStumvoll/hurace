@@ -126,7 +126,7 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
                     .GetTimeDataForStartList(currentSkier.SkierId, currentSkier.RaceId)).ToList();
 
             bool CheckAverage() =>
-                IsTimeInBoundAverage((dateTime - (startTime ?? dateTime)).Milliseconds,
+                IsTimeInBoundAverage((int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds,
                                      average);
 
             return ValidSensorSeries(timeDataList, sensorNumber) switch
@@ -266,6 +266,17 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             race.RaceStateId = (int) RaceState.Cancelled;
             await _raceDao.UpdateAsync(race);
             OnRaceCancelled?.Invoke(race);
+            return true;
+        }
+
+        public async Task<bool> EndRace()
+        {
+            //todo validation
+            var race = await _raceDao.FindByIdAsync(RaceId);
+            if (race == null) return false;
+            race.RaceStateId = (int) RaceState.Finished;
+            await _raceDao.UpdateAsync(race);
+            OnRaceFinished?.Invoke(race);
             return true;
         }
     }

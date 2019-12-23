@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic.RaceBaseDataService;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
@@ -67,7 +67,8 @@ namespace Hurace.RaceControl.ViewModels
 
         public Season Season => RaceState.Race.Season;
 
-        public RaceBaseDataViewModel(SharedRaceViewModel svm, SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService)
+        public RaceBaseDataViewModel(SharedRaceViewModel svm, SharedRaceStateViewModel raceState,
+            IRaceBaseDataService baseDataService)
         {
             RaceState = raceState;
             _baseDataService = baseDataService;
@@ -78,7 +79,8 @@ namespace Hurace.RaceControl.ViewModels
 
         private void SetupCommands()
         {
-            StartEditCommand = new RelayCommand(StartEdit);
+            StartEditCommand = new RelayCommand(StartEdit, () => RaceState.Race.RaceStateId ==
+                                                                 (int) Dal.Domain.Enums.RaceState.Upcoming);
             CancelEditCommand = new AsyncCommand(CancelEdit);
             SaveEditCommand = new AsyncCommand(SaveEdit, () => ValidatorIsValid);
             LocationChangedCommand = new AsyncCommand(SetDisciplinesForLocation);

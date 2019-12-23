@@ -12,6 +12,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.SubViewModels
 {
+    //todo clear RaceTime after skier
     public class CurrentSkierViewModel : NotifyPropertyChanged
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
@@ -77,6 +78,11 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                     CurrentSkier = await startListService.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
                     _stopwatch.Reset();
                 });
+            
+            _activeRaceControlService.OnRaceCancelled += race => UiExecutor.ExecuteInUiThreadAsync(() =>
+            {
+                _stopwatch.Reset();
+            });
         }
 
 
