@@ -11,7 +11,7 @@
              mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -67,7 +67,7 @@
             <TextBlock Grid.Row="2" Text="{x:Static resources:StringResources.AllRacesLabel}"
                        Style="{StaticResource ListLabel}" />
             <ListBox Grid.Row="3" ItemsSource="{Binding Races}" SelectedItem="{Binding SelectedRace}"
-                     BorderThickness="0,0,0,1">
+                     BorderThickness="0,0,0,1" HorizontalContentAlignment="Stretch">
                 <i:Interaction.Triggers>
                     <i:PropertyChangedTrigger Binding="{Binding SelectedRace}">
                         <i:InvokeCommandAction Command="{Binding SelectedRaceChangedCommand}" />
@@ -75,7 +75,43 @@
                 </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding RaceState.Race.RaceDescription}" />
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" LastChildFill="False">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+                                    <TextBlock Text="{Binding RaceState.Race.Location.LocationName}" />
+                                    <TextBlock Text="{Binding RaceState.Race.Discipline.DisciplineName}" />
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Margin="10,0,0,0">
+                                    <TextBlock Text="{Binding RaceState.Race.RaceDate, StringFormat=dd.MM.yyyy hh:mm}" />
+                                    <TextBlock
+                                        Text="{Binding RaceState.Race.Gender.GenderDescription}" />
+                                </StackPanel>
+                            </DockPanel>
+                            <TextBlock Grid.Row="1" FontStyle="Italic" Foreground="Gray"
+                                       Text="{Binding RaceState.Race.RaceDescription}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding RaceState.Race.RaceDescription, Converter={StaticResource IsNullOrEmptyConverter}}"
+                                                Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger
+                                                Binding="{Binding RaceState.Race.RaceDescription, Converter={StaticResource IsNullOrEmptyConverter}}"
+                                                Value="False">
+                                                <Setter Property="Visibility" Value="Visible" />
+
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -11,7 +11,6 @@ namespace Hurace.RaceControl.Validators
             const string postfix = "muss definiert werden";
 
             RuleFor(vm => vm.RaceState.Race.RaceDescription)
-                .NotEmpty().WithMessage($"Beschreibung {postfix}")
                 .MaximumLength(150).WithMessage("Die Beschreibung darf max. 150 Zeichen lang sein");
 
             RuleFor(vm => vm.RaceState.Race.RaceDate)
