@@ -12,7 +12,6 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.SubViewModels
 {
-    //todo clear RaceTime after skier
     public class CurrentSkierViewModel : NotifyPropertyChanged
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
