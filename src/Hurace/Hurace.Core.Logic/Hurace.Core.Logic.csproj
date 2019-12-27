@@ -26,10 +26,8 @@
             <_Parameter1>Hurace.Core.Test</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+      <Folder Include="Services" />
     </ItemGroup>
 </Project>

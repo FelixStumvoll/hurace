@@ -6,7 +6,7 @@ using Hurace.Core.Logic.Models;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Logic.RaceStatService
+namespace Hurace.Core.Logic.Services.RaceStatService
 {
     public class RaceStatService : IRaceStatService
     {
@@ -95,6 +95,7 @@ namespace Hurace.Core.Logic.RaceStatService
         public async Task<DateTime?> GetStartTimeForSkier(int skierId, int raceId)
         {
             var sensor = await _sensorDao.GetSensorForSensorNumber(0, raceId);
+            if (sensor == null) return null;
             return (await _timeDataDao.FindByIdAsync(skierId, raceId, sensor.Id))
                    ?.SkierEvent?.RaceData?.EventDateTime;
         }

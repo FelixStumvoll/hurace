@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Hurace.RaceControl.ViewModels.BaseViewModels
 {
-    public abstract class ValidatorViewModel<TContext,TValidator> : NotifyPropertyChanged where TValidator : AbstractValidator<TContext>, new()
+    public abstract class ValidatorBase<TContext,TValidator> : NotifyPropertyChanged where TValidator : AbstractValidator<TContext>, new()
     {
         private string _validationMessage;
         private bool _validatorIsValid;

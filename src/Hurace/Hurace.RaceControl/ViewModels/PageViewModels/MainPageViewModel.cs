@@ -3,25 +3,23 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic;
-using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.SeasonService;
+using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Logic.Services.SeasonService;
 using Hurace.RaceControl.Views.Windows;
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
-    public class MainPageViewModel : IPageViewModel
+    public class MainPageViewModel : IPage
     {
-        private readonly Func<IPageViewModel, Task> _changePageFunc;
+        private Func<IPage, Task> ChangePageFunc { get; set; }
         public ICommand SelectPageCommand { get; set; }
         public ICommand LaunchSimulatorCommand { get; set; }
         private readonly RacePageViewModel _racePageViewModel;
 
-        public MainPageViewModel(Func<IPageViewModel, Task> changePageFunc)
+        public MainPageViewModel(Func<IPage, Task> changePageFunc, RacePageViewModel racePageViewModel)
         {
-            var provider = ServiceProvider.Instance;
-            _racePageViewModel = new RacePageViewModel(provider.Resolve<IRaceBaseDataService>(),
-                                                       provider.Resolve<ISeasonService>());
-            _changePageFunc = changePageFunc;
+            _racePageViewModel = racePageViewModel;
+            ChangePageFunc = changePageFunc;
 
             SelectPageCommand = new RelayCommand<int>(SelectPage);
             LaunchSimulatorCommand = new RelayCommand(LaunchSimulator);
@@ -30,9 +28,9 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
         private static void LaunchSimulator() => new SimulatorWindow().Show();
 
         private void SelectPage(int pageIndex) =>
-            _changePageFunc?.Invoke(pageIndex switch
+            ChangePageFunc?.Invoke(pageIndex switch
             {
-                0 => (IPageViewModel) _racePageViewModel,
+                0 => (IPage) _racePageViewModel,
                 _ => this
             });
 

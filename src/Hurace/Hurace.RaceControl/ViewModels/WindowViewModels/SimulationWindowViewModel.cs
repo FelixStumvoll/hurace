@@ -27,6 +27,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         private ICommand _skipNextSensorCommand;
         private ICommand _restartSenorCommand;
         private ICommand _triggerSensorCommand;
+        private readonly IRaceClockProvider _raceClockProvider;
 
         public ObservableCollection<SensorEntry> SensorEntries { get; set; } = new ObservableCollection<SensorEntry>();
         public int SensorToTrigger { get; set; }
@@ -79,9 +80,14 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             set => Set(ref _enabled, value);
         }
 
+        public SimulationWindowViewModel(IRaceClockProvider raceClockProvider)
+        {
+            _raceClockProvider = raceClockProvider;
+        }
+        
         public async Task InitializeAsync()
         {
-            var resolvedRace = await RaceClockProvider.Instance.GetRaceClock();
+            var resolvedRace = await _raceClockProvider.GetRaceClock();
             if (!(resolvedRace is MockRaceClock mockRaceClock))
             {
                 MessageBox.Show("Simulator kann nicht gestartet werden",

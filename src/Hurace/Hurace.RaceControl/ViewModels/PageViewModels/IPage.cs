@@ -2,7 +2,7 @@
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
-    public interface IPageViewModel
+    public interface IPage
     {
         Task SetupAsync();
     }

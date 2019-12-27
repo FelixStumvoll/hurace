@@ -1,10 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.ActiveRaceControlService.Service;
 using Hurace.Core.Logic.Models;
-using Hurace.Core.Logic.RaceStartListService;
-using Hurace.Core.Logic.RaceStatService;
+using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Services.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -124,7 +124,12 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                             CurrentSkier.SkierId, CurrentSkier.RaceId));
                     _stopwatch.Start();
                 }
-                else Position = null;
+                else
+                {
+                    Position = null;
+                    SplitTimeList.Clear();
+                    RaceTime = null;
+                }
             }
             catch (Exception)
             {

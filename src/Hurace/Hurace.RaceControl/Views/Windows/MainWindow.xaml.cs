@@ -1,6 +1,12 @@
-﻿using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
+﻿using System.Windows;
+using Autofac;
+using Autofac.Configuration;
+using Hurace.Core.Logic;
+using Hurace.Core.Logic.Modules;
+// using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.Util;
 using Hurace.RaceControl.ViewModels.WindowViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace Hurace.RaceControl.Views.Windows
 {
@@ -11,12 +17,14 @@ namespace Hurace.RaceControl.Views.Windows
     {
         public MainWindow()
         {
-            var vm = new MainViewModel();
+            var container = ((App) Application.Current).Container;
+            var vm = container.Resolve<MainViewModel>();
             DataContext = vm;
-            Loaded += async (sender, args) =>
-            {
-                if (!await ActiveRaceResolver.InitializeActiveRaceHandler()) ErrorNotifier.OnLoadError();
-            };
+            // Loaded += async (sender, args) =>
+            // {
+            //     vm.
+            //     if (!await container.Resolve<IActiveRaceResolver>().InitializeActiveRaceHandler()) ErrorNotifier.OnLoadError();
+            // };
             
             InitializeComponent();
         }

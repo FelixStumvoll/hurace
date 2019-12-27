@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceStatService;
+using Hurace.Core.Logic.Configs;
+using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Core.Logic.Util;
-using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Domain.Enums;
 using Hurace.Dal.Interface;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 using StartState = Hurace.Dal.Domain.Enums.StartState;
 
-namespace Hurace.Core.Logic.ActiveRaceControlService.Service
+namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
 {
     public class ActiveRaceControlService : IActiveRaceControlService
     {
@@ -33,19 +33,21 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
         private readonly ISkierEventDao _skierEventDao;
         private readonly ITimeDataDao _timeDataDao;
         private readonly ISensorDao _sensorDao;
-        private IRaceClock? _raceClock;
-        public int RaceId { get; set; }
+        private readonly IRaceClockProvider _raceClockProvider;
         private int _maxSensorNr;
-        private readonly int _maxDiffToAverage;
-        private readonly IConfiguration _configuration;
+        private readonly ISensorConfig _sensorConfig;
 
-        public ActiveRaceControlService(IRaceDao raceDao, IStartListDao startListDao, IRaceEventDao raceEventDao,
-            IRaceDataDao raceDataDao, ISkierEventDao skierEventDao, ITimeDataDao timeDataDao, ISensorDao sensorDao,
-            IConfiguration configuration, IRaceStatService statService)
+        public int RaceId { get; private set; }
+
+        public ActiveRaceControlService(int raceId, IRaceDao raceDao, IStartListDao startListDao,
+            IRaceEventDao raceEventDao, IRaceDataDao raceDataDao, ISkierEventDao skierEventDao,
+            ITimeDataDao timeDataDao, ISensorDao sensorDao,
+            IRaceStatService statService, IRaceClockProvider raceClockProvider, ISensorConfig sensorConfig)
         {
-            _maxDiffToAverage = Convert.ToInt32(configuration.GetSection("RaceSettings")["MaxDiffToAverage"]);
-            _configuration = configuration;
+            RaceId = raceId;
             _statService = statService;
+            _raceClockProvider = raceClockProvider;
+            _sensorConfig = sensorConfig;
             _raceDao = raceDao;
             _startListDao = startListDao;
             _raceEventDao = raceEventDao;
@@ -57,10 +59,9 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
 
         public async Task InitializeAsync()
         {
-            _raceClock = await RaceClockProvider.Instance.GetRaceClock();
-            if (_raceClock != null)
-                _raceClock.TimingTriggered +=
-                    async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
+            var clock = await _raceClockProvider.GetRaceClock();
+            clock.TimingTriggered +=
+                async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
             _maxSensorNr = await _sensorDao.GetLastSensorNumber(RaceId) ?? -1;
         }
 
@@ -75,7 +76,7 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
         }
 
         private bool IsTimeInBoundAverage(int milliseconds, int average) =>
-            Math.Abs(milliseconds - average) < _maxDiffToAverage;
+            Math.Abs(milliseconds - average) < _sensorConfig.MaxDiffToAverage;
 
         private enum SensorSeriesResult
         {
@@ -119,14 +120,13 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             //no startTime
             if (startTime == null && sensorNumber != 0) return false;
             var average = (await _timeDataDao.GetAverageTimeForSensor(RaceId, sensorNumber)) ??
-                          Convert.ToInt32(_configuration
-                                              .GetSection("RaceSettings")[$"SensorAssumptions:{sensorNumber}"]);
+                          _sensorConfig.SensorAssumptions[sensorNumber];
             var timeDataList =
                 (await _timeDataDao
                     .GetTimeDataForStartList(currentSkier.SkierId, currentSkier.RaceId)).ToList();
 
             bool CheckAverage() =>
-                IsTimeInBoundAverage((int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds,
+                IsTimeInBoundAverage((int) (dateTime - (startTime ?? dateTime)).TotalMilliseconds,
                                      average);
 
             return ValidSensorSeries(timeDataList, sensorNumber) switch
@@ -268,6 +268,32 @@ namespace Hurace.Core.Logic.ActiveRaceControlService.Service
             OnRaceCancelled?.Invoke(race);
             return true;
         }
+
+        private async Task<bool> ChangeRaceState(int raceId, RaceState state)
+        {
+            using var scope = ScopeBuilder.BuildTransactionScope();
+            var race = await _raceDao.FindByIdAsync(raceId);
+            if (race == null) return false;
+            race.RaceStateId = (int) state;
+            await _raceDao.UpdateAsync(race);
+            var raceData = new RaceData
+            {
+                EventTypeId = (int) state,
+                RaceId = race.Id,
+                EventDateTime = DateTime.Now
+            };
+            var raceDataId = await _raceDataDao.InsertGetIdAsync(raceData);
+            if (!raceDataId.HasValue) return false;
+            raceData.Id = raceDataId.Value;
+            await _raceEventDao.InsertAsync(new RaceEvent
+            {
+                RaceDataId = raceData.Id
+            });
+            scope.Complete();
+            return true;
+        }
+        
+        public async Task<bool> StartRace() => await ChangeRaceState(RaceId, RaceState.Running);
 
         public async Task<bool> EndRace()
         {

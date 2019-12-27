@@ -13,6 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Autofac" Version="4.9.4" />
+      <PackageReference Include="Autofac.Configuration" Version="4.1.0" />
       <PackageReference Include="Extended.Wpf.Toolkit" Version="3.7.0" />
       <PackageReference Include="FluentValidation" Version="8.6.0" />
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.3" />
@@ -21,6 +23,12 @@
 
     <ItemGroup>
       <Folder Include="Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

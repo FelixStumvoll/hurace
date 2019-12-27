@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic;
-using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Logic.Services.RaceStartListService;
+using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.RaceControlViewModels;
@@ -31,16 +32,17 @@ namespace Hurace.RaceControl.ViewModels
             set => Set(ref _selectedTab, value);
         }
 
-        public RaceViewModel(SharedRaceStateViewModel raceState, SharedRaceViewModel svm)
+        public RaceViewModel(Race race, bool edit,
+            Func<SharedRaceStateViewModel, RaceStartListViewModel> raceStartListVmFactory,
+            Func<SharedRaceStateViewModel, RaceBaseDataViewModel> raceBaseDataVmFactory,
+            Func<SharedRaceStateViewModel, RaceControlBaseViewModel> raceControlBaseVmFactory,
+            Func<SharedRaceStateViewModel, RaceDisplayViewModel> raceDisplayVmFactory)
         {
-            RaceState = raceState;
-            var provider = ServiceProvider.Instance;
-            RaceStartListViewModel = new RaceStartListViewModel(RaceState, provider.Resolve<IRaceStartListService>());
-            RaceBaseDataViewModel = new RaceBaseDataViewModel(svm, RaceState, provider.Resolve<IRaceBaseDataService>());
-            RaceControlBaseViewModel = new RaceControlBaseViewModel(RaceState, provider.Resolve<IRaceBaseDataService>(),
-                                                                    provider.Resolve<IRaceStartListService>());
-            RaceDisplayViewModel = new RaceDisplayViewModel(RaceState);
-
+            RaceState = new SharedRaceStateViewModel{Edit =  edit, Race = race};
+            RaceStartListViewModel = raceStartListVmFactory(RaceState);
+            RaceBaseDataViewModel = raceBaseDataVmFactory(RaceState);
+            RaceControlBaseViewModel = raceControlBaseVmFactory(RaceState);
+            RaceDisplayViewModel = raceDisplayVmFactory(RaceState);
             SetupCommands();
         }
 

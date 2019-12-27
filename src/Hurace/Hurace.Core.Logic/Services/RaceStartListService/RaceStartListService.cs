@@ -4,7 +4,7 @@ using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Logic.RaceStartListService
+namespace Hurace.Core.Logic.Services.RaceStartListService
 {
     public class RaceStartListService : IRaceStartListService
     {

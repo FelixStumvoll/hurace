@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceStatService;
+using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using Moq;
@@ -164,24 +164,33 @@ namespace Hurace.Core.Test
             Assert.AreEqual(TimeSpan.FromMilliseconds(-1), result[1].DifferenceToLeader);
         }
 
+
+        private static object[] _getStartTimeForSkierTestSource =
+        {
+            new object[] {null, null, null},
+            new object[] {new Sensor {Id = 5}, null, null},
+            new object[]
+            {
+                new Sensor {Id = 5}, new TimeData
+                {
+                    SkierEvent = new SkierEvent
+                        {RaceData = new RaceData {EventDateTime = DateTime.Today}}
+                },
+                DateTime.Today
+            }
+        };
+
         [Test]
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task GetStartTimeForSkierTest(bool isNull)
+        [TestCaseSource(nameof(_getStartTimeForSkierTestSource))]
+        public async Task GetStartTimeForSkierTest(Sensor sensor, TimeData timeData, DateTime? expected)
         {
             var mockSensorDao = new Mock<ISensorDao>();
             var mockTimeDataDao = new Mock<ITimeDataDao>();
-            mockSensorDao.Setup(sd => sd.GetLastSensorNumber(It.IsAny<int>())).ReturnsAsync(3);
+            mockSensorDao.Setup(sd => sd.GetSensorForSensorNumber(It.IsAny<int>(), It.IsAny<int>()))
+                         .ReturnsAsync(sensor);
             mockTimeDataDao.Setup(tdd => tdd.FindByIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                           .ReturnsAsync(() => isNull
-                                             ? null
-                                             : new TimeData
-                                             {
-                                                 SkierEvent = new SkierEvent
-                                                     {RaceData = new RaceData {EventDateTime = DateTime.Today}}
-                                             });
+                           .ReturnsAsync(timeData);
 
-            var expected = isNull ? (DateTime?) null : DateTime.Today;
             Assert.AreEqual(
                 expected,
                 await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)

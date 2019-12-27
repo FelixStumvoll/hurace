@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.SeasonService;
+using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Logic.Services.SeasonService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -16,7 +16,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
-    public class RacePageViewModel : NotifyPropertyChanged, IPageViewModel
+    public class RacePageViewModel : NotifyPropertyChanged, IPage
     {
         private RaceViewModel _selectedRace;
         private readonly IRaceBaseDataService _baseDataService;
@@ -24,6 +24,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
         private readonly SharedRaceViewModel _sharedRaceViewModel;
         private Season _selectedSeason;
         private ICommand _seasonChangedCommand;
+        private readonly Func<Race, bool, RaceViewModel> _raceVmFactory;
 
         public ObservableCollection<RaceViewModel> Races { get; set; } = new ObservableCollection<RaceViewModel>();
         public ObservableCollection<Season> Seasons { get; set; } = new ObservableCollection<Season>();
@@ -48,11 +49,15 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
             set => Set(ref _selectedSeason, value);
         }
 
-        public RacePageViewModel(IRaceBaseDataService baseDataService, ISeasonService seasonService)
+        public RacePageViewModel(Func<Race, bool, RaceViewModel> raceVmFactory,
+            SharedRaceViewModel sharedRaceViewModel,
+            IRaceBaseDataService baseDataService,
+            ISeasonService seasonService)
         {
+            _raceVmFactory = raceVmFactory;
             _baseDataService = baseDataService;
             _seasonService = seasonService;
-            _sharedRaceViewModel = new SharedRaceViewModel();
+            _sharedRaceViewModel = sharedRaceViewModel;
             SetupCommands();
         }
 
@@ -84,15 +89,15 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                 var races = await _seasonService.GetRacesForSeason(SelectedSeason.Id);
                 Races.Clear();
                 foreach (var raceViewModel in races
-                    .Select(r =>
-                                new RaceViewModel(new SharedRaceStateViewModel {Race = r}, _sharedRaceViewModel)))
+                    .Select(r => _raceVmFactory(r, false)))
                 {
                     raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
                     Races.Add(raceViewModel);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 ErrorNotifier.OnSaveError();
             }
         }
@@ -109,20 +114,14 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private void AddRace()
         {
-            var rvm = new RaceViewModel(
-                new SharedRaceStateViewModel
-                {
-                    Race = new Race
-                    {
-                        Id = -1,
-                        RaceStateId = (int) Dal.Domain.Enums.RaceState.Upcoming,
-                        RaceDate = DateTime.Now,
-                        SeasonId = SelectedSeason.Id,
-                        Season = SelectedSeason
-                    },
-                    Edit = true
-                },
-                _sharedRaceViewModel);
+            var rvm = _raceVmFactory(new Race
+            {
+                Id = -1,
+                RaceStateId = (int) Dal.Domain.Enums.RaceState.Upcoming,
+                RaceDate = DateTime.Now,
+                SeasonId = SelectedSeason.Id,
+                Season = SelectedSeason
+            }, true);
             rvm.OnDelete += async deleteRvm => await DeleteRace(deleteRvm);
             Races.Add(rvm);
             SelectedRace = rvm;

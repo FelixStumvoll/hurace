@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
-    public class Tests
+    public class ActiveRaceResolverTest
     {
         [SetUp]
         public void Setup()

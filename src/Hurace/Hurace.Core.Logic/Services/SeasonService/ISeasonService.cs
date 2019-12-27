@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Logic.SeasonService
+namespace Hurace.Core.Logic.Services.SeasonService
 {
     public interface ISeasonService
     {

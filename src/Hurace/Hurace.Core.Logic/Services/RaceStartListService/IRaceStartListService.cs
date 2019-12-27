@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Logic.RaceStartListService
+namespace Hurace.Core.Logic.Services.RaceStartListService
 {
     public interface IRaceStartListService
     {

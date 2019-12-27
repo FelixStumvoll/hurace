@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceStartListService;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using Moq;
@@ -11,27 +11,22 @@ namespace Hurace.Core.Test
     public class RaceStartListServiceTest
     {
         [Test]
-        [TestCase(false, false)]
-        [TestCase(true, true)]
-        public async Task UpdateStartListTest(bool deleteResult, bool result)
+        public async Task UpdateStartListTest()
         {
             var inserted = 0;
             var startListDaoMock = new Mock<IStartListDao>();
             startListDaoMock.Setup(sld => sld.DeleteAllForRace(It.IsAny<int>()))
-                            .ReturnsAsync(result);
+                            .ReturnsAsync(true);
             startListDaoMock.Setup(sld => sld.InsertAsync(It.IsAny<StartList>())).Callback(() => inserted++);
 
             var startListService = new RaceStartListService(startListDaoMock.Object, null);
-            Assert.AreEqual(result, await startListService.UpdateStartList(1, new List<StartList>
+            Assert.AreEqual(true, await startListService.UpdateStartList(1, new List<StartList>
             {
                 new StartList(),
                 new StartList()
             }));
             
-            if (deleteResult)
-            {
-                Assert.AreEqual(2,inserted);
-            }
+            Assert.AreEqual(2,inserted);
         }
 
         [Test]

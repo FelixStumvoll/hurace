@@ -3,6 +3,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.SharedViewModels
 {
+    [SingleInstance]
     public class SharedRaceViewModel
     {
         public FilterableObservableCollection<Gender> Genders { get; set; }

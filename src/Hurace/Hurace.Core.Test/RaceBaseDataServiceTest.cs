@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Logic.Services.RaceStartListService;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;

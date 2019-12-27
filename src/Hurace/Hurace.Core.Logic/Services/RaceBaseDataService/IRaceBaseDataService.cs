@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Logic.RaceBaseDataService
+namespace Hurace.Core.Logic.Services.RaceBaseDataService
 {
     public interface IRaceBaseDataService
     {

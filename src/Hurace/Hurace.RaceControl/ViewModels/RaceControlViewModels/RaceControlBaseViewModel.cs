@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Logic;
-using Hurace.Core.Logic.ActiveRaceControlService.Resolver;
-using Hurace.Core.Logic.ActiveRaceControlService.Service;
-using Hurace.Core.Logic.RaceBaseDataService;
-using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
+// using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
+using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Logic.Services.RaceStartListService;
+using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.SharedViewModels;
@@ -18,11 +20,15 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
     {
         private bool _startListDefined;
         private IActiveRaceControlService _activeRaceControlService;
-
+        private readonly IActiveRaceResolver _activeRaceResolver;
         private readonly IRaceBaseDataService _baseDataService;
         private readonly IRaceStartListService _startListService;
         private IRaceControlViewModel _raceControlViewModel;
         private ActiveRaceControlViewModel _activeRaceControlViewModel;
+
+        private readonly Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
+            _activeRaceControlVmFactory;
+
         public SharedRaceStateViewModel RaceState { get; set; }
         private ReadonlyRaceControlViewModel _readonlyRaceControlViewModel;
         public ICommand StartRaceCommand { get; set; }
@@ -39,32 +45,37 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             set => Set(ref _raceControlViewModel, value);
         }
 
-        public RaceControlBaseViewModel(SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService,
-            IRaceStartListService startListService)
+        public RaceControlBaseViewModel(
+            Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
+                activeRaceControlVmFactory,
+            SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService,
+            IRaceStartListService startListService, IActiveRaceResolver activeRaceResolver)
         {
             RaceState = raceState;
             _baseDataService = baseDataService;
             _startListService = startListService;
+            _activeRaceResolver = activeRaceResolver;
+            
+            _activeRaceControlVmFactory = activeRaceControlVmFactory;
             StartRaceCommand = new AsyncCommand(StartRace, () => StartListDefined);
         }
 
         public async Task SetupAsync()
         {
-            _activeRaceControlService ??= ActiveRaceResolver.Instance[RaceState.Race.Id];
-            if (_activeRaceControlService == null)
+            _activeRaceControlService ??= _activeRaceResolver[RaceState.Race.Id];
+            switch (RaceState.Race.RaceStateId)
             {
-                if (RaceState.Race.RaceStateId == (int) Dal.Domain.Enums.RaceState.Upcoming)
-                {
+                case (int) Dal.Domain.Enums.RaceState.Upcoming:
                     StartListDefined = await _startListService.IsStartListDefined(RaceState.Race.Id) ?? false;
                     await SetRaceControlViewModel(ViewType.None);
                     return;
-                }
-
-                await SetRaceControlViewModel(ViewType.Readonly);
-                return;
+                case (int) Dal.Domain.Enums.RaceState.Running:
+                    await SetRaceControlViewModel(ViewType.Active);
+                    return;
+                case (int) Dal.Domain.Enums.RaceState.Finished:
+                    await SetRaceControlViewModel(ViewType.Readonly);
+                    return;
             }
-
-            await SetRaceControlViewModel(ViewType.Active);
         }
 
         private enum ViewType
@@ -79,8 +90,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             RaceControlViewModel = type switch
             {
                 ViewType.Active => _activeRaceControlViewModel ??=
-                    new ActiveRaceControlViewModel(RaceState, _activeRaceControlService,
-                                                   ServiceProvider.Instance.Resolve<IRaceStartListService>()),
+                    _activeRaceControlVmFactory(RaceState, _activeRaceControlService),
                 ViewType.Readonly => _readonlyRaceControlViewModel ??= new ReadonlyRaceControlViewModel(),
                 ViewType.None => null,
                 _ => null
@@ -97,7 +107,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
             try
             {
-                _activeRaceControlService = await ActiveRaceResolver.Instance.StartRace(RaceState.Race.Id);
+                _activeRaceControlService = await _activeRaceResolver.StartRace(RaceState.Race.Id);
                 RaceState.Race = await _baseDataService.GetRaceById(RaceState.Race.Id);
                 await SetRaceControlViewModel(ViewType.Active);
             }

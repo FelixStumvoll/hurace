@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
-using Hurace.Core.Logic.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
 
-namespace Hurace.Core.Logic.ActiveRaceControlService.Resolver
+namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
 {
     public interface IActiveRaceResolver
     {
+        Task<bool> InitializeActiveRaceHandler();
         Task<IActiveRaceControlService?> StartRace(int raceId);
         IActiveRaceControlService this[int raceId] { get; }
         Task<bool> EndRace(int raceId);

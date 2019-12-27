@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Logic;
-using Hurace.Core.Logic.ActiveRaceControlService.Service;
-using Hurace.Core.Logic.RaceStartListService;
-using Hurace.Core.Logic.RaceStatService;
+using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Services.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -37,15 +37,15 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         public ICommand DisqualifyLateCommand { get; set; }
 
         public ActiveRaceControlViewModel(SharedRaceStateViewModel raceState,
-            IActiveRaceControlService activeRaceControlService, IRaceStartListService startListService)
+            IActiveRaceControlService activeRaceControlService, IRaceStartListService startListService,
+            Func<IActiveRaceControlService, CurrentSkierViewModel> currentSkierVmFactory,
+            Func<IActiveRaceControlService, RankingViewModel> rankingVmFactory)
         {
             RaceState = raceState;
             _activeRaceControlService = activeRaceControlService;
             _startListService = startListService;
-            var statService = ServiceProvider.Instance.Resolve<IRaceStatService>();
-            CurrentSkierViewModel =
-                new CurrentSkierViewModel(activeRaceControlService, statService, _startListService);
-            RankingViewModel = new RankingViewModel(activeRaceControlService, statService);
+            CurrentSkierViewModel = currentSkierVmFactory(_activeRaceControlService);
+            RankingViewModel = rankingVmFactory(_activeRaceControlService);
             SetupCommands();
         }
 

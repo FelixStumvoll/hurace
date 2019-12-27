@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.RaceStartListService;
+using Hurace.Core.Logic.Services.RaceStartListService;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 
-namespace Hurace.Core.Logic.RaceBaseDataService
+namespace Hurace.Core.Logic.Services.RaceBaseDataService
 {
     public class RaceBaseDataService : IRaceBaseDataService
     {

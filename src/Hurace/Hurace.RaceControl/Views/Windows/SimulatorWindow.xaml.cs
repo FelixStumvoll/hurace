@@ -1,4 +1,6 @@
-﻿using Hurace.RaceControl.ViewModels.WindowViewModels;
+﻿using System.Windows;
+using Autofac;
+using Hurace.RaceControl.ViewModels.WindowViewModels;
 
 namespace Hurace.RaceControl.Views.Windows
 {
@@ -6,7 +8,8 @@ namespace Hurace.RaceControl.Views.Windows
     {
         public SimulatorWindow()
         {
-            var vm = new SimulationWindowViewModel();
+            var container = ((App) Application.Current).Container;
+            var vm = container.Resolve<SimulationWindowViewModel>();
             DataContext = vm;
             Loaded += async (sender, args) => await vm.InitializeAsync();
             InitializeComponent();

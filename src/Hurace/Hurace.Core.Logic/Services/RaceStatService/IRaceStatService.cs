@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Hurace.Core.Logic.Models;
 using Hurace.Dal.Domain;
 
-namespace Hurace.Core.Logic.RaceStatService
+namespace Hurace.Core.Logic.Services.RaceStatService
 {
     public interface IRaceStatService
     {
