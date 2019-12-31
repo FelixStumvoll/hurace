@@ -13,9 +13,9 @@ namespace Hurace.Core.Logic.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(new ClockConfig(ClockAssembly, ClockClassName)).As<IClockConfig>()
+            builder.RegisterInstance(new ClockConfig(ClockAssembly, ClockClassName)).AsSelf()
                    .SingleInstance();
-            builder.RegisterInstance(new SensorConfig(MaxDiffToAverage, SensorAssumptions)).As<ISensorConfig>()
+            builder.RegisterInstance(new SensorConfig(MaxDiffToAverage, SensorAssumptions)).AsSelf()
                    .SingleInstance();
         }
     }

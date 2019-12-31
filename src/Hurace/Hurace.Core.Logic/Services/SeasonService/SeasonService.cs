@@ -19,5 +19,6 @@ namespace Hurace.Core.Logic.Services.SeasonService
         public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRacesForSeasonId(seasonId);
 
         public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
+        public Task<Season?> GetSeasonById(int seasonId) => _seasonDao.FindByIdAsync(seasonId);
     }
 }

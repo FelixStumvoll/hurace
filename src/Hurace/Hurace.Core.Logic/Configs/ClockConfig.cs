@@ -1,6 +1,6 @@
 ﻿namespace Hurace.Core.Logic.Configs
 {
-    public class ClockConfig : IClockConfig
+    public class ClockConfig 
     {
         public string ClockAssembly { get; }
         public string ClockClassName { get; }

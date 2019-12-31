@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SeasonViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import {StoreState} from "../../store/rootReducer";
+import Axios from 'axios';
+import { API_URL } from '../../api';
+import { Season } from '../../interfaces/Season';
 
 const SeasonItemPanel = styled.div`
     display: flex;
@@ -17,13 +18,29 @@ const SeasonLabel = styled.div`
 `;
 
 export const SeasonView: React.FC = () => {
-    let seasons = useSelector((state: StoreState) => state.seasons.seasons);
+    const [seasons, setSeasons] = useState<Season[] | undefined>(undefined);
+
+    useEffect(() => {
+        if (seasons !== undefined) return;
+        async function fetchData() {
+            var s = await Axios.get<Season[]>(`${API_URL}/season`);
+
+            s.data.map(season => {
+                season.endDate = new Date(season.endDate);
+                season.startDate = new Date(season.startDate);
+                return season;
+            });
+
+            setSeasons(s.data);
+        }
+        fetchData();
+    }, [seasons]);
 
     return (
         <div>
             <SeasonLabel>Alle Saisonen:</SeasonLabel>
             <SeasonItemPanel>
-                {seasons.map(s => (
+                {seasons?.map(s => (
                     <SeasonViewItem key={s.id} season={s} />
                 ))}
             </SeasonItemPanel>

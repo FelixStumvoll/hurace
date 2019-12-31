@@ -9,10 +9,10 @@ namespace Hurace.Core.Logic
 {
     public class RaceClockProvider : IRaceClockProvider
     {
-        private readonly IClockConfig _clockConfig;
+        private readonly ClockConfig _clockConfig;
         private IRaceClock? _raceClock;
 
-        public RaceClockProvider(IClockConfig clockConfig)
+        public RaceClockProvider(ClockConfig clockConfig)
         {
             _clockConfig = clockConfig;
         }

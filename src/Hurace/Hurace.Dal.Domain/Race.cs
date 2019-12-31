@@ -8,7 +8,7 @@ namespace Hurace.Dal.Domain
     public class Race : ISinglePkEntity
     {
         [Key] public int Id { get; set; }
-        public string RaceDescription { get; set; } = default!;
+        public string? RaceDescription { get; set; } = default!;
         public int SeasonId { get; set; }
         [Navigational] public Season? Season { get; set; }
         public int DisciplineId { get; set; }

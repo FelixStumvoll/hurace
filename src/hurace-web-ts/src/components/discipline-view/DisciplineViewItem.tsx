@@ -1,9 +1,7 @@
 import React from 'react';
-import { Discipline } from '../../interfaces/Discipline';
 import styled from 'styled-components';
-import { StoreState } from '../../store/rootReducer';
-import { useSelector } from 'react-redux';
 import { RaceViewItem } from '../race-view/RaceViewItem';
+import { DisciplineData } from '../../interfaces/DisciplineData';
 
 const DisciplinePanel = styled.div`
     margin-bottom: 10px;
@@ -21,16 +19,16 @@ const RacesPanel = styled.div`
     flex-wrap: wrap;
 `;
 
-export const DisciplineViewItem: React.FC<{ discipline: Discipline }> = ({
-    discipline
-}) => {
-    const races = useSelector((state: StoreState) => state.races.races);
-
+export const DisciplineViewItem: React.FC<{
+    disciplineData: DisciplineData;
+}> = ({ disciplineData }) => {
     return (
         <DisciplinePanel>
-            <DisciplineLabel>{discipline.disciplineName}</DisciplineLabel>
+            <DisciplineLabel>
+                {disciplineData.discipline.disciplineName}
+            </DisciplineLabel>
             <RacesPanel>
-                {races.map(r => (
+                {disciplineData.races.map(r => (
                     <RaceViewItem key={r.id} race={r} />
                 ))}
             </RacesPanel>

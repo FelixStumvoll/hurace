@@ -15,8 +15,9 @@ namespace Hurace.Core.Test
     {
         private static RaceBaseDataService CreateBaseDataService(IRaceDao raceDao = null, ISensorDao sensorDao = null,
             ITimeDataDao timeDataDao = null, IRaceStartListService startListService = null, IGenderDao genderDao = null,
-            ILocationDao locationDao = null) =>
-            new RaceBaseDataService(raceDao, sensorDao, timeDataDao, startListService, genderDao, locationDao);
+            ILocationDao locationDao = null, IDisciplineDao disciplineDao = null) =>
+            new RaceBaseDataService(raceDao, sensorDao, timeDataDao, startListService, genderDao, locationDao,
+                                    disciplineDao);
 
         [Test]
         public async Task InsertOrUpdateRaceNoIdTest()

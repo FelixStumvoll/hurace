@@ -2,7 +2,7 @@
 
 namespace Hurace.Core.Logic.Configs
 {
-    public class SensorConfig : ISensorConfig
+    public class SensorConfig
     {
         public int MaxDiffToAverage { get; }
         public List<int> SensorAssumptions { get; }

@@ -35,14 +35,14 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         private readonly ISensorDao _sensorDao;
         private readonly IRaceClockProvider _raceClockProvider;
         private int _maxSensorNr;
-        private readonly ISensorConfig _sensorConfig;
+        private readonly SensorConfig _sensorConfig;
 
         public int RaceId { get; private set; }
 
         public ActiveRaceControlService(int raceId, IRaceDao raceDao, IStartListDao startListDao,
             IRaceEventDao raceEventDao, IRaceDataDao raceDataDao, ISkierEventDao skierEventDao,
             ITimeDataDao timeDataDao, ISensorDao sensorDao,
-            IRaceStatService statService, IRaceClockProvider raceClockProvider, ISensorConfig sensorConfig)
+            IRaceStatService statService, IRaceClockProvider raceClockProvider, SensorConfig sensorConfig)
         {
             RaceId = raceId;
             _statService = statService;

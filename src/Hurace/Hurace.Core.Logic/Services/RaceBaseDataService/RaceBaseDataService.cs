@@ -17,8 +17,9 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
         private readonly IRaceStartListService _startListService;
         private readonly IGenderDao _genderDao;
         private readonly ILocationDao _locationDao;
+        private readonly IDisciplineDao _disciplineDao;
 
-        public RaceBaseDataService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao, IRaceStartListService startListService, IGenderDao genderDao, ILocationDao locationDao)
+        public RaceBaseDataService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao, IRaceStartListService startListService, IGenderDao genderDao, ILocationDao locationDao, IDisciplineDao disciplineDao)
         {
             _raceDao = raceDao;
             _sensorDao = sensorDao;
@@ -26,7 +27,10 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
             _startListService = startListService;
             _genderDao = genderDao;
             _locationDao = locationDao;
+            _disciplineDao = disciplineDao;
         }
+
+        public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
 
         public Task<Race?> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
         
@@ -89,5 +93,7 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
         
         public Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId) =>
             _locationDao.GetPossibleDisciplinesForLocation(locationId);
+
+        public Task<IEnumerable<Discipline>> GetAllDisciplines() => _disciplineDao.FindAllAsync();
     }
 }

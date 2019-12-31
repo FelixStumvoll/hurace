@@ -2,10 +2,6 @@ import { combineReducers } from 'redux';
 import { connectRouter, RouterState } from 'connected-react-router';
 import { History } from 'history';
 import {
-    breadcrumbsReducer,
-    BreadcrumbsReducerState
-} from './reducers/breadcrumbsReducer/breadcrumbsReducer';
-import {
     seasonReducer,
     SeasonReducerState
 } from './reducers/seasonReducer/seasonReducer';
@@ -28,7 +24,6 @@ import {
 
 export const rootReducer = (history: History<any>) =>
     combineReducers({
-        breadcrumbs: breadcrumbsReducer,
         seasons: seasonReducer,
         locations: locationReducer,
         races: raceReducer,
@@ -38,7 +33,6 @@ export const rootReducer = (history: History<any>) =>
     });
 
 export type StoreState = {
-    breadcrumbs: BreadcrumbsReducerState;
     router: RouterState<any>;
     seasons: SeasonReducerState;
     locations: LocationReducerState;
