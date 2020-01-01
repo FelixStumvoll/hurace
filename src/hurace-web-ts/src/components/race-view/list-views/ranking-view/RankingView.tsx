@@ -4,6 +4,11 @@ import { setStateAsync } from '../../../../common/stateSetter';
 import { getRankingForRace } from '../../../../api';
 import { ListHost } from '../../ListHost';
 import { RankingViewItem } from './RankingViewItem';
+import styled from 'styled-components';
+
+const RankingTable = styled.table`
+    width: 100%;
+`;
 
 export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
     const [raceRanking, setRaceRanking] = useState<RaceRanking[] | undefined>(
@@ -17,9 +22,26 @@ export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
 
     return (
         <ListHost headerText="Rangliste">
-            {raceRanking?.map(rr => (
-                <RankingViewItem raceRanking={rr} />
-            ))}
+            <RankingTable>
+                <thead>
+                    <tr>
+                        <th align="left" >Pos.</th>
+                        <th align="left">Startnr.</th>
+                        <th align="left">Land</th>
+                        <th align="left">Name</th>
+                        <th align="left">Zeit</th>
+                        <th align="left">Rückstand</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {raceRanking?.map(rr => (
+                        <RankingViewItem
+                            key={rr.startList.startNumber}
+                            raceRanking={rr}
+                        />
+                    ))}
+                </tbody>
+            </RankingTable>
         </ListHost>
     );
 };

@@ -1,7 +1,9 @@
 import 'styled-components';
 
 declare module 'styled-components' {
-    export interface Theme {
+    export interface DefaultTheme {
         navHeight: string;
+        gray: string;
+        black: string;
     }
 }

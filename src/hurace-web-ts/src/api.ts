@@ -4,6 +4,7 @@ import { Race } from './interfaces/Race';
 import { DisciplineData } from './interfaces/DisciplineData';
 import { StartList } from './interfaces/StartList';
 import { RaceRanking } from './interfaces/RaceRanking';
+import { Skier } from './interfaces/Skier';
 
 const API_URL = 'http://localhost:5000';
 
@@ -48,6 +49,10 @@ export const getRacesForSeason = async (
     return disciplineMap;
 };
 
+const setSkierDate = (skier: Skier) => {
+    skier.dateOfBirth = new Date(skier.dateOfBirth);
+};
+
 export const getStartListForRace = async (
     raceId: number
 ): Promise<StartList[]> => {
@@ -63,5 +68,15 @@ export const getStartListForRace = async (
 export const getRankingForRace = async (
     raceId: number
 ): Promise<RaceRanking[]> => {
-    return Promise.resolve([]);
+    let response = await Axios.get<RaceRanking[]>(
+        `${API_URL}/race/${raceId}/ranking`
+    );
+    response.data.forEach(rr => {
+        setSkierDate(rr.startList.skier);
+        if (rr.disqualified) return;
+        rr.time = new Date(rr.time!);
+        rr.timeToLeader = new Date(rr.timeToLeader!);
+    });
+
+    return response.data;
 };

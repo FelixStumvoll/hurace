@@ -4,17 +4,23 @@ import { Card } from '../../theme/StyledComponents';
 
 const ListPanel = styled(Card)`
     overflow: hidden;
+    padding: 0px;
     display: grid;
     grid-template-rows: auto 1fr;
 `;
 
 const ListHeader = styled.div`
+    padding: 5px;
     font-weight: bold;
+    background-color: ${props => props.theme.black};
+    color: white;
 `;
 
 const ListItems = styled.div`
+    padding: 0 10px 10px 10px;
+    height: calc(100% - 10px);
+    width: calc(100% - 20px);
     overflow: auto;
-    height: 100%;
 `;
 
 export const ListHost: React.FC<{ headerText: string }> = ({
