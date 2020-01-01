@@ -18,6 +18,7 @@ const MainContent = styled.main`
     grid-area: main;
     height: calc(100% - 20px);
     padding: 10px;
+    overflow: hidden;
 `;
 
 export const App: React.FC = () => {

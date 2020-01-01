@@ -7,10 +7,10 @@ import { StoreState } from '../../store/rootReducer';
 import {
     expandSeason,
     collapseSeason
-} from '../../store/reducers/seasonExpanderReducer/seasonExpanderActions';
+} from '../../store/reducers/season-expander-reducer/seasonExpanderActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import { DisciplineView } from '../discipline-view/DisciplineView';
+import { DisciplineView } from './discipline-view/DisciplineView';
 
 const SeasonBanner = styled.div`
     width: 100%;
@@ -26,8 +26,6 @@ const ExpanderText = styled.div`
 
 const SeasonItem = styled(Card)`
     margin-bottom: 10px;
-
-    padding: 25px;
     display: flex;
     flex-direction: column;
 `;

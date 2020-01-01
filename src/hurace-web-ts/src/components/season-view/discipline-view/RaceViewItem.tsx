@@ -1,7 +1,7 @@
 import React from 'react';
-import { Race } from '../../interfaces/Race';
+import { Race } from '../../../interfaces/Race';
 import styled from 'styled-components';
-import { Card } from '../../theme/StyledComponents';
+import { Card } from '../../../theme/StyledComponents';
 import { Link } from 'react-router-dom';
 
 const RaceLink = styled(Link)`
@@ -10,7 +10,6 @@ const RaceLink = styled(Link)`
 `;
 
 const RaceCard = styled(Card)`
-    padding: 15px;
     margin: 0px 10px 10px 0px;
     display: grid;
     grid-column-gap: 10px;
@@ -35,7 +34,7 @@ const RaceState = styled.div`
 
 export const RaceViewItem: React.FC<{ race: Race }> = ({ race }) => {
     return (
-        <RaceLink to={`/races/${race.id}`}>
+        <RaceLink to={`/season/${race.seasonId}/race/${race.id}`}>
             <RaceCard>
                 <RaceLocation>{race.location.locationName}</RaceLocation>
                 <RaceDate>{race.raceDate.toDateString()}</RaceDate>

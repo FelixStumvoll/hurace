@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RaceViewItem } from '../race-view/RaceViewItem';
-import { DisciplineData } from '../../interfaces/DisciplineData';
+import { DisciplineData } from '../../../interfaces/DisciplineData';
+import { RaceViewItem } from './RaceViewItem';
 
 const DisciplinePanel = styled.div`
     margin-bottom: 10px;
-    padding: 5px;
 `;
 
 const DisciplineLabel = styled.div`

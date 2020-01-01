@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SeasonViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
-import Axios from 'axios';
-import { API_URL } from '../../api';
 import { Season } from '../../interfaces/Season';
+import { setStateAsync } from '../../common/stateSetter';
+import { getSeasons } from '../../api';
 
 const SeasonItemPanel = styled.div`
     display: flex;
@@ -22,18 +22,7 @@ export const SeasonView: React.FC = () => {
 
     useEffect(() => {
         if (seasons !== undefined) return;
-        async function fetchData() {
-            var s = await Axios.get<Season[]>(`${API_URL}/season`);
-
-            s.data.map(season => {
-                season.endDate = new Date(season.endDate);
-                season.startDate = new Date(season.startDate);
-                return season;
-            });
-
-            setSeasons(s.data);
-        }
-        fetchData();
+        setStateAsync(setSeasons, getSeasons());
     }, [seasons]);
 
     return (

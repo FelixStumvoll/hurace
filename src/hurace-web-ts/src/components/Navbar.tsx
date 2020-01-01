@@ -29,7 +29,7 @@ export const Navbar: React.FC = () => {
     return (
         <Nav>
             <NavbarNavLink
-                to="/seasons"
+                to="/season"
                 gridarea="season"
                 activeStyle={{ textDecoration: 'underline' }}
             >
