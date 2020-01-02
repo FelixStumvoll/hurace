@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { RaceRanking } from '../../../../interfaces/RaceRanking';
 import { setStateAsync } from '../../../../common/stateSetter';
 import { getRankingForRace } from '../../../../api';
-import { ListHost } from '../../ListHost';
 import { RankingViewItem } from './RankingViewItem';
 import styled from 'styled-components';
+import { HeaderCard } from '../../../HeaderCard';
 
 const RankingTable = styled.table`
     width: 100%;
@@ -21,7 +21,7 @@ export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
     }, [raceRanking, raceId]);
 
     return (
-        <ListHost headerText="Rangliste">
+        <HeaderCard headerText="Rangliste">
             <RankingTable>
                 <thead>
                     <tr>
@@ -42,6 +42,6 @@ export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
                     ))}
                 </tbody>
             </RankingTable>
-        </ListHost>
+        </HeaderCard>
     );
 };

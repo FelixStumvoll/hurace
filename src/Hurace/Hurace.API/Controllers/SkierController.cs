@@ -29,10 +29,10 @@ namespace Hurace.API.Controllers
             return skier;
         }
 
-        [HttpGet("{id}/results")]
-        public async Task<IEnumerable<RaceRanking>> GetRankingsForSkier()
-        {
-               
-        }
+        // [HttpGet("{id}/results")]
+        // public async Task<IEnumerable<RaceRanking>> GetRankingsForSkier()
+        // {
+        //        
+        // }
     }
 }

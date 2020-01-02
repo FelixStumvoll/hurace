@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StartList } from '../../../../interfaces/StartList';
 import { StartListViewItem } from './StartListViewItem';
-import { ListHost } from '../../ListHost';
 import { setStateAsync } from '../../../../common/stateSetter';
 import { getStartListForRace } from '../../../../api';
 import styled from 'styled-components';
+import { HeaderCard } from '../../../HeaderCard';
 
 const StartListTable = styled.table`
     width: 100%;
@@ -21,11 +21,8 @@ export const StartListView: React.FC<{ raceId: number }> = ({ raceId }) => {
     }, [startList, raceId]);
 
     return (
-        <ListHost headerText="Startliste:">
+        <HeaderCard headerText="Startliste:">
             <StartListTable>
-                {/* <col width="10%" />
-                <col width="10%" />
-                <col width="80%" /> */}
                 <thead>
                     <tr>
                         <th align="left">Startnr.</th>
@@ -42,6 +39,6 @@ export const StartListView: React.FC<{ raceId: number }> = ({ raceId }) => {
                     ))}
                 </tbody>
             </StartListTable>
-        </ListHost>
+        </HeaderCard>
     );
 };

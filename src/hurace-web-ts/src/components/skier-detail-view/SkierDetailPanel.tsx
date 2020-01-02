@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const DetailPanel = styled.div`
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
 `;
 
 const Name = styled.span`

@@ -35,6 +35,7 @@ const NavbarNavLink = styled(NavLink)<NavbarNavLinkProps>`
 const LoginButton = styled.button`
     grid-area: login;
     margin: auto 10px auto 0;
+    height: fit-content;
 `;
 
 export const Navbar: React.FC = () => {
