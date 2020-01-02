@@ -15,5 +15,6 @@ namespace Hurace.Dal.Interface
         Task<int?> CountTimeDataForRace(int raceId);
         Task<int?> GetAverageTimeForSensor(int raceId, int sensorId);
         Task<DateTime?> GetStartTimeForStartList(int skierId, int raceId);
+        Task<IEnumerable<TimeData>> GetRankingForSkier(int skierId);
     }
 }

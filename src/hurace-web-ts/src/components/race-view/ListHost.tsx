@@ -10,7 +10,7 @@ const ListPanel = styled(Card)`
 `;
 
 const ListHeader = styled.div`
-    padding: 5px;
+    padding: 5px 5px 5px 10px;
     font-weight: bold;
     background-color: ${props => props.theme.black};
     color: white;

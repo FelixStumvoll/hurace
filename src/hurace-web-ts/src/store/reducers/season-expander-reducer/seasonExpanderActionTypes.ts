@@ -1,6 +1,6 @@
 export enum SeasonExpanderActionType {
-    Expand,
-    Collapse
+    Expand = 'EXPAND',
+    Collapse = 'COLLAPSE'
 }
 
 export type SeasonExpanderAction =

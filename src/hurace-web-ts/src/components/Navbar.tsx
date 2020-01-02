@@ -1,6 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+// import { useAuth0 } from '../Auth0Provider';
+import { useSelector, useDispatch } from 'react-redux';
+import { StoreState } from '../store/rootReducer';
+import {
+    loginRedirect,
+    logoutAuth0
+} from '../store/reducers/auth-reducer/authActions';
 
 const Nav = styled.nav`
     position: fixed;
@@ -25,7 +32,16 @@ const NavbarNavLink = styled(NavLink)<NavbarNavLinkProps>`
     margin: auto 0px auto 10px;
 `;
 
+const LoginButton = styled.button`
+    grid-area: login;
+    margin: auto 10px auto 0;
+`;
+
 export const Navbar: React.FC = () => {
+    // const { loginWithRedirect, logout } = useAuth0();
+    const { isAuthenticated } = useSelector((state: StoreState) => state.auth);
+
+    const dispatch = useDispatch();
     return (
         <Nav>
             <NavbarNavLink
@@ -36,12 +52,21 @@ export const Navbar: React.FC = () => {
                 Saisonüberblick
             </NavbarNavLink>
             <NavbarNavLink
-                to="/skiers"
+                to="/skier"
                 gridarea="skiers"
                 activeStyle={{ textDecoration: 'underline' }}
             >
                 Rennfahrer
             </NavbarNavLink>
+            {isAuthenticated ? (
+                <LoginButton onClick={() => dispatch(logoutAuth0())}>
+                    Logout
+                </LoginButton>
+            ) : (
+                <LoginButton onClick={() => dispatch(loginRedirect())}>
+                    Login
+                </LoginButton>
+            )}
         </Nav>
     );
 };

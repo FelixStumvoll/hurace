@@ -2,6 +2,8 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { SeasonView } from './season-view/SeasonView';
 import { RaceDetailView } from './race-view/RaceDetailView';
+import { SkierDetailView } from './skier-detail-view/SkierDetailView';
+import { SkierView } from './skier-view/SkierView';
 
 export const Router: React.FC = () => {
     return (
@@ -14,6 +16,17 @@ export const Router: React.FC = () => {
                 path="/season/:seasonId/race/:raceId"
                 render={({ match }) => (
                     <RaceDetailView raceId={Number(match.params.raceId)} />
+                )}
+            />
+            <Route exact path="/skier">
+                <SkierView />
+            </Route>
+
+            <Route
+                exact
+                path="/skier/:skierId"
+                render={({ match }) => (
+                    <SkierDetailView skierId={Number(match.params.skierId)} />
                 )}
             />
         </Switch>

@@ -87,5 +87,10 @@ namespace Hurace.Dal.Dao
             where s.sensorNumber = 0 and rd.eventTypeId = 8 and td.skierId = @sid and td.raceId = @rid",
                                         queryParams: new QueryParam[] {("@sid", skierId), ("@rid", raceId)}))
             .FirstOrDefault()?.EventDateTime;
+
+        public async Task<IEnumerable<TimeData>> GetRankingForSkier(int skierId)
+        {
+            return Enumerable.Empty<TimeData>();
+        }
     }
 }

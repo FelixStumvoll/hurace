@@ -80,3 +80,15 @@ export const getRankingForRace = async (
 
     return response.data;
 };
+
+export const getSkiers = async (): Promise<Skier[]> => {
+    let response = await Axios.get<Skier[]>(`${API_URL}/skier`);
+    response.data.forEach(setSkierDate);
+    return response.data;
+};
+
+export const getSkierById = async (skierId: number): Promise<Skier> => {
+    let response = await Axios.get<Skier>(`${API_URL}/skier/${skierId}`);
+    setSkierDate(response.data);
+    return response.data;
+};
