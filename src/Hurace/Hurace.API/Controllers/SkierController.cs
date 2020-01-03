@@ -29,6 +29,10 @@ namespace Hurace.API.Controllers
             return skier;
         }
 
+        [HttpGet("{id}/disciplines")]
+        public Task<IEnumerable<Discipline>> GetDisciplinesForSkier(int id) => 
+            _skierService.GetDisciplinesForSkier(id);
+
         // [HttpGet("{id}/results")]
         // public async Task<IEnumerable<RaceRanking>> GetRankingsForSkier()
         // {

@@ -5,6 +5,7 @@ import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
 import { SkierDetailPanel } from './SkierDetailPanel';
 import { Card } from '../../theme/StyledComponents';
+import { BackLinkWrapper } from '../BackLinkWrapper';
 
 const SkierGrid = styled.div`
     display: flex;
@@ -14,7 +15,10 @@ const SkierGrid = styled.div`
 
 const SkierDetailCard = styled(Card)`
     display: flex;
+    padding: 0px;
     flex-direction: row;
+    width: fit-content;
+    max-width: 100%;
 `;
 
 export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
@@ -26,13 +30,17 @@ export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
     }, [skier, skierId]);
 
     return (
-        <SkierGrid>
-            {skier && (
-                <SkierDetailCard>
-                    {skier.imageUrl && <img alt="Skier" src={skier.imageUrl} />}
-                    <SkierDetailPanel skier={skier} />
-                </SkierDetailCard>
-            )}
-        </SkierGrid>
+        <BackLinkWrapper url="/skier" backText="Zurück zur Fahrerübersicht">
+            <SkierGrid>
+                {skier && (
+                    <SkierDetailCard>
+                        {skier.imageUrl && (
+                            <img alt="Skier" src={skier.imageUrl} />
+                        )}
+                        <SkierDetailPanel skier={skier} />
+                    </SkierDetailCard>
+                )}
+            </SkierGrid>
+        </BackLinkWrapper>
     );
 };

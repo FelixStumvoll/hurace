@@ -1,6 +1,6 @@
 import React from 'react';
 import { RaceRanking } from '../../../../interfaces/RaceRanking';
-import { getTimeString } from '../../../../common/timeConverter';
+import { getSkierTimeString } from '../../../../common/timeConverter';
 
 export const RankingViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
     raceRanking
@@ -17,12 +17,12 @@ export const RankingViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
             <td>
                 {raceRanking.disqualified
                     ? '-'
-                    : getTimeString(raceRanking.time!)}
+                    : getSkierTimeString(raceRanking.time!)}
             </td>
             <td>
                 {raceRanking.disqualified
                     ? '-'
-                    : getTimeString(raceRanking.timeToLeader!)}
+                    : getSkierTimeString(raceRanking.timeToLeader!)}
             </td>
         </tr>
     );

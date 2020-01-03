@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Race } from '../../interfaces/Race';
 import styled from 'styled-components';
-import { Card } from '../../theme/StyledComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faClock,
     faLocationArrow,
     faSkiing,
     faUser,
-    faFlagCheckered
+    faFlagCheckered,
+    faCalendarDay
 } from '@fortawesome/free-solid-svg-icons';
 import { setStateAsync } from '../../common/stateSetter';
 import { getRaceDetails } from '../../api';
 import { HeaderCard } from '../HeaderCard';
+import { getRaceTimeString } from '../../common/timeConverter';
 
 const DetailPanel = styled.div`
     display: flex;
@@ -29,9 +30,16 @@ const DescriptionCardWrapper = styled.div`
     margin-left: 10px;
 `;
 
-const DetailText = styled.div`
+const DetailText = styled.span`
     height: fit-content;
     margin: auto 0 auto 0;
+`;
+
+const CountryText = styled(DetailText)`
+    font-style: italic;
+    font-weight: normal;
+    font-size: 16px;
+    color: ${props => props.theme.gray};
 `;
 
 const HeaderText = styled(DetailText)`
@@ -63,7 +71,13 @@ export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
             <HeaderCard headerText="Stammdaten">
                 <InfoContent>
                     <DetailIcon fontSize={25} icon={faLocationArrow} />
-                    <HeaderText>{race?.location.locationName}</HeaderText>
+                    <HeaderText>
+                        {race?.location.locationName}
+                        <CountryText>
+                            {' '}
+                            {race?.location.country.countryName}
+                        </CountryText>{' '}
+                    </HeaderText>
                     <DetailIcon fontSize={16} icon={faSkiing} />
                     <DetailText>{race?.discipline.disciplineName}</DetailText>
                     <DetailIcon fontSize={16} icon={faFlagCheckered} />
@@ -72,8 +86,10 @@ export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
                     </DetailText>
                     <DetailIcon fontSize={16} icon={faUser} />
                     <DetailText>{race?.gender.genderDescription}</DetailText>
-                    <DetailIcon fontSize={16} icon={faClock} />
+                    <DetailIcon fontSize={16} icon={faCalendarDay} />
                     <DetailText>{race?.raceDate.toDateString()}</DetailText>
+                    <DetailIcon fontSize={16} icon={faClock} />
+                    <DetailText>{getRaceTimeString(race?.raceDate)}</DetailText>
                 </InfoContent>
             </HeaderCard>
             <DescriptionCardWrapper>

@@ -16,7 +16,6 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
         const initAuth0 = async () => {
             const auth0Client = await createAuth0Client(initOptions);
             dispatch(setAuth0Client(auth0Client));
-            console.log('init');
             if (window.location.search.includes('code=')) {
                 const { appState } = await auth0Client.handleRedirectCallback();
                 dispatch(

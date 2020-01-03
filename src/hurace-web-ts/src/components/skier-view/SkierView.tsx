@@ -13,26 +13,35 @@ const SkierPanel = styled.div`
     overflow: hidden;
 `;
 
+const SearchBarWrapper = styled.div`
+    display: flex;
+`;
+
 const SearchBar = styled.input`
-    margin: 0 0 10px auto;
+    margin-left: auto;
     border-radius: 15px;
     padding-left: 10px;
     border: 1px solid ${props => props.theme.gray};
-    height: 25px;
+    height: 30px;
     width: 200px;
 `;
 
-const ListPanel = styled.div`
+const SkierList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
     overflow: auto;
 `;
 
-const SkierTable = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-`;
+const skierSearchFunc = (skier: Skier, searchTerm: string): boolean =>
+    skier.firstName.includes(searchTerm) ||
+    skier.lastName.includes(searchTerm) ||
+    skier.country.countryName.includes(searchTerm);
 
 export const SkierView: React.FC = () => {
     const [skiers, setSkiers] = useState<Skier[] | undefined>(undefined);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (skiers !== undefined) return;
@@ -41,23 +50,20 @@ export const SkierView: React.FC = () => {
 
     return (
         <SkierPanel>
-            <SearchBar placeholder="Suche" />
-            <ListPanel>
-                <SkierTable>
-                    <thead>
-                        <tr>
-                            <th align="left">Land</th>
-                            <th align="left">Name</th>
-                            <th align="left">Geschlecht</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {skiers?.map(s => (
-                            <SkierListItem key={s.id} skier={s} />
-                        ))}
-                    </tbody>
-                </SkierTable>
-            </ListPanel>
+            <SearchBarWrapper>
+                <SearchBar
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Suche"
+                />
+            </SearchBarWrapper>
+            <SkierList>
+                {skiers
+                    ?.filter(s => skierSearchFunc(s, searchTerm))
+                    .map(s => (
+                        <SkierListItem key={s.id} skier={s} />
+                    ))}
+            </SkierList>
         </SkierPanel>
     );
 };

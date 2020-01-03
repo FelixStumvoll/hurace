@@ -9,7 +9,10 @@ const zeroPrepender = (val: number, zeros: number = 1): string => {
     return retString;
 };
 
-export const getTimeString = (date: Date): string =>
+export const getSkierTimeString = (date: Date): string =>
     `${zeroPrepender(date.getMinutes())}:${zeroPrepender(
         date.getSeconds()
     )}:${zeroPrepender(date.getMilliseconds(), 2)}`;
+
+export const getRaceTimeString = (date: Date): string =>
+    `${zeroPrepender(date.getHours())}:${zeroPrepender(date.getMinutes())}`;

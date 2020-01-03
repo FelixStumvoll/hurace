@@ -21,6 +21,8 @@ namespace Hurace.Core.Logic.Services.SkierService
         public Task<IEnumerable<Skier>> GetAllSkiers() => _skierDao.FindAllAsync();
 
         public Task<Skier?> GetSkierById(int id) => _skierDao.FindByIdAsync(id);
+        public Task<IEnumerable<Discipline>> GetDisciplinesForSkier(int id) => 
+            _skierDao.GetPossibleDisciplinesForSkier(id);
 
         public async Task<IEnumerable<RaceRanking>> GetResultsForSkier(int skierId)
         {

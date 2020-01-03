@@ -8,5 +8,6 @@ namespace Hurace.Core.Logic.Services.SkierService
     {
         Task<IEnumerable<Skier>> GetAllSkiers();
         Task<Skier?> GetSkierById(int id);
+        Task<IEnumerable<Discipline>> GetDisciplinesForSkier(int id);
     }
 }

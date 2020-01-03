@@ -19,6 +19,7 @@ namespace Hurace.Dal.Dao
         private protected override SelectStatementBuilder<Race> DefaultSelectQuery() =>
             StatementFactory.Select<Race>()
                             .Join<Race, Location>((nameof(Race.LocationId), nameof(Location.Id)))
+                            .Join<Location, Country>((nameof(Location.CountryId), nameof(Country.Id)))
                             .Join<Race, Season>((nameof(Race.SeasonId), nameof(Season.Id)))
                             .Join<Race, Discipline>((nameof(Race.DisciplineId), nameof(Discipline.Id)))
                             .Join<Race, RaceState>((nameof(Race.RaceStateId), nameof(RaceState.Id)))

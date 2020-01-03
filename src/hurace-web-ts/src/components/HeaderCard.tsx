@@ -17,7 +17,7 @@ const CardHeader = styled.div`
 `;
 
 const CardContent = styled.div`
-    padding: 0 10px 10px 10px;
+    padding: 5px 10px 10px 10px;
     height: calc(100% - 10px);
     width: calc(100% - 20px);
     overflow: auto;
