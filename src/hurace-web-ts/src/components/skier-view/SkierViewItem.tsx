@@ -1,19 +1,13 @@
 import React from 'react';
 import { Skier } from '../../interfaces/Skier';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Card } from '../../theme/StyledComponents';
-
-const SkierLink = styled(Link)`
-    text-decoration: none;
-    color: black;
-`;
+import { Card, DefaultLink } from '../../theme/StyledComponents';
 
 const SkierCard = styled(Card)`
     padding: 0px;
     width: 200px;
     height: 300px;
-    margin: 10px 10px 0 0;
+    margin: 0 10px 10px 0;
     display: grid;
     grid-template-rows: 200px 1fr;
     flex-direction: column;
@@ -28,6 +22,13 @@ const SkierImage = styled.img`
     object-fit: cover;
     height: 100%;
     width: 100%;
+`;
+
+const NoImage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid ${props => props.theme.gray};
 `;
 
 const SkierCardContent = styled.div`
@@ -46,14 +47,16 @@ const SkierCountry = styled.div`
     color: gray;
 `;
 
-export const SkierListItem: React.FC<{ skier: Skier }> = ({ skier }) => {
+export const SkierViewItem: React.FC<{ skier: Skier }> = ({ skier }) => {
     return (
-        <SkierLink to={`/skier/${skier.id}`}>
+        <DefaultLink to={`/skier/${skier.id}`}>
             <SkierCard>
-                {skier.imageUrl && (
+                {skier.imageUrl ? (
                     <ImagePanel>
                         <SkierImage alt="Skier" src={skier.imageUrl} />
                     </ImagePanel>
+                ) : (
+                    <NoImage>Kein Bild verfügbar</NoImage>
                 )}
                 <SkierCardContent>
                     <SkierName>
@@ -62,6 +65,6 @@ export const SkierListItem: React.FC<{ skier: Skier }> = ({ skier }) => {
                     <SkierCountry>{skier.country.countryName}</SkierCountry>
                 </SkierCardContent>
             </SkierCard>
-        </SkierLink>
+        </DefaultLink>
     );
 };

@@ -3,19 +3,26 @@ import { SeasonViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
 import { Season } from '../../interfaces/Season';
 import { setStateAsync } from '../../common/stateSetter';
-import { getSeasons } from '../../api';
+import { getSeasons } from '../../common/api';
+import { MasterView, SearchContext } from '../shared/MasterView';
 
 const SeasonItemPanel = styled.div`
     display: flex;
-    flex-direction: column;
     flex-wrap: wrap;
+    overflow: auto;
 `;
 
-const SeasonLabel = styled.div`
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 10px;
-`;
+const seasonFilter = (season: Season, searchTerm: string) =>
+    season.startDate
+        .getFullYear()
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+    season.endDate
+        .getFullYear()
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
 export const SeasonView: React.FC = () => {
     const [seasons, setSeasons] = useState<Season[] | undefined>(undefined);
@@ -26,13 +33,18 @@ export const SeasonView: React.FC = () => {
     }, [seasons]);
 
     return (
-        <div>
-            <SeasonLabel>Alle Saisonen:</SeasonLabel>
-            <SeasonItemPanel>
-                {seasons?.map(s => (
-                    <SeasonViewItem key={s.id} season={s} />
-                ))}
-            </SeasonItemPanel>
-        </div>
+        <MasterView createText="Saison erstellen" createUrl="/season/new">
+            <SearchContext.Consumer>
+                {searchTerm => (
+                    <SeasonItemPanel>
+                        {seasons
+                            ?.filter(s => seasonFilter(s, searchTerm))
+                            .map(s => (
+                                <SeasonViewItem key={s.id} season={s} />
+                            ))}
+                    </SeasonItemPanel>
+                )}
+            </SearchContext.Consumer>
+        </MasterView>
     );
 };

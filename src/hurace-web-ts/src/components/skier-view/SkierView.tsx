@@ -2,46 +2,25 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Skier } from '../../interfaces/Skier';
 import { setStateAsync } from '../../common/stateSetter';
-import { getSkiers } from '../../api';
-import { SkierListItem } from './SkierListItem';
-
-const SkierPanel = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-`;
-
-const SearchBarWrapper = styled.div`
-    display: flex;
-`;
-
-const SearchBar = styled.input`
-    margin-left: auto;
-    border-radius: 15px;
-    padding-left: 10px;
-    border: 1px solid ${props => props.theme.gray};
-    height: 30px;
-    width: 200px;
-`;
+import { getSkiers } from '../../common/api';
+import { SkierViewItem } from './SkierViewItem';
+import { MasterView } from '../shared/MasterView';
+import { SearchContext } from '../shared/MasterView';
 
 const SkierList = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 10px;
     overflow: auto;
 `;
 
-const skierSearchFunc = (skier: Skier, searchTerm: string): boolean =>
-    skier.firstName.includes(searchTerm) ||
-    skier.lastName.includes(searchTerm) ||
-    skier.country.countryName.includes(searchTerm);
+const skierFilter = (skier: Skier, searchTerm: string): boolean =>
+    skier.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    skier.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    skier.country.countryName.toLowerCase().includes(searchTerm.toLowerCase());
 
 export const SkierView: React.FC = () => {
     const [skiers, setSkiers] = useState<Skier[] | undefined>(undefined);
-    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (skiers !== undefined) return;
@@ -49,21 +28,21 @@ export const SkierView: React.FC = () => {
     }, [skiers]);
 
     return (
-        <SkierPanel>
-            <SearchBarWrapper>
-                <SearchBar
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Suche"
-                />
-            </SearchBarWrapper>
-            <SkierList>
-                {skiers
-                    ?.filter(s => skierSearchFunc(s, searchTerm))
-                    .map(s => (
-                        <SkierListItem key={s.id} skier={s} />
-                    ))}
-            </SkierList>
-        </SkierPanel>
+        <MasterView createText="Rennläufer erstellen" createUrl="/skier/new">
+            <SearchContext.Consumer>
+                {search => (
+                    <SkierList>
+                        {skiers
+                            ?.sort((s1, s2) =>
+                                s1.lastName.localeCompare(s2.lastName)
+                            )
+                            .filter(s => skierFilter(s, search))
+                            .map(s => (
+                                <SkierViewItem key={s.id} skier={s} />
+                            ))}
+                    </SkierList>
+                )}
+            </SearchContext.Consumer>
+        </MasterView>
     );
 };

@@ -5,6 +5,7 @@ import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 export interface AuthReducerState {
     isAuthenticated: boolean;
     user?: any;
+    token?: string;
     auth0Client?: Auth0Client;
 }
 
@@ -20,9 +21,19 @@ export const authReducer: Reducer<AuthReducerState, AuthAction> = (
 ) => {
     switch (action.type) {
         case AuthActionType.Login:
-            return { ...state, isAuthenticated: true, user: action.user };
+            return {
+                ...state,
+                isAuthenticated: true,
+                user: action.user,
+                token: action.token
+            };
         case AuthActionType.Logout:
-            return { ...state, isAuthenticated: false, user: undefined };
+            return {
+                ...state,
+                isAuthenticated: false,
+                user: undefined,
+                token: undefined
+            };
         case AuthActionType.SetAuth0Client:
             return { ...state, auth0Client: action.auth0Client };
         default:

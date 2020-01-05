@@ -5,5 +5,6 @@ declare module 'styled-components' {
         navHeight: string;
         gray: string;
         black: string;
+        blue: string;
     }
 }

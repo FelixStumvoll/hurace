@@ -7,6 +7,6 @@ export enum AuthActionType {
 }
 
 export type AuthAction =
-    | { type: AuthActionType.Login; user: any }
+    | { type: AuthActionType.Login; user: any, token: string }
     | { type: AuthActionType.SetAuth0Client; auth0Client: Auth0Client }
     | { type: AuthActionType.Logout };

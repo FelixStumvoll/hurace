@@ -3,7 +3,7 @@ import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
 import { Discipline } from '../../interfaces/Discipline';
 import { setStateAsync } from '../../common/stateSetter';
-import { getDisciplinesForSkier } from '../../api';
+import { getDisciplinesForSkier } from '../../common/api';
 
 const DetailPanel = styled.div`
     padding: 10px;
@@ -37,6 +37,7 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
     );
 
     useEffect(() => {
+        if (disciplines !== undefined) return;
         setStateAsync(setDisciplines, getDisciplinesForSkier(skier.id));
     }, [disciplines, skier]);
 

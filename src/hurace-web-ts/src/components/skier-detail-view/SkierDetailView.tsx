@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { setStateAsync } from '../../common/stateSetter';
-import { getSkierById } from '../../api';
+import { getSkierById } from '../../common/api';
 import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
 import { SkierDetailPanel } from './SkierDetailPanel';
 import { Card } from '../../theme/StyledComponents';
-import { BackLinkWrapper } from '../BackLinkWrapper';
+import { BackLinkWrapper } from '../shared/BackLinkWrapper';
 
 const SkierGrid = styled.div`
     display: flex;

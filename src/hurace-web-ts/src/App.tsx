@@ -6,7 +6,8 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { store, history } from './store/store';
 import { Router } from './components/Router';
-import { Auth0Provider } from './Auth0Provider';
+import { Auth0Provider } from './components/Auth0Provider';
+import { env } from './environment/environment';
 
 const PageContent = styled.div`
     display: grid;
@@ -27,8 +28,8 @@ export const App: React.FC = () => {
     return (
         <Provider store={store}>
             <Auth0Provider
-                client_id="xROyQyVUjHaXxmHKlpHOQN0ZwyMZ8rPn"
-                domain="hurace-auth.eu.auth0.com"
+                client_id={env.auth0ClientId}
+                domain={env.auth0Domain}
             >
                 <ConnectedRouter history={history}>
                     <ThemeProvider theme={HuraceTheme}>

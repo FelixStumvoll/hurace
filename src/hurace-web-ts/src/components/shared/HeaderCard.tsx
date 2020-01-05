@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card } from '../theme/StyledComponents';
+import { Card } from '../../theme/StyledComponents';
 
 const Panel = styled(Card)`
     overflow: hidden;
@@ -17,7 +17,7 @@ const CardHeader = styled.div`
 `;
 
 const CardContent = styled.div`
-    padding: 5px 10px 10px 10px;
+    padding: 10px;
     height: calc(100% - 10px);
     width: calc(100% - 20px);
     overflow: auto;

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StartList } from '../../../../interfaces/StartList';
 import { StartListViewItem } from './StartListViewItem';
 import { setStateAsync } from '../../../../common/stateSetter';
-import { getStartListForRace } from '../../../../api';
+import { getStartListForRace } from '../../../../common/api';
 import styled from 'styled-components';
-import { HeaderCard } from '../../../HeaderCard';
+import { HeaderCard } from '../../../shared/HeaderCard';
 
 const StartListTable = styled.table`
     width: 100%;

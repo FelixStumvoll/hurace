@@ -11,8 +11,8 @@ import {
     faCalendarDay
 } from '@fortawesome/free-solid-svg-icons';
 import { setStateAsync } from '../../common/stateSetter';
-import { getRaceDetails } from '../../api';
-import { HeaderCard } from '../HeaderCard';
+import { getRaceDetails } from '../../common/api';
+import { HeaderCard } from '../shared/HeaderCard';
 import { getRaceTimeString } from '../../common/timeConverter';
 
 const DetailPanel = styled.div`

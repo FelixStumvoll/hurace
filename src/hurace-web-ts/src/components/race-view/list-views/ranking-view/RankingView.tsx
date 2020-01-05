@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { RaceRanking } from '../../../../interfaces/RaceRanking';
 import { setStateAsync } from '../../../../common/stateSetter';
-import { getRankingForRace } from '../../../../api';
 import { RankingViewItem } from './RankingViewItem';
 import styled from 'styled-components';
-import { HeaderCard } from '../../../HeaderCard';
+import { HeaderCard } from '../../../shared/HeaderCard';
+import { getRankingForRace } from '../../../../common/api';
 
 const RankingTable = styled.table`
     width: 100%;
@@ -25,7 +25,7 @@ export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
             <RankingTable>
                 <thead>
                     <tr>
-                        <th align="left" >Pos.</th>
+                        <th align="left">Pos.</th>
                         <th align="left">Startnr.</th>
                         <th align="left">Land</th>
                         <th align="left">Name</th>

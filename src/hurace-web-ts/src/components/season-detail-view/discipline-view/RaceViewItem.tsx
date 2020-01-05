@@ -1,8 +1,7 @@
 import React from 'react';
 import { Race } from '../../../interfaces/Race';
 import styled from 'styled-components';
-import { Card } from '../../../theme/StyledComponents';
-import { Link } from 'react-router-dom';
+import { Card, DefaultLink } from '../../../theme/StyledComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faClock,
@@ -10,11 +9,6 @@ import {
     faUser,
     faFlagCheckered
 } from '@fortawesome/free-solid-svg-icons';
-
-const RaceLink = styled(Link)`
-    text-decoration: none;
-    color: black;
-`;
 
 const RaceCard = styled(Card)`
     margin: 0px 10px 10px 0px;
@@ -24,7 +18,7 @@ const RaceCard = styled(Card)`
 
 export const RaceViewItem: React.FC<{ race: Race }> = ({ race }) => {
     return (
-        <RaceLink to={`/season/${race.seasonId}/race/${race.id}`}>
+        <DefaultLink to={`/season/${race.seasonId}/race/${race.id}`}>
             <RaceCard>
                 <span>
                     <FontAwesomeIcon icon={faLocationArrow} />{' '}
@@ -43,6 +37,6 @@ export const RaceViewItem: React.FC<{ race: Race }> = ({ race }) => {
                     {race.raceState.raceStateDescription}
                 </span>
             </RaceCard>
-        </RaceLink>
+        </DefaultLink>
     );
 };

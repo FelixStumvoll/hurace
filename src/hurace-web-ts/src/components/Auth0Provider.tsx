@@ -5,7 +5,7 @@ import { replace } from 'connected-react-router';
 import {
     login,
     setAuth0Client
-} from './store/reducers/auth-reducer/authActions';
+} from '../store/reducers/auth-reducer/authActions';
 
 export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
     children,
@@ -29,7 +29,8 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
 
             if (await auth0Client.isAuthenticated()) {
                 const user = await auth0Client.getUser();
-                dispatch(login(user));
+                var token = await auth0Client.getTokenSilently();
+                dispatch(login(user, token));
             }
         };
         initAuth0();

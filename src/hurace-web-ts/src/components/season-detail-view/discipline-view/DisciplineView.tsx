@@ -3,11 +3,10 @@ import styled from 'styled-components';
 import { DisciplineData } from '../../../interfaces/DisciplineData';
 import { DisciplineViewItem } from './DisciplineViewItem';
 import { setStateAsync } from '../../../common/stateSetter';
-import { getRacesForSeason } from '../../../api';
+import { getRacesForSeason } from '../../../common/api';
 
 const DisciplinePanel = styled.div`
-    margin-top: 20px;
-    max-height: 500px;
+    margin-top: 10px;
     width: 100%;
     overflow: auto;
 `;

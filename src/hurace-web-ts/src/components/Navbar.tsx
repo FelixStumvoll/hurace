@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-// import { useAuth0 } from '../Auth0Provider';
 import { useSelector, useDispatch } from 'react-redux';
 import { StoreState } from '../store/rootReducer';
 import {
@@ -29,35 +28,47 @@ const NavbarNavLink = styled(NavLink)<NavbarNavLinkProps>`
     grid-area: ${props => props.gridarea};
     text-decoration: none;
     color: white;
-    margin: auto 0px auto 10px;
+    border-bottom: 6px solid transparent;
+    display: flex;
+    margin-left: 10px;
+`;
+
+const NavbarContent = styled.div`
+    margin: auto 0 auto 0;
 `;
 
 const LoginButton = styled.button`
     grid-area: login;
-    margin: auto 10px auto 0;
+    margin-left: 10px;
     height: fit-content;
+    background-color: ${props => props.theme.blue};
+    color: white;
+    border: none;
+    height: 100%;
+    padding: 0 15px 0 15px;
+    cursor: pointer;
 `;
 
 export const Navbar: React.FC = () => {
-    // const { loginWithRedirect, logout } = useAuth0();
     const { isAuthenticated } = useSelector((state: StoreState) => state.auth);
 
     const dispatch = useDispatch();
+    let activeStyle = '6px solid #0078F2';
     return (
         <Nav>
             <NavbarNavLink
                 to="/season"
                 gridarea="season"
-                activeStyle={{ textDecoration: 'underline' }}
+                activeStyle={{ borderBottom: activeStyle }}
             >
-                Saisonüberblick
+                <NavbarContent>Saisonüberblick</NavbarContent>
             </NavbarNavLink>
             <NavbarNavLink
                 to="/skier"
                 gridarea="skiers"
-                activeStyle={{ textDecoration: 'underline' }}
+                activeStyle={{ borderBottom: activeStyle }}
             >
-                Rennfahrer
+                <NavbarContent>Rennfahrer</NavbarContent>
             </NavbarNavLink>
             {isAuthenticated ? (
                 <LoginButton onClick={() => dispatch(logoutAuth0())}>

@@ -4,30 +4,29 @@ import { StoreState } from '../../rootReducer';
 import { Dispatch } from 'react';
 
 export const loginRedirect = () => async (
-    dispatch: any,
+    dispatch: Dispatch<any>,
     getState: () => StoreState
 ) => {
     let state = getState();
-    console.log('state', state);
     let { auth0Client } = state.auth;
     if (!auth0Client) return;
 
-    await auth0Client!.loginWithRedirect();
-    const user = await auth0Client!.getUser();
-    
-    dispatch(login(user));
+    await auth0Client!.loginWithRedirect({
+        redirect_uri: 'http://localhost:3000'
+    });
 };
 
-export const login = (user: any): AuthAction => ({
-    user: user,
+export const login = (user: any, token: string): AuthAction => ({
+    token,
+    user,
     type: AuthActionType.Login
 });
 
 export const logoutAuth0 = () => async (
     dispatch: Dispatch<any>,
-    state: StoreState
+    getState: () => StoreState
 ) => {
-    let { auth0Client } = state.auth;
+    let { auth0Client } = getState().auth;
     if (!auth0Client) return;
 
     await auth0Client.logout();

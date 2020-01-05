@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { DefaultLink } from '../../theme/StyledComponents';
 
 const BackLinkPanel = styled.div`
     display: grid;
@@ -11,9 +11,7 @@ const BackLinkPanel = styled.div`
     height: 100%;
 `;
 
-const BackLink = styled(Link)`
-    text-decoration: none;
-    color: black;
+const BackLink = styled(DefaultLink)`
     font-size: 20px;
 `;
 

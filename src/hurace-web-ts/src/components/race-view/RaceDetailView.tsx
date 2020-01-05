@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { RaceDetailPanel } from './RaceDetailPanel';
 import { RaceListsPanel } from './RaceListsPanel';
-import { BackLinkWrapper } from '../BackLinkWrapper';
+import { BackLinkWrapper } from '../shared/BackLinkWrapper';
 
 const RacePanel = styled.div`
     display: grid;
@@ -12,9 +12,15 @@ const RacePanel = styled.div`
     overflow: hidden;
 `;
 
-export const RaceDetailView: React.FC<{ raceId: number }> = ({ raceId }) => {
+export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
+    raceId,
+    seasonId
+}) => {
     return (
-        <BackLinkWrapper url="/season" backText=" Zurück zur Saisonübersicht">
+        <BackLinkWrapper
+            url={`/season/${seasonId}`}
+            backText=" Zurück zur Saison"
+        >
             <RacePanel>
                 <RaceDetailPanel raceId={raceId} />
                 <RaceListsPanel raceId={raceId} />
