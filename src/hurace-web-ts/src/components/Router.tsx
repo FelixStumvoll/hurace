@@ -13,10 +13,15 @@ export const Router: React.FC = () => {
             <Route exact path="/season">
                 <SeasonView />
             </Route>
+            <Route exact path="/season/new">
+                <SeasonUpdateView />
+            </Route>
             <Route
                 exact
-                path="/season/new"
-                render={({ match }) => <SeasonUpdateView />}
+                path="/season/:seasonId/update"
+                render={({ match }) => (
+                    <SeasonUpdateView seasonId={Number(match.params.seasonId)} />
+                )}
             />
             <Route
                 exact

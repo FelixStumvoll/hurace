@@ -11,11 +11,9 @@ const GridPanel = styled.div`
     overflow: hidden;
 `;
 
-export const RaceListsPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
-    return (
-        <GridPanel>
-            <StartListView raceId={raceId} />
-            <RankingView raceId={raceId} />
-        </GridPanel>
-    );
-};
+export const RaceListsPanel: React.FC<{ raceId: number }> = ({ raceId }) => (
+    <GridPanel>
+        <StartListView raceId={raceId} />
+        <RankingView raceId={raceId} />
+    </GridPanel>
+);

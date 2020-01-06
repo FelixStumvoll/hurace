@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { RaceRanking } from '../../../../interfaces/RaceRanking';
-import { setStateAsync } from '../../../../common/stateSetter';
+import React from 'react';
 import { RankingViewItem } from './RankingViewItem';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
 import { getRankingForRace } from '../../../../common/api';
+import { useStateAsync } from '../../../../hooks/asyncState';
 
 const RankingTable = styled.table`
     width: 100%;
 `;
 
 export const RankingView: React.FC<{ raceId: number }> = ({ raceId }) => {
-    const [raceRanking, setRaceRanking] = useState<RaceRanking[] | undefined>(
-        undefined
-    );
-
-    useEffect(() => {
-        if (raceRanking !== undefined) return;
-        setStateAsync(setRaceRanking, getRankingForRace(raceId));
-    }, [raceRanking, raceId]);
+    const [raceRanking] = useStateAsync(getRankingForRace, raceId);
 
     return (
         <HeaderCard headerText="Rangliste">

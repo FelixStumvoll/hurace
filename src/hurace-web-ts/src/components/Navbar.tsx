@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,8 +16,8 @@ const Nav = styled.nav`
     height: ${props => props.theme.navHeight};
     background-color: #2a2a2a;
     display: grid;
-    grid-template-areas: 'season skiers . login';
-    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas: 'season active skiers . login';
+    grid-template-columns: auto auto auto 1fr auto;
 `;
 
 interface NavbarNavLinkProps {
@@ -54,6 +54,9 @@ export const Navbar: React.FC = () => {
 
     const dispatch = useDispatch();
     let activeStyle = '6px solid #0078F2';
+
+    const logout = useCallback(() => dispatch(logoutAuth0()), [dispatch]);
+    const login = useCallback(() => dispatch(loginRedirect()), [dispatch]);
     return (
         <Nav>
             <NavbarNavLink
@@ -64,6 +67,13 @@ export const Navbar: React.FC = () => {
                 <NavbarContent>Saisonüberblick</NavbarContent>
             </NavbarNavLink>
             <NavbarNavLink
+                to="/active"
+                gridarea="active"
+                activeStyle={{ borderBottom: activeStyle }}
+            >
+                <NavbarContent>Aktuelle Rennen</NavbarContent>
+            </NavbarNavLink>
+            <NavbarNavLink
                 to="/skier"
                 gridarea="skiers"
                 activeStyle={{ borderBottom: activeStyle }}
@@ -71,13 +81,9 @@ export const Navbar: React.FC = () => {
                 <NavbarContent>Rennfahrer</NavbarContent>
             </NavbarNavLink>
             {isAuthenticated ? (
-                <LoginButton onClick={() => dispatch(logoutAuth0())}>
-                    Logout
-                </LoginButton>
+                <LoginButton onClick={logout}>Logout</LoginButton>
             ) : (
-                <LoginButton onClick={() => dispatch(loginRedirect())}>
-                    Login
-                </LoginButton>
+                <LoginButton onClick={login}>Login</LoginButton>
             )}
         </Nav>
     );

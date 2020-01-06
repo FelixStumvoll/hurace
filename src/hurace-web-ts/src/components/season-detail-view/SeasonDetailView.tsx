@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BackLinkWrapper } from '../shared/BackLinkWrapper';
+import { DetailViewWrapper } from '../shared/DetailViewWrapper';
 import { SeasonDetailPanel } from './SeasonDetailPanel';
 import { DisciplineView } from './discipline-view/DisciplineView';
 
@@ -18,13 +18,20 @@ export const SeasonDetailView: React.FC<{ seasonId: number }> = ({
     seasonId
 }) => {
     return (
-        <BackLinkWrapper url="/season" backText="Zurück zur Saisonübersicht">
+        <DetailViewWrapper
+            url="/season"
+            backText="Zurück zur Saisonübersicht"
+            editConfig={{
+                editText: 'Saison bearbeiten',
+                editUrl: `/season/${seasonId}/update`
+            }}
+        >
             <SeasonPanel>
                 <SeasonDetailWrapper>
                     <SeasonDetailPanel seasonId={seasonId} />
                 </SeasonDetailWrapper>
                 <DisciplineView seasonId={seasonId} />
             </SeasonPanel>
-        </BackLinkWrapper>
+        </DetailViewWrapper>
     );
 };

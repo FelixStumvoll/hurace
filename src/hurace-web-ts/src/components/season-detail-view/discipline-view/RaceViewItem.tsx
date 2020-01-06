@@ -9,6 +9,7 @@ import {
     faUser,
     faFlagCheckered
 } from '@fortawesome/free-solid-svg-icons';
+import { getDate } from '../../../common/timeConverter';
 
 const RaceCard = styled(Card)`
     margin: 0px 10px 10px 0px;
@@ -25,8 +26,7 @@ export const RaceViewItem: React.FC<{ race: Race }> = ({ race }) => {
                     {race.location.locationName}
                 </span>
                 <span>
-                    <FontAwesomeIcon icon={faClock} />{' '}
-                    {race.raceDate.toDateString()}
+                    <FontAwesomeIcon icon={faClock} /> {getDate(race.raceDate)}
                 </span>
                 <span>
                     <FontAwesomeIcon icon={faUser} />{' '}

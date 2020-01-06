@@ -1,18 +1,29 @@
-const zeroPrepender = (val: number, zeros: number = 1): string => {
-    let retString = val.toString();
-    for (
-        let prepended = 0;
-        prepended < zeros && retString.length !== zeros + 1;
-        prepended++
-    )
-        retString = `0${retString}`;
-    return retString;
-};
+const padMinutes = (date: Date): string =>
+    date
+        .getMinutes()
+        .toString()
+        .padStart(2, '0');
 
-export const getSkierTimeString = (date: Date): string =>
-    `${zeroPrepender(date.getMinutes())}:${zeroPrepender(
-        date.getSeconds()
-    )}:${zeroPrepender(date.getMilliseconds(), 2)}`;
+export const getTimeWithMS = (date: Date): string =>
+    `${padMinutes(date)}:${date
+        .getSeconds()
+        .toString()
+        .padStart(2, '0')}:${(date
+        .getMilliseconds()
+        .toString()
+        .padStart(3, '0'),
+    2)}`;
 
-export const getRaceTimeString = (date: Date): string =>
-    `${zeroPrepender(date.getHours())}:${zeroPrepender(date.getMinutes())}`;
+export const getTime = (date: Date): string =>
+    `${date
+        .getHours()
+        .toString()
+        .padStart(2, '0')}:${padMinutes(date)}`;
+
+export const getDate = (date: Date) =>
+    `${date
+        .getDate()
+        .toString()
+        .padStart(2, '0')}.${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}.${date.getFullYear()}`;

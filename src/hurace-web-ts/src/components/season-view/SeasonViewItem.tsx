@@ -4,7 +4,7 @@ import { Card, DefaultLink } from '../../theme/StyledComponents';
 import styled from 'styled-components';
 
 const SeasonItem = styled(Card)`
-    margin-bottom: 10px;
+    margin: 0 10px 10px 0;
     display: flex;
     flex-direction: column;
 `;

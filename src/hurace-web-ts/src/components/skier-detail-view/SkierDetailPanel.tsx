@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
-import { Discipline } from '../../interfaces/Discipline';
-import { setStateAsync } from '../../common/stateSetter';
 import { getDisciplinesForSkier } from '../../common/api';
+import { useStateAsync } from '../../hooks/asyncState';
+import { getDate } from '../../common/timeConverter';
 
 const DetailPanel = styled.div`
     padding: 10px;
@@ -32,14 +32,7 @@ const DisciplineText = styled.span`
 `;
 
 export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
-    const [disciplines, setDisciplines] = useState<Discipline[] | undefined>(
-        undefined
-    );
-
-    useEffect(() => {
-        if (disciplines !== undefined) return;
-        setStateAsync(setDisciplines, getDisciplinesForSkier(skier.id));
-    }, [disciplines, skier]);
+    const [disciplines] = useStateAsync(getDisciplinesForSkier, skier.id);
 
     return (
         <DetailPanel>
@@ -50,7 +43,7 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
                 <StatLabel>Geschlecht:</StatLabel>
                 <span>{skier.gender.genderDescription}</span>
                 <StatLabel>Geburtsdatum:</StatLabel>
-                <span>{skier.dateOfBirth.toDateString()}</span>
+                <span>{getDate(skier.dateOfBirth)}</span>
                 <StatLabel>Land:</StatLabel>
                 <span>{skier.country.countryName}</span>
                 <StatLabel>Disziplinen:</StatLabel>

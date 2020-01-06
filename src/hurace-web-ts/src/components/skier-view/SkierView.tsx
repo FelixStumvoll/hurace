@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Skier } from '../../interfaces/Skier';
-import { setStateAsync } from '../../common/stateSetter';
 import { getSkiers } from '../../common/api';
 import { SkierViewItem } from './SkierViewItem';
-import { MasterView } from '../shared/MasterView';
-import { SearchContext } from '../shared/MasterView';
+import { MasterViewWrapper } from '../shared/MasterViewWrapper';
+import { SearchContext } from '../shared/MasterViewWrapper';
+import { useStateAsync } from '../../hooks/asyncState';
 
 const SkierList = styled.div`
     display: flex;
@@ -20,15 +20,10 @@ const skierFilter = (skier: Skier, searchTerm: string): boolean =>
     skier.country.countryName.toLowerCase().includes(searchTerm.toLowerCase());
 
 export const SkierView: React.FC = () => {
-    const [skiers, setSkiers] = useState<Skier[] | undefined>(undefined);
-
-    useEffect(() => {
-        if (skiers !== undefined) return;
-        setStateAsync(setSkiers, getSkiers());
-    }, [skiers]);
+    const [skiers] = useStateAsync(getSkiers);
 
     return (
-        <MasterView createText="Rennläufer erstellen" createUrl="/skier/new">
+        <MasterViewWrapper createText="Rennläufer erstellen" createUrl="/skier/new">
             <SearchContext.Consumer>
                 {search => (
                     <SkierList>
@@ -43,6 +38,6 @@ export const SkierView: React.FC = () => {
                     </SkierList>
                 )}
             </SearchContext.Consumer>
-        </MasterView>
+        </MasterViewWrapper>
     );
 };

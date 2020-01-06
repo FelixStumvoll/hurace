@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { SeasonViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
 import { Season } from '../../interfaces/Season';
-import { setStateAsync } from '../../common/stateSetter';
 import { getSeasons } from '../../common/api';
-import { MasterView, SearchContext } from '../shared/MasterView';
+import { MasterViewWrapper, SearchContext } from '../shared/MasterViewWrapper';
+import { useStateAsync } from '../../hooks/asyncState';
 
 const SeasonItemPanel = styled.div`
     display: flex;
@@ -25,15 +25,13 @@ const seasonFilter = (season: Season, searchTerm: string) =>
         .includes(searchTerm.toLowerCase());
 
 export const SeasonView: React.FC = () => {
-    const [seasons, setSeasons] = useState<Season[] | undefined>(undefined);
-
-    useEffect(() => {
-        if (seasons !== undefined) return;
-        setStateAsync(setSeasons, getSeasons());
-    }, [seasons]);
+    const [seasons] = useStateAsync(getSeasons);
 
     return (
-        <MasterView createText="Saison erstellen" createUrl="/season/new">
+        <MasterViewWrapper
+            createText="Saison erstellen"
+            createUrl="/season/new"
+        >
             <SearchContext.Consumer>
                 {searchTerm => (
                     <SeasonItemPanel>
@@ -45,6 +43,6 @@ export const SeasonView: React.FC = () => {
                     </SeasonItemPanel>
                 )}
             </SearchContext.Consumer>
-        </MasterView>
+        </MasterViewWrapper>
     );
 };

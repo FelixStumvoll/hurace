@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Race } from '../../interfaces/Race';
+import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,10 +9,10 @@ import {
     faFlagCheckered,
     faCalendarDay
 } from '@fortawesome/free-solid-svg-icons';
-import { setStateAsync } from '../../common/stateSetter';
 import { getRaceDetails } from '../../common/api';
 import { HeaderCard } from '../shared/HeaderCard';
-import { getRaceTimeString } from '../../common/timeConverter';
+import { getTime, getDate } from '../../common/timeConverter';
+import { useStateAsync } from '../../hooks/asyncState';
 
 const DetailPanel = styled.div`
     display: flex;
@@ -59,12 +58,7 @@ const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
 `;
 
 export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
-    const [race, setRace] = useState<Race | undefined>(undefined);
-
-    useEffect(() => {
-        if (race !== undefined) return;
-        setStateAsync(setRace, getRaceDetails(raceId));
-    }, [race, raceId]);
+    const [race] = useStateAsync(getRaceDetails, raceId);
 
     return race ? (
         <DetailPanel>
@@ -87,9 +81,9 @@ export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
                     <DetailIcon fontSize={16} icon={faUser} />
                     <DetailText>{race?.gender.genderDescription}</DetailText>
                     <DetailIcon fontSize={16} icon={faCalendarDay} />
-                    <DetailText>{race?.raceDate.toDateString()}</DetailText>
+                    <DetailText>{getDate(race?.raceDate)}</DetailText>
                     <DetailIcon fontSize={16} icon={faClock} />
-                    <DetailText>{getRaceTimeString(race?.raceDate)}</DetailText>
+                    <DetailText>{getTime(race?.raceDate)}</DetailText>
                 </InfoContent>
             </HeaderCard>
             <DescriptionCardWrapper>

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { DisciplineData } from '../../../interfaces/DisciplineData';
 import { DisciplineViewItem } from './DisciplineViewItem';
-import { setStateAsync } from '../../../common/stateSetter';
 import { getRacesForSeason } from '../../../common/api';
+import { useStateAsync } from '../../../hooks/asyncState';
 
 const DisciplinePanel = styled.div`
     margin-top: 10px;
@@ -14,14 +13,7 @@ const DisciplinePanel = styled.div`
 export const DisciplineView: React.FC<{ seasonId: number }> = ({
     seasonId
 }) => {
-    const [disciplineData, setDisciplineData] = useState<
-        DisciplineData[] | undefined
-    >(undefined);
-
-    useEffect(() => {
-        if (disciplineData !== undefined) return;
-        setStateAsync(setDisciplineData, getRacesForSeason(seasonId));
-    }, [disciplineData, seasonId]);
+    const [disciplineData] = useStateAsync(getRacesForSeason, seasonId);
 
     return (
         <DisciplinePanel>

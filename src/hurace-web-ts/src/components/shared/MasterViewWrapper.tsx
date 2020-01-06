@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,7 @@ const HeaderBar = styled.div`
 `;
 
 const SearchBar = styled(DefaultInput)`
-    height: 30px;
+    height: 31px;
     width: 200px;
 `;
 
@@ -29,7 +29,6 @@ const CreateText = styled.div`
     color: white;
     background-color: green;
     margin-left: auto;
-    border: none;
     display: flex;
     padding: 0 10px 0 10px;
 `;
@@ -46,18 +45,25 @@ const Content = styled.div`
 
 export const SearchContext = createContext('');
 
-export const MasterView: React.FC<{
+export const MasterViewWrapper: React.FC<{
     createText: string;
     createUrl: string;
 }> = ({ children, createText, createUrl }) => {
     const [searchterm, setSearchterm] = useState('');
-    console.log('searchterm', searchterm);
+
+    const searchTermChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchterm(event.target.value);
+        },
+        [setSearchterm]
+    );
+
     return (
         <MasterPanel>
             <HeaderBar>
                 <SearchBar
                     value={searchterm}
-                    onChange={e => setSearchterm(e.target.value)}
+                    onChange={searchTermChange}
                     placeholder="Suche..."
                 />
                 <CreateText>

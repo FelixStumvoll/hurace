@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { setStateAsync } from '../../common/stateSetter';
+import React from 'react';
 import { getSkierById } from '../../common/api';
-import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
 import { SkierDetailPanel } from './SkierDetailPanel';
 import { Card } from '../../theme/StyledComponents';
-import { BackLinkWrapper } from '../shared/BackLinkWrapper';
+import { DetailViewWrapper } from '../shared/DetailViewWrapper';
+import { useStateAsync } from '../../hooks/asyncState';
 
 const SkierGrid = styled.div`
     display: flex;
@@ -22,15 +21,10 @@ const SkierDetailCard = styled(Card)`
 `;
 
 export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
-    const [skier, setSkier] = useState<Skier | undefined>(undefined);
-
-    useEffect(() => {
-        if (skier !== undefined) return;
-        setStateAsync(setSkier, getSkierById(skierId));
-    }, [skier, skierId]);
+    const [skier] = useStateAsync(getSkierById, skierId);
 
     return (
-        <BackLinkWrapper url="/skier" backText="Zurück zur Fahrerübersicht">
+        <DetailViewWrapper url="/skier" backText="Zurück zur Fahrerübersicht">
             <SkierGrid>
                 {skier && (
                     <SkierDetailCard>
@@ -41,6 +35,6 @@ export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
                     </SkierDetailCard>
                 )}
             </SkierGrid>
-        </BackLinkWrapper>
+        </DetailViewWrapper>
     );
 };

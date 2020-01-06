@@ -34,8 +34,7 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
             }
         };
         initAuth0();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dispatch, initOptions]);
 
     return <>{children}</>;
 };

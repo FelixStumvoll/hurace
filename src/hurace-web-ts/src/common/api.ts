@@ -22,7 +22,7 @@ export const getSeasons = async (): Promise<Season[]> => {
     return response.data;
 };
 
-export const updateSeason = async (season: Season): Promise<void> => {
+export const persistSeason = async (season: Season): Promise<void> => {
     var response = await Axios.put<Season>(`${env.apiUrl}/season`, season);
 };
 
