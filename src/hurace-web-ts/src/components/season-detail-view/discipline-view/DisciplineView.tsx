@@ -20,6 +20,7 @@ export const DisciplineView: React.FC<{ seasonId: number }> = ({
             {disciplineData?.map(d => (
                 <DisciplineViewItem
                     disciplineData={d}
+                    seasonId={seasonId}
                     key={d.discipline.id}
                 ></DisciplineViewItem>
             ))}

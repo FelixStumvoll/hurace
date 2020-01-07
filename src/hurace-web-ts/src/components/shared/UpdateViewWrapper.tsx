@@ -8,6 +8,13 @@ const PageWrapper = styled.div`
     display: flex;
 `;
 
+const Fields = styled.div<{ rowCount: number }>`
+    display: grid;
+    grid-template-rows: repeat(auto ${props => props.rowCount});
+    grid-template-columns: auto auto;
+    gap: 10px;
+`;
+
 const HeaderCardWrapper = styled.div`
     margin: 50px auto auto auto;
 `;
@@ -42,20 +49,23 @@ const ButtonPanel = styled.div`
     margin-top: 15px;
 `;
 
-export const UpdateView: React.FC<{
+export const UpdateViewWrapper: React.FC<{
     headerText: string;
+    rowCount: number;
     onSave: () => void;
     onCancel: () => void;
-}> = ({ children, headerText, onSave, onCancel }) => {
+}> = ({ children, headerText, onSave, onCancel, rowCount }) => {
     return (
         <PageWrapper>
             <HeaderCardWrapper>
                 <HeaderCard headerText={headerText}>
                     <CardContent>
-                        {children}
+                        <Fields rowCount={rowCount}>{children}</Fields>
                         <ButtonPanel>
-                            <CancelButton onClick={onCancel} >Abbrechen</CancelButton>{' '}
-                            <SaveButton onClick={onSave} >Speichern</SaveButton>
+                            <CancelButton onClick={onCancel}>
+                                Abbrechen
+                            </CancelButton>{' '}
+                            <SaveButton onClick={onSave}>Speichern</SaveButton>
                         </ButtonPanel>
                     </CardContent>
                 </HeaderCard>
@@ -63,4 +73,3 @@ export const UpdateView: React.FC<{
         </PageWrapper>
     );
 };
- 

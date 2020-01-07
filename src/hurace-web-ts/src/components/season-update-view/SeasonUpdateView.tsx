@@ -4,22 +4,15 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { DefaultInput } from '../../theme/StyledComponents';
-import { UpdateView } from '../shared/UpdateView';
+import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { persistSeason } from '../../common/api';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { useStateAsync } from '../../hooks/asyncState';
 
-const Fields = styled.div`
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-template-columns: auto auto;
-    gap: 15px;
-`;
-
 const DateInput = styled(DefaultInput)`
     width: 75px;
-    height: 20px;
+    height: 21px;
 `;
 
 const FieldLabel = styled.span``;
@@ -66,29 +59,28 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
         [season, setSeason]
     );
     return (
-        <UpdateView
+        <UpdateViewWrapper
             headerText={seasonId ? 'Saison bearbeiten' : 'Saison erstellen'}
             onSave={onSave}
             onCancel={onCancel}
+            rowCount={2}
         >
-            <Fields>
-                <FieldLabel>Startdatum:</FieldLabel>
-                <DatePicker
-                    dateFormat="dd.MM.yyyy"
-                    placeholderText="Saisonstart"
-                    selected={season?.startDate}
-                    customInput={<DateInput />}
-                    onChange={startDateChange}
-                />
-                <FieldLabel>Enddatum:</FieldLabel>
-                <DatePicker
-                    dateFormat="dd.MM.yyyy"
-                    placeholderText="Saisonende"
-                    selected={season?.endDate}
-                    customInput={<DateInput />}
-                    onChange={endDateChange}
-                />
-            </Fields>
-        </UpdateView>
+            <FieldLabel>Startdatum:</FieldLabel>
+            <DatePicker
+                dateFormat="dd.MM.yyyy"
+                placeholderText="Saisonstart"
+                selected={season?.startDate}
+                customInput={<DateInput />}
+                onChange={startDateChange}
+            />
+            <FieldLabel>Enddatum:</FieldLabel>
+            <DatePicker
+                dateFormat="dd.MM.yyyy"
+                placeholderText="Saisonende"
+                selected={season?.endDate}
+                customInput={<DateInput />}
+                onChange={endDateChange}
+            />
+        </UpdateViewWrapper>
     );
 };

@@ -20,6 +20,13 @@ namespace Hurace.API.Controllers
         [HttpGet]
         public Task<IEnumerable<Season>> GetAll() => _seasonService.GetAllSeasons();
 
+        [HttpPut]
+        public async Task<ActionResult> InsertOrUpdate(Season season)
+        {
+            if (await _seasonService.InsertOrUpdateSeason(season)) return Ok();
+            return BadRequest();
+        }
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Season>> GetById(int id)
         {

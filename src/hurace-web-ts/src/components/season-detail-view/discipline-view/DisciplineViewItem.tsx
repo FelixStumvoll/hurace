@@ -2,15 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { DisciplineData } from '../../../interfaces/DisciplineData';
 import { RaceViewItem } from './RaceViewItem';
+import { DefaultLink } from '../../../theme/StyledComponents';
+import { HeaderCard } from '../../shared/HeaderCard';
 
-const DisciplinePanel = styled.div`
+const PanelWrapper = styled.div`
     margin-bottom: 10px;
-`;
-
-const DisciplineLabel = styled.div`
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 5px;
 `;
 
 const RacesPanel = styled.div`
@@ -20,17 +16,22 @@ const RacesPanel = styled.div`
 
 export const DisciplineViewItem: React.FC<{
     disciplineData: DisciplineData;
-}> = ({ disciplineData }) => {
+    seasonId: number;
+}> = ({ disciplineData, seasonId }) => {
     return (
-        <DisciplinePanel>
-            <DisciplineLabel>
-                {disciplineData.discipline.disciplineName}
-            </DisciplineLabel>
-            <RacesPanel>
-                {disciplineData.races.map(r => (
-                    <RaceViewItem key={r.id} race={r} />
-                ))}
-            </RacesPanel>
-        </DisciplinePanel>
+        <PanelWrapper>
+            <HeaderCard headerText={disciplineData.discipline.disciplineName}>
+                <RacesPanel>
+                    {disciplineData.races.map(r => (
+                        <DefaultLink
+                            key={r.id}
+                            to={`/season/${seasonId}/race/${r.id}`}
+                        >
+                            <RaceViewItem race={r} />
+                        </DefaultLink>
+                    ))}
+                </RacesPanel>
+            </HeaderCard>
+        </PanelWrapper>
     );
 };

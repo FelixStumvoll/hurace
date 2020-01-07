@@ -1,7 +1,7 @@
 import React from 'react';
 import { Race } from '../../../interfaces/Race';
 import styled from 'styled-components';
-import { Card, DefaultLink } from '../../../theme/StyledComponents';
+import { Card } from '../../../theme/StyledComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faClock,
@@ -17,26 +17,27 @@ const RaceCard = styled(Card)`
     flex-direction: column;
 `;
 
+const RaceIcon = styled(FontAwesomeIcon)`
+    margin-right: 10px;
+`;
+
 export const RaceViewItem: React.FC<{ race: Race }> = ({ race }) => {
     return (
-        <DefaultLink to={`/season/${race.seasonId}/race/${race.id}`}>
-            <RaceCard>
-                <span>
-                    <FontAwesomeIcon icon={faLocationArrow} />{' '}
-                    {race.location.locationName}
-                </span>
-                <span>
-                    <FontAwesomeIcon icon={faClock} /> {getDate(race.raceDate)}
-                </span>
-                <span>
-                    <FontAwesomeIcon icon={faUser} />{' '}
-                    {race.gender.genderDescription}
-                </span>
-                <span>
-                    <FontAwesomeIcon icon={faFlagCheckered} />{' '}
-                    {race.raceState.raceStateDescription}
-                </span>
-            </RaceCard>
-        </DefaultLink>
+        <RaceCard>
+            <span>
+                <RaceIcon icon={faLocationArrow} />
+                {race.location.locationName}
+            </span>
+            <span>
+                <RaceIcon icon={faClock} /> {getDate(race.raceDate)}
+            </span>
+            <span>
+                <RaceIcon icon={faUser} /> {race.gender.genderDescription}
+            </span>
+            <span>
+                <RaceIcon icon={faFlagCheckered} />
+                {race.raceState.raceStateDescription}
+            </span>
+        </RaceCard>
     );
 };

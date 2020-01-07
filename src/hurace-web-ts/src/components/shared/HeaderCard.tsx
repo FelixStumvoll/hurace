@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 import { Card } from '../../theme/StyledComponents';
 
 const Panel = styled(Card)`
@@ -23,14 +23,14 @@ const CardContent = styled.div`
     overflow: auto;
 `;
 
-export const HeaderCard: React.FC<{ headerText: string }> = ({
-    headerText,
-    children
-}) => {
+export const HeaderCard: React.FC<{
+    headerText: string;
+    contentStyles?: CSSProperties;
+}> = ({ headerText, children, contentStyles }) => {
     return (
         <Panel>
             <CardHeader>{headerText}</CardHeader>
-            <CardContent>{children}</CardContent>
+            <CardContent style={contentStyles}>{children}</CardContent>
         </Panel>
     );
 };

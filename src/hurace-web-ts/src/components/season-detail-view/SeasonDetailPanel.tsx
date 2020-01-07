@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { setStateAsync } from '../../common/stateSetter';
 import { getSeasonById } from '../../common/api';
 import { Season } from '../../interfaces/Season';
+import { getDate } from '../../common/timeConverter';
 
 const DetailGrid = styled.div`
     display: grid;
@@ -31,9 +32,9 @@ export const SeasonDetailPanel: React.FC<{ seasonId: number }> = ({
             {season && (
                 <DetailGrid>
                     <SeasonLabel>Startdatum:</SeasonLabel>
-                    <span>{season.startDate.toDateString()}</span>
+                    <span>{getDate(season.startDate)}</span>
                     <SeasonLabel>Enddatum:</SeasonLabel>
-                    <span>{season.endDate.toDateString()}</span>
+                    <span>{getDate(season.endDate)}</span>
                 </DetailGrid>
             )}
         </HeaderCard>

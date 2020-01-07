@@ -6,6 +6,7 @@ import { SkierDetailView } from './skier-detail-view/SkierDetailView';
 import { SkierView } from './skier-view/SkierView';
 import { SeasonDetailView } from './season-detail-view/SeasonDetailView';
 import { SeasonUpdateView } from './season-update-view/SeasonUpdateView';
+import { SkierUpdateView } from './skier-update-view/SkierUpdateView';
 
 export const Router: React.FC = () => {
     return (
@@ -20,7 +21,9 @@ export const Router: React.FC = () => {
                 exact
                 path="/season/:seasonId/update"
                 render={({ match }) => (
-                    <SeasonUpdateView seasonId={Number(match.params.seasonId)} />
+                    <SeasonUpdateView
+                        seasonId={Number(match.params.seasonId)}
+                    />
                 )}
             />
             <Route
@@ -45,6 +48,10 @@ export const Router: React.FC = () => {
             />
             <Route exact path="/skier">
                 <SkierView />
+            </Route>
+
+            <Route exact path="/skier/new">
+                <SkierUpdateView />
             </Route>
 
             <Route

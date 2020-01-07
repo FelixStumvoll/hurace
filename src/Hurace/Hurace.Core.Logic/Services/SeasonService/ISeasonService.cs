@@ -9,5 +9,6 @@ namespace Hurace.Core.Logic.Services.SeasonService
         Task<IEnumerable<Race>> GetRacesForSeason(int seasonId);
         Task<IEnumerable<Season>> GetAllSeasons();
         Task<Season?> GetSeasonById(int seasonId);
+        Task<bool> InsertOrUpdateSeason(Season season);
     }
 }

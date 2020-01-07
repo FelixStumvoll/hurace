@@ -7,6 +7,8 @@ import { RaceRanking } from '../interfaces/RaceRanking';
 import { Skier } from '../interfaces/Skier';
 import { Discipline } from '../interfaces/Discipline';
 import { env } from '../environment/environment';
+import { toIsoWithTimezone } from './timeConverter';
+import { Country } from '../interfaces/Country';
 
 const setSkierDate = (skier: Skier) =>
     (skier.dateOfBirth = new Date(skier.dateOfBirth));
@@ -23,6 +25,8 @@ export const getSeasons = async (): Promise<Season[]> => {
 };
 
 export const persistSeason = async (season: Season): Promise<void> => {
+    season.startDate = toIsoWithTimezone(season.startDate);
+    season.endDate = toIsoWithTimezone(season.endDate);
     var response = await Axios.put<Season>(`${env.apiUrl}/season`, season);
 };
 
@@ -110,3 +114,9 @@ export const getDisciplinesForSkier = async (
             `${env.apiUrl}/skier/${skierId}/disciplines`
         )
     ).data;
+
+export const getAllCountries = async (): Promise<Country[]> =>
+    (await Axios.get<Country[]>(`${env.apiUrl}/country`)).data;
+
+export const getAllDisciplines = async (): Promise<Discipline[]> =>
+    (await Axios.get<Discipline[]>(`${env.apiUrl}/discipline`)).data;

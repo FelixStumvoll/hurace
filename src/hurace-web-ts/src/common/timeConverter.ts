@@ -8,11 +8,10 @@ export const getTimeWithMS = (date: Date): string =>
     `${padMinutes(date)}:${date
         .getSeconds()
         .toString()
-        .padStart(2, '0')}:${(date
+        .padStart(2, '0')}:${date
         .getMilliseconds()
         .toString()
-        .padStart(3, '0'),
-    2)}`;
+        .padStart(3, '0')}`;
 
 export const getTime = (date: Date): string =>
     `${date
@@ -27,3 +26,6 @@ export const getDate = (date: Date) =>
         .padStart(2, '0')}.${(date.getMonth() + 1)
         .toString()
         .padStart(2, '0')}.${date.getFullYear()}`;
+
+export const toIsoWithTimezone = (date: Date) =>
+    new Date(date.getTime() - date.getTimezoneOffset() * 60000);
