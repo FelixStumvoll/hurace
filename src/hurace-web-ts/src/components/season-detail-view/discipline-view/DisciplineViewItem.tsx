@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DisciplineData } from '../../../interfaces/DisciplineData';
+import { DisciplineData } from '../../../models/DisciplineData';
 import { RaceViewItem } from './RaceViewItem';
-import { DefaultLink } from '../../../theme/StyledComponents';
+import { DefaultLink } from '../../../theme/CustomComponents';
 import { HeaderCard } from '../../shared/HeaderCard';
 
 const PanelWrapper = styled.div`

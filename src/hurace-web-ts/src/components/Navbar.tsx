@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useContext } from 'react';
+import styled, { ThemeContext } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { StoreState } from '../store/rootReducer';
@@ -14,7 +14,7 @@ const Nav = styled.nav`
     left: 0px;
     width: 100%;
     height: ${props => props.theme.navHeight};
-    background-color: #2a2a2a;
+    background-color: ${props => props.theme.black};
     display: grid;
     grid-template-areas: 'season active skiers . login';
     grid-template-columns: auto auto auto 1fr auto;
@@ -52,8 +52,10 @@ const LoginButton = styled.button`
 export const Navbar: React.FC = () => {
     const { isAuthenticated } = useSelector((state: StoreState) => state.auth);
 
+    const theme = useContext(ThemeContext);
+
     const dispatch = useDispatch();
-    let activeStyle = '6px solid #0078F2';
+    let activeStyle = `6px solid ${theme.blue}`;
 
     const logout = useCallback(() => dispatch(logoutAuth0()), [dispatch]);
     const login = useCallback(() => dispatch(loginRedirect()), [dispatch]);

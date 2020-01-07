@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink } from '../../theme/StyledComponents';
+import { DefaultLink } from '../../theme/CustomComponents';
 
 const BackLinkPanel = styled.div`
     display: grid;

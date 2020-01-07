@@ -92,7 +92,8 @@ namespace Hurace.DataGenerator
                     GenderId = GetGenderId(skierJson.Gender),
                     FirstName = firstname,
                     LastName = lastname,
-                    DateOfBirth = GetRandomBirthDate()
+                    DateOfBirth = GetRandomBirthDate(),
+                    ImageUrl = skierJson.Image
                 };
             });
 

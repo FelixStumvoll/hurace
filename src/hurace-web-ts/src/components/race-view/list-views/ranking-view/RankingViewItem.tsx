@@ -1,5 +1,5 @@
 import React from 'react';
-import { RaceRanking } from '../../../../interfaces/RaceRanking';
+import { RaceRanking } from '../../../../models/RaceRanking';
 import { getTimeWithMS } from '../../../../common/timeConverter';
 
 export const RankingViewItem: React.FC<{ raceRanking: RaceRanking }> = ({

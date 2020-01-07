@@ -1,6 +1,6 @@
 import React from 'react';
-import { Season } from '../../interfaces/Season';
-import { Card, DefaultLink } from '../../theme/StyledComponents';
+import { Season } from '../../models/Season';
+import { Card, DefaultLink } from '../../theme/CustomComponents';
 import styled from 'styled-components';
 
 const SeasonItem = styled(Card)`

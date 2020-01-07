@@ -8,13 +8,6 @@ const PageWrapper = styled.div`
     display: flex;
 `;
 
-const Fields = styled.div<{ rowCount: number }>`
-    display: grid;
-    grid-template-rows: repeat(auto ${props => props.rowCount});
-    grid-template-columns: auto auto;
-    gap: 10px;
-`;
-
 const HeaderCardWrapper = styled.div`
     margin: 50px auto auto auto;
 `;
@@ -41,6 +34,11 @@ const CancelButton = styled(CrudButton)`
 const SaveButton = styled(CrudButton)`
     margin-left: 5px;
     background-color: #5f985f;
+
+    :disabled {
+        background-color: ${props => props.theme.gray};
+        cursor: not-allowed;
+    }
 `;
 
 const ButtonPanel = styled.div`
@@ -51,21 +49,28 @@ const ButtonPanel = styled.div`
 
 export const UpdateViewWrapper: React.FC<{
     headerText: string;
-    rowCount: number;
     onSave: () => void;
     onCancel: () => void;
-}> = ({ children, headerText, onSave, onCancel, rowCount }) => {
+    canSave?: () => boolean;
+}> = ({ children, headerText, onSave, onCancel, canSave: validator }) => {
+    const saveDisabled = validator ? !validator() : false;
+
     return (
         <PageWrapper>
             <HeaderCardWrapper>
                 <HeaderCard headerText={headerText}>
                     <CardContent>
-                        <Fields rowCount={rowCount}>{children}</Fields>
+                        {children}
                         <ButtonPanel>
                             <CancelButton onClick={onCancel}>
                                 Abbrechen
-                            </CancelButton>{' '}
-                            <SaveButton onClick={onSave}>Speichern</SaveButton>
+                            </CancelButton>
+                            <SaveButton
+                                disabled={saveDisabled}
+                                onClick={onSave}
+                            >
+                                Speichern
+                            </SaveButton>
                         </ButtonPanel>
                     </CardContent>
                 </HeaderCard>

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { HeaderCard } from '../shared/HeaderCard';
 import styled from 'styled-components';
-import { setStateAsync } from '../../common/stateSetter';
 import { getSeasonById } from '../../common/api';
-import { Season } from '../../interfaces/Season';
 import { getDate } from '../../common/timeConverter';
+import { useStateAsync } from '../../hooks/useStateAsync';
 
 const DetailGrid = styled.div`
     display: grid;
@@ -20,12 +19,7 @@ const SeasonLabel = styled.span`
 export const SeasonDetailPanel: React.FC<{ seasonId: number }> = ({
     seasonId
 }) => {
-    const [season, setSeason] = useState<Season | undefined>(undefined);
-
-    useEffect(() => {
-        if (season !== undefined) return;
-        setStateAsync(setSeason, getSeasonById(seasonId));
-    }, [season, seasonId]);
+    const [season] = useStateAsync(getSeasonById, seasonId);
 
     return (
         <HeaderCard headerText="Stammdaten">

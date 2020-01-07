@@ -1,19 +1,17 @@
-import { Season } from '../interfaces/Season';
+import { Season } from '../models/Season';
 import Axios from 'axios';
-import { Race } from '../interfaces/Race';
-import { DisciplineData } from '../interfaces/DisciplineData';
-import { StartList } from '../interfaces/StartList';
-import { RaceRanking } from '../interfaces/RaceRanking';
-import { Skier } from '../interfaces/Skier';
-import { Discipline } from '../interfaces/Discipline';
+import { Race } from '../models/Race';
+import { DisciplineData } from '../models/DisciplineData';
+import { StartList } from '../models/StartList';
+import { RaceRanking } from '../models/RaceRanking';
+import { Skier } from '../models/Skier';
+import { Discipline } from '../models/Discipline';
 import { env } from '../environment/environment';
 import { toIsoWithTimezone } from './timeConverter';
-import { Country } from '../interfaces/Country';
-import { Gender } from '../interfaces/Gender';
+import { Country } from '../models/Country';
+import { Gender } from '../models/Gender';
 
-const setSkierDate = (skier: Skier) =>
-    (skier.dateOfBirth = new Date(skier.dateOfBirth));
-
+//#region Season
 const setSeasonDate = (season: Season) => {
     season.endDate = new Date(season.endDate);
     season.startDate = new Date(season.startDate);
@@ -25,10 +23,10 @@ export const getSeasons = async (): Promise<Season[]> => {
     return response.data;
 };
 
-export const persistSeason = async (season: Season): Promise<void> => {
+export const putSeason = async (season: Season): Promise<void> => {
     season.startDate = toIsoWithTimezone(season.startDate);
     season.endDate = toIsoWithTimezone(season.endDate);
-    var response = await Axios.put<Season>(`${env.apiUrl}/season`, season);
+    await Axios.put<Season>(`${env.apiUrl}/season`, season);
 };
 
 export const getSeasonById = async (seasonId: number): Promise<Season> => {
@@ -36,13 +34,6 @@ export const getSeasonById = async (seasonId: number): Promise<Season> => {
     setSeasonDate(response.data);
     return response.data;
 };
-
-export const getRaceDetails = async (raceId: number): Promise<Race> => {
-    let response = await Axios.get<Race>(`${env.apiUrl}/race/${raceId}`);
-    response.data.raceDate = new Date(response.data.raceDate);
-    return response.data;
-};
-
 export const getRacesForSeason = async (
     seasonId: number
 ): Promise<DisciplineData[]> => {
@@ -65,6 +56,16 @@ export const getRacesForSeason = async (
     });
 
     return disciplineMap;
+};
+
+//#endregion
+
+//#region Race
+
+export const getRaceDetails = async (raceId: number): Promise<Race> => {
+    let response = await Axios.get<Race>(`${env.apiUrl}/race/${raceId}`);
+    response.data.raceDate = new Date(response.data.raceDate);
+    return response.data;
 };
 
 export const getStartListForRace = async (
@@ -95,6 +96,13 @@ export const getRankingForRace = async (
     return response.data;
 };
 
+//#endregion
+
+//#region Skier
+
+const setSkierDate = (skier: Skier) =>
+    (skier.dateOfBirth = new Date(skier.dateOfBirth));
+
 export const getSkiers = async (): Promise<Skier[]> => {
     let response = await Axios.get<Skier[]>(`${env.apiUrl}/skier`);
     response.data.forEach(setSkierDate);
@@ -115,6 +123,13 @@ export const getDisciplinesForSkier = async (
             `${env.apiUrl}/skier/${skierId}/disciplines`
         )
     ).data;
+
+export const putSkier = async (skier: Skier) => {
+    skier.dateOfBirth = toIsoWithTimezone(skier.dateOfBirth);
+    await Axios.put(`${env.apiUrl}/skier`);
+};
+
+//#endregion
 
 export const getAllCountries = async (): Promise<Country[]> =>
     (await Axios.get<Country[]>(`${env.apiUrl}/country`)).data;

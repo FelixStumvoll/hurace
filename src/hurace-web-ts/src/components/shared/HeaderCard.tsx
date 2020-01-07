@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { CSSProperties } from 'styled-components';
-import { Card } from '../../theme/StyledComponents';
+import { Card } from '../../theme/CustomComponents';
 
 const Panel = styled(Card)`
     /* overflow: hidden; */

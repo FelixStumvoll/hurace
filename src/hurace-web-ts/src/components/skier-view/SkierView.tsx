@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Skier } from '../../interfaces/Skier';
+import { Skier } from '../../models/Skier';
 import { getSkiers } from '../../common/api';
 import { SkierViewItem } from './SkierViewItem';
 import { MasterViewWrapper } from '../shared/MasterViewWrapper';

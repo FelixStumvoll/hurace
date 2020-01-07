@@ -1,7 +1,7 @@
 import React from 'react';
-import { Race } from '../../../interfaces/Race';
+import { Race } from '../../../models/Race';
 import styled from 'styled-components';
-import { Card } from '../../../theme/StyledComponents';
+import { Card } from '../../../theme/CustomComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faClock,

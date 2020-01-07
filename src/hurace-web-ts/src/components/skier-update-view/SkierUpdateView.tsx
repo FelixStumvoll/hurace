@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
-import styled from 'styled-components';
-import { DefaultInput } from '../../theme/StyledComponents';
+import styled, { ThemeContext } from 'styled-components';
+import { DefaultInput, FormFields } from '../../theme/CustomComponents';
 import DatePicker from 'react-datepicker';
-import Select from 'react-select';
+import Select, { Theme } from 'react-select';
 import {
     getAllCountries,
     getAllGenders,
@@ -11,9 +11,9 @@ import {
     getSkierById,
     getDisciplinesForSkier
 } from '../../common/api';
-import { useStateAsync } from '../../hooks/useStateAsync';
 import { SelectValue } from '../../interfaces/SelectValue';
-import { Country } from '../../interfaces/Country';
+import { isNullOrEmpty } from '../../common/stringFunctions';
+import { isNullOrUndefined } from 'util';
 
 const Label = styled.div`
     height: fit-content;
@@ -120,62 +120,92 @@ export const SkierUpdateView: React.FC<{
     }, [skierId]);
 
     useEffect(() => {
-        if (loading || dataLoaded) return;
-        loadData();
+        if (!loading && !dataLoaded) loadData();
     });
 
     const onSave = useCallback(() => {}, []);
     const onCancel = useCallback(() => {}, []);
+
+    const huraceTheme = useContext(ThemeContext);
+
+    const selectTheme = useCallback(
+        (theme: Theme) => ({
+            ...theme,
+            colors: { ...theme.colors, primary: huraceTheme.blue }
+        }),
+        [huraceTheme.blue]
+    );
+
+    const skierValidator = useCallback(
+        () =>
+            !isNullOrEmpty(firstname) &&
+            !isNullOrEmpty(lastname) &&
+            !isNullOrUndefined(dateOfBirth) &&
+            !isNullOrUndefined(selectedGender) &&
+            !isNullOrUndefined(selectedCountry) &&
+            !isNullOrUndefined(selectedDisciplines),
+        [
+            dateOfBirth,
+            firstname,
+            lastname,
+            selectedCountry,
+            selectedDisciplines,
+            selectedGender
+        ]
+    );
 
     return (
         <UpdateViewWrapper
             headerText={`Rennläufer ${skierId ? 'bearbeiten' : 'erstellen'}`}
             onCancel={onCancel}
             onSave={onSave}
-            rowCount={6}
+            canSave={skierValidator}
         >
-            <Label>Vorname:</Label>
-            <SkierInput
-                value={firstname}
-                placeholder="Vorname"
-                onChange={firstnameChange}
-            ></SkierInput>
-            <Label>Nachname:</Label>
-            <SkierInput
-                value={lastname}
-                placeholder="Nachname"
-                onChange={lastnameChange}
-            ></SkierInput>
-            <Label>Geburtsdatum:</Label>
-            <DatePicker
-                dateFormat="dd.MM.yyyy"
-                placeholderText="Geburtsdatum"
-                selected={dateOfBirth}
-                customInput={<SkierInput />}
-                onChange={dateOfBirthChange}
-            />
-            <Label>Geschlecht:</Label>
-            <Select
-                value={selectedGender}
-                options={genders}
-                noOptionsMessage={() => 'keine Geschlechter verfügbar'}
-                onChange={genderChange}
-            />
-            <Label>Land:</Label>
-            <Select
-                value={selectedCountry}
-                options={countries}
-                noOptionsMessage={() => 'keine Länder verfügbar'}
-                onChange={countryChange}
-            />
-            <Label>Disziplinen:</Label>
-            <Select
-                isMulti={true}
-                value={selectedDisciplines}
-                options={disciplines}
-                noOptionsMessage={() => 'keine Länder verfügbar'}
-                onChange={disciplineChange}
-            />
+            <FormFields rowCount={6}>
+                <Label>Vorname:</Label>
+                <SkierInput
+                    value={firstname}
+                    placeholder="Vorname"
+                    onChange={firstnameChange}
+                ></SkierInput>
+                <Label>Nachname:</Label>
+                <SkierInput
+                    value={lastname}
+                    placeholder="Nachname"
+                    onChange={lastnameChange}
+                ></SkierInput>
+                <Label>Geburtsdatum:</Label>
+                <DatePicker
+                    dateFormat="dd.MM.yyyy"
+                    placeholderText="Geburtsdatum"
+                    selected={dateOfBirth}
+                    customInput={<SkierInput />}
+                    onChange={dateOfBirthChange}
+                />
+                <Label>Geschlecht:</Label>
+                <Select
+                    theme={selectTheme}
+                    value={selectedGender}
+                    options={genders}
+                    noOptionsMessage={() => 'keine Geschlechter verfügbar'}
+                    onChange={genderChange}
+                />
+                <Label>Land:</Label>
+                <Select
+                    value={selectedCountry}
+                    options={countries}
+                    noOptionsMessage={() => 'keine Länder verfügbar'}
+                    onChange={countryChange}
+                />
+                <Label>Disziplinen:</Label>
+                <Select
+                    isMulti={true}
+                    value={selectedDisciplines}
+                    options={disciplines}
+                    noOptionsMessage={() => 'keine Disziplinen verfügbar'}
+                    onChange={disciplineChange}
+                />
+            </FormFields>
         </UpdateViewWrapper>
     );
 };

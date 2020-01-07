@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skier } from '../../interfaces/Skier';
+import { Skier } from '../../models/Skier';
 import styled from 'styled-components';
 import { getDisciplinesForSkier } from '../../common/api';
 import { useStateAsync } from '../../hooks/useStateAsync';

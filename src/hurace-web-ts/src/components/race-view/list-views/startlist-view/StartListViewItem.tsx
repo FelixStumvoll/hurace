@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { StartList } from '../../../../interfaces/StartList';
+import { StartList } from '../../../../models/StartList';
 const StartNumber = styled.div`
     font-weight: bold;
 `;

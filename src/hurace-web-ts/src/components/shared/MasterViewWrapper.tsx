@@ -2,7 +2,7 @@ import React, { createContext, useState, useCallback } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { DefaultLink, DefaultInput } from "../../theme/StyledComponents";
+import { DefaultLink, DefaultInput } from "../../theme/CustomComponents";
 
 const MasterPanel = styled.div`
   display: flex;

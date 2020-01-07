@@ -1,7 +1,7 @@
 import React from 'react';
 import { SeasonViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
-import { Season } from '../../interfaces/Season';
+import { Season } from '../../models/Season';
 import { getSeasons } from '../../common/api';
 import { MasterViewWrapper, SearchContext } from '../shared/MasterViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
