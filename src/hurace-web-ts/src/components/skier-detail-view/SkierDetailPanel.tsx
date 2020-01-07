@@ -45,11 +45,11 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
                 <StatsPanel>
                     <StatsGrid>
                         <StatLabel>Geschlecht:</StatLabel>
-                        <span>{skier.gender.genderDescription}</span>
+                        <span>{skier.gender?.genderDescription}</span>
                         <StatLabel>Geburtsdatum:</StatLabel>
                         <span>{getDate(skier.dateOfBirth)}</span>
                         <StatLabel>Land:</StatLabel>
-                        <span>{skier.country.countryName}</span>
+                        <span>{skier.country?.countryName}</span>
                         <StatLabel>Disziplinen:</StatLabel>
                     </StatsGrid>
                     <DisciplineText>

@@ -6,9 +6,8 @@ import styled from 'styled-components';
 import { DefaultInput, FormFields } from '../../theme/CustomComponents';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { putSeason } from '../../common/api';
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
 import { useStateAsync } from '../../hooks/useStateAsync';
+import { useHistory } from 'react-router-dom';
 
 const DateInput = styled(DefaultInput)`
     width: 75px;
@@ -25,25 +24,20 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
             ? await getSeasonById(seasonId)
             : { id: -1, startDate: new Date(), endDate: new Date() };
     }, seasonId);
-
-    const dispatch = useDispatch();
+    const history = useHistory();
     const redirectUri = `/season${seasonId ? `/${seasonId}` : ''}`;
 
     const onSave = useCallback(() => {
         if (!season) return;
-        console.log('season', season);
         const save = async () => {
             await putSeason(season!);
-            dispatch(push(redirectUri));
+            history.push(redirectUri);
         };
 
         save();
-    }, [dispatch, redirectUri, season]);
+    }, [history, redirectUri, season]);
 
-    const onCancel = useCallback(() => dispatch(push(redirectUri)), [
-        dispatch,
-        redirectUri
-    ]);
+    const onCancel = useCallback(() => history.push(redirectUri), [history, redirectUri]);
 
     const startDateChange = useCallback(
         (startDate: Date | null) => {

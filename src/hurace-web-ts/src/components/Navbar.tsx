@@ -1,12 +1,7 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { StoreState } from '../store/rootReducer';
-import {
-    loginRedirect,
-    logoutAuth0
-} from '../store/reducers/auth-reducer/authActions';
+import { AuthContext } from './Auth0Provider';
 
 const Nav = styled.nav`
     position: fixed;
@@ -50,15 +45,10 @@ const LoginButton = styled.button`
 `;
 
 export const Navbar: React.FC = () => {
-    const { isAuthenticated } = useSelector((state: StoreState) => state.auth);
-
     const theme = useContext(ThemeContext);
 
-    const dispatch = useDispatch();
     let activeStyle = `6px solid ${theme.blue}`;
 
-    const logout = useCallback(() => dispatch(logoutAuth0()), [dispatch]);
-    const login = useCallback(() => dispatch(loginRedirect()), [dispatch]);
     return (
         <Nav>
             <NavbarNavLink
@@ -82,11 +72,15 @@ export const Navbar: React.FC = () => {
             >
                 <NavbarContent>Rennfahrer</NavbarContent>
             </NavbarNavLink>
-            {isAuthenticated ? (
-                <LoginButton onClick={logout}>Logout</LoginButton>
-            ) : (
-                <LoginButton onClick={login}>Login</LoginButton>
-            )}
+            <AuthContext.Consumer>
+                {({ login, logout, isAuthenticated }) =>
+                    isAuthenticated ? (
+                        <LoginButton onClick={logout}>Logout</LoginButton>
+                    ) : (
+                        <LoginButton onClick={login}>Login</LoginButton>
+                    )
+                }
+            </AuthContext.Consumer>
         </Nav>
     );
 };

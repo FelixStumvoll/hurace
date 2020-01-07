@@ -9,11 +9,13 @@ import {
     getAllGenders,
     getAllDisciplines,
     getSkierById,
-    getDisciplinesForSkier
+    getDisciplinesForSkier,
+    putSkier
 } from '../../common/api';
 import { SelectValue } from '../../interfaces/SelectValue';
 import { isNullOrEmpty } from '../../common/stringFunctions';
 import { isNullOrUndefined } from 'util';
+import { useHistory } from 'react-router-dom';
 
 const Label = styled.div`
     height: fit-content;
@@ -28,9 +30,9 @@ const SkierInput = styled(DefaultInput)`
 export const SkierUpdateView: React.FC<{
     skierId?: number;
 }> = ({ skierId }) => {
-    const [dataLoaded, setDataLoaded] = useState(false);
-    const [firstname, setFirstname] = useState<string>('');
-    const [lastname, setLastname] = useState<string>('');
+    //#region state
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
     const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
     const [selectedCountry, setSelectedCountry] = useState<SelectValue>();
     const [selectedGender, setSelectedGender] = useState<SelectValue>();
@@ -42,14 +44,18 @@ export const SkierUpdateView: React.FC<{
     const [genders, setGenders] = useState<SelectValue[]>();
     const [disciplines, setDisciplines] = useState<SelectValue[]>();
 
+    //#endregion
+
+    //#region setter
+
     const firstnameChange = useCallback(
-        event => setFirstname(event.target.value),
-        [setFirstname]
+        event => setFirstName(event.target.value),
+        [setFirstName]
     );
 
     const lastnameChange = useCallback(
-        event => setLastname(event.target.value),
-        [setLastname]
+        event => setLastName(event.target.value),
+        [setLastName]
     );
 
     const dateOfBirthChange = useCallback(
@@ -71,60 +77,55 @@ export const SkierUpdateView: React.FC<{
         [setSelectedDisciplines]
     );
 
-    const [loading, setLoading] = useState(false);
-
-    const loadData = useCallback(async () => {
-        setLoading(true);
-
-        let countries = (await getAllCountries()).map(c => ({
-            label: c.countryName,
-            value: c.id
-        }));
-
-        let genders = (await getAllGenders()).map(g => ({
-            label: g.genderDescription,
-            value: g.id
-        }));
-
-        let disciplines = (await getAllDisciplines()).map(d => ({
-            label: d.disciplineName,
-            value: d.id
-        }));
-
-        setCountries(countries);
-        setGenders(genders);
-        setDisciplines(disciplines);
-
-        if (skierId !== undefined) {
-            let skier = await getSkierById(skierId!);
-            let skierDisciplines = await getDisciplinesForSkier(skierId!);
-
-            if (skier === undefined) return;
-
-            setFirstname(skier.firstName);
-            setLastname(skier.lastName);
-            setDateOfBirth(skier.dateOfBirth);
-            setSelectedCountry(
-                countries?.find(c => c.value === skier.countryId)
-            );
-            setSelectedGender(genders?.find(g => g.value === skier.genderId));
-            setSelectedDisciplines(
-                disciplines?.filter(d =>
-                    skierDisciplines.some(sk => sk.id === d.value)
-                )
-            );
-        }
-
-        setDataLoaded(true);
-        setLoading(false);
-    }, [skierId]);
+    //#endregion
 
     useEffect(() => {
-        if (!loading && !dataLoaded) loadData();
-    });
+        const loadData = async () => {
+            let countries = (await getAllCountries()).map(c => ({
+                label: c.countryName,
+                value: c.id
+            }));
 
-    const onSave = useCallback(() => {}, []);
-    const onCancel = useCallback(() => {}, []);
+            let genders = (await getAllGenders()).map(g => ({
+                label: g.genderDescription,
+                value: g.id
+            }));
+
+            let disciplines = (await getAllDisciplines()).map(d => ({
+                label: d.disciplineName,
+                value: d.id
+            }));
+
+            setCountries(countries);
+            setGenders(genders);
+            setDisciplines(disciplines);
+
+            if (skierId !== undefined) {
+                let skier = await getSkierById(skierId!);
+                let skierDisciplines = await getDisciplinesForSkier(skierId!);
+
+                if (skier === undefined) return;
+
+                setFirstName(skier.firstName);
+                setLastName(skier.lastName);
+                setDateOfBirth(skier.dateOfBirth);
+                setSelectedCountry(
+                    countries?.find(c => c.value === skier.countryId)
+                );
+                setSelectedGender(
+                    genders?.find(g => g.value === skier.genderId)
+                );
+                setSelectedDisciplines(
+                    disciplines?.filter(d =>
+                        skierDisciplines.some(sk => sk.id === d.value)
+                    )
+                );
+            }
+        };
+
+        loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const huraceTheme = useContext(ThemeContext);
 
@@ -138,25 +139,51 @@ export const SkierUpdateView: React.FC<{
 
     const skierValidator = useCallback(
         () =>
-            !isNullOrEmpty(firstname) &&
-            !isNullOrEmpty(lastname) &&
+            !isNullOrEmpty(firstName) &&
+            !isNullOrEmpty(lastName) &&
             !isNullOrUndefined(dateOfBirth) &&
             !isNullOrUndefined(selectedGender) &&
             !isNullOrUndefined(selectedCountry) &&
             !isNullOrUndefined(selectedDisciplines),
         [
             dateOfBirth,
-            firstname,
-            lastname,
+            firstName,
+            lastName,
             selectedCountry,
             selectedDisciplines,
             selectedGender
         ]
     );
 
+    const history = useHistory();
+
+    const onSave = useCallback(async () => {
+        await putSkier({
+            id: skierId ? skierId : -1,
+            countryId: selectedCountry!.value,
+            firstName,
+            lastName,
+            dateOfBirth,
+            genderId: selectedGender!.value
+        });
+
+        history.push('/skiers');
+    }, [
+        dateOfBirth,
+        firstName,
+        history,
+        lastName,
+        selectedCountry,
+        selectedGender,
+        skierId
+    ]);
+    const onCancel = useCallback(() => {
+        history.push('/skiers');
+    }, [history]);
+
     return (
         <UpdateViewWrapper
-            headerText={`Rennläufer ${skierId ? 'bearbeiten' : 'erstellen'}`}
+            headerText={`Rennfahrer ${skierId ? 'bearbeiten' : 'erstellen'}`}
             onCancel={onCancel}
             onSave={onSave}
             canSave={skierValidator}
@@ -164,13 +191,13 @@ export const SkierUpdateView: React.FC<{
             <FormFields rowCount={6}>
                 <Label>Vorname:</Label>
                 <SkierInput
-                    value={firstname}
+                    value={firstName}
                     placeholder="Vorname"
                     onChange={firstnameChange}
                 ></SkierInput>
                 <Label>Nachname:</Label>
                 <SkierInput
-                    value={lastname}
+                    value={lastName}
                     placeholder="Nachname"
                     onChange={lastnameChange}
                 ></SkierInput>

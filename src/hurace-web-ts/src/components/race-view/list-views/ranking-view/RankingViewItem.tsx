@@ -9,7 +9,7 @@ export const RankingViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
         <tr>
             <td>{raceRanking.position}</td>
             <td>{raceRanking.startList.startNumber}</td>
-            <td>{raceRanking.startList.skier.country.countryCode}</td>
+            <td>{raceRanking.startList.skier.country?.countryCode}</td>
             <td>
                 {raceRanking.startList.skier.firstName}{' '}
                 {raceRanking.startList.skier.lastName}

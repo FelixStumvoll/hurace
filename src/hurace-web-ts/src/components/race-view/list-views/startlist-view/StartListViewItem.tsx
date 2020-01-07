@@ -13,7 +13,7 @@ export const StartListViewItem: React.FC<{ startList: StartList }> = ({
             <td>
                 <StartNumber>{startList.startNumber}</StartNumber>
             </td>
-            <td>{startList.skier.country.countryCode}</td>
+            <td>{startList.skier.country?.countryCode}</td>
             <td>
                 {startList.skier.firstName} {startList.skier.lastName}
             </td>

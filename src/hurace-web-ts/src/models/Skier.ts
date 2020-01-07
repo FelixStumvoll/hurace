@@ -7,8 +7,8 @@ export interface Skier {
     lastName: string;
     dateOfBirth: Date;
     countryId: number;
-    country: Country;
+    country?: Country;
     genderId: number;
-    gender: Gender;
+    gender?: Gender;
     imageUrl?: string;
 }

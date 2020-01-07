@@ -62,7 +62,7 @@ export const SkierViewItem: React.FC<{ skier: Skier }> = ({ skier }) => {
                     <SkierName>
                         {skier.firstName} {skier.lastName}
                     </SkierName>
-                    <SkierCountry>{skier.country.countryName}</SkierCountry>
+                    <SkierCountry>{skier.country?.countryName}</SkierCountry>
                 </SkierCardContent>
             </SkierCard>
         </DefaultLink>

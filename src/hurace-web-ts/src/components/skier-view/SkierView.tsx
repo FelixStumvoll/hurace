@@ -17,13 +17,19 @@ const SkierList = styled.div`
 const skierFilter = (skier: Skier, searchTerm: string): boolean =>
     skier.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     skier.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    skier.country.countryName.toLowerCase().includes(searchTerm.toLowerCase());
+    (skier.country?.countryName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ??
+        false);
 
 export const SkierView: React.FC = () => {
     const [skiers] = useStateAsync(getSkiers);
 
     return (
-        <MasterViewWrapper createText="Rennläufer erstellen" createUrl="/skier/new">
+        <MasterViewWrapper
+            createText="Rennfahrer erstellen"
+            createUrl="/skier/new"
+        >
             <SearchContext.Consumer>
                 {search => (
                     <SkierList>

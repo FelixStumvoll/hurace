@@ -2,12 +2,10 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { HuraceTheme } from './theme/HuraceTheme';
 import { Navbar } from './components/Navbar';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { store, history } from './store/store';
 import { Router } from './components/Router';
 import { Auth0Provider } from './components/Auth0Provider';
 import { env } from './environment/environment';
+import { BrowserRouter } from 'react-router-dom';
 
 const PageContent = styled.div`
     display: grid;
@@ -25,22 +23,20 @@ const MainContent = styled.main`
 
 export const App: React.FC = () => {
     return (
-        <Provider store={store}>
+        <BrowserRouter>
             <Auth0Provider
                 client_id={env.auth0ClientId}
                 domain={env.auth0Domain}
             >
-                <ConnectedRouter history={history}>
-                    <ThemeProvider theme={HuraceTheme}>
-                        <PageContent>
-                            <Navbar />
-                            <MainContent>
-                                <Router />
-                            </MainContent>
-                        </PageContent>
-                    </ThemeProvider>
-                </ConnectedRouter>
+                <ThemeProvider theme={HuraceTheme}>
+                    <PageContent>
+                        <Navbar />
+                        <MainContent>
+                            <Router />
+                        </MainContent>
+                    </PageContent>
+                </ThemeProvider>
             </Auth0Provider>
-        </Provider>
+        </BrowserRouter>
     );
 };
