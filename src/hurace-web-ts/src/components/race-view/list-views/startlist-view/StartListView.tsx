@@ -3,7 +3,7 @@ import { StartListViewItem } from './StartListViewItem';
 import { getStartListForRace } from '../../../../common/api';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
-import { useStateAsync } from '../../../../hooks/asyncState';
+import { useStateAsync } from '../../../../hooks/useStateAsync';
 
 const StartListTable = styled.table`
     width: 100%;

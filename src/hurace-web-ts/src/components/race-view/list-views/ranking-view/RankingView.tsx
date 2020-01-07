@@ -3,7 +3,7 @@ import { RankingViewItem } from './RankingViewItem';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
 import { getRankingForRace } from '../../../../common/api';
-import { useStateAsync } from '../../../../hooks/asyncState';
+import { useStateAsync } from '../../../../hooks/useStateAsync';
 
 const RankingTable = styled.table`
     width: 100%;

@@ -5,7 +5,7 @@ import { getSkiers } from '../../common/api';
 import { SkierViewItem } from './SkierViewItem';
 import { MasterViewWrapper } from '../shared/MasterViewWrapper';
 import { SearchContext } from '../shared/MasterViewWrapper';
-import { useStateAsync } from '../../hooks/asyncState';
+import { useStateAsync } from '../../hooks/useStateAsync';
 
 const SkierList = styled.div`
     display: flex;

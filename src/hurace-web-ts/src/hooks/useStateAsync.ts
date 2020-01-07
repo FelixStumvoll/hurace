@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useStateAsync = <T>(
     promiseFunc: (...args: any[]) => Promise<T>,
@@ -13,21 +13,23 @@ export const useStateAsync = <T>(
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
 
-    useEffect(() => {
-        if (tVal || isLoading) return;
-        const asyncWrapper = async () => {
-            setIsLoading(true);
-            setIsError(false);
-            try {
-                setTVal(await promiseFunc(...args));
-            } catch (error) {
-                setIsError(true);
-            }
+    const asyncWrapper = useCallback(async () => {
+        setIsLoading(true);
+        setIsError(false);
+        try {
+            setTVal(await promiseFunc(...args));
+        } catch (error) {
+            setIsError(true);
+        }
 
-            setIsLoading(false);
-        };
+        setIsLoading(false);
+    }, [args, promiseFunc]);
+
+    useEffect(() => {
+        if (isError || tVal || isLoading) return;
+
         asyncWrapper();
-    }, [tVal, promiseFunc, args, isLoading]);
+    }, [asyncWrapper, isError, tVal, isLoading]);
 
     return [tVal, setTVal, isLoading, isError];
 };

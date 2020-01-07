@@ -12,7 +12,7 @@ import {
 import { getRaceDetails } from '../../common/api';
 import { HeaderCard } from '../shared/HeaderCard';
 import { getTime, getDate } from '../../common/timeConverter';
-import { useStateAsync } from '../../hooks/asyncState';
+import { useStateAsync } from '../../hooks/useStateAsync';
 
 const DetailPanel = styled.div`
     display: flex;

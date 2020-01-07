@@ -3,7 +3,7 @@ import styled, { CSSProperties } from 'styled-components';
 import { Card } from '../../theme/StyledComponents';
 
 const Panel = styled(Card)`
-    overflow: hidden;
+    /* overflow: hidden; */
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@ const CardContent = styled.div`
     padding: 10px;
     height: calc(100% - 10px);
     width: calc(100% - 20px);
-    overflow: auto;
+    /* overflow: auto; */
 `;
 
 export const HeaderCard: React.FC<{

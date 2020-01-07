@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { DisciplineViewItem } from './DisciplineViewItem';
 import { getRacesForSeason } from '../../../common/api';
-import { useStateAsync } from '../../../hooks/asyncState';
+import { useStateAsync } from '../../../hooks/useStateAsync';
 
 const DisciplinePanel = styled.div`
     margin-top: 10px;

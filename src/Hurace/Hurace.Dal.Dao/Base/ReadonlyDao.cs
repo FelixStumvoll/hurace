@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder;
+using Hurace.Dal.Domain;
+using Hurace.Dal.Domain.Enums;
 using Hurace.Dal.Interface.Base;
 
 namespace Hurace.Dal.Dao.Base

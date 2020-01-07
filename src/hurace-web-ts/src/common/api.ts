@@ -9,6 +9,7 @@ import { Discipline } from '../interfaces/Discipline';
 import { env } from '../environment/environment';
 import { toIsoWithTimezone } from './timeConverter';
 import { Country } from '../interfaces/Country';
+import { Gender } from '../interfaces/Gender';
 
 const setSkierDate = (skier: Skier) =>
     (skier.dateOfBirth = new Date(skier.dateOfBirth));
@@ -120,3 +121,6 @@ export const getAllCountries = async (): Promise<Country[]> =>
 
 export const getAllDisciplines = async (): Promise<Discipline[]> =>
     (await Axios.get<Discipline[]>(`${env.apiUrl}/discipline`)).data;
+
+export const getAllGenders = async (): Promise<Gender[]> =>
+    (await Axios.get<Gender[]>(`${env.apiUrl}/gender`)).data;

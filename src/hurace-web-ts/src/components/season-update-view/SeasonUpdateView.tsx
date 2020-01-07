@@ -8,7 +8,7 @@ import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { persistSeason } from '../../common/api';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
-import { useStateAsync } from '../../hooks/asyncState';
+import { useStateAsync } from '../../hooks/useStateAsync';
 
 const DateInput = styled(DefaultInput)`
     width: 75px;

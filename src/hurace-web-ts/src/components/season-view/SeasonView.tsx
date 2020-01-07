@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Season } from '../../interfaces/Season';
 import { getSeasons } from '../../common/api';
 import { MasterViewWrapper, SearchContext } from '../shared/MasterViewWrapper';
-import { useStateAsync } from '../../hooks/asyncState';
+import { useStateAsync } from '../../hooks/useStateAsync';
 
 const SeasonItemPanel = styled.div`
     display: flex;

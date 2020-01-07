@@ -2,7 +2,7 @@ import React from 'react';
 import { Skier } from '../../interfaces/Skier';
 import styled from 'styled-components';
 import { getDisciplinesForSkier } from '../../common/api';
-import { useStateAsync } from '../../hooks/asyncState';
+import { useStateAsync } from '../../hooks/useStateAsync';
 import { getDate } from '../../common/timeConverter';
 import { HeaderCard } from '../shared/HeaderCard';
 

@@ -56,6 +56,14 @@ export const Router: React.FC = () => {
 
             <Route
                 exact
+                path="/skier/:skierId/update"
+                render={({ match }) => (
+                    <SkierUpdateView skierId={Number(match.params.skierId)} />
+                )}
+            />
+
+            <Route
+                exact
                 path="/skier/:skierId"
                 render={({ match }) => (
                     <SkierDetailView skierId={Number(match.params.skierId)} />
