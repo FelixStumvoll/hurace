@@ -3,7 +3,7 @@ import { SeasonListViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
 import { Season } from '../../models/Season';
 import { getSeasons } from '../../common/api';
-import { MasterViewWrapper, SearchContext } from '../shared/MasterViewWrapper';
+import { ListViewWrapper, SearchContext } from '../shared/ListViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
 
 const SeasonItemPanel = styled.div`
@@ -28,7 +28,7 @@ export const SeasonListView: React.FC = () => {
     const [seasons] = useStateAsync(getSeasons);
 
     return (
-        <MasterViewWrapper
+        <ListViewWrapper
             createText="Saison erstellen"
             createUrl="/season/new"
         >
@@ -43,6 +43,6 @@ export const SeasonListView: React.FC = () => {
                     </SeasonItemPanel>
                 )}
             </SearchContext.Consumer>
-        </MasterViewWrapper>
+        </ListViewWrapper>
     );
 };

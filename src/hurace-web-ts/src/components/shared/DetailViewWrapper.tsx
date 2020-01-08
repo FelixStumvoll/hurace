@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
 import { DefaultLink } from '../../theme/CustomComponents';
 import { DeleteBar } from './DeleteBar';
+import { AuthContext } from '../Auth0Provider';
 
 const BackLinkPanel = styled.div`
     display: grid;
@@ -68,23 +69,34 @@ export const DetailViewWrapper: React.FC<{
                     <BackIcon icon={faAngleLeft}></BackIcon>
                     <BackText>{backText}</BackText>
                 </BackLink>
-                {deleteConfig && (
-                    <DeleteBar
-                        deleteText={deleteConfig.deleteText}
-                        deleteFunc={deleteConfig.deleteFunc}
-                    />
-                )}
-                {editConfig && (
-                    <EditLink
-                        deletepresent={!!deleteConfig ? 0 : 1}
-                        to={editConfig.editUrl}
-                    >
-                        <EditText>
-                            <EditIcon icon={faPen} />
-                            {editConfig.editText}
-                        </EditText>
-                    </EditLink>
-                )}
+
+                <AuthContext.Consumer>
+                    {({ isAuthenticated }) =>
+                        isAuthenticated && (
+                            <>
+                                (
+                                {deleteConfig && (
+                                    <DeleteBar
+                                        deleteText={deleteConfig.deleteText}
+                                        deleteFunc={deleteConfig.deleteFunc}
+                                    />
+                                )}
+                                {editConfig && (
+                                    <EditLink
+                                        deletepresent={!!deleteConfig ? 0 : 1}
+                                        to={editConfig.editUrl}
+                                    >
+                                        <EditText>
+                                            <EditIcon icon={faPen} />
+                                            {editConfig.editText}
+                                        </EditText>
+                                    </EditLink>
+                                )}
+                                )
+                            </>
+                        )
+                    }
+                </AuthContext.Consumer>
             </TopBar>
 
             {children}

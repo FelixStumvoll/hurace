@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Skier } from '../../models/Skier';
 import { getSkiers } from '../../common/api';
 import { SkierListViewItem } from './SkierViewItem';
-import { MasterViewWrapper } from '../shared/MasterViewWrapper';
-import { SearchContext } from '../shared/MasterViewWrapper';
+import { ListViewWrapper } from '../shared/ListViewWrapper';
+import { SearchContext } from '../shared/ListViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
 
 const SkierList = styled.div`
@@ -26,7 +26,7 @@ export const SkierListView: React.FC = () => {
     const [skiers] = useStateAsync(getSkiers);
 
     return (
-        <MasterViewWrapper
+        <ListViewWrapper
             createText="Rennfahrer erstellen"
             createUrl="/skier/new"
         >
@@ -44,6 +44,6 @@ export const SkierListView: React.FC = () => {
                     </SkierList>
                 )}
             </SearchContext.Consumer>
-        </MasterViewWrapper>
+        </ListViewWrapper>
     );
 };
