@@ -10,6 +10,8 @@ import { env } from '../environment/environment';
 import { toIsoWithTimezone } from './timeConverter';
 import { Country } from '../models/Country';
 import { Gender } from '../models/Gender';
+import { SkierCreateDto } from '../models/SkierCreateDto';
+import { SkierUpdateDto } from '../models/SkierUpdateDto';
 
 //#region Season
 const setSeasonDate = (season: Season) => {
@@ -124,9 +126,25 @@ export const getDisciplinesForSkier = async (
         )
     ).data;
 
-export const putSkier = async (skier: Skier) => {
+export const updateSkier = async (skier: SkierUpdateDto) => {
     skier.dateOfBirth = toIsoWithTimezone(skier.dateOfBirth);
-    await Axios.put(`${env.apiUrl}/skier`);
+    await Axios.put<Skier | SkierCreateDto>(
+        `${env.apiUrl}/skier/${skier.id}`,
+        skier
+    );
+};
+
+export const createSkier = async (skier: SkierCreateDto): Promise<number> => {
+    skier.dateOfBirth = toIsoWithTimezone(skier.dateOfBirth);
+    let response = await Axios.put<Skier>(`${env.apiUrl}/skier`, skier);
+    return response.data.id;
+};
+
+export const updateSkierDisciplines = async (
+    skierId: number,
+    disciplines: number[]
+): Promise<void> => {
+    await Axios.put(`${env.apiUrl}/skier/${skierId}/disciplines`, disciplines);
 };
 
 //#endregion

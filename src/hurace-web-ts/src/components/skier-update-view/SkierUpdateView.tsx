@@ -10,7 +10,9 @@ import {
     getAllDisciplines,
     getSkierById,
     getDisciplinesForSkier,
-    putSkier
+    updateSkier,
+    createSkier,
+    updateSkierDisciplines
 } from '../../common/api';
 import { SelectValue } from '../../interfaces/SelectValue';
 import { isNullOrEmpty } from '../../common/stringFunctions';
@@ -31,18 +33,20 @@ export const SkierUpdateView: React.FC<{
     skierId?: number;
 }> = ({ skierId }) => {
     //#region state
-    const [firstName, setFirstName] = useState<string>('');
-    const [lastName, setLastName] = useState<string>('');
-    const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [selectedCountry, setSelectedCountry] = useState<SelectValue>();
     const [selectedGender, setSelectedGender] = useState<SelectValue>();
     const [selectedDisciplines, setSelectedDisciplines] = useState<
         SelectValue[]
     >();
+    const history = useHistory();
 
     const [countries, setCountries] = useState<SelectValue[]>();
     const [genders, setGenders] = useState<SelectValue[]>();
-    const [disciplines, setDisciplines] = useState<SelectValue[]>();
+    const [disciplines, setDisciplines] = useState<SelectValue[]>([]);
 
     //#endregion
 
@@ -56,6 +60,11 @@ export const SkierUpdateView: React.FC<{
     const lastnameChange = useCallback(
         event => setLastName(event.target.value),
         [setLastName]
+    );
+
+    const imageUrlChange = useCallback(
+        event => setImageUrl(event.target.value),
+        [setImageUrl]
     );
 
     const dateOfBirthChange = useCallback(
@@ -109,6 +118,7 @@ export const SkierUpdateView: React.FC<{
                 setFirstName(skier.firstName);
                 setLastName(skier.lastName);
                 setDateOfBirth(skier.dateOfBirth);
+                setImageUrl(skier.imageUrl ?? '');
                 setSelectedCountry(
                     countries?.find(c => c.value === skier.countryId)
                 );
@@ -134,7 +144,8 @@ export const SkierUpdateView: React.FC<{
             ...theme,
             colors: { ...theme.colors, primary: huraceTheme.blue }
         }),
-        [huraceTheme.blue]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
     );
 
     const skierValidator = useCallback(
@@ -155,30 +166,49 @@ export const SkierUpdateView: React.FC<{
         ]
     );
 
-    const history = useHistory();
-
     const onSave = useCallback(async () => {
-        await putSkier({
-            id: skierId ? skierId : -1,
-            countryId: selectedCountry!.value,
-            firstName,
-            lastName,
-            dateOfBirth,
-            genderId: selectedGender!.value
-        });
+        let id = skierId;
 
-        history.push('/skiers');
+        if (id) {
+            await updateSkier({
+                id,
+                countryId: selectedCountry!.value,
+                firstName,
+                lastName,
+                dateOfBirth,
+                genderId: selectedGender!.value,
+                imageUrl
+            });
+        } else {
+            id = await createSkier({
+                countryId: selectedCountry!.value,
+                firstName,
+                lastName,
+                dateOfBirth,
+                genderId: selectedGender!.value,
+                imageUrl
+            });
+        }
+
+        await updateSkierDisciplines(
+            id,
+            selectedDisciplines!.map(s => s.value)
+        );
+
+        history.push(`/skier/${id}`);
     }, [
         dateOfBirth,
         firstName,
         history,
+        imageUrl,
         lastName,
         selectedCountry,
+        selectedDisciplines,
         selectedGender,
         skierId
     ]);
     const onCancel = useCallback(() => {
-        history.push('/skiers');
+        history.push('/skier');
     }, [history]);
 
     return (
@@ -232,6 +262,12 @@ export const SkierUpdateView: React.FC<{
                     noOptionsMessage={() => 'keine Disziplinen verfügbar'}
                     onChange={disciplineChange}
                 />
+                <Label>Bild-Url:</Label>
+                <SkierInput
+                    value={imageUrl}
+                    placeholder="Bild-Url"
+                    onChange={imageUrlChange}
+                ></SkierInput>
             </FormFields>
         </UpdateViewWrapper>
     );

@@ -28,17 +28,23 @@ const CrudButton = styled.button`
 
 const CancelButton = styled(CrudButton)`
     margin-right: 5px;
-    background-color: #e25959;
+    background-color: ${props => props.theme.negative};
 `;
 
 const SaveButton = styled(CrudButton)`
     margin-left: 5px;
-    background-color: #5f985f;
+    background-color: ${props => props.theme.positive};
 
     :disabled {
         background-color: ${props => props.theme.gray};
         cursor: not-allowed;
     }
+`;
+
+const ErrorMessage = styled.div`
+    border: 1px solid ${props => props.theme.negative};
+    background-color: transparent;
+    color: ${props => props.theme.negative};
 `;
 
 const ButtonPanel = styled.div`
@@ -49,11 +55,12 @@ const ButtonPanel = styled.div`
 
 export const UpdateViewWrapper: React.FC<{
     headerText: string;
+    errorText?: string;
     onSave: () => void;
     onCancel: () => void;
     canSave?: () => boolean;
-}> = ({ children, headerText, onSave, onCancel, canSave: validator }) => {
-    const saveDisabled = validator ? !validator() : false;
+}> = ({ children, headerText, onSave, onCancel, canSave, errorText }) => {
+    const saveDisabled = canSave ? !canSave() : false;
 
     return (
         <PageWrapper>
@@ -61,6 +68,7 @@ export const UpdateViewWrapper: React.FC<{
                 <HeaderCard headerText={headerText}>
                     <CardContent>
                         {children}
+                        {errorText && <ErrorMessage>{errorText}</ErrorMessage>}
                         <ButtonPanel>
                             <CancelButton onClick={onCancel}>
                                 Abbrechen

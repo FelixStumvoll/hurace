@@ -56,6 +56,10 @@ namespace Hurace.Dal.Dao
         public async Task<bool> DeletePossibleDisciplineForSkier(int skierId, int disciplineId) =>
             await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si and disciplineId=@di",
                                ("@si", skierId), ("@di", disciplineId));
+        
+        public async Task<bool> DeleteAllPossibleDisciplineForSkier(int skierId) =>
+            await ExecuteAsync("delete from hurace.SkierDiscipline where skierId=@si",
+                               ("@si", skierId));
 
 
         private protected override SelectStatementBuilder<Skier> DefaultSelectQuery() =>

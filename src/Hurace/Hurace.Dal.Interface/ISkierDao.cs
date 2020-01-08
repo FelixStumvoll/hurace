@@ -11,5 +11,6 @@ namespace Hurace.Dal.Interface
         Task<IEnumerable<Discipline>> GetPossibleDisciplinesForSkier(int skierId);
         Task<bool> InsertPossibleDisciplineForSkier(int skierId, int disciplineId);
         Task<bool> DeletePossibleDisciplineForSkier(int skierId, int disciplineId);
+        Task<bool> DeleteAllPossibleDisciplineForSkier(int skierId);
     }
 }
