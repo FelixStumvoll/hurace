@@ -14,7 +14,9 @@ import { getTime, getDate } from '../../common/timeConverter';
 import { Race } from '../../models/Race';
 
 const DetailPanel = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
 `;
 
 const InfoContent = styled.div`
@@ -25,7 +27,11 @@ const InfoContent = styled.div`
 `;
 
 const DescriptionCardWrapper = styled.div`
-    margin-left: 10px;
+    width: fit-content;
+`;
+
+const DetailCardWrapper = styled.div`
+    width: fit-content;
 `;
 
 const DetailText = styled.span`
@@ -49,6 +55,7 @@ const RaceDescription = styled.div`
     grid-area: description;
     word-wrap: break-word;
     overflow: auto;
+    word-break: break-all;
 `;
 
 const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
@@ -59,30 +66,37 @@ const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
 export const RaceDetailPanel: React.FC<{ race: Race }> = ({ race }) => {
     return (
         <DetailPanel>
-            <HeaderCard headerText="Stammdaten">
-                <InfoContent>
-                    <DetailIcon fontSize={25} icon={faLocationArrow} />
-                    <HeaderText>
-                        {race?.location.locationName}
-                        <CountryText>
-                            {' '}
-                            {race?.location.country.countryName}
-                        </CountryText>{' '}
-                    </HeaderText>
-                    <DetailIcon fontSize={16} icon={faSkiing} />
-                    <DetailText>{race?.discipline.disciplineName}</DetailText>
-                    <DetailIcon fontSize={16} icon={faFlagCheckered} />
-                    <DetailText>
-                        {race?.raceState.raceStateDescription}
-                    </DetailText>
-                    <DetailIcon fontSize={16} icon={faUser} />
-                    <DetailText>{race?.gender.genderDescription}</DetailText>
-                    <DetailIcon fontSize={16} icon={faCalendarDay} />
-                    <DetailText>{getDate(race?.raceDate)}</DetailText>
-                    <DetailIcon fontSize={16} icon={faClock} />
-                    <DetailText>{getTime(race?.raceDate)}</DetailText>
-                </InfoContent>
-            </HeaderCard>
+            <DetailCardWrapper>
+                <HeaderCard headerText="Stammdaten">
+                    <InfoContent>
+                        <DetailIcon fontSize={25} icon={faLocationArrow} />
+                        <HeaderText>
+                            {race?.location.locationName}
+                            <CountryText>
+                                {' '}
+                                {race?.location.country.countryName}
+                            </CountryText>{' '}
+                        </HeaderText>
+                        <DetailIcon fontSize={16} icon={faSkiing} />
+                        <DetailText>
+                            {race?.discipline.disciplineName}
+                        </DetailText>
+                        <DetailIcon fontSize={16} icon={faFlagCheckered} />
+                        <DetailText>
+                            {race?.raceState.raceStateDescription}
+                        </DetailText>
+                        <DetailIcon fontSize={16} icon={faUser} />
+                        <DetailText>
+                            {race?.gender.genderDescription}
+                        </DetailText>
+                        <DetailIcon fontSize={16} icon={faCalendarDay} />
+                        <DetailText>{getDate(race?.raceDate)}</DetailText>
+                        <DetailIcon fontSize={16} icon={faClock} />
+                        <DetailText>{getTime(race?.raceDate)}</DetailText>
+                    </InfoContent>
+                </HeaderCard>
+            </DetailCardWrapper>
+
             <DescriptionCardWrapper>
                 <HeaderCard headerText="Beschreibung">
                     {race?.raceDescription && (
@@ -93,5 +107,5 @@ export const RaceDetailPanel: React.FC<{ race: Race }> = ({ race }) => {
                 </HeaderCard>
             </DescriptionCardWrapper>
         </DetailPanel>
-    )
+    );
 };

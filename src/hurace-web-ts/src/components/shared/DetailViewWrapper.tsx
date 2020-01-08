@@ -74,7 +74,6 @@ export const DetailViewWrapper: React.FC<{
                     {({ isAuthenticated }) =>
                         isAuthenticated && (
                             <>
-                                (
                                 {deleteConfig && (
                                     <DeleteBar
                                         deleteText={deleteConfig.deleteText}
@@ -92,7 +91,6 @@ export const DetailViewWrapper: React.FC<{
                                         </EditText>
                                     </EditLink>
                                 )}
-                                )
                             </>
                         )
                     }
