@@ -1,9 +1,7 @@
 import React from 'react';
 import { StartListViewItem } from './StartListViewItem';
-import { getStartListForRace } from '../../../../common/api';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
-import { useStateAsync } from '../../../../hooks/useStateAsync';
 import { StartList } from '../../../../models/StartList';
 
 const StartListTable = styled.table`

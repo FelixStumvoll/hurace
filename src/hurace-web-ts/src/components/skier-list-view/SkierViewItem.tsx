@@ -47,7 +47,7 @@ const SkierCountry = styled.div`
     color: gray;
 `;
 
-export const SkierViewItem: React.FC<{ skier: Skier }> = ({ skier }) => {
+export const SkierListViewItem: React.FC<{ skier: Skier }> = ({ skier }) => {
     return (
         <DefaultLink to={`/skier/${skier.id}`}>
             <SkierCard>

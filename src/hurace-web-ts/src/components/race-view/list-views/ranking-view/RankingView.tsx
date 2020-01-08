@@ -2,8 +2,6 @@ import React from 'react';
 import { RankingViewItem } from './RankingViewItem';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
-import { getRankingForRace } from '../../../../common/api';
-import { useStateAsync } from '../../../../hooks/useStateAsync';
 import { RaceRanking } from '../../../../models/RaceRanking';
 
 const RankingTable = styled.table`

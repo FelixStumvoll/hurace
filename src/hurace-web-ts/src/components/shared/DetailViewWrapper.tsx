@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink, DefaultButton } from '../../theme/CustomComponents';
+import { DefaultLink } from '../../theme/CustomComponents';
 import { DeleteBar } from './DeleteBar';
 
 const BackLinkPanel = styled.div`

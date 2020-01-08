@@ -61,7 +61,10 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
         save();
     }, [endDate, history, seasonId, startDate]);
 
-    const onCancel = useCallback(() => history.push('/season'), [history]);
+    const onCancel = useCallback(
+        () => history.push(`/season${seasonId ? `/${seasonId}` : ''}`),
+        [history, seasonId]
+    );
 
     return (
         <UpdateViewWrapper

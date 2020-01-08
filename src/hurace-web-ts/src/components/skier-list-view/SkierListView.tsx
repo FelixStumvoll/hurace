@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Skier } from '../../models/Skier';
 import { getSkiers } from '../../common/api';
-import { SkierViewItem } from './SkierViewItem';
+import { SkierListViewItem } from './SkierViewItem';
 import { MasterViewWrapper } from '../shared/MasterViewWrapper';
 import { SearchContext } from '../shared/MasterViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
@@ -22,7 +22,7 @@ const skierFilter = (skier: Skier, searchTerm: string): boolean =>
         .includes(searchTerm.toLowerCase()) ??
         false);
 
-export const SkierView: React.FC = () => {
+export const SkierListView: React.FC = () => {
     const [skiers] = useStateAsync(getSkiers);
 
     return (
@@ -39,7 +39,7 @@ export const SkierView: React.FC = () => {
                             )
                             .filter(s => skierFilter(s, search))
                             .map(s => (
-                                <SkierViewItem key={s.id} skier={s} />
+                                <SkierListViewItem key={s.id} skier={s} />
                             ))}
                     </SkierList>
                 )}

@@ -108,6 +108,21 @@ export const getRankingForRace = async (
     return response.data;
 };
 
+export const getWinnersForRace = async (
+    raceId: number
+): Promise<RaceRanking[]> => {
+    let response = await Axios.get<RaceRanking[]>(
+        `${env.apiUrl}/race/${raceId}/winners`
+    );
+    response.data.forEach(rr => {
+        setSkierDate(rr.startList.skier);
+        rr.time = new Date(rr.time!);
+        rr.timeToLeader = new Date(rr.timeToLeader!);
+    });
+
+    return response.data;
+};
+
 //#endregion
 
 //#region Skier

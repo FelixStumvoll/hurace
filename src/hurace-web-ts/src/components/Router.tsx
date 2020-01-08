@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { SeasonView } from './season-view/SeasonView';
+import { SeasonListView } from './season-list-view/SeasonView';
 import { RaceDetailView } from './race-view/RaceDetailView';
 import { SkierDetailView } from './skier-detail-view/SkierDetailView';
-import { SkierView } from './skier-view/SkierView';
+import { SkierListView } from './skier-list-view/SkierListView';
 import { SeasonDetailView } from './season-detail-view/SeasonDetailView';
 import { SeasonUpdateView } from './season-update-view/SeasonUpdateView';
 import { SkierUpdateView } from './skier-update-view/SkierUpdateView';
@@ -12,7 +12,7 @@ export const Router: React.FC = () => {
     return (
         <Switch>
             <Route exact path="/season">
-                <SeasonView />
+                <SeasonListView />
             </Route>
             <Route exact path="/season/new">
                 <SeasonUpdateView />
@@ -47,7 +47,7 @@ export const Router: React.FC = () => {
                 )}
             />
             <Route exact path="/skier">
-                <SkierView />
+                <SkierListView />
             </Route>
 
             <Route exact path="/skier/new">

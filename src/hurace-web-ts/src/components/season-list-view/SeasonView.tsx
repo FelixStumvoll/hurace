@@ -1,5 +1,5 @@
 import React from 'react';
-import { SeasonViewItem } from './SeasonViewItem';
+import { SeasonListViewItem } from './SeasonViewItem';
 import styled from 'styled-components';
 import { Season } from '../../models/Season';
 import { getSeasons } from '../../common/api';
@@ -24,7 +24,7 @@ const seasonFilter = (season: Season, searchTerm: string) =>
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
 
-export const SeasonView: React.FC = () => {
+export const SeasonListView: React.FC = () => {
     const [seasons] = useStateAsync(getSeasons);
 
     return (
@@ -38,7 +38,7 @@ export const SeasonView: React.FC = () => {
                         {seasons
                             ?.filter(s => seasonFilter(s, searchTerm))
                             .map(s => (
-                                <SeasonViewItem key={s.id} season={s} />
+                                <SeasonListViewItem key={s.id} season={s} />
                             ))}
                     </SeasonItemPanel>
                 )}

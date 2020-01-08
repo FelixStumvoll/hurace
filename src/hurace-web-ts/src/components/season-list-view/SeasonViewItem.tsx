@@ -9,7 +9,9 @@ const SeasonItem = styled(Card)`
     flex-direction: column;
 `;
 
-export const SeasonViewItem: React.FC<{ season: Season }> = ({ season }) => {
+export const SeasonListViewItem: React.FC<{ season: Season }> = ({
+    season
+}) => {
     return (
         <DefaultLink to={`season/${season.id}`}>
             <SeasonItem>
