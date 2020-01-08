@@ -21,6 +21,16 @@ export const DefaultLink = styled(Link)`
     color: black;
 `;
 
+export const DefaultButton = styled.button`
+    border-radius: 5px;
+    border: none;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 10px 0 10px;
+    font-family: ${props => props.theme.fontFamily};
+`;
+
 export const DefaultInput = styled.input`
     border-radius: 5px;
     padding-left: 10px;

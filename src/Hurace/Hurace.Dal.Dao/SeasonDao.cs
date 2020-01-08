@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
 using Hurace.Dal.Dao.Base;
@@ -11,6 +12,11 @@ namespace Hurace.Dal.Dao
         public SeasonDao(IConnectionFactory connectionFactory, StatementFactory statementFactory) : base(
             connectionFactory, "hurace.season", statementFactory)
         {
+        }
+
+        public Task<int?> CountRacesForSeason(int seasonId)
+        {
+            return ExecuteScalarAsync("select count(*) from hurace.Race where seasonId like @sid", ("@sid", seasonId));
         }
     }
 }

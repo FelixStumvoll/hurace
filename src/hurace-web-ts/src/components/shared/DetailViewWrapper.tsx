@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink } from '../../theme/CustomComponents';
+import { DefaultLink, DefaultButton } from '../../theme/CustomComponents';
+import { DeleteBar } from './DeleteBar';
 
 const BackLinkPanel = styled.div`
     display: grid;
@@ -20,8 +21,8 @@ const EditText = styled.div`
     padding: 0 10px 0 10px;
 `;
 
-const EditLink = styled(DefaultLink)`
-    margin-left: auto;
+const EditLink = styled(DefaultLink)<{ deletepresent: number }>`
+    margin-left: ${props => (props.deletepresent === 0 ? '10px' : 'auto')};
     border-radius: 5px;
     background-color: #f0db4f;
     color: black;
@@ -54,7 +55,12 @@ export const DetailViewWrapper: React.FC<{
         editText: string;
         editUrl: string;
     };
-}> = ({ backText, url, children, editConfig }) => {
+
+    deleteConfig?: {
+        deleteText: string;
+        deleteFunc: () => void;
+    };
+}> = ({ backText, url, children, editConfig, deleteConfig }) => {
     return (
         <BackLinkPanel>
             <TopBar>
@@ -62,9 +68,17 @@ export const DetailViewWrapper: React.FC<{
                     <BackIcon icon={faAngleLeft}></BackIcon>
                     <BackText>{backText}</BackText>
                 </BackLink>
-
+                {deleteConfig && (
+                    <DeleteBar
+                        deleteText={deleteConfig.deleteText}
+                        deleteFunc={deleteConfig.deleteFunc}
+                    />
+                )}
                 {editConfig && (
-                    <EditLink to={editConfig.editUrl}>
+                    <EditLink
+                        deletepresent={!!deleteConfig ? 0 : 1}
+                        to={editConfig.editUrl}
+                    >
                         <EditText>
                             <EditIcon icon={faPen} />
                             {editConfig.editText}

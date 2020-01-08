@@ -13,6 +13,7 @@ import { getRaceDetails } from '../../common/api';
 import { HeaderCard } from '../shared/HeaderCard';
 import { getTime, getDate } from '../../common/timeConverter';
 import { useStateAsync } from '../../hooks/useStateAsync';
+import { Race } from '../../models/Race';
 
 const DetailPanel = styled.div`
     display: flex;
@@ -57,46 +58,42 @@ const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
     margin: auto;
 `;
 
-export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
-    const [race] = useStateAsync(getRaceDetails, raceId);
-
-    return race ? (
+export const RaceDetailPanel: React.FC<{ race: Race }> = ({ race }) => {
+    return (
         <DetailPanel>
             <HeaderCard headerText="Stammdaten">
                 <InfoContent>
                     <DetailIcon fontSize={25} icon={faLocationArrow} />
                     <HeaderText>
-                        {race?.location.locationName}
+                        {race.location.locationName}
                         <CountryText>
                             {' '}
-                            {race?.location.country.countryName}
+                            {race.location.country.countryName}
                         </CountryText>{' '}
                     </HeaderText>
                     <DetailIcon fontSize={16} icon={faSkiing} />
-                    <DetailText>{race?.discipline.disciplineName}</DetailText>
+                    <DetailText>{race.discipline.disciplineName}</DetailText>
                     <DetailIcon fontSize={16} icon={faFlagCheckered} />
                     <DetailText>
-                        {race?.raceState.raceStateDescription}
+                        {race.raceState.raceStateDescription}
                     </DetailText>
                     <DetailIcon fontSize={16} icon={faUser} />
-                    <DetailText>{race?.gender.genderDescription}</DetailText>
+                    <DetailText>{race.gender.genderDescription}</DetailText>
                     <DetailIcon fontSize={16} icon={faCalendarDay} />
-                    <DetailText>{getDate(race?.raceDate)}</DetailText>
+                    <DetailText>{getDate(race.raceDate)}</DetailText>
                     <DetailIcon fontSize={16} icon={faClock} />
-                    <DetailText>{getTime(race?.raceDate)}</DetailText>
+                    <DetailText>{getTime(race.raceDate)}</DetailText>
                 </InfoContent>
             </HeaderCard>
             <DescriptionCardWrapper>
                 <HeaderCard headerText="Beschreibung">
-                    {race?.raceDescription && (
+                    {race.raceDescription && (
                         <RaceDescription>
-                            {race?.raceDescription}
+                            {race.raceDescription}
                         </RaceDescription>
                     )}
                 </HeaderCard>
             </DescriptionCardWrapper>
         </DetailPanel>
-    ) : (
-        <div />
     );
 };

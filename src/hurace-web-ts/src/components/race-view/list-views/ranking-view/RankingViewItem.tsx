@@ -1,13 +1,18 @@
 import React from 'react';
 import { RaceRanking } from '../../../../models/RaceRanking';
 import { getTimeWithMS } from '../../../../common/timeConverter';
+import styled from 'styled-components';
+
+const Position = styled.td`
+    font-weight: bold;
+`;
 
 export const RankingViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
     raceRanking
 }) => {
     return (
         <tr>
-            <td>{raceRanking.position}</td>
+            <Position>{raceRanking.position}</Position>
             <td>{raceRanking.startList.startNumber}</td>
             <td>{raceRanking.startList.skier.country?.countryCode}</td>
             <td>

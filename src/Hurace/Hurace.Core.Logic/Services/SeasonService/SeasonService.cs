@@ -20,7 +20,14 @@ namespace Hurace.Core.Logic.Services.SeasonService
 
         public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
         public Task<Season?> GetSeasonById(int seasonId) => _seasonDao.FindByIdAsync(seasonId);
-        public Task<bool> InsertOrUpdateSeason(Season season) => 
-            season.Id == -1 ? _seasonDao.InsertAsync(season) : _seasonDao.UpdateAsync(season);
+        public Task<int?> InsertSeason(Season season) => _seasonDao.InsertGetIdAsync(season);
+        public async Task<bool> DeleteSeason(int id)
+        {
+            if (await _seasonDao.CountRacesForSeason(id) != 0) return false;
+            await _seasonDao.DeleteAsync(id);
+            return true;
+        }
+
+        public Task<bool> UpdateSeason(Season season) => _seasonDao.UpdateAsync(season);
     }
 }

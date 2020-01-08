@@ -25,6 +25,10 @@ export const SeasonDetailView: React.FC<{ seasonId: number }> = ({
                 editText: 'Saison bearbeiten',
                 editUrl: `/season/${seasonId}/update`
             }}
+            deleteConfig={{
+                deleteText: 'Saison löschen',
+                deleteFunc: () => {}
+            }}
         >
             <SeasonPanel>
                 <SeasonDetailWrapper>

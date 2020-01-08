@@ -4,14 +4,16 @@ import { getStartListForRace } from '../../../../common/api';
 import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
 import { useStateAsync } from '../../../../hooks/useStateAsync';
+import { StartList } from '../../../../models/StartList';
 
 const StartListTable = styled.table`
     width: 100%;
+    border-collapse: collapse;
 `;
 
-export const StartListView: React.FC<{ raceId: number }> = ({ raceId }) => {
-    const [startList] = useStateAsync(getStartListForRace, raceId);
-
+export const StartListView: React.FC<{ startList: StartList[] }> = ({
+    startList
+}) => {
     return (
         <HeaderCard headerText="Startliste:">
             <StartListTable>

@@ -1,12 +1,10 @@
-using Hurace.Dal.Domain;
-
-namespace Hurace.API.Dtos
+namespace Hurace.API.Dtos.Skier
 {
     public class SkierUpdateDto : SkierCreateDto
     {
         public int Id { get; set; }
         
-        public static implicit operator Skier(SkierUpdateDto skier) => new Skier
+        public static implicit operator Dal.Domain.Skier(SkierUpdateDto skier) => new Dal.Domain.Skier
         {
             Id = skier.Id,
             FirstName = skier.FirstName,

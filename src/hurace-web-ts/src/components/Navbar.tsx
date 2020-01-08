@@ -42,6 +42,7 @@ const LoginButton = styled.button`
     height: 100%;
     padding: 0 15px 0 15px;
     cursor: pointer;
+    font-family: ${props => props.theme.fontFamily};
 `;
 
 export const Navbar: React.FC = () => {

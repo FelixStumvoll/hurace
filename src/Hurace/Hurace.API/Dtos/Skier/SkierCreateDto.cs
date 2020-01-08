@@ -1,7 +1,6 @@
 using System;
-using Hurace.Dal.Domain;
 
-namespace Hurace.API.Dtos
+namespace Hurace.API.Dtos.Skier
 {
     public class SkierCreateDto
     {
@@ -12,7 +11,7 @@ namespace Hurace.API.Dtos
         public int GenderId { get; set; }
         public string? ImageUrl { get; set; }
         
-        public static implicit operator Skier(SkierCreateDto skier) => new Skier
+        public static implicit operator Dal.Domain.Skier(SkierCreateDto skier) => new Dal.Domain.Skier
         {
             Id = -1,
             FirstName = skier.FirstName,

@@ -36,11 +36,15 @@ namespace Hurace.Core.Logic.Services.RaceStatService
             if (maxSensorNr == null) return null;
             var position = 0;
             var equalityIncrease = 1;
-            foreach (var timeData in (await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value, count)).Where(
+            foreach (var timeData in (await _timeDataDao.GetRankingForSensor(raceId, maxSensorNr.Value)).Where(
                 td => td.StartList != null))
             {
                 if (position != 0)
-                    if (ranking[position - 1].Time == timeData.Time) equalityIncrease++;
+                    if (ranking[position - 1].Time == timeData.Time)
+                    {
+                        equalityIncrease++;
+                        if (position == count) count++;
+                    }
                     else
                     {
                         position += equalityIncrease;
@@ -51,8 +55,8 @@ namespace Hurace.Core.Logic.Services.RaceStatService
                 ranking.Add(new RaceRanking(timeData.StartList!, timeData.Time, position,
                                             timeData.Time - ranking.FirstOrDefault()?.Time ?? 0));
             }
-
-            return ranking;
+            
+            return count == 0 ? ranking : ranking.Take(count);
         }
 
         public Task<IEnumerable<StartList>> GetDisqualifiedSkiers(int raceId) =>
@@ -99,5 +103,8 @@ namespace Hurace.Core.Logic.Services.RaceStatService
             return (await _timeDataDao.FindByIdAsync(skierId, raceId, sensor.Id))
                    ?.SkierEvent?.RaceData?.EventDateTime;
         }
+
+        public Task<IEnumerable<RaceRanking>> GetWinnersForRace(int raceId) => 
+            GetFinishedSkierRanking(raceId, 3);
     }
 }

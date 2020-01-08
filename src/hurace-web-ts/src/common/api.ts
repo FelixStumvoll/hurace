@@ -12,6 +12,8 @@ import { Country } from '../models/Country';
 import { Gender } from '../models/Gender';
 import { SkierCreateDto } from '../models/SkierCreateDto';
 import { SkierUpdateDto } from '../models/SkierUpdateDto';
+import { SeasonCreateDto } from '../models/SeasonCreateDto';
+import { SeasonUpdateDto } from '../models/SeasonUpdateDto';
 
 //#region Season
 const setSeasonDate = (season: Season) => {
@@ -25,10 +27,18 @@ export const getSeasons = async (): Promise<Season[]> => {
     return response.data;
 };
 
-export const putSeason = async (season: Season): Promise<void> => {
+export const createSeason = async (
+    season: SeasonCreateDto
+): Promise<number> => {
     season.startDate = toIsoWithTimezone(season.startDate);
     season.endDate = toIsoWithTimezone(season.endDate);
-    await Axios.put<Season>(`${env.apiUrl}/season`, season);
+    return (await Axios.put<Season>(`${env.apiUrl}/season`, season)).data.id;
+};
+
+export const updateSeason = async (season: SeasonUpdateDto): Promise<void> => {
+    season.startDate = toIsoWithTimezone(season.startDate);
+    season.endDate = toIsoWithTimezone(season.endDate);
+    await Axios.put(`${env.apiUrl}/season/${season.id}`, season);
 };
 
 export const getSeasonById = async (seasonId: number): Promise<Season> => {

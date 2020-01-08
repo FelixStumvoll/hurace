@@ -8,5 +8,6 @@ declare module 'styled-components' {
         blue: string;
         negative: string;
         positive: string;
+        fontFamily: string;
     }
 }

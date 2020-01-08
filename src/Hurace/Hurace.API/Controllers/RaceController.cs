@@ -44,5 +44,9 @@ namespace Hurace.API.Controllers
         [HttpGet("{id}/ranking")]
         public Task<IEnumerable<RaceRanking>> GetRankingForRace(int id) =>
             _statService.GetRankingForRace(id);
+        
+        [HttpGet("{id}/winners")]
+        public Task<IEnumerable<RaceRanking>> GetWinnersForRace(int id) =>
+            _statService.GetWinnersForRace(id);
     }
 }

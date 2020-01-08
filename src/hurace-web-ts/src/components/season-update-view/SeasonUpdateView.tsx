@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react';
-import { getSeasonById } from '../../common/api';
+import React, { useCallback, useState, useEffect } from 'react';
+import { getSeasonById, createSeason } from '../../common/api';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { DefaultInput, FormFields } from '../../theme/CustomComponents';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
-import { putSeason } from '../../common/api';
-import { useStateAsync } from '../../hooks/useStateAsync';
+import { updateSeason } from '../../common/api';
 import { useHistory } from 'react-router-dom';
 
 const DateInput = styled(DefaultInput)`
@@ -19,61 +18,74 @@ const FieldLabel = styled.span``;
 export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
     seasonId
 }) => {
-    const [season, setSeason] = useStateAsync(async (seasonId: number) => {
-        return seasonId
-            ? await getSeasonById(seasonId)
-            : { id: -1, startDate: new Date(), endDate: new Date() };
-    }, seasonId);
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [endDate, setEndDate] = useState<Date | null>(new Date());
+
+    useEffect(() => {
+        const loadData = async () => {
+            if (!seasonId) return;
+            let season = await getSeasonById(seasonId);
+            setStartDate(season.startDate);
+            setEndDate(season.endDate);
+        };
+
+        loadData();
+    }, [seasonId]);
+
     const history = useHistory();
-    const redirectUri = `/season${seasonId ? `/${seasonId}` : ''}`;
+
+    const seasonValidator = useCallback(
+        () => !!startDate && !!endDate && startDate < endDate,
+        [endDate, startDate]
+    );
 
     const onSave = useCallback(() => {
-        if (!season) return;
         const save = async () => {
-            await putSeason(season!);
-            history.push(redirectUri);
+            let id = seasonId;
+
+            if (id)
+                await updateSeason({
+                    id,
+                    startDate: startDate!,
+                    endDate: endDate!
+                });
+            else
+                id = await createSeason({
+                    startDate: startDate!,
+                    endDate: endDate!
+                });
+
+            history.push(`/season/${id}`);
         };
 
         save();
-    }, [history, redirectUri, season]);
+    }, [endDate, history, seasonId, startDate]);
 
-    const onCancel = useCallback(() => history.push(redirectUri), [history, redirectUri]);
+    const onCancel = useCallback(() => history.push('/season'), [history]);
 
-    const startDateChange = useCallback(
-        (startDate: Date | null) => {
-            if (startDate && season) setSeason({ ...season, startDate });
-        },
-        [season, setSeason]
-    );
-
-    const endDateChange = useCallback(
-        (endDate: Date | null) => {
-            if (endDate && season) setSeason({ ...season, endDate });
-        },
-        [season, setSeason]
-    );
     return (
         <UpdateViewWrapper
             headerText={seasonId ? 'Saison bearbeiten' : 'Saison erstellen'}
             onSave={onSave}
             onCancel={onCancel}
+            canSave={seasonValidator}
         >
             <FormFields rowCount={2}>
                 <FieldLabel>Startdatum:</FieldLabel>
                 <DatePicker
                     dateFormat="dd.MM.yyyy"
                     placeholderText="Saisonstart"
-                    selected={season?.startDate}
+                    selected={startDate}
                     customInput={<DateInput />}
-                    onChange={startDateChange}
+                    onChange={setStartDate}
                 />
                 <FieldLabel>Enddatum:</FieldLabel>
                 <DatePicker
                     dateFormat="dd.MM.yyyy"
                     placeholderText="Saisonende"
-                    selected={season?.endDate}
+                    selected={endDate}
                     customInput={<DateInput />}
-                    onChange={endDateChange}
+                    onChange={setEndDate}
                 />
             </FormFields>
         </UpdateViewWrapper>

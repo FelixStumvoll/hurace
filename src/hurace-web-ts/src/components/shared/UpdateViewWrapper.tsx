@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HeaderCard } from './HeaderCard';
+import { DefaultButton } from '../../theme/CustomComponents';
 
 const PageWrapper = styled.div`
     width: 100%;
@@ -17,13 +18,9 @@ const CardContent = styled.div`
     flex-direction: column;
 `;
 
-const CrudButton = styled.button`
-    border-radius: 5px;
-    border: none;
-    color: white;
-    height: 30px;
-    cursor: pointer;
+const CrudButton = styled(DefaultButton)`
     flex-grow: 1;
+    color: white;
 `;
 
 const CancelButton = styled(CrudButton)`

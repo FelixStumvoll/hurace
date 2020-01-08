@@ -15,5 +15,6 @@ namespace Hurace.Core.Logic.Services.RaceStatService
         Task<TimeSpan?> GetDifferenceToLeader(TimeData timeData);
         Task<IEnumerable<TimeDifference>> GetTimeDataForSkierWithDifference(int skierId, int raceId);
         Task<DateTime?> GetStartTimeForSkier(int skierId, int raceId);
+        Task<IEnumerable<RaceRanking>> GetWinnersForRace(int raceId);
     }
 }
