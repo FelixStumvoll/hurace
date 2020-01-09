@@ -21,7 +21,6 @@ const CardContent = styled.div`
     height: calc(100% - (${props => props.theme.gap} + ${props => props.theme.gap}));
     width: calc(100% - (${props => props.theme.gap} + ${props => props.theme.gap}));
     background-color: rgb(235, 236, 240);
-    /* overflow: auto; */
 `;
 
 export const HeaderCard: React.FC<{

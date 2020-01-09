@@ -1,12 +1,8 @@
 import React, { useState, useCallback, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
-import { DefaultButton } from '../../theme/CustomComponents';
+import { DefaultButton, AlignRight } from '../../theme/CustomComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
-const Bar = styled.div`
-    margin-left: auto;
-`;
 
 const PositiveButton = styled(DefaultButton)<{ marginLeft: string }>`
     color: white;
@@ -43,7 +39,7 @@ export const DeleteBar: React.FC<{
     const theme = useContext(ThemeContext);
 
     return (
-        <Bar>
+        <AlignRight>
             {deleteChallenge ? (
                 <>
                     <DeleteQuestion>Löschen ?</DeleteQuestion>
@@ -63,6 +59,6 @@ export const DeleteBar: React.FC<{
                     {deleteText}
                 </NegativeButton>
             )}
-        </Bar>
+        </AlignRight>
     );
 };

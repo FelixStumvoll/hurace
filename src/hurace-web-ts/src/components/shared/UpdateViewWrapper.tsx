@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HeaderCard } from './HeaderCard';
-import { DefaultButton } from '../../theme/CustomComponents';
+import { DefaultButton, ColumnFlex } from '../../theme/CustomComponents';
 
 const PageWrapper = styled.div`
     width: 100%;
@@ -11,11 +11,6 @@ const PageWrapper = styled.div`
 
 const HeaderCardWrapper = styled.div`
     margin: 50px auto auto auto;
-`;
-
-const CardContent = styled.div`
-    display: flex;
-    flex-direction: column;
 `;
 
 const CrudButton = styled(DefaultButton)`
@@ -63,7 +58,7 @@ export const UpdateViewWrapper: React.FC<{
         <PageWrapper>
             <HeaderCardWrapper>
                 <HeaderCard headerText={headerText}>
-                    <CardContent>
+                    <ColumnFlex>
                         {children}
                         {errorText && <ErrorMessage>{errorText}</ErrorMessage>}
                         <ButtonPanel>
@@ -77,7 +72,7 @@ export const UpdateViewWrapper: React.FC<{
                                 Speichern
                             </SaveButton>
                         </ButtonPanel>
-                    </CardContent>
+                    </ColumnFlex>
                 </HeaderCard>
             </HeaderCardWrapper>
         </PageWrapper>

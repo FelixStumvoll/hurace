@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink } from '../../theme/CustomComponents';
+import { DefaultLink, RowFlex } from '../../theme/CustomComponents';
 import { DeleteBar } from './DeleteBar';
 import { AuthContext } from '../Auth0Provider';
 
@@ -11,10 +11,6 @@ const BackLinkPanel = styled.div`
     grid-template-rows: auto 1fr;
     row-gap: ${props => props.theme.gap};
     height: 100%;
-`;
-
-const TopBar = styled.div`
-    display: flex;
 `;
 
 const EditText = styled.div`
@@ -65,7 +61,7 @@ export const DetailViewWrapper: React.FC<{
 }> = ({ backText, url, children, editConfig, deleteConfig }) => {
     return (
         <BackLinkPanel>
-            <TopBar>
+            <RowFlex>
                 <BackLink to={url}>
                     <BackIcon icon={faAngleLeft}></BackIcon>
                     <BackText>{backText}</BackText>
@@ -96,7 +92,7 @@ export const DetailViewWrapper: React.FC<{
                         )
                     }
                 </AuthContext.Consumer>
-            </TopBar>
+            </RowFlex>
 
             {children}
         </BackLinkPanel>

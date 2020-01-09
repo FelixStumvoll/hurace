@@ -35,7 +35,7 @@ export const DefaultButton = styled.button`
 export const DefaultInput = styled.input`
     border-radius: 5px;
     padding-left: 10px;
-    height: 24px;
+    height: 34px;
     border: 1px solid ${props => props.theme.gray};
 `;
 
@@ -49,4 +49,35 @@ export const FormFields = styled.div<{ rowCount: number }>`
 export const NoListEntryText = styled.div`
     width: fit-content;
     margin: auto;
+`;
+
+export const RowFlex = styled.div`
+    display: flex;
+`;
+
+export const ColumnFlex = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+export const FlexWrap = styled(RowFlex)`
+    flex-wrap: wrap;
+`;
+
+export const AlignRight = styled.div`
+    margin-left: auto;
+`;
+
+export const TextBold = styled.span`
+    font-weight: bold;
+`;
+
+export const WrapText = styled.span`
+    word-wrap: break-word;
+    word-break: break-all;
+`;
+
+export const VerticallyAlignedText = styled.span`
+    height: fit-content;
+    margin: auto 0 auto 0;
 `;

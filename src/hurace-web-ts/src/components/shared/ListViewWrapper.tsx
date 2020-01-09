@@ -2,14 +2,12 @@ import React, { createContext, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink, DefaultInput } from '../../theme/CustomComponents';
+import {
+    DefaultLink,
+    DefaultInput,
+    ColumnFlex
+} from '../../theme/CustomComponents';
 import { AuthContext } from '../Auth0Provider';
-
-const MasterPanel = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-`;
 
 const HeaderBar = styled.div`
     display: flex;
@@ -18,7 +16,6 @@ const HeaderBar = styled.div`
 `;
 
 const SearchBar = styled(DefaultInput)`
-    height: 31px;
     width: 200px;
 `;
 
@@ -44,8 +41,6 @@ const CreateIcon = styled(FontAwesomeIcon)`
 
 const Content = styled.div`
     margin-top: ${props => props.theme.gap};
-    overflow: hidden;
-    display: flex;
 `;
 
 export const SearchContext = createContext('');
@@ -66,7 +61,7 @@ export const ListViewWrapper: React.FC<{
     );
 
     return (
-        <MasterPanel>
+        <ColumnFlex>
             <HeaderBar>
                 <SearchBar
                     value={searchterm}
@@ -92,6 +87,6 @@ export const ListViewWrapper: React.FC<{
                     {children}
                 </SearchContext.Provider>
             </Content>
-        </MasterPanel>
+        </ColumnFlex>
     );
 };
