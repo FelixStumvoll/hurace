@@ -25,7 +25,6 @@ const Label = styled.div`
 `;
 
 const SkierInput = styled(DefaultInput)`
-    height: 21px;
     width: calc(100% - 12px);
 `;
 

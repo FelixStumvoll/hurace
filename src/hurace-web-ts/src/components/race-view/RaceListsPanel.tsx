@@ -8,9 +8,8 @@ import { getRankingForRace, getStartListForRace } from '../../common/api';
 const GridPanel = styled.div`
     display: grid;
     grid-template-columns: 1fr 2fr;
-    column-gap: 10px;
+    column-gap: ${props => props.theme.gap};
     height: 100%;
-    overflow: hidden;
 `;
 
 export const RaceListsPanel: React.FC<{

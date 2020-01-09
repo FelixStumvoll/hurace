@@ -9,7 +9,7 @@ import { AuthContext } from '../Auth0Provider';
 const BackLinkPanel = styled.div`
     display: grid;
     grid-template-rows: auto 1fr;
-    row-gap: 10px;
+    row-gap: ${props => props.theme.gap};
     height: 100%;
 `;
 
@@ -23,7 +23,8 @@ const EditText = styled.div`
 `;
 
 const EditLink = styled(DefaultLink)<{ deletepresent: number }>`
-    margin-left: ${props => (props.deletepresent === 0 ? '10px' : 'auto')};
+    margin-left: ${props =>
+        props.deletepresent === 0 ? props.theme.gap : 'auto'};
     border-radius: 5px;
     background-color: #f0db4f;
     color: black;

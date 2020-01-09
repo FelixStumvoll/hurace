@@ -14,12 +14,15 @@ import { SkierCreateDto } from '../models/SkierCreateDto';
 import { SkierUpdateDto } from '../models/SkierUpdateDto';
 import { SeasonCreateDto } from '../models/SeasonCreateDto';
 import { SeasonUpdateDto } from '../models/SeasonUpdateDto';
+import { TimeDifference } from '../models/TimeDifference';
 
 //#region Season
 const setSeasonDate = (season: Season) => {
     season.endDate = new Date(season.endDate);
     season.startDate = new Date(season.startDate);
 };
+
+const setRaceDate = (race: Race) => (race.raceDate = new Date(race.raceDate));
 
 export const getSeasons = async (): Promise<Season[]> => {
     var response = await Axios.get<Season[]>(`${env.apiUrl}/season`);
@@ -54,7 +57,7 @@ export const getRacesForSeason = async (
     );
     let disciplineMap: DisciplineData[] = [];
     response.data.forEach(r => {
-        r.raceDate = new Date(r.raceDate);
+        setRaceDate(r);
         let disciplineEntry = disciplineMap.find(
             d => d.discipline.id === r.disciplineId
         );
@@ -73,6 +76,11 @@ export const getRacesForSeason = async (
 //#endregion
 
 //#region Race
+
+const setRaceRankingDate = (raceRanking: RaceRanking) => {
+    raceRanking.time = new Date(raceRanking.time!);
+    raceRanking.timeToLeader = new Date(raceRanking.timeToLeader!);
+};
 
 export const getRaceDetails = async (raceId: number): Promise<Race> => {
     let response = await Axios.get<Race>(`${env.apiUrl}/race/${raceId}`);
@@ -101,8 +109,7 @@ export const getRankingForRace = async (
     response.data.forEach(rr => {
         setSkierDate(rr.startList.skier);
         if (rr.disqualified) return;
-        rr.time = new Date(rr.time!);
-        rr.timeToLeader = new Date(rr.timeToLeader!);
+        setRaceRankingDate(rr);
     });
 
     return response.data;
@@ -116,8 +123,59 @@ export const getWinnersForRace = async (
     );
     response.data.forEach(rr => {
         setSkierDate(rr.startList.skier);
-        rr.time = new Date(rr.time!);
-        rr.timeToLeader = new Date(rr.timeToLeader!);
+        setRaceRankingDate(rr);
+    });
+
+    return response.data;
+};
+
+//#endregion
+
+//#region activeRaces
+
+export const getActiveRaces = async (): Promise<Race[]> => {
+    let response = await Axios.get<Race[]>(`${env.apiUrl}/race/active`);
+    response.data.forEach(r => setRaceDate(r));
+    return response.data;
+};
+
+export const getRemainingStartListForRace = async (
+    raceId: number
+): Promise<StartList[]> => {
+    let response = await Axios.get<StartList[]>(
+        `${env.apiUrl}/race/active/${raceId}/remainingStartList`
+    );
+    response.data.forEach(
+        sl => (sl.skier.dateOfBirth = new Date(sl.skier.dateOfBirth))
+    );
+    return response.data;
+};
+
+export const getCurrentSkierForRace = async (
+    raceId: number
+): Promise<StartList | undefined> => {
+    let response = await Axios.get<StartList>(
+        `${env.apiUrl}/race/active/${raceId}/currentSkier`
+    );
+
+    if (response.status === 204) return undefined;
+    setSkierDate(response.data.skier);
+
+    return response.data;
+};
+
+export const getSplittimesForCurrentSkier = async (
+    raceId: number
+): Promise<TimeDifference[]> => {
+    let response = await Axios.get<TimeDifference[]>(
+        `${env.apiUrl}/race/active/${raceId}/currentSkier/splitTimes`
+    );
+
+    if (response.status === 204) return [];
+
+    response.data.forEach(td => {
+        td.differenceToLeader = new Date(td.differenceToLeader);
+        setSkierDate(td.timeData.startList.skier);
     });
 
     return response.data;

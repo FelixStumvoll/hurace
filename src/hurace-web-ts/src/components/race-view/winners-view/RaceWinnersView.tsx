@@ -3,20 +3,31 @@ import { HeaderCard } from '../../shared/HeaderCard';
 import styled from 'styled-components';
 import { getWinnersForRace } from '../../../common/api';
 import { useStateAsync } from '../../../hooks/useStateAsync';
-import { SkierListViewItem } from '../../skier-list-view/SkierViewItem';
+import { SkierListViewItem } from '../../skier-list-view/SkierListViewItem';
+import { RaceRanking } from '../../../models/RaceRanking';
 
 const WinnersFlex = styled.div`
     display: flex;
 `;
 
-export const RaceWinnersView: React.FC<{ raceId: number }> = ({ raceId }) => {
-    const [winners] = useStateAsync(getWinnersForRace, raceId);
+const WinnerWrapper = styled.div`
+    margin-left: ${props => props.theme.gap};
 
+    :first-child {
+        margin-left: 0;
+    }
+`;
+
+export const RaceWinnersView: React.FC<{ winners: RaceRanking[] }> = ({
+    winners
+}) => {
     return (
-        <HeaderCard headerText="Gewinner">
+        <HeaderCard headerText="Sieger">
             <WinnersFlex>
                 {winners?.map(w => (
-                    <SkierListViewItem key={w.position} skier={w.startList.skier} />
+                    <WinnerWrapper key={w.position}>
+                        <SkierListViewItem skier={w.startList.skier} />
+                    </WinnerWrapper>
                 ))}
             </WinnersFlex>
         </HeaderCard>

@@ -9,7 +9,7 @@ const SkierGrid = styled.div`
     display: flex;
     height: fit-content;
     flex-direction: row;
-    column-gap: 10px;
+    column-gap: ${props => props.theme.gap};
 `;
 
 export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {

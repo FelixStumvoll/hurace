@@ -4,22 +4,26 @@ import { RaceDetailPanel } from './RaceDetailPanel';
 import { RaceListsPanel } from './RaceListsPanel';
 import { DetailViewWrapper } from '../shared/DetailViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
-import { getRaceDetails } from '../../common/api';
-import { GridAreaProps } from '../../interfaces/GridAreaProps';
+import { getRaceDetails, getWinnersForRace } from '../../common/api';
 import { RaceWinnersView } from './winners-view/RaceWinnersView';
 
 const RacePanel = styled.div`
-    display: grid;
-    max-height: 100%;
-    gap: 10px;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 'detail winners' 'lists lists';
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 `;
 
-const GridAreaWrapper = styled.div<GridAreaProps>`
-    grid-area: ${props => props.gridArea};
+const RaceDetails = styled.div`
+    display: flex;
+    margin-bottom: ${props => props.theme.gap};
+`;
+
+const DetailPanelWrapper = styled.div`
+    height: fit-content;
+    margin-right: ${props => props.theme.gap};
+`;
+
+const WinnersWrapper = styled.div`
+    margin-left: auto;
 `;
 
 export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
@@ -27,6 +31,7 @@ export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
     seasonId
 }) => {
     const [race] = useStateAsync(getRaceDetails, raceId);
+    const [winners] = useStateAsync(getWinnersForRace, raceId);
 
     return (
         <DetailViewWrapper
@@ -34,17 +39,19 @@ export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
             backText=" Zurück zur Saison"
         >
             <RacePanel>
-                <GridAreaWrapper gridArea="detail">
-                    {race && <RaceDetailPanel race={race} />}
-                </GridAreaWrapper>
+                <RaceDetails>
+                    <DetailPanelWrapper>
+                        {race && <RaceDetailPanel race={race} />}
+                    </DetailPanelWrapper>
 
-                <GridAreaWrapper gridArea="winners">
-                    <RaceWinnersView raceId={raceId} />
-                </GridAreaWrapper>
+                    {winners && winners.length > 0 && (
+                        <WinnersWrapper>
+                            <RaceWinnersView winners={winners} />
+                        </WinnersWrapper>
+                    )}
+                </RaceDetails>
 
-                <GridAreaWrapper gridArea="lists">
-                    <RaceListsPanel raceId={raceId} />
-                </GridAreaWrapper>
+                <RaceListsPanel raceId={raceId} />
             </RacePanel>
         </DetailViewWrapper>
     );

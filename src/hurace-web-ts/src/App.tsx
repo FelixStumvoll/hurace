@@ -16,9 +16,13 @@ const PageContent = styled.div`
 
 const MainContent = styled.main`
     grid-area: main;
-    height: calc(100% - 20px);
-    width: calc(100% - 20px);
-    padding: 10px;
+    height: calc(
+        100% - (${props => props.theme.gap} + ${props => props.theme.gap})
+    );
+    width: calc(
+        100% - (${props => props.theme.gap} + ${props => props.theme.gap})
+    );
+    padding: ${props => props.theme.gap};
 `;
 
 export const App: React.FC = () => {

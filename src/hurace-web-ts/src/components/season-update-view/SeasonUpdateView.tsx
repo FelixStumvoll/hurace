@@ -8,12 +8,10 @@ import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { updateSeason } from '../../common/api';
 import { useHistory } from 'react-router-dom';
 
-const DateInput = styled(DefaultInput)`
-    width: 75px;
-    height: 21px;
+const FieldLabel = styled.div`
+    height: fit-content;
+    margin: auto 0 auto 0;
 `;
-
-const FieldLabel = styled.span``;
 
 export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
     seasonId
@@ -79,7 +77,7 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
                     dateFormat="dd.MM.yyyy"
                     placeholderText="Saisonstart"
                     selected={startDate}
-                    customInput={<DateInput />}
+                    customInput={<DefaultInput />}
                     onChange={setStartDate}
                 />
                 <FieldLabel>Enddatum:</FieldLabel>
@@ -87,7 +85,7 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
                     dateFormat="dd.MM.yyyy"
                     placeholderText="Saisonende"
                     selected={endDate}
-                    customInput={<DateInput />}
+                    customInput={<DefaultInput />}
                     onChange={setEndDate}
                 />
             </FormFields>

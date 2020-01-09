@@ -8,6 +8,7 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
     public interface IRaceBaseDataService
     {
         Task<IEnumerable<Race>> GetAllRaces();
+        
         Task<Race?> GetRaceById(int raceId);
         Task<RaceModificationResult> InsertOrUpdateRace(Race race, int sensorCount);
         Task<int?> GetSensorCount(int raceId);

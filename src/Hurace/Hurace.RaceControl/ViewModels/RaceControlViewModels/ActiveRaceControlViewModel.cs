@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Logic;
 using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
+using Hurace.Core.Logic.Services.ActiveRaceService;
 using Hurace.Core.Logic.Services.RaceStartListService;
 using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Dal.Domain;
@@ -23,6 +24,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
     {
         private readonly IActiveRaceControlService _activeRaceControlService;
         private readonly IRaceStartListService _startListService;
+        private readonly IActiveRaceService _activeRaceService;
         private bool _eventsSetup;
         private StartList _currentSkier;
         private SharedRaceStateViewModel RaceState { get; set; }
@@ -39,11 +41,12 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         public ActiveRaceControlViewModel(SharedRaceStateViewModel raceState,
             IActiveRaceControlService activeRaceControlService, IRaceStartListService startListService,
             Func<IActiveRaceControlService, CurrentSkierViewModel> currentSkierVmFactory,
-            Func<IActiveRaceControlService, RankingViewModel> rankingVmFactory)
+            Func<IActiveRaceControlService, RankingViewModel> rankingVmFactory, IActiveRaceService activeRaceService)
         {
             RaceState = raceState;
             _activeRaceControlService = activeRaceControlService;
             _startListService = startListService;
+            _activeRaceService = activeRaceService;
             CurrentSkierViewModel = currentSkierVmFactory(_activeRaceControlService);
             RankingViewModel = rankingVmFactory(_activeRaceControlService);
             SetupCommands();
@@ -99,7 +102,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         {
             try
             {
-                _currentSkier = await _activeRaceControlService.GetCurrentSkier();
+                _currentSkier = await _activeRaceService.GetCurrentSkier(RaceState.Race.Id);
                 await LoadStartList();
             }
             catch (Exception e)
@@ -110,7 +113,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         }
 
         private async Task LoadStartList() =>
-            StartList.Repopulate(await _activeRaceControlService.GetRemainingStartList());
+            StartList.Repopulate(await _activeRaceService.GetRemainingStartList(RaceState.Race.Id));
 
         private static void InvokeButtonCanExecuteChanged() => AsyncCommand.RaiseCanExecuteChanged();
 

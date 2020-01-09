@@ -14,7 +14,7 @@ const MasterPanel = styled.div`
 const HeaderBar = styled.div`
     display: flex;
     position: sticky;
-    top: calc(${props => props.theme.navHeight} + 10px);
+    top: calc(${props => props.theme.navHeight} + ${props => props.theme.gap});
 `;
 
 const SearchBar = styled(DefaultInput)`
@@ -43,7 +43,7 @@ const CreateIcon = styled(FontAwesomeIcon)`
 `;
 
 const Content = styled.div`
-    margin-top: 10px;
+    margin-top: ${props => props.theme.gap};
     overflow: hidden;
     display: flex;
 `;
@@ -51,9 +51,11 @@ const Content = styled.div`
 export const SearchContext = createContext('');
 
 export const ListViewWrapper: React.FC<{
-    createText: string;
-    createUrl: string;
-}> = ({ children, createText, createUrl }) => {
+    createConfig?: {
+        createText: string;
+        createUrl: string;
+    };
+}> = ({ children, createConfig }) => {
     const [searchterm, setSearchterm] = useState('');
 
     const searchTermChange = useCallback(
@@ -73,11 +75,12 @@ export const ListViewWrapper: React.FC<{
                 />
                 <AuthContext.Consumer>
                     {({ isAuthenticated }) =>
-                        isAuthenticated && (
-                            <CreateLink to={createUrl}>
+                        isAuthenticated &&
+                        createConfig && (
+                            <CreateLink to={createConfig.createUrl}>
                                 <CreateText>
                                     <CreateIcon icon={faPlus} />
-                                    {createText}
+                                    {createConfig.createText}
                                 </CreateText>
                             </CreateLink>
                         )

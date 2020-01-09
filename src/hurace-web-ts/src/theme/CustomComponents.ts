@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Card = styled.div`
-    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border: 1px solid ${props => props.theme.gray};
     border-radius: 5px;
-    padding: 10px;
+    padding: ${props => props.theme.gap};
+    background-color: white;
 `;
 
 export const ListItem = styled.div`
@@ -34,6 +35,7 @@ export const DefaultButton = styled.button`
 export const DefaultInput = styled.input`
     border-radius: 5px;
     padding-left: 10px;
+    height: 24px;
     border: 1px solid ${props => props.theme.gray};
 `;
 
@@ -42,4 +44,9 @@ export const FormFields = styled.div<{ rowCount: number }>`
     grid-template-rows: repeat(auto ${props => props.rowCount});
     grid-template-columns: auto auto;
     gap: 10px;
+`;
+
+export const NoListEntryText = styled.div`
+    width: fit-content;
+    margin: auto;
 `;

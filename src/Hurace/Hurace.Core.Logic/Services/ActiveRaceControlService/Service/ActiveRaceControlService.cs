@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Configs;
+using Hurace.Core.Logic.Services.ActiveRaceService;
 using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
@@ -34,6 +35,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         private readonly ITimeDataDao _timeDataDao;
         private readonly ISensorDao _sensorDao;
         private readonly IRaceClockProvider _raceClockProvider;
+        private readonly IActiveRaceService _activeRaceService;
         private int _maxSensorNr;
         private readonly SensorConfig _sensorConfig;
 
@@ -42,12 +44,13 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         public ActiveRaceControlService(int raceId, IRaceDao raceDao, IStartListDao startListDao,
             IRaceEventDao raceEventDao, IRaceDataDao raceDataDao, ISkierEventDao skierEventDao,
             ITimeDataDao timeDataDao, ISensorDao sensorDao,
-            IRaceStatService statService, IRaceClockProvider raceClockProvider, SensorConfig sensorConfig)
+            IRaceStatService statService, IRaceClockProvider raceClockProvider, SensorConfig sensorConfig, IActiveRaceService activeRaceService)
         {
             RaceId = raceId;
             _statService = statService;
             _raceClockProvider = raceClockProvider;
             _sensorConfig = sensorConfig;
+            _activeRaceService = activeRaceService;
             _raceDao = raceDao;
             _startListDao = startListDao;
             _raceEventDao = raceEventDao;
@@ -111,7 +114,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             //minmax check
             if (sensorNumber < 0 || sensorNumber > _maxSensorNr) return false;
 
-            var currentSkier = await GetCurrentSkier();
+            var currentSkier = await _activeRaceService.GetCurrentSkier(RaceId);
 
             //no current skier
             if (currentSkier == null) return false;
@@ -143,7 +146,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         {
             using var scope = ScopeBuilder.BuildTransactionScope();
 
-            var currentSkier = await GetCurrentSkier();
+            var currentSkier = await _activeRaceService.GetCurrentSkier(RaceId);
             if (currentSkier == null) return null;
             var raceDataId = await InsertRaceData(RaceDataEvent.SkierSplitTime, RaceId);
             var skierEventId = await InsertSkierEvent(currentSkier.SkierId, currentSkier.RaceId, raceDataId.Value);
@@ -201,7 +204,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
 
         private async Task CurrentSkierFinished()
         {
-            var currentSkier = await GetCurrentSkier();
+            var currentSkier = await _activeRaceService.GetCurrentSkier(RaceId);
             if (currentSkier == null) return;
 
             await UpdateStartListState(currentSkier, RaceDataEvent.SkierFinished,
@@ -209,8 +212,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             OnSkierFinished?.Invoke(currentSkier);
         }
 
-        public Task<StartList?> GetCurrentSkier() => _startListDao.GetCurrentSkierForRace(RaceId);
-
+        
         public async Task<bool> CancelSkier(int skierId)
         {
             var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
@@ -218,10 +220,6 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             OnSkierCancelled?.Invoke(startList);
             return true;
         }
-
-        public async Task<IEnumerable<StartList>?> GetRemainingStartList() =>
-            (await _startListDao.GetStartListForRace(RaceId))
-            .Where(sl => sl.StartStateId == (int) StartState.Upcoming);
 
         public async Task<bool> DisqualifyCurrentSkier()
         {
@@ -241,23 +239,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             return true;
         }
 
-        public async Task<int?> GetPossiblePositionForCurrentSkier()
-        {
-            var current = await GetCurrentSkier();
-            if (current == null) return null;
-            var lastTimeData =
-                (await _timeDataDao.GetTimeDataForStartList(current.SkierId, current.RaceId))
-                .OrderByDescending(td => td?.Sensor?.SensorNumber)
-                .First();
-
-            var diff = await _statService.GetDifferenceToLeader(lastTimeData);
-            if (diff == null) return 1;
-
-            var ranking = await _statService.GetFinishedSkierRanking(RaceId);
-            return 1 + ranking
-                       ?.TakeWhile(raceRanking => (raceRanking?.TimeToLeader ?? 0) < diff.Value.TotalMilliseconds)
-                       .Count();
-        }
+        
 
         public async Task<bool> CancelRace()
         {

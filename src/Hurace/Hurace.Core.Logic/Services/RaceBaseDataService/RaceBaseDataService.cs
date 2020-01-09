@@ -31,6 +31,7 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
         }
 
         public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
+        
 
         public Task<Race?> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
         

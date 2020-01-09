@@ -13,25 +13,21 @@ import { HeaderCard } from '../shared/HeaderCard';
 import { getTime, getDate } from '../../common/timeConverter';
 import { Race } from '../../models/Race';
 
-const DetailPanel = styled.div`
+const ContentRow = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 10px;
+    gap: ${props => props.theme.gap};
+    width: fit-content;
 `;
 
-const InfoContent = styled.div`
+const DetailGrid = styled.div`
     display: grid;
     grid-template-rows: repeat(5, auto);
-    column-gap: 5px;
+    column-gap: 10px;
+    row-gap: 5px;
     grid-template-columns: 30px auto;
-`;
-
-const DescriptionCardWrapper = styled.div`
     width: fit-content;
-`;
-
-const DetailCardWrapper = styled.div`
-    width: fit-content;
+    height: fit-content;
 `;
 
 const DetailText = styled.span`
@@ -44,6 +40,8 @@ const CountryText = styled(DetailText)`
     font-weight: normal;
     font-size: 16px;
     color: ${props => props.theme.gray};
+    display: flex;
+    flex-direction: column;
 `;
 
 const HeaderText = styled(DetailText)`
@@ -51,8 +49,11 @@ const HeaderText = styled(DetailText)`
     font-weight: bold;
 `;
 
+const DescriptionHeader = styled.div`
+    font-weight: bold;
+`;
+
 const RaceDescription = styled.div`
-    grid-area: description;
     word-wrap: break-word;
     overflow: auto;
     word-break: break-all;
@@ -65,47 +66,40 @@ const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
 
 export const RaceDetailPanel: React.FC<{ race: Race }> = ({ race }) => {
     return (
-        <DetailPanel>
-            <DetailCardWrapper>
-                <HeaderCard headerText="Stammdaten">
-                    <InfoContent>
-                        <DetailIcon fontSize={25} icon={faLocationArrow} />
-                        <HeaderText>
-                            {race?.location.locationName}
-                            <CountryText>
-                                {' '}
-                                {race?.location.country.countryName}
-                            </CountryText>{' '}
-                        </HeaderText>
-                        <DetailIcon fontSize={16} icon={faSkiing} />
-                        <DetailText>
-                            {race?.discipline.disciplineName}
-                        </DetailText>
-                        <DetailIcon fontSize={16} icon={faFlagCheckered} />
-                        <DetailText>
-                            {race?.raceState.raceStateDescription}
-                        </DetailText>
-                        <DetailIcon fontSize={16} icon={faUser} />
-                        <DetailText>
-                            {race?.gender.genderDescription}
-                        </DetailText>
-                        <DetailIcon fontSize={16} icon={faCalendarDay} />
-                        <DetailText>{getDate(race?.raceDate)}</DetailText>
-                        <DetailIcon fontSize={16} icon={faClock} />
-                        <DetailText>{getTime(race?.raceDate)}</DetailText>
-                    </InfoContent>
-                </HeaderCard>
-            </DetailCardWrapper>
+        <HeaderCard headerText="Stammdaten">
+            <ContentRow>
+                <DetailGrid>
+                    <DetailIcon fontSize={25} icon={faLocationArrow} />
+                    <HeaderText>
+                        {race?.location.locationName}
+                        <CountryText>
+                            {' '}
+                            {race?.location.country.countryName}
+                        </CountryText>{' '}
+                    </HeaderText>
+                    <DetailIcon fontSize={16} icon={faSkiing} />
+                    <DetailText>{race?.discipline.disciplineName}</DetailText>
+                    <DetailIcon fontSize={16} icon={faFlagCheckered} />
+                    <DetailText>
+                        {race?.raceState.raceStateDescription}
+                    </DetailText>
+                    <DetailIcon fontSize={16} icon={faUser} />
+                    <DetailText>{race?.gender.genderDescription}</DetailText>
+                    <DetailIcon fontSize={16} icon={faCalendarDay} />
+                    <DetailText>{getDate(race?.raceDate)}</DetailText>
+                    <DetailIcon fontSize={16} icon={faClock} />
+                    <DetailText>{getTime(race?.raceDate)}</DetailText>
+                </DetailGrid>
 
-            <DescriptionCardWrapper>
-                <HeaderCard headerText="Beschreibung">
-                    {race?.raceDescription && (
+                {race?.raceDescription && (
+                    <div>
+                        <DescriptionHeader>Beschreibung:</DescriptionHeader>
                         <RaceDescription>
                             {race?.raceDescription}
                         </RaceDescription>
-                    )}
-                </HeaderCard>
-            </DescriptionCardWrapper>
-        </DetailPanel>
+                    </div>
+                )}
+            </ContentRow>
+        </HeaderCard>
     );
 };

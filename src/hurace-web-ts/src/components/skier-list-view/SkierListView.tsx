@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Skier } from '../../models/Skier';
 import { getSkiers } from '../../common/api';
-import { SkierListViewItem } from './SkierViewItem';
+import { SkierListViewItem } from './SkierListViewItem';
 import { ListViewWrapper } from '../shared/ListViewWrapper';
 import { SearchContext } from '../shared/ListViewWrapper';
 import { useStateAsync } from '../../hooks/useStateAsync';
@@ -12,6 +12,10 @@ const SkierList = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     overflow: auto;
+`;
+
+const ListItemWrapper = styled.div`
+    margin: 0 ${props => props.theme.gap} ${props => props.theme.gap} 0;
 `;
 
 const skierFilter = (skier: Skier, searchTerm: string): boolean =>
@@ -27,8 +31,10 @@ export const SkierListView: React.FC = () => {
 
     return (
         <ListViewWrapper
-            createText="Rennfahrer erstellen"
-            createUrl="/skier/new"
+            createConfig={{
+                createText: 'Rennfahrer erstellen',
+                createUrl: '/skier/new'
+            }}
         >
             <SearchContext.Consumer>
                 {search => (
@@ -39,7 +45,9 @@ export const SkierListView: React.FC = () => {
                             )
                             .filter(s => skierFilter(s, search))
                             .map(s => (
-                                <SkierListViewItem key={s.id} skier={s} />
+                                <ListItemWrapper key={s.id}>
+                                    <SkierListViewItem skier={s} />
+                                </ListItemWrapper>
                             ))}
                     </SkierList>
                 )}

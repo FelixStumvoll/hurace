@@ -9,5 +9,6 @@ declare module 'styled-components' {
         negative: string;
         positive: string;
         fontFamily: string;
+        gap: string;
     }
 }

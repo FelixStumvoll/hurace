@@ -5,7 +5,7 @@ import { getRacesForSeason } from '../../../common/api';
 import { useStateAsync } from '../../../hooks/useStateAsync';
 
 const DisciplinePanel = styled.div`
-    margin-top: 10px;
+    margin-top: ${props => props.theme.gap};
     width: 100%;
     overflow: auto;
 `;

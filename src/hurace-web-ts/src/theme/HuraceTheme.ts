@@ -7,6 +7,7 @@ export const HuraceTheme: DefaultTheme = {
     blue: '#0078F2',
     negative: ' #e25959',
     positive: '#5f985f',
+    gap: '24px',
     fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
     'Helvetica Neue', sans-serif`

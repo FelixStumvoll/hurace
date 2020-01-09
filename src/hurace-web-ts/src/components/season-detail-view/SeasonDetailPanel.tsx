@@ -9,7 +9,8 @@ const DetailGrid = styled.div`
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
-    gap: 10px;
+    column-gap: 10px;
+    row-gap: 5px;
 `;
 
 const SeasonLabel = styled.span`

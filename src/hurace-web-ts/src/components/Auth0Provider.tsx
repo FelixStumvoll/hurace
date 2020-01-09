@@ -2,9 +2,10 @@ import React, { useEffect, createContext, useState } from 'react';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { useHistory } from 'react-router-dom';
+import { User } from '../models/User';
 
 interface AuthContextProps {
-    user?: any;
+    user?: User;
     isAuthenticated: boolean;
     token?: string;
     auth0Client?: Auth0Client;
@@ -20,7 +21,7 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
     children,
     ...initOptions
 }) => {
-    const [user, setUser] = useState<any>();
+    const [user, setUser] = useState<User>();
     const [auth0Client, setAuth0Client] = useState<Auth0Client>();
     const [token, setToken] = useState<string>();
 
@@ -36,6 +37,8 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
         setUser(undefined);
         setToken(undefined);
     };
+
+    console.log('user :', user);
 
     useEffect(() => {
         const initAuth = async () => {

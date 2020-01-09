@@ -21,12 +21,9 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         Task<bool> EndRace();
         Task InitializeAsync();
         Task<bool> EnableRaceForSkier();
-        Task<StartList?> GetCurrentSkier();
         Task<bool> CancelSkier(int skierId);
-        Task<IEnumerable<StartList>?> GetRemainingStartList();
         Task<bool> DisqualifyCurrentSkier();
         Task<bool> DisqualifyFinishedSkier(int skierId);
-        Task<int?> GetPossiblePositionForCurrentSkier();
         Task<bool> CancelRace();
     }
 }

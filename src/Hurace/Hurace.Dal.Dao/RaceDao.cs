@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Common;
 using Hurace.Dal.Common.StatementBuilder;
@@ -25,9 +26,14 @@ namespace Hurace.Dal.Dao
                             .Join<Race, RaceState>((nameof(Race.RaceStateId), nameof(RaceState.Id)))
                             .Join<Race, Gender>((nameof(Race.GenderId), nameof(Gender.Id)));
 
+
+        private SelectStatementBuilder<Race> ActiveRaceQuery() => DefaultSelectQuery()
+            .Where<RaceState>((nameof(RaceState.Id), (int) Domain.Enums.RaceState.Running));
         public Task<IEnumerable<Race>> GetActiveRaces() =>
-            GeneratedQueryAsync(DefaultSelectQuery()
-                                .Where<RaceState>((nameof(RaceState.Id), (int) Domain.Enums.RaceState.Running)).Build());
+            GeneratedQueryAsync(ActiveRaceQuery().Build());
+
+        public async Task<Race?> GetActiveRaceById(int raceId) => 
+            (await GeneratedQueryAsync(ActiveRaceQuery().Where<Race>((nameof(Race.Id), raceId)).Build())).FirstOrDefault();
 
         public Task<IEnumerable<Race>> GetRacesForSeasonId(int seasonId) =>
             GeneratedQueryAsync(DefaultSelectQuery().Where<Race>((nameof(Race.SeasonId), seasonId)).Build());

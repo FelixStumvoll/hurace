@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DisciplineData } from '../../../models/DisciplineData';
-import { RaceViewItem } from './RaceViewItem';
+import { RaceListViewItem } from './RaceListViewItem';
 import { DefaultLink } from '../../../theme/CustomComponents';
 import { HeaderCard } from '../../shared/HeaderCard';
 
 const PanelWrapper = styled.div`
-    margin-bottom: 10px;
+    margin-bottom: ${props => props.theme.gap};
 `;
 
 const RacesPanel = styled.div`
@@ -27,7 +27,7 @@ export const DisciplineViewItem: React.FC<{
                             key={r.id}
                             to={`/season/${seasonId}/race/${r.id}`}
                         >
-                            <RaceViewItem race={r} />
+                            <RaceListViewItem race={r} />
                         </DefaultLink>
                     ))}
                 </RacesPanel>

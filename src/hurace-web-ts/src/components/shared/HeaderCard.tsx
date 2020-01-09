@@ -3,7 +3,7 @@ import styled, { CSSProperties } from 'styled-components';
 import { Card } from '../../theme/CustomComponents';
 
 const Panel = styled(Card)`
-    /* overflow: hidden; */
+    overflow: hidden;
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -17,9 +17,10 @@ const CardHeader = styled.div`
 `;
 
 const CardContent = styled.div`
-    padding: 10px;
-    height: calc(100% - 10px);
-    width: calc(100% - 20px);
+    padding: ${props => props.theme.gap};
+    height: calc(100% - (${props => props.theme.gap} + ${props => props.theme.gap}));
+    width: calc(100% - (${props => props.theme.gap} + ${props => props.theme.gap}));
+    background-color: rgb(235, 236, 240);
     /* overflow: auto; */
 `;
 

@@ -14,13 +14,14 @@ const DetailPanel = styled.div`
 const StatsPanel = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: ${props => props.theme.gap};
 `;
 
 const StatsGrid = styled.div`
     display: grid;
     grid-template-columns: auto auto;
-    column-gap: 5px;
+    column-gap: 10px;
+    row-gap: 5px;
     grid-template-rows: repeat(3, auto);
 `;
 
@@ -29,6 +30,7 @@ const StatLabel = styled.label`
 `;
 
 const DisciplineText = styled.span`
+    margin-top: 5px;
     word-break: break-all;
 `;
 
@@ -37,7 +39,7 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
 
     return (
         <HeaderCard
-            contentStyles={{ padding: '0px', width: '100%' }}
+            contentStyles={{ padding: '0px', width: '100%', height: '100%' }}
             headerText={`${skier.firstName} ${skier.lastName}`}
         >
             <DetailPanel>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SeasonListViewItem } from './SeasonViewItem';
+import { SeasonListViewItem } from './SeasonListViewItem';
 import styled from 'styled-components';
 import { Season } from '../../models/Season';
 import { getSeasons } from '../../common/api';
@@ -29,8 +29,10 @@ export const SeasonListView: React.FC = () => {
 
     return (
         <ListViewWrapper
-            createText="Saison erstellen"
-            createUrl="/season/new"
+            createConfig={{
+                createText: 'Saison erstellen',
+                createUrl: '/season/new'
+            }}
         >
             <SearchContext.Consumer>
                 {searchTerm => (

@@ -7,7 +7,6 @@ const SkierCard = styled(Card)`
     padding: 0px;
     width: 200px;
     height: 300px;
-    margin: 0 10px 10px 0;
     display: grid;
     grid-template-rows: 200px 1fr;
     flex-direction: column;
@@ -32,7 +31,7 @@ const NoImage = styled.div`
 `;
 
 const SkierCardContent = styled.div`
-    padding: 10px;
+    padding: ${props => props.theme.gap};
     display: flex;
     flex-direction: column;
 `;
