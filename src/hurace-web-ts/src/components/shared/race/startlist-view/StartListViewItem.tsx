@@ -21,7 +21,7 @@ const StartNumber = styled(VerticallyAlignedText)`
 
 const SkierImage = styled.img`
     border-radius: 50%;
-    height: 75px;
+    height: 50px;
 `;
 
 export const StartListViewItem: React.FC<{ startList: StartList }> = ({
