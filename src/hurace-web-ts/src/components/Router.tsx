@@ -1,14 +1,14 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { SeasonListView } from './list-views/season-list-view/SeasonListView';
-import { RaceDetailView } from './detail-views/race-detail-view/RaceDetailView';
-import { SkierDetailView } from './detail-views/skier-detail-view/SkierDetailView';
-import { SkierListView } from './list-views/skier-list-view/SkierListView';
-import { SeasonDetailView } from './detail-views/season-detail-view/SeasonDetailView';
-import { SeasonUpdateView } from './update-views/season-update-view/SeasonUpdateView';
-import { SkierUpdateView } from './update-views/skier-update-view/SkierUpdateView';
-import { ActiceRaceList } from './list-views/active-race-list-view/ActiceRaceList';
-import { ActiveRaceDetailView } from './detail-views/active-race-detail-view/ActiveRaceDetailView';
+import { SeasonListView } from './season-list-view/SeasonListView';
+import { RaceDetailView } from './race-detail-view/RaceDetailView';
+import { SkierDetailView } from './skier-detail-view/SkierDetailView';
+import { SkierListView } from './skier-list-view/SkierListView';
+import { SeasonDetailView } from './season-detail-view/SeasonDetailView';
+import { SeasonUpdateView } from './season-update-view/SeasonUpdateView';
+import { SkierUpdateView } from './skier-update-view/SkierUpdateView';
+import { ActiceRaceList } from './active-race-list-view/ActiceRaceList';
+import { ActiveRaceDetailView } from './active-race-detail-view/ActiveRaceDetailView';
 import { AuthRoute } from './shared/AuthRoute';
 
 export const Router: React.FC = () => {
