@@ -51,7 +51,7 @@ const HeaderText = styled(VerticallyAlignedText)`
 `;
 
 const DescriptionHeader = styled(TextBold)`
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 `;
 
 const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
