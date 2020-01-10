@@ -1,6 +1,5 @@
 import React from 'react';
 import { RankingListViewItem } from './RankingListViewItem';
-import styled from 'styled-components';
 import { HeaderCard } from '../../HeaderCard';
 import { RaceRanking } from '../../../../models/RaceRanking';
 import {

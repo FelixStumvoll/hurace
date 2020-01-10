@@ -15,7 +15,6 @@ import { SkierUpdateDto } from '../models/SkierUpdateDto';
 import { SeasonCreateDto } from '../models/SeasonCreateDto';
 import { SeasonUpdateDto } from '../models/SeasonUpdateDto';
 import { TimeDifference } from '../models/TimeDifference';
-import { TimeData } from '../models/TimeData';
 
 //#region Season
 const setSeasonDate = (season: Season) => {
