@@ -1,6 +1,5 @@
 import React from 'react';
 import { StartListViewItem } from './StartListViewItem';
-import styled from 'styled-components';
 import { HeaderCard } from '../../../shared/HeaderCard';
 import { StartList } from '../../../../models/StartList';
 import {
@@ -8,31 +7,28 @@ import {
     ColumnFlex
 } from '../../../../theme/CustomComponents';
 
-// const StartListTable = styled.table`
-//     width: 100%;
-//     border-collapse: collapse;
-// `;
-
 export const StartListView: React.FC<{ startList: StartList[] }> = ({
     startList
 }) => {
     return (
-        <HeaderCard
-            headerText="Startliste:"
-            contentStyles={{ padding: 0, height: '100%', width: '100%' }}
-        >
-            {startList.length !== 0 ? (
-                <ColumnFlex>
-                    {startList?.map(sl => (
-                        <StartListViewItem
-                            key={sl.startNumber}
-                            startList={sl}
-                        />
-                    ))}
-                </ColumnFlex>
-            ) : (
-                <NoListEntryText>Keine Startlisteneinträge</NoListEntryText>
-            )}
-        </HeaderCard>
+        <ColumnFlex>
+            <HeaderCard
+                headerText="Startliste:"
+                contentStyles={{ padding: 0, height: '100%', width: '100%' }}
+            >
+                {startList.length !== 0 ? (
+                    <ColumnFlex>
+                        {startList?.map(sl => (
+                            <StartListViewItem
+                                key={sl.startNumber}
+                                startList={sl}
+                            />
+                        ))}
+                    </ColumnFlex>
+                ) : (
+                    <NoListEntryText>Keine Startlisteneinträge</NoListEntryText>
+                )}
+            </HeaderCard>
+        </ColumnFlex>
     );
 };

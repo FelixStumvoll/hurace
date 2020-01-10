@@ -16,7 +16,7 @@ import { CurrentSkierPanel } from './CurrentSkierPanel';
 import { SplitTimeListView } from './split-time-view/SplitTimeListView';
 import { RowFlex, ColumnFlex } from '../../theme/CustomComponents';
 import { StartListView } from '../shared/race/startlist-view/StartListView';
-import { RankingView } from '../shared/race/ranking-view/RankingView';
+import { RankingListView } from '../shared/race/ranking-view/RankingListView';
 
 const DetailPanelWrapper = styled.div`
     height: fit-content;
@@ -73,7 +73,7 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
                 <div>
                     {startList && <StartListView startList={startList} />}
                 </div>
-                <div>{ranking && <RankingView raceRanking={ranking} />}</div>
+                <div>{ranking && <RankingListView raceRanking={ranking} />}</div>
                 <div>
                     {splitTimes && (
                         <SplitTimeListView

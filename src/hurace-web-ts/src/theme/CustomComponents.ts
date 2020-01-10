@@ -9,12 +9,18 @@ export const Card = styled.div`
     background-color: white;
 `;
 
-export const ListItem = styled.div`
-    border-bottom: 1px solid ${props => props.theme.gray};
-    display: flex;
-    :last-child {
-        border-bottom: none;
-    }
+// export const ListItem = styled.div`
+//     border-bottom: 1px solid ${props => props.theme.gray};
+//     display: flex;
+//     :last-child {
+//         border-bottom: none;
+//     }
+// `;
+
+export const ListItem = styled(Card)`
+    padding: 10px ${props => props.theme.gap} 10px ${props => props.theme.gap};
+    border-radius: 0;
+    display: grid;
 `;
 
 export const DefaultLink = styled(Link)`

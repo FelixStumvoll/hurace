@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { StartListView } from '../shared/race/startlist-view/StartListView';
 import { useStateAsync } from '../../hooks/useStateAsync';
-import { RankingView } from '../shared/race/ranking-view/RankingView';
+import { RankingListView } from '../shared/race/ranking-view/RankingListView';
 import { getRankingForRace, getStartListForRace } from '../../common/api';
 
 const ListsGrid = styled.div`
@@ -20,7 +20,7 @@ export const RaceListsPanel: React.FC<{
     return (
         <ListsGrid>
             {startList && <StartListView startList={startList} />}
-            {raceRanking && <RankingView raceRanking={raceRanking} />}
+            {raceRanking && <RankingListView raceRanking={raceRanking} />}
         </ListsGrid>
     );
 };
