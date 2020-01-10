@@ -19,7 +19,7 @@ namespace Hurace.Dal.Domain
         public int GenderId { get; set; }
         [Navigational]
         public Gender? Gender { get; set; }
-
         public string? ImageUrl { get; set; }
+        public bool Retired { get; set; }
     }
 }

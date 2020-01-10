@@ -37,6 +37,7 @@ export const SkierUpdateView: React.FC<{
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [selectedCountry, setSelectedCountry] = useState<SelectValue>();
     const [selectedGender, setSelectedGender] = useState<SelectValue>();
+    const [retired, setRetired] = useState(false);
     const [selectedDisciplines, setSelectedDisciplines] = useState<
         SelectValue[]
     >();
@@ -79,9 +80,13 @@ export const SkierUpdateView: React.FC<{
         setSelectedGender
     ]);
 
+    const retiredChange = useCallback(event => {
+        setRetired(event.target.checked);
+    }, []);
+
     const disciplineChange = useCallback(
         selectedOptions => setSelectedDisciplines(selectedOptions),
-        [setSelectedDisciplines]
+        []
     );
 
     //#endregion
@@ -117,6 +122,7 @@ export const SkierUpdateView: React.FC<{
                 setLastName(skier.lastName);
                 setDateOfBirth(skier.dateOfBirth);
                 setImageUrl(skier.imageUrl ?? '');
+                setRetired(skier.retired);
                 setSelectedCountry(
                     countries?.find(c => c.value === skier.countryId)
                 );
@@ -175,7 +181,8 @@ export const SkierUpdateView: React.FC<{
                 lastName,
                 dateOfBirth,
                 genderId: selectedGender!.value,
-                imageUrl
+                imageUrl,
+                retired
             });
         } else {
             id = await createSkier({
@@ -184,7 +191,8 @@ export const SkierUpdateView: React.FC<{
                 lastName,
                 dateOfBirth,
                 genderId: selectedGender!.value,
-                imageUrl
+                imageUrl,
+                retired
             });
         }
 
@@ -200,6 +208,7 @@ export const SkierUpdateView: React.FC<{
         history,
         imageUrl,
         lastName,
+        retired,
         selectedCountry,
         selectedDisciplines,
         selectedGender,
@@ -216,7 +225,7 @@ export const SkierUpdateView: React.FC<{
             onSave={onSave}
             canSave={skierValidator}
         >
-            <FormFields rowCount={6}>
+            <FormFields rowCount={7}>
                 <VerticallyAlignedText>Vorname:</VerticallyAlignedText>
                 <SkierInput
                     value={firstName}
@@ -244,6 +253,13 @@ export const SkierUpdateView: React.FC<{
                     options={genders}
                     noOptionsMessage={() => 'keine Geschlechter verfügbar'}
                     onChange={genderChange}
+                />
+                <VerticallyAlignedText>Ruhestand:</VerticallyAlignedText>
+                <SkierInput
+                    type="checkbox"
+                    // value={retired}
+                    checked={retired}
+                    onChange={retiredChange}
                 />
                 <VerticallyAlignedText>Land:</VerticallyAlignedText>
                 <Select

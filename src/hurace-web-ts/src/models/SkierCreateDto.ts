@@ -5,4 +5,5 @@ export interface SkierCreateDto {
     countryId: number;
     genderId: number;
     imageUrl?: string;
+    retired: boolean;
 }

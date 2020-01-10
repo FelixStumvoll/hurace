@@ -11,4 +11,5 @@ export interface Skier {
     genderId: number;
     gender?: Gender;
     imageUrl?: string;
+    retired: boolean;
 }

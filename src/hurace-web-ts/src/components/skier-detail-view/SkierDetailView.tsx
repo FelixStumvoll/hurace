@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { getSkierById } from '../../common/api';
 import styled from 'styled-components';
 import { SkierDetailPanel } from './SkierDetailPanel';

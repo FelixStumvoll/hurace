@@ -21,7 +21,7 @@ const Skierdata = styled.div`
     grid-template-columns: auto auto;
     column-gap: 10px;
     row-gap: 5px;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(5, auto);
 `;
 
 const Disciplines = styled(WrapText)`
@@ -46,6 +46,8 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
                         <span>{getDate(skier.dateOfBirth)}</span>
                         <TextBold>Land:</TextBold>
                         <span>{skier.country?.countryName}</span>
+                        <TextBold>Status:</TextBold>
+                        <span>{skier.retired ? 'Ruhestand' : 'Aktiv'} </span>
                         <TextBold>Disziplinen:</TextBold>
                     </Skierdata>
                     <Disciplines>
