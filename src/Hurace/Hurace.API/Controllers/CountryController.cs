@@ -11,12 +11,10 @@ namespace Hurace.API.Controllers
     [Route("[controller]")]
     public class CountryController : ControllerBase
     {
-        private readonly IRaceBaseDataService _baseDataService;
         private readonly ICountryService _countryService;
 
-        public CountryController(IRaceBaseDataService baseDataService, ICountryService countryService)
+        public CountryController( ICountryService countryService)
         {
-            _baseDataService = baseDataService;
             _countryService = countryService;
         }
 

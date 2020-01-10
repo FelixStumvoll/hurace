@@ -1,6 +1,6 @@
 import React from 'react';
 import { RaceRanking } from '../../../../models/RaceRanking';
-import { getTimeWithMS } from '../../../../common/timeConverter';
+import { getTimeWithMSDate } from '../../../../common/timeConverter';
 import {
     ListItem,
     VerticallyAlignedText,
@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 const RankingItem = styled(ListItem)`
     display: grid;
-    grid-template-columns: 25px 0.5fr 1fr 1fr auto;
+    grid-template-columns: 20px 0.5fr 1fr 1fr auto;
     gap: ${props => props.theme.gap};
 `;
 
@@ -43,27 +43,24 @@ export const RankingListViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
             <Position>{raceRanking.position}</Position>
 
             <AlignRight>
-                <SkierImage src={raceRanking.startList.skier.imageUrl} />
+                <SkierImage src={raceRanking.skier.imageUrl} />
             </AlignRight>
             <NameFlex>
                 <span>
-                    {raceRanking.startList.skier.firstName}{' '}
-                    {raceRanking.startList.skier.lastName}
+                    {raceRanking.skier.firstName} {raceRanking.skier.lastName}
                 </span>
-                <Country>
-                    {raceRanking.startList.skier.country?.countryCode}
-                </Country>
+                <Country>{raceRanking.skier.country?.countryCode}</Country>
             </NameFlex>
 
             <VerticallyAlignedText>
                 {raceRanking.disqualified
                     ? '-'
-                    : getTimeWithMS(raceRanking.time!)}
+                    : getTimeWithMSDate(raceRanking.time!)}
             </VerticallyAlignedText>
             <VerticallyAlignedText>
                 {raceRanking.disqualified
                     ? '-'
-                    : `+${getTimeWithMS(raceRanking.timeToLeader!)}`}
+                    : `+${getTimeWithMSDate(raceRanking.timeToLeader!)}`}
             </VerticallyAlignedText>
         </RankingItem>
     );

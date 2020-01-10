@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components';
 
 const StartListItem = styled(ListItem)`
-    grid-template-columns: 25px 0.5fr 1fr;
+    grid-template-columns: 20px 0.5fr 1fr;
     gap: 24px;
 `;
 

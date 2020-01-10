@@ -1,4 +1,4 @@
-namespace Hurace.API.Dtos.Skier
+namespace Hurace.API.Dtos.SkierDtos
 {
     public class SkierUpdateDto : SkierCreateDto
     {

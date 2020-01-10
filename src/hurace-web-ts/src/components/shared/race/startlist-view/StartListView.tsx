@@ -13,8 +13,12 @@ export const StartListView: React.FC<{ startList: StartList[] }> = ({
     return (
         <ColumnFlex>
             <HeaderCard
-                headerText="Startliste:"
-                contentStyles={{ padding: 0, height: '100%', width: '100%' }}
+                headerText="Startliste"
+                contentStyles={
+                    startList.length !== 0
+                        ? { padding: 0, height: '100%', width: '100%' }
+                        : {}
+                }
             >
                 {startList.length !== 0 ? (
                     <ColumnFlex>

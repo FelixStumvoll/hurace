@@ -14,13 +14,17 @@ export const RankingListView: React.FC<{ raceRanking: RaceRanking[] }> = ({
     <ColumnFlex>
         <HeaderCard
             headerText="Rangliste"
-            contentStyles={{ padding: 0, height: '100%', width: '100%' }}
+            contentStyles={
+                raceRanking.length !== 0
+                    ? { padding: 0, height: '100%', width: '100%' }
+                    : {}
+            }
         >
             {raceRanking.length !== 0 ? (
                 <ColumnFlex>
-                    {raceRanking?.map(rr => (
+                    {raceRanking.map(rr => (
                         <RankingListViewItem
-                            key={rr.startList.startNumber}
+                            key={rr.startNumber}
                             raceRanking={rr}
                         />
                     ))}

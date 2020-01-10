@@ -1,6 +1,4 @@
-using System;
-
-namespace Hurace.API.Dtos.Season
+namespace Hurace.API.Dtos.SeasonDtos
 {
     public class SeasonUpdateDto : SeasonCreateDto
     {

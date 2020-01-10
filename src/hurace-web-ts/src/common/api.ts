@@ -15,6 +15,7 @@ import { SkierUpdateDto } from '../models/SkierUpdateDto';
 import { SeasonCreateDto } from '../models/SeasonCreateDto';
 import { SeasonUpdateDto } from '../models/SeasonUpdateDto';
 import { TimeDifference } from '../models/TimeDifference';
+import { TimeData } from '../models/TimeData';
 
 //#region Season
 const setSeasonDate = (season: Season) => {
@@ -106,8 +107,11 @@ export const getRankingForRace = async (
     let response = await Axios.get<RaceRanking[]>(
         `${env.apiUrl}/race/${raceId}/ranking`
     );
+
+    console.log('response.data', response.data)
+
     response.data.forEach(rr => {
-        setSkierDate(rr.startList.skier);
+        setSkierDate(rr.skier);
         if (rr.disqualified) return;
         setRaceRankingDate(rr);
     });
@@ -122,7 +126,7 @@ export const getWinnersForRace = async (
         `${env.apiUrl}/race/${raceId}/winners`
     );
     response.data.forEach(rr => {
-        setSkierDate(rr.startList.skier);
+        setSkierDate(rr.skier);
         setRaceRankingDate(rr);
     });
 
@@ -171,13 +175,8 @@ export const getSplittimesForCurrentSkier = async (
         `${env.apiUrl}/race/active/${raceId}/currentSkier/splitTimes`
     );
 
+    console.log('response.data', response.data);
     if (response.status === 204) return [];
-
-    response.data.forEach(td => {
-        td.differenceToLeader = new Date(td.differenceToLeader);
-        setSkierDate(td.timeData.startList.skier);
-    });
-
     return response.data;
 };
 

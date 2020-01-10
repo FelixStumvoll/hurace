@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Hurace.API.Dtos;
+using Hurace.API.Dtos.RaceRankingDtos;
+using Hurace.API.Dtos.StartListDtos;
+using Hurace.API.Dtos.TimeDifferenceDtos;
 using Hurace.Core.Logic.Models;
 using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
 using Hurace.Core.Logic.Services.ActiveRaceService;
@@ -43,12 +48,12 @@ namespace Hurace.API.Controllers
         public Task<StartList> GetCurrentSkier(int id) => _activeRaceService.GetCurrentSkier(id);
         
         [HttpGet("active/{id}/currentSkier/splitTimes")]
-        public Task<IEnumerable<TimeDifference>> GetCurrentSkierSplitTimes(int id) => 
-            _activeRaceService.GetSplitTimesForCurrentSkier(id);
+        public async Task<IEnumerable<TimeDifferenceDto>> GetCurrentSkierSplitTimes(int id) =>
+            (await _activeRaceService.GetSplitTimesForCurrentSkier(id)).Select(TimeDifferenceDto.FromTimeDifference);
         
         [HttpGet("active/{id}/remainingStartList")]
-        public Task<IEnumerable<StartList>> GetRemainingStartList(int id) => 
-            _activeRaceService.GetRemainingStartList(id);
+        public async Task<IEnumerable<StartListForRaceDto>> GetRemainingStartList(int id) =>
+            (await _activeRaceService.GetRemainingStartList(id)).Select(StartListForRaceDto.FromStartList);
 
         [HttpGet("active/{id}/currentSkier/possiblePosition")]
         public async Task<ActionResult<int>> GetCurrentSkierPossiblePosition(int id)
@@ -67,15 +72,15 @@ namespace Hurace.API.Controllers
         }
 
         [HttpGet("{id}/startList")]
-        public Task<IEnumerable<StartList>> GetStartListForRace(int id) =>
-            _startListService.GetStartListForRace(id);
+        public async Task<IEnumerable<StartListForRaceDto>> GetStartListForRace(int id) =>
+            (await _startListService.GetStartListForRace(id)).Select(StartListForRaceDto.FromStartList);
 
         [HttpGet("{id}/ranking")]
-        public Task<IEnumerable<RaceRanking>> GetRankingForRace(int id) =>
-            _statService.GetRankingForRace(id);
+        public async Task<IEnumerable<RaceRankingDto>> GetRankingForRace(int id) =>
+            (await _statService.GetRankingForRace(id)).Select(RaceRankingDto.FromRaceRanking);
         
         [HttpGet("{id}/winners")]
-        public Task<IEnumerable<RaceRanking>> GetWinnersForRace(int id) =>
-            _statService.GetWinnersForRace(id);
+        public async Task<IEnumerable<RaceRankingDto>> GetWinnersForRace(int id) =>
+            (await _statService.GetWinnersForRace(id)).Select(RaceRankingDto.FromRaceRanking);
     }
 }

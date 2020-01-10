@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hurace.API.Dtos;
-using Hurace.API.Dtos.Skier;
+using Hurace.API.Dtos.SkierDtos;
 using Hurace.Core.Logic.Models;
 using Hurace.Core.Logic.Services.SkierService;
 using Hurace.Dal.Domain;

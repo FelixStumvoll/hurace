@@ -4,7 +4,7 @@ const padMinutes = (date: Date): string =>
         .toString()
         .padStart(2, '0');
 
-export const getTimeWithMS = (date: Date): string =>
+export const getTimeWithMSDate = (date: Date): string =>
     `${padMinutes(date)}:${date
         .getSeconds()
         .toString()

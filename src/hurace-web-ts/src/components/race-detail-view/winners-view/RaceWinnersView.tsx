@@ -21,7 +21,7 @@ export const RaceWinnersView: React.FC<{ winners: RaceRanking[] }> = ({
             <RowFlex>
                 {winners?.map(w => (
                     <WinnerWrapper key={w.position}>
-                        <SkierListViewItem skier={w.startList.skier} />
+                        <SkierListViewItem skier={w.skier} />
                     </WinnerWrapper>
                 ))}
             </RowFlex>

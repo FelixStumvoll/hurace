@@ -1,6 +1,5 @@
-import { TimeData } from './TimeData';
-
 export interface TimeDifference {
-    timeData: TimeData;
-    differenceToLeader: Date;
+    time: number;
+    sensorNumber: number;
+    differenceToLeader: number;
 }

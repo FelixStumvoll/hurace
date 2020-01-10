@@ -27,7 +27,7 @@ const ListGrid = styled.div`
     display: grid;
     gap: ${props => props.theme.gap};
     margin-top: ${props => props.theme.gap};
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr auto;
 `;
 
 export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
@@ -73,7 +73,9 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
                 <div>
                     {startList && <StartListView startList={startList} />}
                 </div>
-                <div>{ranking && <RankingListView raceRanking={ranking} />}</div>
+                <div>
+                    {ranking && <RankingListView raceRanking={ranking} />}
+                </div>
                 <div>
                     {splitTimes && (
                         <SplitTimeListView
