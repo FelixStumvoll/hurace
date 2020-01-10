@@ -36,6 +36,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -43,12 +44,14 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <TextBlock Text="Nächster Sensor in:" />
+            <TextBlock Text="{Binding Countdown}" />
+        </StackPanel>
         <Button Grid.Row="1" Grid.Column="0">
             <Button.Style>
                 <Style TargetType="Button">
-
                     <Setter Property="Margin" Value="5" />
-
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Running}" Value="True">
                             <Setter Property="Content" Value="Pause Clock" />
@@ -62,20 +65,29 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Grid.Row="1" Grid.Column="1" Command="{Binding RestartSenorCommand}" Content="Restart Sensor" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Average" />
-        <xctk:UIntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Clock.Mean}" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Deviation" />
-        <xctk:UIntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Clock.Deviation}" />
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Max Sensor Nr:" />
-        <xctk:UIntegerUpDown Grid.Row="4" Grid.Column="1" Value="{Binding Clock.MaxSensor}" />
-        <Button Grid.Row="5" Grid.Column="0" Content="Skip Next Sensor" Command="{Binding SkipNextSensorCommand}" />
-
-        <xctk:UIntegerUpDown Minimum="0" Maximum="{Binding Clock.MaxSensor}" Value="{Binding SensorToTrigger}"
-                             Grid.Row="6" Grid.Column="0" />
-        <Button Grid.Row="6" Grid.Column="1" Content="Trigger Sensor" Command="{Binding TriggerSensorCommand}" />
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Sensor Feed:" />
-        <ListBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Height="300" ItemsSource="{Binding SensorEntries}">
+        <Button Grid.Row="1" Grid.Column="1" Command="{Binding RestartSenorCommand}" Content="Reset Clock" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Average" />
+        <xctk:UIntegerUpDown Grid.Row="3" Grid.Column="1"
+                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                             Value="{Binding Clock.Mean}" />
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Deviation" />
+        <xctk:UIntegerUpDown Grid.Row="4" Grid.Column="1"
+                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                             Value="{Binding Clock.Deviation}" />
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Sensor Count:" />
+        <xctk:UIntegerUpDown Grid.Row="5" Grid.Column="1"
+                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                             Value="{Binding Clock.SensorCount}" />
+        <Button Grid.Row="6" Grid.Column="0" Content="Skip Next Sensor" Command="{Binding SkipNextSensorCommand}" />
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
+            <TextBlock Text="Next Sensor:" />
+            <TextBlock Text="{Binding NextSensor}" />
+        </StackPanel>
+        <xctk:UIntegerUpDown Minimum="0" Maximum="{Binding Clock.SensorCount}" Value="{Binding SensorToTrigger}"
+                             Grid.Row="7" Grid.Column="0" />
+        <Button Grid.Row="7" Grid.Column="1" Content="Trigger Sensor" Command="{Binding TriggerSensorCommand}" />
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Sensor Feed:" />
+        <ListBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Height="300" ItemsSource="{Binding SensorEntries}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

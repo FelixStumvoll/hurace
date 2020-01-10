@@ -49,23 +49,12 @@
                         <TextBlock Text="Sensoren:" VerticalAlignment="Center" />
                     </Border>
                     <Border>
-                        <TextBlock Text="Ort:" VerticalAlignment="Center" />
-                    </Border>
-                    <Border>
-                        <Border.Style>
-                            <Style TargetType="Border" BasedOn="{StaticResource {x:Type Border}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
-                                        <Setter Property="Margin" Value="0,160,0,0" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
-                                        <Setter Property="Margin" Value="0,5,0,0" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
                         <TextBlock Text="Disziplin:" VerticalAlignment="Center" />
                     </Border>
+                    <Border>
+                        <TextBlock Text="Ort:" VerticalAlignment="Center" />
+                    </Border>
+
                 </StackPanel>
                 <!-- Inputs -->
                 <StackPanel Orientation="Vertical" Margin="50,0,0,0">
@@ -128,22 +117,26 @@
 
                     <!-- Sensors -->
                     <xctk:UIntegerUpDown Minimum="1" Value="{Binding SensorCount}" />
-                    <!-- Location SearchBox -->
-                    <TextBox>
+                    <!-- Location Text -->
+                    <TextBox Text="{Binding SelectedLocation.LocationName}">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding RaceState.Edit}" Value="True">
-                                        <Setter Property="Text"
-                                                Value="{Binding SharedRaceViewModel.Locations.SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding RaceState.Edit}" Value="False">
-                                        <Setter Property="Text" Value="{Binding SelectedLocation.LocationName}" />
+                                        <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </TextBox.Style>
                     </TextBox>
+                    <!-- Discipline Selection -->
+                    <ComboBox ItemsSource="{Binding Disciplines}"
+                              DisplayMemberPath="DisciplineName"
+                              SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
                     <!-- Location SelectBox -->
                     <ListBox ItemsSource="{Binding SharedRaceViewModel.Locations.ViewItems}"
                              SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
@@ -176,11 +169,6 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <!-- Discipline Selection -->
-                    <ComboBox ItemsSource="{Binding Disciplines}"
-                              DisplayMemberPath="DisciplineName"
-                              SelectedItem="{Binding SelectedDiscipline, Mode=TwoWay}" />
-
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
@@ -191,7 +179,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource ErrorMessage}" Text="{Binding ValidationMessage}" />
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource ErrorMessage}"
+                       Text="{Binding ValidationMessage}" />
 
             <ContentPresenter Content="{Binding}" Grid.Column="1">
                 <ContentPresenter.Resources>

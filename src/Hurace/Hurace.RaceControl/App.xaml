@@ -22,6 +22,7 @@
         <converters:IntIsOneConverter x:Key="IntIsOneConverter" />
         <converters:TimespanDifferenceEnumConverter x:Key="TimespanToDifferenceEnumConverter" />
         <converters:IsNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
+        <converters:BooleanReverser x:Key="BooleanReverser" />
 
         <Style x:Key="ErrorMessage" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="Bold" />

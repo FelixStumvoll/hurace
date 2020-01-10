@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Hurace.Core.Logic;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
+using Hurace.RaceControl.ViewModels.Util;
 
 
 namespace Hurace.RaceControl.ViewModels.WindowViewModels
@@ -21,18 +22,20 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
 
         private bool _enabled = true;
         private bool _running;
-        private MockRaceClock _clock;
+        private MockRaceClockV2 _clock;
         private ICommand _startClockCommand;
         private ICommand _pauseClockCommand;
         private ICommand _skipNextSensorCommand;
         private ICommand _restartSenorCommand;
         private ICommand _triggerSensorCommand;
         private readonly IRaceClockProvider _raceClockProvider;
+        private int _nextSensor;
+        private int _countdown;
 
         public ObservableCollection<SensorEntry> SensorEntries { get; set; } = new ObservableCollection<SensorEntry>();
         public int SensorToTrigger { get; set; }
 
-        public MockRaceClock Clock
+        public MockRaceClockV2 Clock
         {
             get => _clock;
             set => Set(ref _clock, value);
@@ -68,27 +71,39 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             set => Set(ref _triggerSensorCommand, value);
         }
 
-        public bool Running
-        {
-            get => _running;
-            set => Set(ref _running, value);
-        }
-
         public bool Enabled
         {
             get => _enabled;
             set => Set(ref _enabled, value);
         }
 
+        public int NextSensor
+        {
+            get => _nextSensor;
+            set => Set(ref _nextSensor, value);
+        }
+
+        public int Countdown
+        {
+            get => _countdown;
+            set => Set(ref _countdown, value);
+        }
+
+        public bool Running
+        {
+            get => _running;
+            set => Set(ref _running, value);
+        }
+
         public SimulationWindowViewModel(IRaceClockProvider raceClockProvider)
         {
             _raceClockProvider = raceClockProvider;
         }
-        
+
         public async Task InitializeAsync()
         {
             var resolvedRace = await _raceClockProvider.GetRaceClock();
-            if (!(resolvedRace is MockRaceClock mockRaceClock))
+            if (!(resolvedRace is MockRaceClockV2 mockRaceClock))
             {
                 MessageBox.Show("Simulator kann nicht gestartet werden",
                                 "Fehler",
@@ -98,13 +113,11 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             }
 
             Clock = mockRaceClock;
+            Clock.OnCountdownChanged += countdown => UiExecutor.ExecuteInUiThread(() => Countdown = countdown);
+            Clock.OnNextSensorChanged += sensorNumber => UiExecutor.ExecuteInUiThread(() => NextSensor = sensorNumber);
+            Clock.OnRunningChanged += state => UiExecutor.ExecuteInUiThread(() => Running = state);
             Clock.TimingTriggered += (id, time) =>
-                Application
-                    .Current
-                    ?.Dispatcher
-                    ?.Invoke(() => SensorEntries.Add(new SensorEntry {DateTime = time, SensorId = id}));
-
-            Running = Clock.Running;
+                UiExecutor.ExecuteInUiThread(() => SensorEntries.Add(new SensorEntry {DateTime = time, SensorId = id}));
             SetupCommands();
         }
 
@@ -112,19 +125,21 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         {
             StartClockCommand = new RelayCommand(() =>
             {
-                Clock.Start();
                 Running = true;
-            }, () => !Clock.Running);
+                Clock.Start();
+            }, () => !Running);
             PauseClockCommand = new RelayCommand(() =>
             {
-                Clock.Stop();
                 Running = false;
-            }, () => Clock.Running);
-            SkipNextSensorCommand = new RelayCommand(() => Clock.SkipNext());
+                Clock.Stop();
+            }, () => Running);
+            SkipNextSensorCommand = new RelayCommand(() => Clock.SkipNextSensor(), () => NextSensor+1 <Clock.SensorCount);
             RestartSenorCommand = new RelayCommand(() => Clock.Reset());
             TriggerSensorCommand = new RelayCommand(() => Clock.TriggerSensor(SensorToTrigger),
                                                     () => SensorToTrigger >= 0 &&
-                                                          SensorToTrigger < Clock.MaxSensor);
+                                                          SensorToTrigger < Clock.SensorCount);
         }
+
+        public void OnClose() => Clock.Terminate();
     }
 }

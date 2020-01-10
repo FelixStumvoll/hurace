@@ -12,6 +12,7 @@ namespace Hurace.RaceControl.Views.Windows
             var vm = container.Resolve<SimulationWindowViewModel>();
             DataContext = vm;
             Loaded += async (sender, args) => await vm.InitializeAsync();
+            Closed += (sender, args) => vm.OnClose();
             InitializeComponent();
         }
     }
