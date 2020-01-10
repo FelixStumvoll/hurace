@@ -107,8 +107,6 @@ export const getRankingForRace = async (
         `${env.apiUrl}/race/${raceId}/ranking`
     );
 
-    console.log('response.data', response.data)
-
     response.data.forEach(rr => {
         setSkierDate(rr.skier);
         if (rr.disqualified) return;
@@ -173,8 +171,7 @@ export const getSplittimesForCurrentSkier = async (
     let response = await Axios.get<TimeDifference[]>(
         `${env.apiUrl}/race/active/${raceId}/currentSkier/splitTimes`
     );
-
-    console.log('response.data', response.data);
+    
     if (response.status === 204) return [];
     return response.data;
 };

@@ -45,8 +45,12 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
         const fetchRaceData = async () => {
             setRanking(await getRankingForRace(raceId));
             setStartList(await getRemainingStartListForRace(raceId));
-            setSplitTimes(await getSplittimesForCurrentSkier(raceId));
-            setCurrentSkier(await getCurrentSkierForRace(raceId));
+            let currSkier = await getCurrentSkierForRace(raceId);
+            setCurrentSkier(currSkier);
+
+            setSplitTimes(
+                currSkier ? await getSplittimesForCurrentSkier(raceId) : []
+            );
         };
 
         loadRace();
@@ -77,12 +81,10 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
                     {ranking && <RankingListView raceRanking={ranking} />}
                 </div>
                 <div>
-                    {splitTimes && (
-                        <SplitTimeListView
-                            currentSkier={currentSkier}
-                            splitTimes={splitTimes}
-                        />
-                    )}
+                    <SplitTimeListView
+                        currentSkier={currentSkier}
+                        splitTimes={splitTimes}
+                    />
                 </div>
             </ListGrid>
         </ColumnFlex>

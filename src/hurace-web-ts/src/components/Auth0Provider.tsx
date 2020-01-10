@@ -38,8 +38,6 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
         setToken(undefined);
     };
 
-    console.log('user :', user);
-
     useEffect(() => {
         const initAuth = async () => {
             const client = await createAuth0Client(initOptions);

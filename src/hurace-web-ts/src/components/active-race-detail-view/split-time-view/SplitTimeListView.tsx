@@ -7,7 +7,7 @@ import { SplitTimeListItem } from './SplitTimeListItem';
 
 export const SplitTimeListView: React.FC<{
     currentSkier: StartList | undefined;
-    splitTimes: TimeDifference[];
+    splitTimes: TimeDifference[] | undefined;
 }> = ({ currentSkier, splitTimes }) => {
     return (
         <ColumnFlex>
@@ -18,14 +18,14 @@ export const SplitTimeListView: React.FC<{
                         : 'Zwischenzeiten'
                 }
                 contentStyles={
-                    splitTimes.length !== 0
-                        ? { padding: 0, height: '100%', width: '100%' }
-                        : {}
+                    splitTimes === undefined || splitTimes.length === 0
+                        ? {}
+                        : { padding: 0, height: '100%', width: '100%' }
                 }
             >
-                {splitTimes.length !== 0 && currentSkier ? (
+                {splitTimes?.length !== 0 && currentSkier ? (
                     <ColumnFlex>
-                        {splitTimes.map(sp => (
+                        {splitTimes?.map(sp => (
                             <SplitTimeListItem
                                 timeDiff={sp}
                                 key={sp.sensorNumber}
