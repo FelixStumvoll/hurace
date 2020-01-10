@@ -6,10 +6,11 @@ import { Card, DefaultLink } from '../../theme/CustomComponents';
 const SkierCard = styled(Card)`
     padding: 0px;
     width: 200px;
-    height: 300px;
+    height: 100%;
     display: grid;
     grid-template-rows: 200px 1fr;
     flex-direction: column;
+    overflow: hidden;
 `;
 
 const ImagePanel = styled.div`
