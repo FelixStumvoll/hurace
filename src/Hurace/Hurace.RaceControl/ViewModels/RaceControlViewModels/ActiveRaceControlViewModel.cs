@@ -145,7 +145,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                     InvokeButtonCanExecuteChanged();
                 });
             _activeRaceControlService.OnSkierFinished += finishedSkier =>
-                UiExecutor.ExecuteInUiThreadAsync(() =>
+                UiExecutor.ExecuteInUiThread(() =>
                 {
                     _currentSkier = finishedSkier;
                     InvokeButtonCanExecuteChanged();
@@ -153,7 +153,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
             _activeRaceControlService.OnRaceCancelled += race =>
             {
-                UiExecutor.ExecuteInUiThreadAsync(() => { RaceState.Race = race; });
+                UiExecutor.ExecuteInUiThread(() => { RaceState.Race = race; });
             };
             _eventsSetup = true;
         }

@@ -8,6 +8,8 @@ import {
     AlignRight
 } from '../../../../theme/CustomComponents';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBan } from '@fortawesome/free-solid-svg-icons';
 
 const RankingItem = styled(ListItem)`
     display: grid;
@@ -40,7 +42,13 @@ export const RankingListViewItem: React.FC<{ raceRanking: RaceRanking }> = ({
 }) => {
     return (
         <RankingItem>
-            <Position>{raceRanking.position}</Position>
+            <Position>
+                {raceRanking.disqualified ? (
+                    <FontAwesomeIcon icon={faBan} />
+                ) : (
+                    raceRanking.position
+                )}
+            </Position>
 
             <AlignRight>
                 <SkierImage src={raceRanking.skier.imageUrl} />

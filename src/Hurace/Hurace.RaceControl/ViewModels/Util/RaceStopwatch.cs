@@ -11,6 +11,8 @@ namespace Hurace.RaceControl.ViewModels.Util
 
         public DateTime? StartTime { get; set; }
 
+        public bool Running { get; set; }
+
         public RaceStopwatch()
         {
             _dispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(10)};
@@ -23,12 +25,17 @@ namespace Hurace.RaceControl.ViewModels.Util
             OnTimerElapsed?.Invoke(StartTime.Value - DateTime.Now);
         }
 
-        public void Start() => _dispatcherTimer.Start();
+        public void Start()
+        {
+            _dispatcherTimer.Start();
+            Running = true;
+        }
 
         public void Reset()
         {
             _dispatcherTimer.Stop();
             StartTime = null;
+            Running = false;
         }
     }
 }

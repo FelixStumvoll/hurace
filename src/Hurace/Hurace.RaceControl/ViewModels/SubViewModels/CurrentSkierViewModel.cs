@@ -53,36 +53,42 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             _stopwatch = new RaceStopwatch();
             _stopwatch.OnTimerElapsed += timespan => RaceTime = timespan;
 
-            _activeRaceControlService.OnSplitTime += timeData =>
-                UiExecutor.ExecuteInUiThreadAsync(() => OnSplitTime(timeData));
-            _activeRaceControlService.OnSkierFinished += finishedSkier => UiExecutor.ExecuteInUiThreadAsync(() =>
+            _activeRaceControlService.OnSplitTime += async timeData => await OnSplitTime(timeData);
+            _activeRaceControlService.OnSkierFinished += finishedSkier =>
             {
-                CurrentSkier = finishedSkier;
                 _stopwatch.Reset();
-            });
+                UiExecutor.ExecuteInUiThread(() => { CurrentSkier = finishedSkier; });
+            };
             _activeRaceControlService.OnSkierStarted += startList =>
-                UiExecutor.ExecuteInUiThreadAsync(() =>
+            {
+                SplitTimeList.Clear();
+                UiExecutor.ExecuteInUiThread(() =>
                 {
                     try
                     {
                         CurrentSkier = startList;
-                        _stopwatch.Start();
-                        SplitTimeList.Clear();
+
+                        RaceTime = null;
                     }
                     catch (Exception)
                     {
                         ErrorNotifier.OnLoadError();
                     }
                 });
+            };
             _activeRaceControlService.OnCurrentSkierDisqualified += async startList =>
+            {
+                _stopwatch.Reset();
                 await UiExecutor.ExecuteInUiThreadAsync(async () =>
                 {
-                    CurrentSkier = await startListService.GetStartListById(CurrentSkier.SkierId, CurrentSkier.RaceId);
-                    _stopwatch.Reset();
+                    CurrentSkier =
+                        await startListService.GetStartListById(
+                            CurrentSkier.SkierId, CurrentSkier.RaceId);
                 });
+            };
 
             _activeRaceControlService.OnRaceCancelled +=
-                race => UiExecutor.ExecuteInUiThreadAsync(() => { _stopwatch.Reset(); });
+                race => _stopwatch.Reset();
         }
 
 
@@ -93,12 +99,15 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
         {
             try
             {
-                await LoadPossiblePosition();
                 _stopwatch.StartTime ??= timeData.SkierEvent.RaceData.EventDateTime;
-                var difference = await _statService.GetDifferenceToLeader(timeData);
-                if (difference == null) return;
-
-                SplitTimeList.Add(new TimeDifference(timeData, difference.Value));
+                if (!_stopwatch.Running) _stopwatch.Start();
+                UiExecutor.ExecuteInUiThread(async () =>
+                {
+                    await LoadPossiblePosition();
+                    var difference = await _statService.GetDifferenceToLeader(timeData);
+                    if (difference == null) return;
+                    SplitTimeList.Add(new TimeDifference(timeData, difference.Value));
+                });
             }
             catch (Exception)
             {
@@ -109,6 +118,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
 
         public async Task InitializeAsync()
         {
+            RaceTime = null;
             try
             {
                 CurrentSkier = await _activeRaceService.GetCurrentSkier(_activeRaceControlService.RaceId);
@@ -129,7 +139,6 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                 {
                     Position = null;
                     SplitTimeList.Clear();
-                    RaceTime = null;
                 }
             }
             catch (Exception)
