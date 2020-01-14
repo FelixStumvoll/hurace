@@ -1,10 +1,13 @@
 import React, { useCallback, useState, useEffect, useContext } from 'react';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
-import styled, { ThemeContext } from 'styled-components';
+import { ThemeContext } from 'styled-components';
 import {
-    DefaultInput,
     FormFields,
-    VerticallyAlignedText
+    VerticallyAlignedText,
+    FormLabel,
+    FormField,
+    FormInput,
+    FormErrorMessage
 } from '../../theme/CustomComponents';
 import DatePicker from 'react-datepicker';
 import Select, { Theme } from 'react-select';
@@ -22,72 +25,42 @@ import { SelectValue } from '../../interfaces/SelectValue';
 import { isNullOrEmpty } from '../../common/stringFunctions';
 import { isNullOrUndefined } from 'util';
 import { useHistory } from 'react-router-dom';
+import { Formik, FormikErrors } from 'formik';
+import { FormWrapper } from '../shared/FormWrapper';
+import { SkierUpdateDto } from '../../models/SkierUpdateDto';
+import { SkierCreateDto } from '../../models/SkierCreateDto';
 
-const SkierInput = styled(DefaultInput)`
-    width: calc(100% - 12px);
-`;
+type SkierFormValues = {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    selectedCountry?: SelectValue;
+    selectedGender?: SelectValue;
+    retired: boolean;
+    selectedDisciplines: SelectValue[];
+    imageUrl?: string;
+};
+
+type SkierFormErrors = {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    selectedCountry: string;
+    selectedGender: string;
+    imageUrl: string;
+};
 
 export const SkierUpdateView: React.FC<{
     skierId?: number;
 }> = ({ skierId }) => {
     //#region state
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState(new Date());
-    const [selectedCountry, setSelectedCountry] = useState<SelectValue>();
-    const [selectedGender, setSelectedGender] = useState<SelectValue>();
-    const [retired, setRetired] = useState(false);
-    const [selectedDisciplines, setSelectedDisciplines] = useState<
-        SelectValue[]
-    >();
+
     const history = useHistory();
 
+    const [initialFormValue, setInitialFormValue] = useState<SkierFormValues>();
     const [countries, setCountries] = useState<SelectValue[]>();
     const [genders, setGenders] = useState<SelectValue[]>();
     const [disciplines, setDisciplines] = useState<SelectValue[]>([]);
-
-    //#endregion
-
-    //#region setter
-
-    const firstnameChange = useCallback(
-        event => setFirstName(event.target.value),
-        [setFirstName]
-    );
-
-    const lastnameChange = useCallback(
-        event => setLastName(event.target.value),
-        [setLastName]
-    );
-
-    const imageUrlChange = useCallback(
-        event => setImageUrl(event.target.value),
-        [setImageUrl]
-    );
-
-    const dateOfBirthChange = useCallback(
-        dateOfBirth => setDateOfBirth(dateOfBirth),
-        [setDateOfBirth]
-    );
-
-    const countryChange = useCallback(
-        selected => setSelectedCountry(selected),
-        [setSelectedCountry]
-    );
-
-    const genderChange = useCallback(selected => setSelectedGender(selected), [
-        setSelectedGender
-    ]);
-
-    const retiredChange = useCallback(event => {
-        setRetired(event.target.checked);
-    }, []);
-
-    const disciplineChange = useCallback(
-        selectedOptions => setSelectedDisciplines(selectedOptions),
-        []
-    );
 
     //#endregion
 
@@ -111,30 +84,39 @@ export const SkierUpdateView: React.FC<{
             setCountries(countries);
             setGenders(genders);
             setDisciplines(disciplines);
-
             if (skierId !== undefined) {
                 let skier = await getSkierById(skierId!);
                 let skierDisciplines = await getDisciplinesForSkier(skierId!);
 
                 if (skier === undefined) return;
 
-                setFirstName(skier.firstName);
-                setLastName(skier.lastName);
-                setDateOfBirth(skier.dateOfBirth);
-                setImageUrl(skier.imageUrl ?? '');
-                setRetired(skier.retired);
-                setSelectedCountry(
-                    countries?.find(c => c.value === skier.countryId)
-                );
-                setSelectedGender(
-                    genders?.find(g => g.value === skier.genderId)
-                );
-                setSelectedDisciplines(
-                    disciplines?.filter(d =>
+                setInitialFormValue({
+                    firstName: skier.firstName,
+                    lastName: skier.lastName,
+                    dateOfBirth: skier.dateOfBirth,
+                    imageUrl: skier.imageUrl,
+                    retired: skier.retired,
+                    selectedCountry: countries?.find(
+                        c => c.value === skier.countryId
+                    ),
+                    selectedDisciplines: disciplines?.filter(d =>
                         skierDisciplines.some(sk => sk.id === d.value)
+                    ),
+                    selectedGender: genders?.find(
+                        g => g.value === skier.genderId
                     )
-                );
-            }
+                });
+            } else
+                setInitialFormValue({
+                    firstName: '',
+                    lastName: '',
+                    retired: false,
+                    imageUrl: '',
+                    selectedGender: undefined,
+                    dateOfBirth: new Date(),
+                    selectedCountry: undefined,
+                    selectedDisciplines: []
+                });
         };
 
         loadData();
@@ -152,137 +134,268 @@ export const SkierUpdateView: React.FC<{
         []
     );
 
-    const skierValidator = useCallback(
-        () =>
-            !isNullOrEmpty(firstName) &&
-            !isNullOrEmpty(lastName) &&
-            !isNullOrUndefined(dateOfBirth) &&
-            !isNullOrUndefined(selectedGender) &&
-            !isNullOrUndefined(selectedCountry) &&
-            !isNullOrUndefined(selectedDisciplines),
-        [
-            dateOfBirth,
-            firstName,
-            lastName,
-            selectedCountry,
-            selectedDisciplines,
-            selectedGender
-        ]
-    );
-
-    const onSave = useCallback(async () => {
+    const onSave = useCallback(async (values: SkierFormValues) => {
         let id = skierId;
 
-        if (id) {
-            await updateSkier({
-                id,
-                countryId: selectedCountry!.value,
-                firstName,
-                lastName,
-                dateOfBirth,
-                genderId: selectedGender!.value,
-                imageUrl,
-                retired
-            });
-        } else {
-            id = await createSkier({
-                countryId: selectedCountry!.value,
-                firstName,
-                lastName,
-                dateOfBirth,
-                genderId: selectedGender!.value,
-                imageUrl,
-                retired
-            });
-        }
+        let skier: SkierUpdateDto | SkierCreateDto = {
+            countryId: values.selectedCountry?.value ?? -1,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            dateOfBirth: values.dateOfBirth,
+            genderId: values.selectedGender?.value ?? -1,
+            imageUrl: values.imageUrl,
+            retired: values.retired
+        };
+
+        if (id) await updateSkier({ id, ...skier });
+        else id = await createSkier(skier);
 
         await updateSkierDisciplines(
             id,
-            selectedDisciplines!.map(s => s.value)
+            values.selectedDisciplines!.map(s => s.value)
         );
 
         history.push(`/skier/${id}`);
-    }, [
-        dateOfBirth,
-        firstName,
-        history,
-        imageUrl,
-        lastName,
-        retired,
-        selectedCountry,
-        selectedDisciplines,
-        selectedGender,
-        skierId
-    ]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const onCancel = useCallback(() => {
         history.push('/skier');
     }, [history]);
 
+    const validateSkier = useCallback((values: SkierFormValues) => {
+        const errors: FormikErrors<SkierFormErrors> = {};
+
+        if (isNullOrEmpty(values.firstName))
+            errors.firstName = 'Vorname benötigt';
+        if (isNullOrEmpty(values.lastName))
+            errors.lastName = 'Nachname benötigt';
+        if (isNullOrUndefined(values.dateOfBirth))
+            errors.dateOfBirth = 'Geburtsdatum benötigt';
+        if (isNullOrUndefined(values.selectedCountry))
+            errors.selectedCountry = 'Land benötigt';
+        if (isNullOrUndefined(values.selectedGender))
+            errors.selectedGender = 'Geschlecht benötigt';
+
+        return errors;
+    }, []);
+
     return (
         <UpdateViewWrapper
             headerText={`Rennfahrer ${skierId ? 'bearbeiten' : 'erstellen'}`}
-            onCancel={onCancel}
-            onSave={onSave}
-            canSave={skierValidator}
         >
-            <FormFields rowCount={7}>
-                <VerticallyAlignedText>Vorname:</VerticallyAlignedText>
-                <SkierInput
-                    value={firstName}
-                    placeholder="Vorname"
-                    onChange={firstnameChange}
-                ></SkierInput>
-                <VerticallyAlignedText>Nachname:</VerticallyAlignedText>
-                <SkierInput
-                    value={lastName}
-                    placeholder="Nachname"
-                    onChange={lastnameChange}
-                ></SkierInput>
-                <VerticallyAlignedText>Geburtsdatum:</VerticallyAlignedText>
-                <DatePicker
-                    dateFormat="dd.MM.yyyy"
-                    placeholderText="Geburtsdatum"
-                    selected={dateOfBirth}
-                    customInput={<SkierInput />}
-                    onChange={dateOfBirthChange}
-                />
-                <VerticallyAlignedText>Geschlecht:</VerticallyAlignedText>
-                <Select
-                    theme={selectTheme}
-                    value={selectedGender}
-                    options={genders}
-                    noOptionsMessage={() => 'keine Geschlechter verfügbar'}
-                    onChange={genderChange}
-                />
-                <VerticallyAlignedText>Ruhestand:</VerticallyAlignedText>
-                <SkierInput
-                    type="checkbox"
-                    // value={retired}
-                    checked={retired}
-                    onChange={retiredChange}
-                />
-                <VerticallyAlignedText>Land:</VerticallyAlignedText>
-                <Select
-                    value={selectedCountry}
-                    options={countries}
-                    noOptionsMessage={() => 'keine Länder verfügbar'}
-                    onChange={countryChange}
-                />
-                <VerticallyAlignedText>Disziplinen:</VerticallyAlignedText>
-                <Select
-                    isMulti={true}
-                    value={selectedDisciplines}
-                    options={disciplines}
-                    noOptionsMessage={() => 'keine Disziplinen verfügbar'}
-                    onChange={disciplineChange}
-                />
-                <VerticallyAlignedText>Bild-Url:</VerticallyAlignedText>
-                <SkierInput
-                    value={imageUrl}
-                    placeholder="Bild-Url"
-                    onChange={imageUrlChange}
-                ></SkierInput>
-            </FormFields>
+            {!initialFormValue ? (
+                <div></div>
+            ) : (
+                <Formik
+                    enableReinitialize={true}
+                    initialValues={initialFormValue}
+                    validate={validateSkier}
+                    onSubmit={async (values, { setSubmitting }) => {
+                        await onSave(values);
+                        setSubmitting(false);
+                    }}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        setFieldValue,
+                        setFieldTouched
+                    }) => (
+                        <FormWrapper
+                            isSubmitting={isSubmitting}
+                            onCancel={onCancel}
+                            onSubmit={handleSubmit}
+                        >
+                            <FormFields rowCount={7}>
+                                <FormField>
+                                    <FormLabel> Vorname:</FormLabel>
+                                    <FormInput
+                                        value={values.firstName}
+                                        placeholder="Vorname"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="firstName"
+                                    />
+                                    {touched.firstName && errors.firstName && (
+                                        <FormErrorMessage>
+                                            {errors.firstName}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+
+                                <FormField>
+                                    <FormLabel>Nachname:</FormLabel>
+                                    <FormInput
+                                        value={values.lastName}
+                                        placeholder="Nachname"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="lastName"
+                                    />
+                                    {touched.lastName && errors.lastName && (
+                                        <FormErrorMessage>
+                                            {errors.lastName}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Geburtsdatum:
+                                    </VerticallyAlignedText>
+                                    <DatePicker
+                                        dateFormat="dd.MM.yyyy"
+                                        placeholderText="Geburtsdatum"
+                                        selected={values.dateOfBirth}
+                                        customInput={<FormInput />}
+                                        onChange={date =>
+                                            setFieldValue('dateOfBirth', date)
+                                        }
+                                        onBlur={handleBlur}
+                                        name="dateOfBirth"
+                                    />
+                                    {touched.dateOfBirth &&
+                                        errors.dateOfBirth && (
+                                            <FormErrorMessage>
+                                                {errors.dateOfBirth}
+                                            </FormErrorMessage>
+                                        )}
+                                </FormField>
+
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Geschlecht:
+                                    </VerticallyAlignedText>
+                                    <Select
+                                        theme={selectTheme}
+                                        value={values.selectedGender}
+                                        options={genders}
+                                        noOptionsMessage={() =>
+                                            'keine Geschlechter verfügbar'
+                                        }
+                                        onChange={val =>
+                                            setFieldValue('selectedGender', val)
+                                        }
+                                        onBlur={() =>
+                                            setFieldTouched('selectedGender')
+                                        }
+                                        name="selectedGender"
+                                    />
+                                    {errors.selectedGender &&
+                                        touched.selectedGender && (
+                                            <FormErrorMessage>
+                                                {errors.selectedGender}
+                                            </FormErrorMessage>
+                                        )}
+                                </FormField>
+
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Ruhestand:
+                                    </VerticallyAlignedText>
+                                    <FormInput
+                                        type="checkbox"
+                                        checked={values.retired}
+                                        onChange={e =>
+                                            setFieldValue(
+                                                'retired',
+                                                e.target.checked
+                                            )
+                                        }
+                                        onBlur={handleBlur}
+                                        name="retired"
+                                    />
+                                    {touched.retired && errors.retired && (
+                                        <FormErrorMessage>
+                                            {errors.retired}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Land:
+                                    </VerticallyAlignedText>
+                                    <Select
+                                        value={values.selectedCountry}
+                                        options={countries}
+                                        noOptionsMessage={() =>
+                                            'keine Länder verfügbar'
+                                        }
+                                        onChange={val =>
+                                            setFieldValue(
+                                                'selectedCountry',
+                                                val
+                                            )
+                                        }
+                                        onBlur={() =>
+                                            setFieldTouched('selectedCountry')
+                                        }
+                                        name="selectedCountry"
+                                    />
+                                    {touched.selectedCountry &&
+                                        errors.selectedCountry && (
+                                            <FormErrorMessage>
+                                                {errors.selectedCountry}
+                                            </FormErrorMessage>
+                                        )}
+                                </FormField>
+
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Disziplinen:
+                                    </VerticallyAlignedText>
+                                    <Select
+                                        isMulti={true}
+                                        value={values.selectedDisciplines}
+                                        options={disciplines}
+                                        noOptionsMessage={() =>
+                                            'keine Disziplinen verfügbar'
+                                        }
+                                        onChange={val =>
+                                            setFieldValue(
+                                                'selectedDisciplines',
+                                                val
+                                            )
+                                        }
+                                        onBlur={handleBlur}
+                                        name="selectedDisciplines"
+                                    />
+
+                                    {touched.selectedDisciplines &&
+                                        errors.selectedDisciplines && (
+                                            <FormErrorMessage>
+                                                {errors.selectedDisciplines}
+                                            </FormErrorMessage>
+                                        )}
+                                </FormField>
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Bild-Url:
+                                    </VerticallyAlignedText>
+                                    <FormInput
+                                        value={values.imageUrl}
+                                        placeholder="Bild-Url"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="imageUrl"
+                                    />
+                                    {touched.imageUrl && errors.imageUrl && (
+                                        <FormErrorMessage>
+                                            {errors.imageUrl}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+                            </FormFields>
+                        </FormWrapper>
+                    )}
+                </Formik>
+            )}
         </UpdateViewWrapper>
     );
 };

@@ -10,7 +10,7 @@ namespace Hurace.API.Dtos.SkierDtos
         public int CountryId { get; set; }
         public int GenderId { get; set; }
         public string? ImageUrl { get; set; }
-        
+        public bool Retired { get; set; }
         public static implicit operator Dal.Domain.Skier(SkierCreateDto skier) => new Dal.Domain.Skier
         {
             Id = -1,
@@ -19,7 +19,8 @@ namespace Hurace.API.Dtos.SkierDtos
             CountryId = skier.CountryId,
             ImageUrl = skier.ImageUrl,
             DateOfBirth = skier.DateOfBirth,
-            GenderId = skier.GenderId
+            GenderId = skier.GenderId,
+            Retired = skier.Retired,
         };
     }
 }

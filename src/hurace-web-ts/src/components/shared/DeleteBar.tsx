@@ -3,6 +3,7 @@ import styled, { ThemeContext } from 'styled-components';
 import { DefaultButton, AlignRight } from '../../theme/CustomComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal } from './Modal';
 
 const PositiveButton = styled(DefaultButton)<{ marginLeft: string }>`
     color: white;
@@ -41,7 +42,7 @@ export const DeleteBar: React.FC<{
     return (
         <AlignRight>
             {deleteChallenge ? (
-                <>
+                <Modal>
                     <DeleteQuestion>Löschen ?</DeleteQuestion>
                     <PositiveButton marginLeft={theme.gap} onClick={deleteFunc}>
                         Ja
@@ -52,7 +53,7 @@ export const DeleteBar: React.FC<{
                     >
                         Nein
                     </NegativeButton>
-                </>
+                </Modal>
             ) : (
                 <NegativeButton marginLeft="0px" onClick={initDelete}>
                     <DeleteIcon icon={faTrash} />

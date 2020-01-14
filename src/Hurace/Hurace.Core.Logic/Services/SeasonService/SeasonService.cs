@@ -19,15 +19,19 @@ namespace Hurace.Core.Logic.Services.SeasonService
 
         [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Race>> GetRacesForSeason(int seasonId) => _raceDao.GetRacesForSeasonId(seasonId);
-        
+
         [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Season>> GetAllSeasons() => _seasonDao.FindAllAsync();
-        
+
         [ExcludeFromCodeCoverage]
         public Task<Season?> GetSeasonById(int seasonId) => _seasonDao.FindByIdAsync(seasonId);
-        
+
+        private bool SeasonValidator(Season season) => season.StartDate < season.EndDate;
+
         [ExcludeFromCodeCoverage]
-        public Task<int?> InsertSeason(Season season) => _seasonDao.InsertGetIdAsync(season);
+        public Task<int?> InsertSeason(Season season) =>
+            SeasonValidator(season) ? _seasonDao.InsertGetIdAsync(season) : null;
+
         public async Task<bool> DeleteSeason(int id)
         {
             if (await _seasonDao.CountRacesForSeason(id) != 0) return false;
@@ -35,6 +39,7 @@ namespace Hurace.Core.Logic.Services.SeasonService
         }
 
         [ExcludeFromCodeCoverage]
-        public Task<bool> UpdateSeason(Season season) => _seasonDao.UpdateAsync(season);
+        public Task<bool> UpdateSeason(Season season) =>
+            SeasonValidator(season) ? _seasonDao.UpdateAsync(season) : null;
     }
 }

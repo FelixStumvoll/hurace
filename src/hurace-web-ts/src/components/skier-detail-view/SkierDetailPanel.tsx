@@ -47,7 +47,7 @@ export const SkierDetailPanel: React.FC<{ skier: Skier }> = ({ skier }) => {
                         <TextBold>Land:</TextBold>
                         <span>{skier.country?.countryName}</span>
                         <TextBold>Status:</TextBold>
-                        <span>{skier.retired ? 'Ruhestand' : 'Aktiv'} </span>
+                        <span>{skier.retired ? 'Inaktiv' : 'Aktiv'} </span>
                         <TextBold>Disziplinen:</TextBold>
                     </Skierdata>
                     <Disciplines>

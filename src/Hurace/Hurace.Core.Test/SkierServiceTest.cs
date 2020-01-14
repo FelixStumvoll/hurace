@@ -39,7 +39,7 @@ namespace Hurace.Core.Test
             mockSkierDao.Setup(sd => sd.InsertPossibleDisciplineForSkier(It.IsAny<int>(), It.IsAny<int>()))
                         .Callback(() => count++);
             
-            var updateResult = await new SkierService(mockSkierDao.Object).UpdatePossibleDisciplines(100, disciplines);
+            var updateResult = await new SkierService(mockSkierDao.Object, null, null).UpdatePossibleDisciplines(100, disciplines);
             
             Assert.AreEqual(result,updateResult );
             Assert.AreEqual(countResult, count);

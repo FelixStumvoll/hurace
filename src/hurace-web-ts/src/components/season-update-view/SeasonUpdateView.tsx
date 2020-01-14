@@ -3,90 +3,179 @@ import { getSeasonById, createSeason } from '../../common/api';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-    DefaultInput,
     FormFields,
-    VerticallyAlignedText
+    VerticallyAlignedText,
+    FormField,
+    FormInput,
+    FormErrorMessage
 } from '../../theme/CustomComponents';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { updateSeason } from '../../common/api';
 import { useHistory } from 'react-router-dom';
+import { FormWrapper } from '../shared/FormWrapper';
+import { Formik, FormikErrors } from 'formik';
+import { SeasonCreateDto } from '../../models/SeasonCreateDto';
+import { SeasonUpdateDto } from '../../models/SeasonUpdateDto';
+import { isNullOrUndefined } from 'util';
+
+type SeasonFormValues = {
+    startDate: Date;
+    endDate: Date;
+};
+
+type SeasonFormErrors = {
+    startDate: string;
+    endDate: string;
+};
 
 export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
     seasonId
 }) => {
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const [endDate, setEndDate] = useState<Date | null>(new Date());
+    const [initialFormValue, setInitialFormValue] = useState<
+        SeasonFormValues
+    >();
 
     useEffect(() => {
         const loadData = async () => {
-            if (!seasonId) return;
-            let season = await getSeasonById(seasonId);
-            setStartDate(season.startDate);
-            setEndDate(season.endDate);
+            if (!seasonId) {
+                setInitialFormValue({
+                    startDate: new Date(),
+                    endDate: new Date()
+                });
+            } else {
+                let season = await getSeasonById(seasonId);
+                setInitialFormValue({
+                    startDate: season.startDate,
+                    endDate: season.endDate
+                });
+            }
         };
 
         loadData();
-    }, [seasonId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const history = useHistory();
 
-    const seasonValidator = useCallback(
-        () => !!startDate && !!endDate && startDate < endDate,
-        [endDate, startDate]
-    );
-
-    const onSave = useCallback(() => {
-        const save = async () => {
+    const onSave = useCallback(
+        async (values: SeasonFormValues) => {
             let id = seasonId;
 
-            if (id)
-                await updateSeason({
-                    id,
-                    startDate: startDate!,
-                    endDate: endDate!
-                });
-            else
-                id = await createSeason({
-                    startDate: startDate!,
-                    endDate: endDate!
-                });
+            let season: SeasonCreateDto | SeasonUpdateDto = {
+                startDate: values.startDate,
+                endDate: values.endDate
+            };
+
+            if (id) {
+                await updateSeason({ id, ...season });
+            } else id = await createSeason(season);
 
             history.push(`/season/${id}`);
-        };
-
-        save();
-    }, [endDate, history, seasonId, startDate]);
+        },
+        [history, seasonId]
+    );
 
     const onCancel = useCallback(
         () => history.push(`/season${seasonId ? `/${seasonId}` : ''}`),
         [history, seasonId]
     );
 
+    const validateSeason = useCallback((values: SeasonFormValues) => {
+        const errors: FormikErrors<SeasonFormErrors> = {};
+
+        if (isNullOrUndefined(values.startDate))
+            errors.startDate = 'Startdatum benötigt';
+        if (isNullOrUndefined(values.endDate))
+            errors.endDate = 'Enddatum benötigt';
+
+        if (
+            values.startDate &&
+            values.endDate &&
+            values.startDate > values.endDate
+        )
+            errors.startDate = 'Startdatum muss vor Enddatum liegen';
+
+        return errors;
+    }, []);
+
     return (
         <UpdateViewWrapper
             headerText={seasonId ? 'Saison bearbeiten' : 'Saison erstellen'}
-            onSave={onSave}
-            onCancel={onCancel}
-            canSave={seasonValidator}
         >
-            <FormFields rowCount={2}>
-                <VerticallyAlignedText>Startdatum:</VerticallyAlignedText>
-                <DatePicker
-                    dateFormat="dd.MM.yyyy"
-                    placeholderText="Saisonstart"
-                    selected={startDate}
-                    customInput={<DefaultInput />}
-                    onChange={setStartDate}
-                />
-                <VerticallyAlignedText>Enddatum:</VerticallyAlignedText>
-                <DatePicker
-                    dateFormat="dd.MM.yyyy"
-                    placeholderText="Saisonende"
-                    selected={endDate}
-                    customInput={<DefaultInput />}
-                    onChange={setEndDate}
-                />
-            </FormFields>
+            {!initialFormValue ? (
+                <div></div>
+            ) : (
+                <Formik
+                    enableReinitialize={true}
+                    initialValues={initialFormValue}
+                    validate={validateSeason}
+                    onSubmit={async (values, { setSubmitting }) => {
+                        await onSave(values);
+                        setSubmitting(false);
+                    }}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                        setFieldValue
+                    }) => (
+                        <FormWrapper
+                            onSubmit={handleSubmit}
+                            onCancel={onCancel}
+                            isSubmitting={isSubmitting}
+                        >
+                            <FormFields rowCount={2}>
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Startdatum:
+                                    </VerticallyAlignedText>
+                                    <DatePicker
+                                        dateFormat="dd.MM.yyyy"
+                                        placeholderText="Saisonstart"
+                                        selected={values.startDate}
+                                        customInput={<FormInput />}
+                                        onChange={date =>
+                                            setFieldValue('startDate', date)
+                                        }
+                                        name="startDate"
+                                        onBlur={handleBlur}
+                                    />
+                                    {touched.startDate && errors.startDate && (
+                                        <FormErrorMessage>
+                                            {errors.startDate}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+                                <FormField>
+                                    <VerticallyAlignedText>
+                                        Enddatum:
+                                    </VerticallyAlignedText>
+                                    <DatePicker
+                                        dateFormat="dd.MM.yyyy"
+                                        placeholderText="Saisonende"
+                                        selected={values.endDate}
+                                        customInput={<FormInput />}
+                                        onChange={date =>
+                                            setFieldValue('endDate', date)
+                                        }
+                                        name="endDate"
+                                        onBlur={handleBlur}
+                                    />
+                                    {touched.endDate && errors.endDate && (
+                                        <FormErrorMessage>
+                                            {errors.endDate}
+                                        </FormErrorMessage>
+                                    )}
+                                </FormField>
+                            </FormFields>
+                        </FormWrapper>
+                    )}
+                </Formik>
+            )}
         </UpdateViewWrapper>
     );
 };

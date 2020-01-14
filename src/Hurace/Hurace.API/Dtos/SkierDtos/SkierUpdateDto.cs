@@ -12,7 +12,8 @@ namespace Hurace.API.Dtos.SkierDtos
             CountryId = skier.CountryId,
             ImageUrl = skier.ImageUrl,
             DateOfBirth = skier.DateOfBirth,
-            GenderId = skier.GenderId
+            GenderId = skier.GenderId,
+            Retired = skier.Retired
         };
     }
 }
