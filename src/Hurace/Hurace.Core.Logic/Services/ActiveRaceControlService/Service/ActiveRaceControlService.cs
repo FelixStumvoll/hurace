@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Configs;
@@ -26,7 +27,6 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         public event Action<Race>? OnRaceCancelled;
         public event Action<Race>? OnRaceFinished;
 
-        private readonly IRaceStatService _statService;
         private readonly IRaceDao _raceDao;
         private readonly IStartListDao _startListDao;
         private readonly IRaceEventDao _raceEventDao;
@@ -39,15 +39,14 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         private int _maxSensorNr;
         private readonly SensorConfig _sensorConfig;
 
-        public int RaceId { get; private set; }
+        public int RaceId { get; }
 
         public ActiveRaceControlService(int raceId, IRaceDao raceDao, IStartListDao startListDao,
             IRaceEventDao raceEventDao, IRaceDataDao raceDataDao, ISkierEventDao skierEventDao,
             ITimeDataDao timeDataDao, ISensorDao sensorDao,
-            IRaceStatService statService, IRaceClockProvider raceClockProvider, SensorConfig sensorConfig, IActiveRaceService activeRaceService)
+            IRaceClockProvider raceClockProvider, SensorConfig sensorConfig, IActiveRaceService activeRaceService)
         {
             RaceId = raceId;
-            _statService = statService;
             _raceClockProvider = raceClockProvider;
             _sensorConfig = sensorConfig;
             _activeRaceService = activeRaceService;
@@ -170,7 +169,9 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         {
             var startList = await _startListDao.GetNextSkierForRace(RaceId);
             if (startList == null) return false;
+            using var scope = ScopeBuilder.BuildTransactionScope();
             await UpdateStartListState(startList, RaceDataEvent.SkierStarted, StartState.Running);
+            scope.Complete();
             OnSkierStarted?.Invoke(startList);
             return true;
         }
@@ -192,6 +193,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
                 EventDateTime = DateTime.Now
             });
 
+        [ExcludeFromCodeCoverage]
         private async Task InsertTimeData(TimeData timeData) => await _timeDataDao.InsertAsync(timeData);
 
         private async Task<int?> InsertSkierEvent(int skierId, int raceId, int raceDataId) =>
@@ -212,10 +214,11 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             OnSkierFinished?.Invoke(currentSkier);
         }
 
-        
+
         public async Task<bool> CancelSkier(int skierId)
         {
-            var startList = await _startListDao.GetSkierForRace(skierId, RaceId);
+            var startList = await _startListDao.FindByIdAsync(skierId, RaceId);
+            if (startList == null) return false;
             await UpdateStartListState(startList, RaceDataEvent.SkierCanceled, StartState.Canceled);
             OnSkierCancelled?.Invoke(startList);
             return true;
@@ -239,14 +242,10 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             return true;
         }
 
-        
-
         public async Task<bool> CancelRace()
         {
             var race = await _raceDao.FindByIdAsync(RaceId);
-            if (race == null) return false;
-            race.RaceStateId = (int) RaceState.Cancelled;
-            await _raceDao.UpdateAsync(race);
+            if (race == null || !await ChangeRaceState(RaceId, RaceState.Cancelled)) return false;
             OnRaceCancelled?.Invoke(race);
             return true;
         }
@@ -267,23 +266,21 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             var raceDataId = await _raceDataDao.InsertGetIdAsync(raceData);
             if (!raceDataId.HasValue) return false;
             raceData.Id = raceDataId.Value;
-            await _raceEventDao.InsertAsync(new RaceEvent
+            if (!await _raceEventDao.InsertAsync(new RaceEvent
             {
                 RaceDataId = raceData.Id
-            });
+            })) return false;
             scope.Complete();
             return true;
         }
-        
+
         public async Task<bool> StartRace() => await ChangeRaceState(RaceId, RaceState.Running);
 
         public async Task<bool> EndRace()
         {
             //todo validation
             var race = await _raceDao.FindByIdAsync(RaceId);
-            if (race == null) return false;
-            race.RaceStateId = (int) RaceState.Finished;
-            await _raceDao.UpdateAsync(race);
+            if (race == null ||  !await ChangeRaceState(RaceId, RaceState.Finished)) return false;
             OnRaceFinished?.Invoke(race);
             return true;
         }

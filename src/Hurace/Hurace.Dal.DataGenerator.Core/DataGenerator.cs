@@ -66,36 +66,18 @@ namespace Hurace.Dal.DataGenerator.Core
         private DateTime GetRandomBirthDate() => _skierBaseDate.AddDays(_random.Next(-300, 300));
 
         private int GetCountryId(string country) =>
-            _countries.FirstOrDefault(c => c.CountryName.Equals(country))?.Id ?? -1;
-
-        private static int GetGenderId(string gender) =>
-            gender switch
-            {
-                "f" => (int)Domain.Enums.Gender.Female,
-                "m" => (int) Domain.Enums.Gender.Male,
-                _ => -1,
-            };
-
-        private static (string firstname, string lastname) GetName(string name)
-        {
-            var spaceIndex = name.IndexOf(" ", StringComparison.CurrentCulture);
-            return (name.Substring(0, spaceIndex), name.Substring(spaceIndex + 1));
-        }
-
+            _countries.FirstOrDefault(c => c.CountryCode.Equals(country))?.Id ?? -1;
+        
         private IList<Skier> GenerateSkiers() =>
-            LoadJson<SkierJson, Skier>("Data/Skiers.json", skierJson =>
+            LoadJson<SkierJson, Skier>("Data/Skiers.json", skierJson => new Skier
             {
-                var (firstname, lastname) = GetName(skierJson.Name);
-                return new Skier
-                {
-                    CountryId = GetCountryId(skierJson.Country),
-                    GenderId = GetGenderId(skierJson.Gender),
-                    FirstName = firstname,
-                    LastName = lastname,
-                    DateOfBirth = GetRandomBirthDate(),
-                    ImageUrl = skierJson.Image,
-                    Retired = false
-                };
+                CountryId = GetCountryId(skierJson.CountryCode),
+                GenderId = skierJson.GenderId,
+                FirstName = skierJson.FirstName,
+                LastName = skierJson.LastName,
+                DateOfBirth = GetRandomBirthDate(),
+                ImageUrl = skierJson.ImageUrl,
+                Retired = false
             });
 
         private static IList<TResult> LoadJson<T, TResult>(string path, Func<T, TResult> transform)

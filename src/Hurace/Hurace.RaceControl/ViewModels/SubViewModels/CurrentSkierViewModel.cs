@@ -53,7 +53,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             _stopwatch = new RaceStopwatch();
             _stopwatch.OnTimerElapsed += timespan => RaceTime = timespan;
 
-            _activeRaceControlService.OnSplitTime += async timeData => await OnSplitTime(timeData);
+            _activeRaceControlService.OnSplitTime += OnSplitTime;
             _activeRaceControlService.OnSkierFinished += finishedSkier =>
             {
                 _stopwatch.Reset();
@@ -95,7 +95,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
         private async Task LoadPossiblePosition() =>
             Position = await _activeRaceService.GetPossiblePositionForCurrentSkier(_activeRaceControlService.RaceId);
 
-        private async Task OnSplitTime(TimeData timeData)
+        private void OnSplitTime(TimeData timeData)
         {
             try
             {

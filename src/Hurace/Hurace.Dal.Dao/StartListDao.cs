@@ -106,12 +106,6 @@ namespace Hurace.Dal.Dao
                 ("@rid", raceId), ("@ssi", (int) Domain.Enums.StartState.Canceled),
                 ("@ssii", (int) Domain.Enums.StartState.Disqualified));
 
-        public async Task<StartList> GetSkierForRace(int skierId, int raceId) =>
-            (await GeneratedQueryAsync(DefaultSelectQuery()
-                                       .Where<StartList>((nameof(StartList.SkierId), skierId), (
-                                                             nameof(StartList.RaceId),
-                                                             raceId)).Build())).SingleOrDefault();
-
         public Task<int?> CountStartListForRace(int raceId) =>
             ExecuteScalarAsync($"select count(*) from {TableName} where raceId=@rid", ("@rid", raceId));
 

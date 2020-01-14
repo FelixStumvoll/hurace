@@ -121,7 +121,7 @@ namespace Hurace.Dal.Test
         public async Task GetSkierForRaceTest()
         {
             var startList = (await StartListDao.FindAllAsync()).First();
-            Assert.AreEqual(startList.SkierId, (await StartListDao.GetSkierForRace(startList.SkierId, startList.RaceId)).SkierId);
+            Assert.AreEqual(startList.SkierId, (await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId)).SkierId);
         }
 
         [Test]

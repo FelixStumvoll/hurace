@@ -21,6 +21,7 @@ const StartNumber = styled(VerticallyAlignedText)`
 const SkierImage = styled.img`
     border-radius: 50%;
     height: 50px;
+    width: 50px;
 `;
 
 const NameFlex = styled(ColumnFlex)`
