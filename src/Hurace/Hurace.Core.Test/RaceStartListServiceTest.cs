@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Services.RaceStartListService;
 using Hurace.Dal.Domain;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
+    [ExcludeFromCodeCoverage]
     public class RaceStartListServiceTest
     {
         [Test]

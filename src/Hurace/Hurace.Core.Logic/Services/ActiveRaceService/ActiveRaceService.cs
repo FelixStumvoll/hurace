@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Models;
@@ -25,12 +26,16 @@ namespace Hurace.Core.Logic.Services.ActiveRaceService
             _raceDao = raceDao;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task<StartList?> GetCurrentSkier(int raceId) => _startListDao.GetCurrentSkierForRace(raceId);
-        public Task<IEnumerable<Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
-        public async Task<IEnumerable<StartList>?> GetRemainingStartList(int raceId) =>
-            (await _startListDao.GetStartListForRace(raceId))
-            .Where(sl => sl.StartStateId == (int) StartState.Upcoming);
         
+        [ExcludeFromCodeCoverage]
+        public Task<IEnumerable<Race>> GetActiveRaces() => _raceDao.GetActiveRaces();
+
+        [ExcludeFromCodeCoverage]
+        public async Task<IEnumerable<StartList>?> GetRemainingStartList(int raceId) =>
+            await _startListDao.GetRemainingStartListForRace(raceId);
+
         public async Task<int?> GetPossiblePositionForCurrentSkier(int raceId)
         {
             var current = await GetCurrentSkier(raceId);

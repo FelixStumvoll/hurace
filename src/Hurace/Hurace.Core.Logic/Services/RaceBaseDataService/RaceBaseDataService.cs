@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Services.RaceStartListService;
@@ -30,9 +31,10 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
             _disciplineDao = disciplineDao;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
         
-
+        [ExcludeFromCodeCoverage]
         public Task<Race?> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
         
         public async Task<RaceModificationResult> InsertOrUpdateRace(Race race, int sensorCount)
@@ -88,13 +90,17 @@ namespace Hurace.Core.Logic.Services.RaceBaseDataService
             return true;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
         
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId) =>
             _locationDao.GetPossibleDisciplinesForLocation(locationId);
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Discipline>> GetAllDisciplines() => _disciplineDao.FindAllAsync();
     }
 }

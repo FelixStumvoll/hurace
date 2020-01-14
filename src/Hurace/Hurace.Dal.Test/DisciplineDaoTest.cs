@@ -9,11 +9,8 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class DisciplineDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupDiscipline();
-
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(1, (await DisciplineDao.FindAllAsync()).Count());
+        public async Task FindAllTest() => Assert.AreEqual(2, (await DisciplineDao.FindAllAsync()).Count());
 
         [Test]
         public async Task FindById()
@@ -47,16 +44,18 @@ namespace Hurace.Dal.Test
         [Test]
         public async Task DeleteTest()
         {
-            var discipline = (await DisciplineDao.FindAllAsync()).First();
-            await DisciplineDao.DeleteAsync(discipline.Id);
-            Assert.IsNull(await DisciplineDao.FindByIdAsync(discipline.Id));
+            var disciplineId = await DisciplineDao.InsertGetIdAsync(new Discipline {DisciplineName = "E"});
+            await DisciplineDao.DeleteAsync(disciplineId.Value);
+            Assert.IsNull(await DisciplineDao.FindByIdAsync(disciplineId.Value));
         }
         
         [Test]
         public async Task DeleteAllTest()
         {
+            await DbTeardown();
+            await DisciplineDao.InsertAsync(new Discipline {DisciplineName = "E"});
             await DisciplineDao.DeleteAllAsync();
-            Assert.IsEmpty((await DisciplineDao.FindAllAsync()));
+            Assert.IsEmpty(await DisciplineDao.FindAllAsync());
         }
     }
 }

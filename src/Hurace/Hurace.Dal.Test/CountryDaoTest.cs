@@ -9,14 +9,11 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class CountryDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupCountry();
-
         [Test]
         public async Task FindAllTest()
         {
             var countries = await CountryDao.FindAllAsync();
-            Assert.AreEqual(3, countries.Count());
+            Assert.AreEqual(12, countries.Count());
         }
 
         [Test]
@@ -55,15 +52,17 @@ namespace Hurace.Dal.Test
         [Test]
         public async Task DeleteTest()
         {
-            var country = (await CountryDao.FindAllAsync()).First();
-            await CountryDao.DeleteAsync(country.Id);
-            Assert.IsNull(await CountryDao.FindByIdAsync(country.Id));
+            var countryId = await CountryDao.InsertGetIdAsync(new Country {CountryName = "ABC", CountryCode = "DF"});
+            await CountryDao.DeleteAsync(countryId.Value);
+            Assert.IsNull(await CountryDao.FindByIdAsync(countryId.Value));
         }
 
         [Test]
         public async Task DeleteAllTest()
         {
-            await LocationDao.DeleteAllAsync();
+            await DbTeardown();
+            var countryId = await CountryDao.InsertGetIdAsync(new Country {CountryName = "ABC", CountryCode = "DF"});
+            
             await CountryDao.DeleteAllAsync();
             Assert.IsEmpty(await CountryDao.FindAllAsync());
         }

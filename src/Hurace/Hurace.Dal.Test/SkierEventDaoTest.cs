@@ -9,11 +9,8 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class SkierEventDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupSkierEvent();
-
         [Test]
-        public async Task Test() => Assert.AreEqual(1, (await SkierEventDao.FindAllAsync()).Count());
+        public async Task Test() => Assert.AreEqual(30, (await SkierEventDao.FindAllAsync()).Count());
 
         [Test]
         public async Task FindByIdTest()
@@ -28,13 +25,8 @@ namespace Hurace.Dal.Test
         public async Task UpdateTest()
         {
             var skierEvent = (await SkierEventDao.FindAllAsync()).First();
-            var skierId = await InsertSkier((await CountryDao.FindAllAsync()).First().Id);
-            await StartListDao.InsertAsync(new StartList
-            {
-                RaceId = skierEvent.RaceData?.RaceId ?? -1, SkierId = skierId.Value, StartNumber = 50,
-                StartStateId = (int) Domain.Enums.StartState.Finished
-            });
-            skierEvent.SkierId = skierId.Value;
+            var skierId = (await SkierDao.FindAllAsync()).First().Id;
+            skierEvent.SkierId = skierId;
             await SkierEventDao.UpdateAsync(skierEvent);
             Assert.AreEqual(skierEvent.SkierId, (await SkierEventDao.FindByIdAsync(skierEvent.Id))?.SkierId);
         }

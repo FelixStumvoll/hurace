@@ -10,11 +10,8 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class SkierDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupSkier();
-        
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(1, (await SkierDao.FindAllAsync()).Count());
+        public async Task FindAllTest() => Assert.AreEqual(5, (await SkierDao.FindAllAsync()).Count());
         
         [Test]
         public async Task FindByIdTest()
@@ -58,26 +55,26 @@ namespace Hurace.Dal.Test
             Assert.NotNull(skier.Gender);
         }
         
-        [Test]
-        public async Task DeleteTest()
-        {
-            var id = (await SkierDao.FindAllAsync()).First().Id;
-            await SkierDao.DeleteAsync(id);
-            Assert.IsNull(await SkierDao.FindByIdAsync(id));
-        }
+        // [Test]
+        // public async Task DeleteTest()
+        // {
+        //     var id = (await SkierDao.FindAllAsync()).First().Id;
+        //     await SkierDao.DeleteAsync(id);
+        //     Assert.IsNull(await SkierDao.FindByIdAsync(id));
+        // }
         
-        [Test]
-        public async Task DeleteAllTest()
-        {
-            await SkierDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await SkierDao.FindAllAsync()).Count());
-        }
+        // [Test]
+        // public async Task DeleteAllTest()
+        // {
+        //     await SkierDao.DeleteAllAsync();
+        //     Assert.AreEqual(0, (await SkierDao.FindAllAsync()).Count());
+        // }
         
         [Test]
         public async Task GetPossibleDisciplinesTest()
         {
             var id = (await SkierDao.FindAllAsync()).First().Id;
-            Assert.AreEqual(1, (await SkierDao.GetPossibleDisciplinesForSkier(id)).Count());
+            Assert.AreEqual(2, (await SkierDao.GetPossibleDisciplinesForSkier(id)).Count());
         }
         
         [Test]
@@ -89,7 +86,7 @@ namespace Hurace.Dal.Test
             });
             var skierId = (await SkierDao.FindAllAsync()).First().Id;
             await SkierDao.InsertPossibleDisciplineForSkier(skierId, disciplineId.Value);
-            Assert.AreEqual(2, (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).Count());
+            Assert.AreEqual(3, (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).Count());
         }
         
         [Test]
@@ -98,7 +95,48 @@ namespace Hurace.Dal.Test
             var skierId = (await SkierDao.FindAllAsync()).First().Id;
             var disciplineId = (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).First().Id;
             await SkierDao.DeletePossibleDisciplineForSkier(skierId, disciplineId);
+            Assert.AreEqual(1, (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).Count());
+        }
+        
+        [Test]
+        public async Task DeleteAllPossibleDisciplineTest()
+        {
+            var skierId = (await SkierDao.FindAllAsync()).First().Id;
+            await SkierDao.DeleteAllPossibleDisciplineForSkier(skierId);
             Assert.AreEqual(0, (await SkierDao.GetPossibleDisciplinesForSkier(skierId)).Count());
+        }
+        
+        [Test]
+        public async Task FindAvailableSkiersForRaceTest()
+        {
+            var skier = (await SkierDao.FindAllAsync()).First();
+            var race = (await RaceDao.FindAllAsync()).First();
+            
+            var availableSkiers = await SkierDao.FindAvailableSkiersForRace(race.Id);
+            Assert.IsTrue(availableSkiers.All(s => s.Id != skier.Id));
+
+
+            var newSkierId = await SkierDao.InsertGetIdAsync(new Skier
+            {
+                Retired = false,
+                FirstName = "xy",
+                LastName = "z",
+                CountryId = (await CountryDao.FindAllAsync()).First().Id,
+                GenderId = race.GenderId,
+                DateOfBirth = DateTime.Today
+            });
+            
+            availableSkiers = await SkierDao.FindAvailableSkiersForRace(race.Id);
+            Assert.IsTrue(availableSkiers.All(s => s.Id != newSkierId.Value));
+
+            var newSkier = await SkierDao.FindByIdAsync(newSkierId.Value);
+
+            newSkier.GenderId = newSkier.GenderId == 1 ? 2 : 1;
+
+            await SkierDao.UpdateAsync(newSkier);
+            
+            availableSkiers = await SkierDao.FindAvailableSkiersForRace(race.Id);
+            Assert.IsFalse(availableSkiers.Any(s => s.Id != newSkierId.Value));
         }
     }
 }

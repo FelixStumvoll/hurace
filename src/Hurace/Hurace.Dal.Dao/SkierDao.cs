@@ -26,6 +26,7 @@ namespace Hurace.Dal.Dao
                                                 s.genderId,
                                                 s.dateOfBirth,
                                                 s.countryId,
+                                                s.retired,
                                                 s.imageUrl,
                                                 c.countryCode,
                                                 c.countryName,
@@ -36,7 +37,7 @@ namespace Hurace.Dal.Dao
                                                 join hurace.Race r on  r.genderId = s.genderId and r.disciplineId in 
                                                 (select disciplineId from hurace.SkierDiscipline as d where d.skierId = s.id)
                                                 left outer join hurace.StartList as ss on s.id = ss.skierId and ss.raceId = @ri
-                                                where r.id= @ri and s.deleted = 0 and ss.raceId is null and ss.skierId is null and ss.startNumber is null",
+                                                where r.id= @ri and s.retired = 0 and ss.raceId is null and ss.skierId is null and ss.startNumber is null",
                                     new MapperConfig()
                                         .AddMapping<Country>((nameof(Skier.CountryId), nameof(Country.Id)))
                                         .AddMapping<Gender>((nameof(Skier.GenderId), nameof(Gender.Id))),

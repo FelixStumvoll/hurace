@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
 COPY ./prod.sql /
+COPY ./test.sql /
 USER root
 COPY ./init.sh /usr/local/bin/
 COPY ./entrypoint.sh /usr/local/bin/

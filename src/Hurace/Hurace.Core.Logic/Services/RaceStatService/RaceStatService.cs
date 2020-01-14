@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Models;
@@ -62,6 +63,7 @@ namespace Hurace.Core.Logic.Services.RaceStatService
         public Task<IEnumerable<StartList>> GetDisqualifiedSkiers(int raceId) =>
             _startListDao.GetDisqualifiedSkierForRace(raceId);
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<TimeData>> GetTimeDataForStartList(int raceId,
             int skierId) => _timeDataDao.GetTimeDataForStartList(skierId, raceId);
 
@@ -104,6 +106,7 @@ namespace Hurace.Core.Logic.Services.RaceStatService
                    ?.SkierEvent?.RaceData?.EventDateTime;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<RaceRanking>> GetWinnersForRace(int raceId) => 
             GetFinishedSkierRanking(raceId, 3);
     }

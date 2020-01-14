@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Services.RaceBaseDataService;
 using Hurace.Core.Logic.Services.RaceStartListService;
@@ -11,6 +12,7 @@ using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
+    [ExcludeFromCodeCoverage]
     public class RaceBaseDataServiceTest
     {
         private static RaceBaseDataService CreateBaseDataService(IRaceDao raceDao = null, ISensorDao sensorDao = null,
@@ -119,6 +121,37 @@ namespace Hurace.Core.Test
 
             var raceBaseData = CreateBaseDataService(sensorDao: sensorDaoMock.Object);
             Assert.AreEqual(2, await raceBaseData.GetSensorCount(1));
+        }
+
+
+        private static object[] _removeRaceTestSource =
+        {
+            new object[] {null, true, 0, false },
+            new object[] {new Race(), true, 0, false },
+            new object[] {new Race(), false, 1, false },
+            new object[] {new Race(), false, 0, true }
+        };
+
+        [Test]
+        [TestCaseSource(nameof(_removeRaceTestSource))]
+        public async Task RemoveRaceTest(Race? race, bool startListDefined, int tdCount, bool result)
+        {
+            var mockRaceDao = new Mock<IRaceDao>();
+            var mockStartListService = new Mock<IRaceStartListService>();
+            var mockTimedataDao = new Mock<ITimeDataDao>();
+            var mockSensorDao = new Mock<ISensorDao>();
+
+            mockRaceDao.Setup(rd => rd.FindByIdAsync(It.IsAny<int>())).ReturnsAsync(race);
+            mockRaceDao.Setup(rd => rd.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
+
+            mockStartListService.Setup(sl => sl.IsStartListDefined(It.IsAny<int>())).ReturnsAsync(startListDefined);
+            mockTimedataDao.Setup(td => td.CountTimeDataForRace(It.IsAny<int>())).ReturnsAsync(tdCount);
+
+            Assert.AreEqual(
+                result,
+                await new RaceBaseDataService(mockRaceDao.Object, mockSensorDao.Object, mockTimedataDao.Object,
+                                        mockStartListService.Object, null, null, null).RemoveRace(new Race{Id = 100}));
+            
         }
     }
 }

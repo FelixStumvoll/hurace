@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Logic.Util;
 using Hurace.Dal.Domain;
@@ -26,15 +27,18 @@ namespace Hurace.Core.Logic.Services.RaceStartListService
             return true;
         }
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Skier>> GetAvailableSkiersForRace(int raceId) =>
             _skierDao.FindAvailableSkiersForRace(raceId);
 
+        [ExcludeFromCodeCoverage]
         public Task<IEnumerable<StartList>> GetStartListForRace(int raceId) =>
             _startListDao.GetStartListForRace(raceId);
-
+        
         public async Task<bool?> IsStartListDefined(int raceId) =>
             (await _startListDao.CountStartListForRace(raceId) ?? 0) != 0;
         
+        [ExcludeFromCodeCoverage]
         public Task<StartList?> GetStartListById(int skierId, int raceId) =>
             _startListDao.FindByIdAsync(skierId, raceId);
     }

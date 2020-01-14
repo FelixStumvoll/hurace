@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.DataGenerator.Core\Hurace.Dal.DataGenerator.Core.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
     </ItemGroup>

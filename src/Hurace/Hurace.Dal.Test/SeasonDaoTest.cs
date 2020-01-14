@@ -10,9 +10,6 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class SeasonDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupSeason();
-        
         [Test]
         public async Task FindAllTest() => Assert.AreEqual(1, (await SeasonDao.FindAllAsync()).Count());
         
@@ -46,18 +43,26 @@ namespace Hurace.Dal.Test
         }
         
         [Test]
-        public async Task DeleteTest()
+        public async Task CountRacesForSeasonTest()
         {
-            var id = (await SeasonDao.FindAllAsync()).First().Id;
-            await SeasonDao.DeleteAsync(id);
-            Assert.IsNull(await SeasonDao.FindByIdAsync(id));
+            var season = (await SeasonDao.FindAllAsync()).First();
+
+            Assert.AreEqual(2, (await SeasonDao.CountRacesForSeason(season.Id)));
         }
         
-        [Test]
-        public async Task DeleteAllTest()
-        {
-            await SeasonDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await SeasonDao.FindAllAsync()).Count());
-        }
+        // [Test]
+        // public async Task DeleteTest()
+        // {
+        //     var id = (await SeasonDao.FindAllAsync()).First().Id;
+        //     await SeasonDao.DeleteAsync(id);
+        //     Assert.IsNull(await SeasonDao.FindByIdAsync(id));
+        // }
+        //
+        // [Test]
+        // public async Task DeleteAllTest()
+        // {
+        //     await SeasonDao.DeleteAllAsync();
+        //     Assert.AreEqual(0, (await SeasonDao.FindAllAsync()).Count());
+        // }
     }
 }

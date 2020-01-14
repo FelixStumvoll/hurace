@@ -10,14 +10,11 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class TimeDataDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupTimeData();
-
         [Test]
         public async Task FindAllTest()
         {
             var timeData = (await TimeDataDao.FindAllAsync()).ToList();
-            Assert.AreEqual(30, timeData.Count());
+            Assert.AreEqual(10, timeData.Count());
             Assert.AreEqual(DateTime.Today.Millisecond, timeData.First().Time);
         }
 
@@ -45,10 +42,10 @@ namespace Hurace.Dal.Test
             var timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
             if (timeData != null)
             {
-                timeData.Time = new DateTime(2018, 11, 6).Millisecond;
+                timeData.Time = 500;
                 await TimeDataDao.UpdateAsync(timeData);
                 timeData = await TimeDataDao.FindByIdAsync(skier.Id, race.Id, sensor.Id);
-                Assert.AreEqual(new DateTime(2018, 11, 6), timeData?.Time);
+                Assert.AreEqual(500, timeData?.Time);
             }
             else Assert.Fail("TimeData was null");
         }
@@ -60,7 +57,7 @@ namespace Hurace.Dal.Test
             var race = (await RaceDao.FindAllAsync()).First();
             var skierEventId = (await SkierEventDao.FindAllAsync()).First().Id;
             var newSensorId =
-                await SensorDao.InsertGetIdAsync(new Sensor {RaceId = race.Id, SensorDescription = "Description"});
+                await SensorDao.InsertGetIdAsync(new Sensor {RaceId = race.Id, SensorNumber = 0});
             await TimeDataDao.InsertAsync(new TimeData
             {
                 SkierEventId = skierEventId,
@@ -91,6 +88,58 @@ namespace Hurace.Dal.Test
             Assert.AreEqual(0, (await TimeDataDao.FindAllAsync()).Count());
         }
 
+        [Test]
+        public async Task GetRankingForSensorTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            var ranking = (await TimeDataDao.GetRankingForSensor(race.Id, 1)).ToList();
+            Assert.AreEqual(5, ranking.Count());
+            Assert.IsTrue(ranking[0].Time < ranking[1].Time);
+        }
+
+        [Test]
+        public async Task GetTimeDataForStartListTest()
+        {
+            var startList = (await StartListDao.FindAllAsync()).First();
+            Assert.AreEqual(
+                2, (await TimeDataDao.GetTimeDataForStartList(startList.SkierId, startList.RaceId)).Count());
+        }
+
+        [Test]
+        public async Task CountTimeDataForRaceTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            Assert.AreEqual(10, await TimeDataDao.CountTimeDataForRace(race.Id));
+        }
+
+        [Test]
+        public async Task GetAverageTimeForSensorTest()
+        {
+            var race = (await RaceDao.FindAllAsync()).First();
+            var timeDatas = (await TimeDataDao.FindAllAsync());
+            var tasks = timeDatas.Where(t => t.RaceId == race.Id && t.Sensor.SensorNumber == 1).Select(
+                     async t =>
+                     {
+                         t.Time = 1500;
+                         await TimeDataDao.UpdateAsync(t);
+                     });
+            await Task.WhenAll(tasks);
+            Assert.AreEqual(1500, await TimeDataDao.GetAverageTimeForSensor(race.Id, 1));
+        }
+
+        [Test]
+        public async Task GetStartTimeForStartListTest()
+        {
+            var skierEvents = (await SkierEventDao.FindAllAsync());
+
+            var startEvent = skierEvents.First(sk => sk.RaceData.EventTypeId == 8);
+            startEvent.RaceData.EventDateTime = DateTime.Today;
+            await RaceDataDao.UpdateAsync(startEvent.RaceData);
+            
+            Assert.AreEqual(DateTime.Today,
+                            (await TimeDataDao.GetStartTimeForStartList(startEvent.SkierId, startEvent.RaceId)).Value);
+        }
+        
         // [Test]
         // public async Task GetRaceForRankingTest()
         // {

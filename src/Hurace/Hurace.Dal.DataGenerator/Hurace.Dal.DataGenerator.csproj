@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.DataGenerator.Core\Hurace.Dal.DataGenerator.Core.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
     </ItemGroup>
@@ -22,18 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Data\Countries.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\Disciplines.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\Locations.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\Skiers.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

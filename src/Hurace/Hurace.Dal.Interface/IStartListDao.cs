@@ -10,6 +10,7 @@ namespace Hurace.Dal.Interface
         Task<IEnumerable<StartList>> GetStartListForRace(int raceId);
         Task<StartList?> GetCurrentSkierForRace(int raceId);
         Task<StartList?> GetNextSkierForRace(int raceId);
+        Task<IEnumerable<StartList>> GetRemainingStartListForRace(int raceId);
         Task<StartList?> FindByIdAsync(int skierId, int raceId);
         Task<bool> DeleteAsync(int raceId, int skierId);
         Task<bool> DeleteAllForRace(int raceId);

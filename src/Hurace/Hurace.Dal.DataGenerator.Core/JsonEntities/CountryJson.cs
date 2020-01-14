@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Hurace.DataGenerator.JsonEntities
+namespace Hurace.Dal.DataGenerator.Core.JsonEntities
 {
     [ExcludeFromCodeCoverage]
-    public class DisciplineJson
+    public class CountryJson
     {
+        public string Code { get; set; }
         public string Name { get; set; }
     }
 }

@@ -5,7 +5,6 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
 {
     public interface IActiveRaceResolver
     {
-        Task<bool> InitializeActiveRaceHandler();
         Task<IActiveRaceControlService?> StartRace(int raceId);
         IActiveRaceControlService this[int raceId] { get; }
         Task<bool> EndRace(int raceId);

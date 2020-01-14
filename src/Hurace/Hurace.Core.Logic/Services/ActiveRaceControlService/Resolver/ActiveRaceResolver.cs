@@ -27,7 +27,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
             _raceDataDao = raceDataDao;
         }
     
-        public async Task<bool> InitializeActiveRaceHandler()
+        public async Task InitializeActiveRaceResolver()
         {
             foreach (var race in await _raceDao.GetActiveRaces())
             {
@@ -36,8 +36,6 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
                 await rcs.InitializeAsync();
                 _activeRaces.Add(rcs);
             }
-    
-            return true;
         }
     
         public async Task<IActiveRaceControlService?> StartRace(int raceId)

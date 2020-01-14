@@ -27,6 +27,7 @@ namespace Hurace.Dal.Dao
                                                 s.dateOfBirth,
                                                 s.genderId,
                                                 s.imageUrl,
+                                                s.retired,
                                                 s.countryId,
                                                 c.countryName,
                                                 c.countryCode,
@@ -66,6 +67,11 @@ namespace Hurace.Dal.Dao
                 $" order by {TableName}.{nameof(StartList.StartNumber)} asc";
             return (await GeneratedQueryAsync(builtStatementData)).FirstOrDefault();
         }
+
+        public Task<IEnumerable<StartList>> GetRemainingStartListForRace(int raceId) =>
+            GeneratedQueryAsync(DefaultSelectQuery()
+                                                .Where<StartList>((nameof(StartList.StartStateId),
+                                                                      Domain.Enums.StartState.Upcoming)).Build());
 
         private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()

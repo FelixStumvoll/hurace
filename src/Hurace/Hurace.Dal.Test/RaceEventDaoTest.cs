@@ -8,11 +8,8 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class RaceEventDaoTest : TestBase
     {
-        [SetUp]
-        public Task BeforeEach() => SetupRaceEvent();
-        
         [Test]
-        public async Task FindAllTest() => Assert.AreEqual(1, (await RaceEventDao.FindAllAsync()).Count());
+        public async Task FindAllTest() => Assert.AreEqual(4, (await RaceEventDao.FindAllAsync()).Count());
         
         [Test]
         public async Task FindByIdTest()

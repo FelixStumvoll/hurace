@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Autofac;
 using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
 using Hurace.Dal.Common;
@@ -7,6 +8,7 @@ using Module = Autofac.Module;
 
 namespace Hurace.Core.Logic.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class CoreServiceModule : Module
     {
         public string ConnectionString { get; set; }
@@ -24,7 +26,7 @@ namespace Hurace.Core.Logic.Modules
                    .Where(t => t.Name.EndsWith("Service")).AsImplementedInterfaces();
 
             builder.RegisterType<ActiveRaceResolver>().As<IActiveRaceResolver>()
-                   .OnActivating(async handler => await handler.Instance.InitializeActiveRaceHandler())
+                   .OnActivating(async handler => await handler.Instance.InitializeActiveRaceResolver())
                    .SingleInstance();
 
             //Load StatementFactory & ConnectionFactory

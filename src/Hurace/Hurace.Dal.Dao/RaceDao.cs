@@ -28,7 +28,7 @@ namespace Hurace.Dal.Dao
 
 
         private SelectStatementBuilder<Race> ActiveRaceQuery() => DefaultSelectQuery()
-            .Where<RaceState>((nameof(RaceState.Id), (int) Domain.Enums.RaceState.Running));
+            .Where<Race>((nameof(Race.RaceStateId), (int) Domain.Enums.RaceState.Running));
         public Task<IEnumerable<Race>> GetActiveRaces() =>
             GeneratedQueryAsync(ActiveRaceQuery().Build());
 

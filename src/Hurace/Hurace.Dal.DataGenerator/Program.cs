@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Hurace.Dal.DataGenerator.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Hurace.DataGenerator
@@ -12,7 +13,7 @@ namespace Hurace.DataGenerator
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var section = config.GetSection("ConnectionStrings").GetSection("huraceProd");
-            var dbCreator = new DbDataCreator(
+            var dbCreator = new Dal.DataGenerator.Core.DataGenerator(
                 section["ProviderName"],
                 section["ConnectionString"]);
 

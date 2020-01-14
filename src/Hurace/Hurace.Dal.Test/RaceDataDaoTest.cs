@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurace.Dal.Domain;
+using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 
 namespace Hurace.Dal.Test
@@ -10,13 +11,9 @@ namespace Hurace.Dal.Test
     [ExcludeFromCodeCoverage]
     public class RaceDataDaoTest : TestBase
     {
-
-        [SetUp]
-        public Task BeforeEach() => SetupRaceData();
-
         [Test]
         public async Task FindAllTest() => 
-            Assert.AreEqual(1, (await RaceDataDao.FindAllAsync()).Count());
+            Assert.AreEqual(34, (await RaceDataDao.FindAllAsync()).Count());
 
         [Test]
         public async Task FindByIdTest()
@@ -56,16 +53,17 @@ namespace Hurace.Dal.Test
         [Test]
         public async Task DeleteTest()
         {
-            var raceDataId = (await RaceDataDao.FindAllAsync()).First().Id;
-            await RaceDataDao.DeleteAsync(raceDataId);
-            Assert.IsNull(await RaceDataDao.FindByIdAsync(raceDataId));
+            var raceDataId = (await RaceDataDao.InsertGetIdAsync(new RaceData
+            {
+                RaceId = (await RaceDao.FindAllAsync()).First().Id,
+                EventDateTime = DateTime.Now,
+                EventTypeId = (await EventTypeDao.FindAllAsync()).First().Id
+            }));
+            await RaceDataDao.DeleteAsync(raceDataId.Value);
+            Assert.IsNull(await RaceDataDao.FindByIdAsync(raceDataId.Value));
         }
 
         [Test]
-        public async Task DeleteAllTest()
-        {
-            await RaceDataDao.DeleteAllAsync();
-            Assert.AreEqual(0, (await RaceDataDao.FindAllAsync()).Count());
-        }
+        public void DeleteAllTest() => Assert.ThrowsAsync<SqlException>(async () => await RaceDataDao.DeleteAllAsync());
     }
 }

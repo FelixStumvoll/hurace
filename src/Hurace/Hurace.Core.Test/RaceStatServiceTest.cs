@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Hurace.Core.Logic.Models;
 using Hurace.Core.Logic.Services.RaceStatService;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
@@ -10,6 +12,7 @@ using NUnit.Framework;
 
 namespace Hurace.Core.Test
 {
+    [ExcludeFromCodeCoverage]
     public class RaceStatServiceTest
     {
         [Test]
@@ -195,6 +198,48 @@ namespace Hurace.Core.Test
                 expected,
                 await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
                     .GetStartTimeForSkier(1, 1));
+        }
+
+
+
+        [Test]
+        public async Task GetRankingForRaceTest()
+        {
+            var mockSensorDao = new Mock<ISensorDao>();
+            var mockTimeDataDao = new Mock<ITimeDataDao>();
+            var mockStartListDao = new Mock<IStartListDao>();
+            mockSensorDao.Setup(sd => sd.GetLastSensorNumber(It.IsAny<int>())).ReturnsAsync(3);
+            mockTimeDataDao.Setup(sld => sld.GetRankingForSensor(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                           .ReturnsAsync(new List<TimeData>
+                           {
+                               new TimeData {Time = 0, StartList = new StartList {SkierId = 1}},
+                               new TimeData {Time = 3, StartList = new StartList {SkierId = 2}},
+                               new TimeData {Time = 3, StartList = new StartList {SkierId = 3}},
+                               new TimeData {Time = 4, StartList = new StartList {SkierId = 4}},
+                           });
+            mockStartListDao.Setup(sld => sld.GetDisqualifiedSkierForRace(It.IsAny<int>())).ReturnsAsync(
+                new List<StartList>
+                {
+                    new StartList {SkierId = 5}
+                });
+
+            var ranking = (await new RaceStatService(mockStartListDao.Object, mockTimeDataDao.Object, mockSensorDao.Object)
+                .GetRankingForRace(1)).ToList();
+
+            Assert.AreEqual(1, ranking[0].Position);
+            Assert.AreEqual(1, ranking[0].StartList.SkierId);
+
+            Assert.AreEqual(2, ranking[1].Position);
+            Assert.AreEqual(2, ranking[1].StartList.SkierId);
+
+            Assert.AreEqual(2, ranking[2].Position);
+            Assert.AreEqual(3, ranking[2].StartList.SkierId);
+
+            Assert.AreEqual(4, ranking[3].Position);
+            Assert.AreEqual(4, ranking[3].StartList.SkierId);
+            
+            Assert.AreEqual(5, ranking[4].StartList.SkierId);
+            Assert.IsNull(ranking[4].Position);
         }
     }
 }

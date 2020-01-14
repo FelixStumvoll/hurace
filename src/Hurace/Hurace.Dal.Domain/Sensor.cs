@@ -8,8 +8,6 @@ namespace Hurace.Dal.Domain
     {
         [Key]
         public int Id { get; set; }
-
-        public string SensorDescription { get; set; } = default!;
         public int RaceId { get; set; }
         public int SensorNumber { get; set; }
         [Navigational]

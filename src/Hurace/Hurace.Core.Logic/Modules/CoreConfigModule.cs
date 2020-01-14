@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using Hurace.Core.Logic.Configs;
 
 namespace Hurace.Core.Logic.Modules
 {
+    [ExcludeFromCodeCoverage]
     public class CoreConfigModule : Module
     {
         public string ClockAssembly { get; set; }
