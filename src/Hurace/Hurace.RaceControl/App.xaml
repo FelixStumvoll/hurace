@@ -44,48 +44,52 @@
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type models:RaceRanking}">
-                        <DockPanel LastChildFill="False">
-                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                <TextBlock Text="{Binding Position}" FontWeight="Bold" Width="25" Margin="0,0,10,0" />
-                                <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
-                                                  Content="{Binding StartList.Skier}" />
-                            </StackPanel>
-                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <ContentPresenter Content="{Binding}">
-                                    <ContentPresenter.Resources>
-                                        <DataTemplate x:Key="Disqualified">
-                                            <TextBlock Text="Disqualifiziert" />
-                                        </DataTemplate>
-                                        <DataTemplate x:Key="Valid">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock
-                                                    Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
-                                                    Margin="0,0,10,0" />
-                                                <TextBlock Text="+" />
-                                                <TextBlock
-                                                    Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ContentPresenter.Resources>
+                        <Border Margin="0,0,5,0">
+                            <DockPanel LastChildFill="False">
 
-                                    <ContentPresenter.Style>
-                                        <Style TargetType="ContentPresenter">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Disqualified}" Value="True">
-                                                    <Setter Property="ContentTemplate"
-                                                            Value="{StaticResource Disqualified}" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Disqualified}" Value="False">
-                                                    <Setter Property="ContentTemplate"
-                                                            Value="{StaticResource Valid}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ContentPresenter.Style>
-                                </ContentPresenter>
 
-                            </StackPanel>
-                        </DockPanel>
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Position}" FontWeight="Bold" Width="25" Margin="0,0,10,0" />
+                                    <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                                                      Content="{Binding StartList.Skier}" />
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                    <ContentPresenter Content="{Binding}">
+                                        <ContentPresenter.Resources>
+                                            <DataTemplate x:Key="Disqualified">
+                                                <TextBlock Text="Disqualifiziert" />
+                                            </DataTemplate>
+                                            <DataTemplate x:Key="Valid">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
+                                                        Margin="0,0,10,0" />
+                                                    <TextBlock Text="+" />
+                                                    <TextBlock
+                                                        Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ContentPresenter.Resources>
+
+                                        <ContentPresenter.Style>
+                                            <Style TargetType="ContentPresenter">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Disqualified}" Value="True">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource Disqualified}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Disqualified}" Value="False">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource Valid}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentPresenter.Style>
+                                    </ContentPresenter>
+
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type dto:StartList}">
