@@ -70,8 +70,8 @@ namespace Hurace.Dal.Dao
 
         public Task<IEnumerable<StartList>> GetRemainingStartListForRace(int raceId) =>
             GeneratedQueryAsync(DefaultSelectQuery()
-                                                .Where<StartList>((nameof(StartList.StartStateId),
-                                                                      Domain.Enums.StartState.Upcoming)).Build());
+                                .Where<StartList>((nameof(StartList.RaceId), raceId),(nameof(StartList.StartStateId),
+                                                      Domain.Enums.StartState.Upcoming)).Build());
 
         private protected override SelectStatementBuilder<StartList> DefaultSelectQuery() =>
             StatementFactory.Select<StartList>()
