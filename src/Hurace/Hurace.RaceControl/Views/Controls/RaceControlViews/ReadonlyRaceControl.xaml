@@ -21,19 +21,57 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" Padding="10" Margin="0,0,5,10">
-            <DockPanel LastChildFill="False">
-                <StackPanel DockPanel.Dock="Left">
-                    <TextBlock Text="Sieger" FontSize="25" FontWeight="Bold" />
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Winner.Skier.FirstName}" FontSize="25" />
-                        <TextBlock Text="{Binding Winner.Skier.LastName}" Margin="5,0,0,0" FontSize="25" />
-                    </StackPanel>
-                </StackPanel>
-                
-                <Image DockPanel.Dock="Right"
-                       Source="{Binding Winner.Skier.ImageUrl, Converter={StaticResource DataUriImageConverter}}" />
+            <Grid>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Finished}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
 
-            </DockPanel>
+                                <DataTrigger Binding="{Binding Finished}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <TextBlock Text="Kein Sieger" FontSize="25" TextAlignment="Center" FontWeight="Bold" />
+                    <TextBlock Text="Rennen wurde abgebrochen" FontSize="25" TextAlignment="Center" FontWeight="Bold" />
+
+                </StackPanel>
+
+                <DockPanel LastChildFill="False">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Finished}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Finished}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <StackPanel DockPanel.Dock="Left">
+
+
+                        <TextBlock Text="Sieger" FontSize="25" FontWeight="Bold" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Winner.Skier.FirstName}" FontSize="25" />
+                            <TextBlock Text="{Binding Winner.Skier.LastName}" Margin="5,0,0,0" FontSize="25" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Image DockPanel.Dock="Right"
+                           Source="{Binding Winner.Skier.ImageUrl, Converter={StaticResource DataUriImageConverter}}" />
+
+                </DockPanel>
+            </Grid>
         </Border>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Startliste" FontWeight="Bold" />
         <ListBox BorderThickness="1" Margin="0,0,5,0" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding StartList}" />

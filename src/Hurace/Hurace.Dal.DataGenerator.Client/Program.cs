@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hurace.Dal.DataGenerator.Core;
 using Microsoft.Extensions.Configuration;
 
-namespace Hurace.DataGenerator
+namespace Hurace.Dal.DataGenerator.Client
 {
     [ExcludeFromCodeCoverage]
     internal static class Program

@@ -2,11 +2,11 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Interface Name="Hurace.Dal.Interface.ICountryDao" Collapsed="true">
     <Position X="6.5" Y="8.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
+    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true">
       <Path>
-        <Point X="10.5" Y="8.625" />
-        <Point X="8.123" Y="8.625" />
-        <Point X="8.123" Y="9.096" />
+        <Point X="10.25" Y="8.625" />
+        <Point X="8.149" Y="8.625" />
+        <Point X="8.149" Y="9.096" />
         <Point X="8" Y="9.096" />
       </Path>
     </InheritanceLine>
@@ -19,9 +19,9 @@
     <Position X="6.5" Y="7.75" Width="1.5" />
     <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="10.5" Y="8.625" />
-        <Point X="8.123" Y="8.625" />
-        <Point X="8.123" Y="8.096" />
+        <Point X="10.25" Y="8.625" />
+        <Point X="8.149" Y="8.625" />
+        <Point X="8.149" Y="8.096" />
         <Point X="8" Y="8.096" />
       </Path>
     </InheritanceLine>
@@ -59,10 +59,19 @@
       <FileName>ILocationDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Hurace.Dal.Interface.IRaceDao" Collapsed="true">
-    <Position X="8.25" Y="8.75" Width="1.5" />
+  <Interface Name="Hurace.Dal.Interface.IRaceDao">
+    <Position X="6.25" Y="10" Width="1.75" />
+    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="10.312" Y="9.304" />
+        <Point X="8.875" Y="9.304" />
+        <Point X="8.875" Y="9.7" />
+        <Point X="7.125" Y="9.7" />
+        <Point X="7.125" Y="10" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>IRaceDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -74,13 +83,13 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.IRaceEventDao" Collapsed="true">
-    <Position X="14.75" Y="8.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
+    <Position X="15.5" Y="8.75" Width="1.5" />
+    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true">
       <Path>
         <Point X="12" Y="8.625" />
-        <Point X="14.627" Y="8.625" />
-        <Point X="14.627" Y="9.096" />
-        <Point X="14.75" Y="9.096" />
+        <Point X="12.75" Y="8.625" />
+        <Point X="12.75" Y="9.096" />
+        <Point X="15.5" Y="9.096" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -103,35 +112,52 @@
       <FileName>IRaceStateDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Hurace.Dal.Interface.ISeasonDao" Collapsed="true">
-    <Position X="13" Y="7.75" Width="1.5" />
+  <Interface Name="Hurace.Dal.Interface.ISeasonDao">
+    <Position X="13" Y="7.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ISeasonDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Hurace.Dal.Interface.ISensorDao" Collapsed="true">
-    <Position X="13" Y="8.75" Width="1.5" />
+  <Interface Name="Hurace.Dal.Interface.ISensorDao">
+    <Position X="14.25" Y="10" Width="2" />
+    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="11.75" Y="9.304" />
+        <Point X="11.75" Y="9.46" />
+        <Point X="15.25" Y="9.46" />
+        <Point X="15.25" Y="10" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAQAAAAQAAAAAgAAAAAAAAAAABAAAAAAAA=</HashCode>
       <FileName>ISensorDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.ISkierDao">
     <Position X="11.5" Y="10" Width="2.5" />
+    <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="11.125" Y="9.304" />
+        <Point X="11.125" Y="9.625" />
+        <Point X="12.75" Y="9.625" />
+        <Point X="12.75" Y="10" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQAABA=</HashCode>
+      <HashCode>AAAIAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAQAABA=</HashCode>
       <FileName>ISkierDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.ISkierEventDao" Collapsed="true">
-    <Position X="14.75" Y="7.75" Width="1.5" />
+    <Position X="15.5" Y="7.75" Width="1.5" />
     <InheritanceLine Type="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="12" Y="8.625" />
-        <Point X="14.627" Y="8.625" />
-        <Point X="14.627" Y="8.096" />
-        <Point X="14.75" Y="8.096" />
+        <Point X="12" Y="7.938" />
+        <Point X="12.123" Y="7.938" />
+        <Point X="12.123" Y="7.627" />
+        <Point X="16.25" Y="7.627" />
+        <Point X="16.25" Y="7.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -140,17 +166,19 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.IStartListDao">
-    <Position X="13.75" Y="5" Width="1.75" />
+    <Position X="14.5" Y="4.75" Width="2.25" />
     <InheritanceLine Type="Hurace.Dal.Interface.Base.ICrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="11.25" Y="6.75" />
         <Point X="11.442" Y="6.75" />
-        <Point X="11.442" Y="6.75" />
-        <Point X="13.75" Y="6.75" />
+        <Point X="11.442" Y="7.469" />
+        <Point X="14.233" Y="7.469" />
+        <Point X="14.233" Y="6.5" />
+        <Point X="14.5" Y="6.5" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAIgAAAAAAgBAAAAAAAAAAAIA=</HashCode>
+      <HashCode>BAAAAAgAAEAAAAAAAAAAIgAAAAAAgBAAAAAAEAAAAIA=</HashCode>
       <FileName>IStartListDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -168,9 +196,9 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.ITimeDataDao">
-    <Position X="12" Y="5" Width="1.5" />
+    <Position X="12" Y="4.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAAIAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAAAEAIAAAAAAAAAAAAAAAUgAAAIA=</HashCode>
       <FileName>ITimeDataDao.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -189,13 +217,13 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Hurace.Dal.Interface.Base.IDefaultCrudDao&lt;T&gt;">
-    <Position X="10.5" Y="7.75" Width="1.5" />
+    <Position X="10.25" Y="7.75" Width="1.75" />
     <InheritanceLine Type="Hurace.Dal.Interface.Base.ICrudDao&lt;T&gt;" FixedFromPoint="true">
       <Path>
         <Point X="10.5" Y="6.867" />
         <Point X="10.5" Y="7.375" />
-        <Point X="11.25" Y="7.375" />
-        <Point X="11.25" Y="7.75" />
+        <Point X="11.125" Y="7.375" />
+        <Point X="11.125" Y="7.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>

@@ -58,26 +58,26 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                  () =>
                                                      (_currentSkier == null || _currentSkier != null &&
                                                       (_currentSkier.StartStateId ==
-                                                       (int) StartState.Finished ||
+                                                       (int)StartState.Finished ||
                                                        _currentSkier.StartStateId ==
-                                                       (int) StartState.Disqualified)) &&
+                                                       (int)StartState.Disqualified)) &&
                                                      StartList.Any());
             CancelSkierCommand = new AsyncCommand<int>(async skierId => await CancelSkier(skierId));
             CancelRaceCommand = new AsyncCommand(CancelRace, () =>
                                                      RaceState.Race.RaceStateId ==
-                                                     (int) Dal.Domain.Enums.RaceState.Running);
+                                                     (int)Dal.Domain.Enums.RaceState.Running);
             EndRaceCommand =
                 new AsyncCommand(
                     EndRace,
                     () => (_currentSkier == null ||
-                           _currentSkier.StartStateId != (int) Dal.Domain.Enums.RaceState.Finished) &&
+                           _currentSkier.StartStateId != (int)Dal.Domain.Enums.RaceState.Finished) &&
                           StartList.Count == 0 &&
                           RaceState.Race.RaceStateId ==
-                          (int) Dal.Domain.Enums.RaceState.Running);
+                          (int)Dal.Domain.Enums.RaceState.Running);
             DisqualifyCurrentSkierCommand = new AsyncCommand(
                 async () => { await _activeRaceControlService.DisqualifyCurrentSkier(); }, () =>
                     _currentSkier != null &&
-                    _currentSkier.StartStateId == (int) StartState.Running);
+                    _currentSkier.StartStateId == (int)StartState.Running);
 
             DisqualifyLateCommand = new AsyncCommand(() => _activeRaceControlService.DisqualifyFinishedSkier(
                                                          RankingViewModel.SelectedRaceRanking.StartList.SkierId), () =>
@@ -86,7 +86,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                              .SelectedRaceRanking;
                                                          return selectedRanking != null &&
                                                                 selectedRanking.StartList.StartStateId ==
-                                                                (int) StartState.Finished;
+                                                                (int)StartState.Finished;
                                                      });
         }
 
@@ -151,10 +151,6 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                     InvokeButtonCanExecuteChanged();
                 });
 
-            _activeRaceControlService.OnRaceCancelled += race =>
-            {
-                UiExecutor.ExecuteInUiThread(() => { RaceState.Race = race; });
-            };
             _eventsSetup = true;
         }
 

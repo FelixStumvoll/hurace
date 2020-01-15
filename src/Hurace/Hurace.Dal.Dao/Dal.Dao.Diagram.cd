@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Hurace.Core.Dal.Dao.Base.BaseDao&lt;T&gt;">
+  <Class Name="Hurace.Dal.Dao.Base.BaseDao&lt;T&gt;">
     <Position X="14.75" Y="1.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAQCAAAAAAAAAAAAAAAAAACAAABAAAEAAAAgEQAAAEA=</HashCode>
+      <HashCode>AAQCAAAAAAAAAAAQAAAAAACAAABAAAEAAAAgEQAAAEA=</HashCode>
       <FileName>Base\BaseDao.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.Base.CrudDao&lt;T&gt;">
+  <Class Name="Hurace.Dal.Dao.Base.CrudDao&lt;T&gt;">
     <Position X="13" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAAAAAABAAAAAAAgAAAAAAAAAAAA=</HashCode>
@@ -15,21 +15,15 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;">
+  <Class Name="Hurace.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;">
     <Position X="13" Y="7.75" Width="1.75" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.CrudDao&lt;T&gt;" FixedToPoint="true">
-      <Path>
-        <Point X="13.75" Y="7.06" />
-        <Point X="13.75" Y="7.75" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAQAAAAAAAAAIA=</HashCode>
       <FileName>Base\DefaultCrudDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;">
+  <Class Name="Hurace.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;">
     <Position X="17.25" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -37,36 +31,87 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.Base.ReadonlyDao&lt;T&gt;">
+  <Class Name="Hurace.Dal.Dao.Base.ReadonlyDao&lt;T&gt;">
     <Position X="15" Y="5.25" Width="1.75" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.BaseDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="15.875" Y="4.603" />
-        <Point X="15.875" Y="5.25" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAgAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Base\ReadonlyDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.CountryDao" Collapsed="true">
-    <Position X="11" Y="9" Width="1.5" />
+  <Class Name="Hurace.Dal.Dao.LocationDao">
+    <Position X="11.25" Y="10.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>CountryDao.cs</FileName>
+      <HashCode>AgAAAAAAgAAAAAAAABAAAEBAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>LocationDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.DisciplineDao" Collapsed="true">
-    <Position X="9.25" Y="9" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
+  <Class Name="Hurace.Dal.Dao.RaceEventDao" Collapsed="true">
+    <Position X="15.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RaceEventDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.SkierDao">
+    <Position X="14.5" Y="10.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAhAAAAAAAAAAAAABAAAAAAAQAAAAAAAQAAJA=</HashCode>
+      <FileName>SkierDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.SkierEventDao" Collapsed="true">
+    <Position X="15.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SkierEventDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.StartListDao">
+    <Position X="12" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAgAiEAAAAAAAAAAIgAAAAAAgBAAAAAAEAAAAIA=</HashCode>
+      <FileName>StartListDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.TimeDataDao">
+    <Position X="9.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAiAAAAAAAAAEAIAAAAAAAAAAAAAAAUgAAAIA=</HashCode>
+      <FileName>TimeDataDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.SensorDao">
+    <Position X="17.25" Y="9" Width="2.25" />
+    <InheritanceLine Type="Hurace.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true">
       <Path>
-        <Point X="13" Y="8.688" />
-        <Point X="10.873" Y="8.688" />
-        <Point X="10.873" Y="9.346" />
-        <Point X="10.75" Y="9.346" />
+        <Point X="14.5" Y="9.56" />
+        <Point X="14.5" Y="9.865" />
+        <Point X="17" Y="9.865" />
+        <Point X="17" Y="10.001" />
+        <Point X="17.25" Y="10.001" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAQAAAAAgAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>SensorDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.DisciplineDao" Collapsed="true">
+    <Position X="9.5" Y="9" Width="1.5" />
+    <InheritanceLine Type="Hurace.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="13" Y="8.625" />
+        <Point X="11.123" Y="8.625" />
+        <Point X="11.123" Y="9.346" />
+        <Point X="11" Y="9.346" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -75,148 +120,63 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.GenderDao" Collapsed="true">
-    <Position X="19.75" Y="6.25" Width="1.5" />
+  <Class Name="Hurace.Dal.Dao.CountryDao" Collapsed="true">
+    <Position X="11.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CountryDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.SeasonDao">
+    <Position X="17.25" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SeasonDao.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Dal.Dao.GenderDao" Collapsed="true">
+    <Position X="21.75" Y="4.75" Width="1.5" />
+    <InheritanceLine Type="Hurace.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="19.125" Y="5.25" />
+        <Point X="19.125" Y="4.449" />
+        <Point X="22.5" Y="4.449" />
+        <Point X="22.5" Y="4.75" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>GenderDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.LocationDao">
-    <Position X="10.25" Y="10.5" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AgAAAAAAgAAAAAAAABAAAEBAAAAAAAAAAAAAAAAAAIA=</HashCode>
-      <FileName>LocationDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.RaceDao" Collapsed="true">
-    <Position X="17" Y="7.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+  <Class Name="Hurace.Dal.Dao.EventTypeDao" Collapsed="true">
+    <Position X="21.75" Y="6" Width="1.5" />
+    <InheritanceLine Type="Hurace.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="14.75" Y="8.625" />
-        <Point X="17.812" Y="8.625" />
-        <Point X="17.812" Y="8.441" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>RaceDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.RaceDataDao" Collapsed="true">
-    <Position X="11" Y="7.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="13" Y="8.688" />
-        <Point X="12.76" Y="8.688" />
-        <Point X="12.76" Y="8.096" />
-        <Point X="12.5" Y="8.096" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>RaceDataDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.RaceEventDao" Collapsed="true">
-    <Position X="15.25" Y="7.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="14.75" Y="8.625" />
-        <Point X="14.99" Y="8.625" />
-        <Point X="14.99" Y="8.096" />
-        <Point X="15.25" Y="8.096" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>RaceEventDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.RaceStateDao" Collapsed="true">
-    <Position X="21.5" Y="4.5" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="19.25" Y="5.625" />
-        <Point X="21.377" Y="5.625" />
-        <Point X="21.377" Y="4.846" />
-        <Point X="21.5" Y="4.846" />
+        <Point X="18.688" Y="6.675" />
+        <Point X="18.688" Y="6.915" />
+        <Point X="21.51" Y="6.915" />
+        <Point X="21.51" Y="6.346" />
+        <Point X="21.75" Y="6.346" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>RaceStateDao.cs</FileName>
+      <FileName>EventTypeDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.SeasonDao" Collapsed="true">
-    <Position X="17" Y="9" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+  <Class Name="Hurace.Dal.Dao.StartStateDao" Collapsed="true">
+    <Position X="19.75" Y="4.75" Width="1.5" />
+    <InheritanceLine Type="Hurace.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" FixedFromPoint="true">
       <Path>
-        <Point X="14.75" Y="8.625" />
-        <Point X="17.812" Y="8.625" />
-        <Point X="17.812" Y="9" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SeasonDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.SensorDao" Collapsed="true">
-    <Position X="9.25" Y="7.75" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultCrudDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="13" Y="8.688" />
-        <Point X="10.873" Y="8.688" />
-        <Point X="10.873" Y="8.096" />
-        <Point X="10.75" Y="8.096" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SensorDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.SkierDao">
-    <Position X="15" Y="10.5" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAAAAAAAABAAAAAAAQAAAAAAAQAAJA=</HashCode>
-      <FileName>SkierDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.SkierEventDao" Collapsed="true">
-    <Position X="15.25" Y="9" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SkierEventDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.StartListDao">
-    <Position X="7.75" Y="4.25" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAiAAAAAAAAAAAIgAAAAAAgBAAAAAAAAAAAIA=</HashCode>
-      <FileName>StartListDao.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Hurace.Core.Dal.Dao.StartStateDao" Collapsed="true">
-    <Position X="19.75" Y="4.5" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="19.25" Y="5.625" />
-        <Point X="19.5" Y="5.625" />
-        <Point X="19.5" Y="4.846" />
-        <Point X="19.75" Y="4.846" />
+        <Point X="19.25" Y="5.875" />
+        <Point X="19.49" Y="5.875" />
+        <Point X="19.49" Y="5.096" />
+        <Point X="19.75" Y="5.096" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -225,27 +185,19 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.TimeDataDao">
-    <Position X="10.5" Y="4.25" Width="2" />
+  <Class Name="Hurace.Dal.Dao.RaceStateDao" Collapsed="true">
+    <Position X="19.75" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAiAAAAEAAAAAAIAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
-      <FileName>TimeDataDao.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RaceStateDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Hurace.Core.Dal.Dao.EventTypeDao" Collapsed="true">
-    <Position X="21.5" Y="6.25" Width="1.5" />
-    <InheritanceLine Type="Hurace.Core.Dal.Dao.Base.DefaultReadonlyDao&lt;T&gt;" FixedFromPoint="true">
-      <Path>
-        <Point X="19.25" Y="5.625" />
-        <Point X="21.377" Y="5.625" />
-        <Point X="21.377" Y="6.596" />
-        <Point X="21.5" Y="6.596" />
-      </Path>
-    </InheritanceLine>
+  <Class Name="Hurace.Dal.Dao.RaceDao">
+    <Position X="10.25" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>EventTypeDao.cs</FileName>
+      <HashCode>AAAAgAAAgAAAQAAAAAAAAAAAAAAAAAAAgAAAAAEAAAA=</HashCode>
+      <FileName>RaceDao.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

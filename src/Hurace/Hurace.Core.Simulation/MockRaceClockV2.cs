@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Hurace.Core.Timer;
 using MathNet.Numerics.Distributions;
 using Microsoft.Extensions.Configuration;
@@ -98,30 +99,35 @@ namespace Hurace.Core.Simulation
 
         private void OnTick()
         {
-
-            MillisecondsLeft -= 1;
-            OnCountdownChanged?.Invoke(MillisecondsLeft);
-            if (MillisecondsLeft > 0 && NextSensor != 0) return;
-
-
-            TimingTriggered?.Invoke(NextSensor, DateTime.Now);
-            if (NextSensor + 1 >= SensorCount)
+            lock (this)
             {
-                _timer.Stop();
-                OnRunningChanged?.Invoke(false);
-                return;
+                MillisecondsLeft -= 1;
+                OnCountdownChanged?.Invoke(MillisecondsLeft);
+                if (MillisecondsLeft > 0) return;
+
+                var sensor = NextSensor;
+                TimingTriggered?.Invoke(sensor, DateTime.Now);
+
+                if (NextSensor + 1 >= SensorCount)
+                {
+                    Reset();
+                    return;
+                }
+
+                NextSensor++;
+                OnNextSensorChanged?.Invoke(NextSensor);
+                MillisecondsLeft = GetNextWaitTime();
             }
-
-            NextSensor++;
-            OnNextSensorChanged?.Invoke(NextSensor);
-            MillisecondsLeft = GetNextWaitTime();
-
         }
 
         public void Start()
         {
             OnRunningChanged?.Invoke(true);
-            MillisecondsLeft = GetNextWaitTime();
+            if (NextSensor == 0)
+            {
+                MillisecondsLeft = 0;
+            }
+
             _timer.Start();
         }
 

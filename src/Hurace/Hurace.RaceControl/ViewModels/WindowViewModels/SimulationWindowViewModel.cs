@@ -139,5 +139,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
                                                     () => SensorToTrigger >= 0 &&
                                                           SensorToTrigger < Clock.SensorCount);
         }
+
+        public void OnClose() => _clock.Stop();
     }
 }

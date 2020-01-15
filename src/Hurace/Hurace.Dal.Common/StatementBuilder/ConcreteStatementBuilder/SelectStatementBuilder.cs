@@ -46,19 +46,19 @@ namespace Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder
 
         private TConfig GetConfig<TSelf, TRef, TConfig>() where TConfig : InnerJoinConfig, new()
         {
-            if (JoinCfg!.JoinConfigs.TryGetValue((typeof(TSelf), typeof(TRef)), out var config)) return (TConfig) config;
+            if (JoinCfg!.JoinConfigs.TryGetValue((typeof(TSelf), typeof(TRef)), out var config)) return (TConfig)config;
             config = new TConfig();
             JoinCfg?.JoinConfigs.Add((typeof(TSelf), typeof(TRef)), config);
 
-            return (TConfig) config;
+            return (TConfig)config;
         }
 
-        public SelectStatementBuilder<T> LeftOuterJoin<TSelf, TRef>(string[] keys, params JoinParam[] mappings)
+        public SelectStatementBuilder<T> LeftOuterJoin<TSelf, TRef>(IEnumerable<string> keys, params JoinParam[] mappings)
             where TRef : class, new()
         {
             JoinCfg ??= new JoinConfig();
             var config = GetConfig<TSelf, TRef, LeftOuterJoinConfig>();
-            
+
             config.JoinParams.AddRange(mappings);
             config.NullKeys.AddRange(keys);
             JoinCfg.MapperConfig.Include<TRef>();
@@ -89,7 +89,7 @@ namespace Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder
                         typeof(SelectStatementBuilder<T>)
                             .GetMethod(nameof(AppendColumns), BindingFlags.NonPublic | BindingFlags.Instance)
                             ?.MakeGenericMethod(propertyInfo.PropertyType)
-                            .Invoke(this, new object[] {list, config});
+                            .Invoke(this, new object[] { list, config });
                     continue;
                 }
 
@@ -136,7 +136,7 @@ namespace Hurace.Dal.Common.StatementBuilder.ConcreteStatementBuilder
                     joinType = "join";
                     constraintString = constraints;
                 }
-                
+
                 joins.Add($"{joinType} {refTableName} on {constraintString}");
             }
 

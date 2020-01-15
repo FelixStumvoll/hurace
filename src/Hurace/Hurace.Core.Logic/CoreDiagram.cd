@@ -1,2 +1,199 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver.ActiveRaceResolver">
+    <Position X="8.25" Y="12.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAACAAAAAAggAIAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Services\ActiveRaceControlService\Resolver\ActiveRaceResolver.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_raceDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.RaceStatService.RaceStatService">
+    <Position X="5.25" Y="1.5" Width="2.75" />
+    <AssociationLine Name="_sensorDao" Type="Hurace.Dal.Interface.ISensorDao" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8" Y="3.024" />
+        <Point X="8.375" Y="3.024" />
+        <Point X="8.375" Y="2.5" />
+        <Point X="9.5" Y="2.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_timeDataDao" Type="Hurace.Dal.Interface.ITimeDataDao" FixedFromPoint="true">
+      <Path>
+        <Point X="6.938" Y="4.142" />
+        <Point X="6.938" Y="5.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_startListDao" Type="Hurace.Dal.Interface.IStartListDao" ManuallyRouted="true">
+      <Path>
+        <Point X="7.219" Y="4.142" />
+        <Point X="7.219" Y="4.719" />
+        <Point X="7.021" Y="4.719" Type="JumpStart" />
+        <Point X="6.854" Y="4.719" Type="JumpEnd" />
+        <Point X="5.25" Y="4.719" />
+        <Point X="5.25" Y="10" />
+        <Point X="4.5" Y="10" />
+        <Point X="4.5" Y="14.645" />
+        <Point X="5.5" Y="14.645" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAgAAAkAAAAQAAAAAAACEBAAAAAAAwAQAAAA=</HashCode>
+      <FileName>Services\RaceStatService\RaceStatService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_sensorDao" />
+      <Field Name="_timeDataDao" />
+      <Field Name="_startListDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.ActiveRaceService.ActiveRaceService">
+    <Position X="4.75" Y="10.25" Width="2.75" />
+    <AssociationLine Name="_timeDataDao" Type="Hurace.Dal.Interface.ITimeDataDao" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.625" Y="10.25" />
+        <Point X="5.625" Y="6.695" />
+        <Point X="6.562" Y="6.695" />
+        <Point X="6.562" Y="6.32" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAQgAAAAAAAAAAgAiAAAAAAAAAAAEUAAA=</HashCode>
+      <FileName>Services\ActiveRaceService\ActiveRaceService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_timeDataDao" />
+      <Field Name="_startListDao" />
+      <Field Name="_raceDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.CountryService.CountryService">
+    <Position X="2.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Services\CountryService\CountryService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_countryDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.GenderService.GenderService">
+    <Position X="2.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAIAAAAAAAAA=</HashCode>
+      <FileName>Services\GenderService\GenderService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_genderDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.RaceBaseDataService.RaceBaseDataService">
+    <Position X="9" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACABCAAAAAgAABEAAAAEAgRAAQAgAAiBEAAAEAAA=</HashCode>
+      <FileName>Services\RaceBaseDataService\RaceBaseDataService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_disciplineDao" />
+      <Field Name="_genderDao" />
+      <Field Name="_locationDao" />
+      <Field Name="_raceDao" />
+      <Field Name="_sensorDao" />
+      <Field Name="_startListService" />
+      <Field Name="_timeDataDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.RaceStartListService.RaceStartListService">
+    <Position X="1.75" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAQAAgAAAAAAAAAAAAECAABAAABAAAAAAAAA=</HashCode>
+      <FileName>Services\RaceStartListService\RaceStartListService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_skierDao" />
+      <Field Name="_startListDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.SeasonService.SeasonService">
+    <Position X="11.5" Y="9.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIFAAAAAAAAEIAAAgAAAAQAAAAAAAgAAAAg=</HashCode>
+      <FileName>Services\SeasonService\SeasonService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_seasonDao" />
+      <Field Name="_raceDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Hurace.Core.Logic.Services.SkierService.SkierService">
+    <Position X="3" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAoAAAAAACgAAAAAAAQAAAAgEAAAgAAEAAAAAACAA=</HashCode>
+      <FileName>Services\SkierService\SkierService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_countryDao" />
+      <Field Name="_genderDao" />
+      <Field Name="_skierDao" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Hurace.Dal.Interface.ITimeDataDao" Collapsed="true">
+    <Position X="5.5" Y="5.5" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.IStartListDao" Collapsed="true">
+    <Position X="5.5" Y="14" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.IRaceDao" Collapsed="true">
+    <Position X="8.5" Y="10" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.ISensorDao" Collapsed="true">
+    <Position X="9.5" Y="2" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.ISkierDao" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.ICountryDao" Collapsed="true">
+    <Position X="2.75" Y="4.5" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.IDisciplineDao" Collapsed="true">
+    <Position X="12" Y="3" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.IGenderDao" Collapsed="true">
+    <Position X="6.25" Y="8" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.ILocationDao" Collapsed="true">
+    <Position X="13" Y="4.25" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Hurace.Core.Logic.Services.RaceStartListService.IRaceStartListService">
+    <Position X="12.75" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAQAAAAAAAAAAAAAAAEAAABAAABAAAAAAAAA=</HashCode>
+      <FileName>Services\RaceStartListService\IRaceStartListService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Hurace.Dal.Interface.ISeasonDao" Collapsed="true">
+    <Position X="11.25" Y="12.75" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

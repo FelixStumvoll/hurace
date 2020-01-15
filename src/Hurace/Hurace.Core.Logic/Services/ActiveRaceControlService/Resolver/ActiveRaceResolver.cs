@@ -12,17 +12,17 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
 {
     public class ActiveRaceResolver : IActiveRaceResolver
     {
-        private List<IActiveRaceControlService> _activeRaces = new List<IActiveRaceControlService>();
-    
+        private readonly List<IActiveRaceControlService> _activeRaces = new List<IActiveRaceControlService>();
+
         private readonly IRaceDao _raceDao;
         private readonly Func<int, IActiveRaceControlService> _activeRaceControlFactory;
-    
-        public ActiveRaceResolver(Func<int,IActiveRaceControlService> activeRaceControlFactory, IRaceDao raceDao)
+
+        public ActiveRaceResolver(Func<int, IActiveRaceControlService> activeRaceControlFactory, IRaceDao raceDao)
         {
             _activeRaceControlFactory = activeRaceControlFactory;
             _raceDao = raceDao;
         }
-    
+
         public async Task InitializeActiveRaceResolver()
         {
             foreach (var race in await _raceDao.GetActiveRaces())
@@ -32,7 +32,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
                 _activeRaces.Add(rcs);
             }
         }
-    
+
         public async Task<IActiveRaceControlService?> StartRace(int raceId)
         {
             var service = _activeRaceControlFactory(raceId);
@@ -47,7 +47,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver
             service.OnRaceCancelled += _ => RemoveRace(service);
             return service;
         }
-    
+
         [ExcludeFromCodeCoverage]
         public IActiveRaceControlService this[int raceId] => _activeRaces
             .SingleOrDefault(r => r.RaceId == raceId);

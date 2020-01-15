@@ -28,7 +28,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private readonly Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
             _activeRaceControlVmFactory;
-        
+
         private readonly Func<SharedRaceStateViewModel, ReadonlyRaceControlViewModel>
             _readonlyRaceControlVmFactory;
 
@@ -70,14 +70,17 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             _activeRaceControlService ??= _activeRaceResolver[RaceState.Race.Id];
             switch (RaceState.Race.RaceStateId)
             {
-                case (int) Dal.Domain.Enums.RaceState.Upcoming:
+                case (int)Dal.Domain.Enums.RaceState.Upcoming:
                     StartListDefined = await _startListService.IsStartListDefined(RaceState.Race.Id) ?? false;
                     await SetRaceControlViewModel(ViewType.None);
                     return;
-                case (int) Dal.Domain.Enums.RaceState.Running:
+                case (int)Dal.Domain.Enums.RaceState.Running:
                     await SetRaceControlViewModel(ViewType.Active);
+                    SetupRaceEndEvents();
+
                     return;
-                case (int) Dal.Domain.Enums.RaceState.Finished:
+                case (int)Dal.Domain.Enums.RaceState.Finished:
+                case (int)Dal.Domain.Enums.RaceState.Cancelled:
                     await SetRaceControlViewModel(ViewType.Readonly);
                     return;
             }
@@ -88,6 +91,18 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             Active,
             Readonly,
             None
+        }
+
+        private void SetupRaceEndEvents()
+        {
+            async Task OnRaceEnd(Race race)
+            {
+                UiExecutor.ExecuteInUiThread(() => RaceState.Race = race);
+                await SetupAsync();
+            }
+
+            _activeRaceControlService.OnRaceCancelled += async race => await OnRaceEnd(race);
+            _activeRaceControlService.OnRaceFinished += async race => await OnRaceEnd(race);
         }
 
         private async Task SetRaceControlViewModel(ViewType type)
@@ -114,6 +129,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             {
                 _activeRaceControlService = await _activeRaceResolver.StartRace(RaceState.Race.Id);
                 RaceState.Race = await _baseDataService.GetRaceById(RaceState.Race.Id);
+                SetupRaceEndEvents();
                 await SetRaceControlViewModel(ViewType.Active);
             }
             catch (Exception)

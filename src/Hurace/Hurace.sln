@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.Domain", "Hurace
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.Interface", "Hurace.Dal.Interface\Hurace.Dal.Interface.csproj", "{841FD26C-777D-42B8-9662-E58327D4B32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.DataGenerator", "Hurace.Dal.DataGenerator\Hurace.Dal.DataGenerator.csproj", "{15EA6B62-492F-4481-879D-17ABB30ABE1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.DataGenerator.Client", "Hurace.Dal.DataGenerator.Client\Hurace.Dal.DataGenerator.Client.csproj", "{15EA6B62-492F-4481-879D-17ABB30ABE1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Logic", "Hurace.Core.Logic\Hurace.Core.Logic.csproj", "{6BBE3577-C761-47D9-B129-1551403E1F5D}"
 EndProject
