@@ -75,7 +75,7 @@
                 </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid Margin="5,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -91,7 +91,7 @@
                                         Text="{Binding RaceState.Race.Gender.GenderDescription}" />
                                 </StackPanel>
                             </DockPanel>
-                            <TextBlock Grid.Row="1" FontStyle="Italic" Foreground="Gray"
+                            <TextBlock Grid.Row="1" FontStyle="Italic"
                                        Text="{Binding RaceState.Race.RaceDescription}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">

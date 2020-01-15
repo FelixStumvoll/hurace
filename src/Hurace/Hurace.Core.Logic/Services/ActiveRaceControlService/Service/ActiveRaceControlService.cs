@@ -169,9 +169,12 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
         {
             var startList = await _startListDao.GetNextSkierForRace(RaceId);
             if (startList == null) return false;
-            using var scope = ScopeBuilder.BuildTransactionScope();
-            await UpdateStartListState(startList, RaceDataEvent.SkierStarted, StartState.Running);
-            scope.Complete();
+            using (var scope = ScopeBuilder.BuildTransactionScope())
+            {
+                await UpdateStartListState(startList, RaceDataEvent.SkierStarted, StartState.Running);
+                scope.Complete();
+            }
+          
             OnSkierStarted?.Invoke(startList);
             return true;
         }

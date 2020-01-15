@@ -45,22 +45,24 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Startliste" />
-            <ListBox Grid.Row="1" x:Name="Sl" ItemsSource="{Binding StartList}"
+            <TextBlock Grid.Row="0" Text="Startliste"  FontWeight="Bold"  />
+            <ListBox Grid.Row="1" x:Name="Sl" ItemsSource="{Binding StartList}" BorderThickness="1"
                      HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel LastChildFill="False">
-                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                <TextBlock FontWeight="Bold" Text="{Binding StartNumber}" Margin="0,0,5,0" />
-                                <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                        <Border Padding="0,5,5,5">
+                            <DockPanel LastChildFill="False">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                    <TextBlock FontWeight="Bold" Text="{Binding StartNumber}" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                    <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
                                                   Content="{Binding Skier}" />
-                            </StackPanel>
+                                </StackPanel>
 
-                            <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel"
+                                <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel"
                                     CommandParameter="{Binding Skier.Id}"
                                     Command="{Binding ElementName=Sl, Path=DataContext.CancelSkierCommand}" />
-                        </DockPanel>
+                            </DockPanel>
+                        </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -71,7 +73,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Zwischenzeiten:" Margin="0,0,5,0" />
+            <TextBlock Grid.Row="0" Text="Zwischenzeiten" Margin="0,0,5,0" FontWeight="Bold" />
             <subViews:SplitTimeView Grid.Row="1" DataContext="{Binding CurrentSkierViewModel}" />
         </Grid>
 
@@ -80,7 +82,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Rangliste" />
+            <TextBlock Grid.Row="0" Text="Rangliste"  FontWeight="Bold"  />
             <subViews:RankingView Grid.Row="1" DataContext="{Binding RankingViewModel}" />
         </Grid>
 

@@ -117,7 +117,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             Clock.OnNextSensorChanged += sensorNumber => UiExecutor.ExecuteInUiThread(() => NextSensor = sensorNumber);
             Clock.OnRunningChanged += state => UiExecutor.ExecuteInUiThread(() => Running = state);
             Clock.TimingTriggered += (id, time) =>
-                UiExecutor.ExecuteInUiThread(() => SensorEntries.Add(new SensorEntry {DateTime = time, SensorId = id}));
+                UiExecutor.ExecuteInUiThread(() => SensorEntries.Add(new SensorEntry { DateTime = time, SensorId = id }));
             SetupCommands();
         }
 
@@ -133,13 +133,11 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
                 Running = false;
                 Clock.Stop();
             }, () => Running);
-            SkipNextSensorCommand = new RelayCommand(() => Clock.SkipNextSensor(), () => NextSensor+1 <Clock.SensorCount);
+            SkipNextSensorCommand = new RelayCommand(() => Clock.SkipNextSensor(), () => NextSensor + 1 < Clock.SensorCount);
             RestartSenorCommand = new RelayCommand(() => Clock.Reset());
             TriggerSensorCommand = new RelayCommand(() => Clock.TriggerSensor(SensorToTrigger),
                                                     () => SensorToTrigger >= 0 &&
                                                           SensorToTrigger < Clock.SensorCount);
         }
-
-        public void OnClose() => Clock.Terminate();
     }
 }

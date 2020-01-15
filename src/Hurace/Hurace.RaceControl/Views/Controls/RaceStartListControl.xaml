@@ -31,34 +31,37 @@
                  Text="{Binding StartList.SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <!-- Available Skiers -->
         <ListBox Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" x:Name="AvailableSkiers" Margin="0,0,5,0"
-                 ItemsSource="{Binding AvailableSkiers.ViewItems}"
+                 ItemsSource="{Binding AvailableSkiers.ViewItems}" BorderThickness="1"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel LastChildFill="False">
-                        <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" />
-                        <Button DockPanel.Dock="Right" Content="+" Width="35" CommandParameter="{Binding Id}"
-                                Command="{Binding ElementName=AvailableSkiers, Path=DataContext.AddSkierCommand}" />
-                    </DockPanel>
+                    <Border Padding="0,5,5,5">
+                        <DockPanel LastChildFill="False">
+                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}" />
+                            <Button DockPanel.Dock="Right" Content="Hinzufügen"  CommandParameter="{Binding Id}"
+                                    Command="{Binding ElementName=AvailableSkiers, Path=DataContext.AddSkierCommand}" />
+                        </DockPanel>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <!-- Selected Skier -->
         <ListBox Grid.Column="1" Grid.Row="2" x:Name="SelectedSkiers" Margin="5,0,0,0"
+                 BorderThickness="1"
                  ItemsSource="{Binding StartList.ViewItems}"
                  SelectedItem="{Binding SelectedStartList}"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,10,0" FontWeight="Bold" Text="{Binding StartNumber}" />
-                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
-                                              Content="{Binding Skier}" />
-                        </StackPanel>
-                        <Button DockPanel.Dock="Right" Content="-" Width="35" CommandParameter="{Binding SkierId}"
-                                Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveStartListCommand}" />
-                    </DockPanel>
+                    <Border Padding="0,5,5,5">
+                        <DockPanel LastChildFill="False">
+                            <ContentPresenter Content="{Binding Path=.}" />
+                            <Button DockPanel.Dock="Right" Content="Entfernen" FontWeight="Bold" 
+                                    CommandParameter="{Binding SkierId}"
+                                    Command="{Binding ElementName=SelectedSkiers, Path=DataContext.RemoveStartListCommand}" />
+                        </DockPanel>
+                    </Border>
+
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -78,7 +81,7 @@
                     <Setter Property="HorizontalAlignment" Value="Right" />
                 </Style>
             </StackPanel.Resources>
-    
+
             <ContentPresenter Content="{Binding}">
                 <ContentPresenter.Resources>
                     <DataTemplate x:Key="InEdit">

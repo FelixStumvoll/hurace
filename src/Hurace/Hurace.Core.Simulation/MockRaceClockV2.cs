@@ -52,11 +52,7 @@ namespace Hurace.Core.Simulation
             }
             set
             {
-                lock (_lockObj)
-                {
-                    _nextSensor = value;
-                    OnNextSensorChanged?.Invoke(value);
-                }
+                lock (_lockObj) _nextSensor = value;
             }
         }
 
@@ -80,11 +76,7 @@ namespace Hurace.Core.Simulation
             }
             set
             {
-                lock (_lockObj)
-                {
-                    _millisecondsLeft = value;
-                    OnCountdownChanged?.Invoke(value);
-                }
+                lock (_lockObj) _millisecondsLeft = value;
             }
         }
 
@@ -102,31 +94,34 @@ namespace Hurace.Core.Simulation
             MillisecondsLeft = 0;
         }
 
-        private int GetNextWaitTime() => (int) new Normal(Mean * 100, Deviation * 100).Sample();
+        private int GetNextWaitTime() => (int)new Normal(Mean * 100, Deviation * 100).Sample();
 
         private void OnTick()
         {
-            lock (this)
-            {
-                MillisecondsLeft -= 1;
-                if (MillisecondsLeft > 0 && NextSensor != 0) return;
-                TimingTriggered?.Invoke(NextSensor, DateTime.Now);
-                if (NextSensor + 1 >= SensorCount)
-                {
-                    _timer.Stop();
-                    OnRunningChanged?.Invoke(false);
-                    return;
-                }
 
-                NextSensor++;
-                OnNextSensorChanged?.Invoke(NextSensor);
-                MillisecondsLeft = GetNextWaitTime();
+            MillisecondsLeft -= 1;
+            OnCountdownChanged?.Invoke(MillisecondsLeft);
+            if (MillisecondsLeft > 0 && NextSensor != 0) return;
+
+
+            TimingTriggered?.Invoke(NextSensor, DateTime.Now);
+            if (NextSensor + 1 >= SensorCount)
+            {
+                _timer.Stop();
+                OnRunningChanged?.Invoke(false);
+                return;
             }
+
+            NextSensor++;
+            OnNextSensorChanged?.Invoke(NextSensor);
+            MillisecondsLeft = GetNextWaitTime();
+
         }
 
         public void Start()
         {
             OnRunningChanged?.Invoke(true);
+            MillisecondsLeft = GetNextWaitTime();
             _timer.Start();
         }
 
@@ -139,15 +134,11 @@ namespace Hurace.Core.Simulation
         public void Reset()
         {
             _timer.Stop();
-            OnRunningChanged?.Invoke(false);
             MillisecondsLeft = 0;
             NextSensor = 0;
-        }
-
-        public void Terminate()
-        {
-            _timer.Stop();
-            _timer.Dispose();
+            OnRunningChanged?.Invoke(false);
+            OnCountdownChanged?.Invoke(MillisecondsLeft);
+            OnNextSensorChanged?.Invoke(NextSensor);
         }
 
         public void SkipNextSensor()
@@ -155,6 +146,8 @@ namespace Hurace.Core.Simulation
             if (NextSensor + 1 >= SensorCount) return;
             NextSensor++;
             MillisecondsLeft += GetNextWaitTime();
+            OnCountdownChanged?.Invoke(MillisecondsLeft);
+            OnNextSensorChanged?.Invoke(NextSensor);
         }
 
         public void TriggerSensor(int sensorNumber)

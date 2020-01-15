@@ -34,7 +34,7 @@ namespace Hurace.Core.Logic.Services.ActiveRaceService
 
         [ExcludeFromCodeCoverage]
         public async Task<IEnumerable<StartList>?> GetRemainingStartList(int raceId) =>
-            await _startListDao.GetRemainingStartListForRace(raceId);
+            (await _startListDao.GetRemainingStartListForRace(raceId)).OrderBy(sl => sl.StartNumber);
 
         public async Task<int?> GetPossiblePositionForCurrentSkier(int raceId)
         {

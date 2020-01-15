@@ -8,11 +8,10 @@ namespace Hurace.RaceControl.Views.Windows
     {
         public SimulatorWindow()
         {
-            var container = ((App) Application.Current).Container;
+            var container = ((App)Application.Current).Container;
             var vm = container.Resolve<SimulationWindowViewModel>();
             DataContext = vm;
             Loaded += async (sender, args) => await vm.InitializeAsync();
-            Closed += (sender, args) => vm.OnClose();
             InitializeComponent();
         }
     }

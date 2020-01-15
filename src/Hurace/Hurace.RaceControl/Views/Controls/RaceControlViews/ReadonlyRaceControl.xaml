@@ -3,9 +3,76 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:subViews="clr-namespace:Hurace.RaceControl.Views.Controls.SubViews"
+             xmlns:raceControlViewModels="clr-namespace:Hurace.RaceControl.ViewModels.RaceControlViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance raceControlViewModels:ReadonlyRaceControlViewModel}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="2" Padding="10" Margin="0,0,5,10">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="Sieger" FontSize="25" FontWeight="Bold" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Winner.Skier.FirstName}" FontSize="25" />
+                        <TextBlock Text="{Binding Winner.Skier.LastName}" Margin="5,0,0,0" FontSize="25" />
+                    </StackPanel>
+                </StackPanel>
+
+                <ContentPresenter DockPanel.Dock="Right" Content="{Binding}"
+                                  Margin="0,0,5,0">
+                    <ContentPresenter.Resources>
+                        <DataTemplate x:Key="SkierImageAvailable">
+                            <Image
+                                Source="{Binding Winner.Skier.ImageUrl, Converter={StaticResource DataUriImageConverter}}" />
+                        </DataTemplate>
+
+                        <DataTemplate x:Key="SkierNoImage">
+                            <Border BorderThickness="1" BorderBrush="Gray">
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" Text="Kein Bild verfügbar"
+                                           FontWeight="Bold" Foreground="Crimson" />
+                            </Border>
+                        </DataTemplate>
+                    </ContentPresenter.Resources>
+                    <ContentPresenter.Style>
+                        <Style TargetType="ContentPresenter">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Winner.Skier.ImageUrl,
+                                                Converter={StaticResource IsNullConverter}}"
+                                    Value="False">
+                                    <Setter Property="ContentTemplate"
+                                            Value="{StaticResource SkierImageAvailable}" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding Winner.Skier.ImageUrl,
+                                                Converter={StaticResource IsNullConverter}}"
+                                    Value="True">
+                                    <Setter Property="ContentTemplate"
+                                            Value="{StaticResource SkierNoImage}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentPresenter.Style>
+                </ContentPresenter>
+            </DockPanel>
+        </Border>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Startliste" FontWeight="Bold" />
+        <ListBox Margin="0,0,5,0" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding StartList}" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Rangliste" FontWeight="Bold" />
+        <ListBox Margin="5,0,0,0" Grid.Row="2" HorizontalContentAlignment="Stretch" Grid.Column="1" ItemsSource="{Binding Ranking}" />
+
     </Grid>
 </UserControl>

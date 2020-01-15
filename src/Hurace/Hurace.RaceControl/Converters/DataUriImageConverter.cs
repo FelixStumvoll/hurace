@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace Hurace.RaceControl.Converters
 {
-    public class DataUriConverter : IValueConverter
+    public class DataUriImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

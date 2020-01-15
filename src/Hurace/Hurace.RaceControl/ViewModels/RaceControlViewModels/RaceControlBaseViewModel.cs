@@ -28,6 +28,9 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private readonly Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
             _activeRaceControlVmFactory;
+        
+        private readonly Func<SharedRaceStateViewModel, ReadonlyRaceControlViewModel>
+            _readonlyRaceControlVmFactory;
 
         public SharedRaceStateViewModel RaceState { get; set; }
         private ReadonlyRaceControlViewModel _readonlyRaceControlViewModel;
@@ -48,6 +51,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         public RaceControlBaseViewModel(
             Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
                 activeRaceControlVmFactory,
+            Func<SharedRaceStateViewModel, ReadonlyRaceControlViewModel> readonlyRaceControlVmFactory,
             SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService,
             IRaceStartListService startListService, IActiveRaceResolver activeRaceResolver)
         {
@@ -55,8 +59,9 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             _baseDataService = baseDataService;
             _startListService = startListService;
             _activeRaceResolver = activeRaceResolver;
-            
+
             _activeRaceControlVmFactory = activeRaceControlVmFactory;
+            _readonlyRaceControlVmFactory = readonlyRaceControlVmFactory;
             StartRaceCommand = new AsyncCommand(StartRace, () => StartListDefined);
         }
 
@@ -91,7 +96,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             {
                 ViewType.Active => _activeRaceControlViewModel ??=
                     _activeRaceControlVmFactory(RaceState, _activeRaceControlService),
-                ViewType.Readonly => _readonlyRaceControlViewModel ??= new ReadonlyRaceControlViewModel(),
+                ViewType.Readonly => _readonlyRaceControlViewModel ??= _readonlyRaceControlVmFactory(RaceState),
                 ViewType.None => null,
                 _ => null
             };

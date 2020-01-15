@@ -29,9 +29,6 @@
                         <sys:Int32>0</sys:Int32>
                     </Button.CommandParameter>
                 </Button>
-                <Button Content="{x:Static resources:StringResources.SeasonsLabel}" />
-                <Button Content="{x:Static resources:StringResources.RaceLocationsLabel}" />
-                <Button Content="{x:Static resources:StringResources.DisciplinesLabel}" />
                 <Button Margin="0" Content="Simulator" Command="{Binding LaunchSimulatorCommand}" />
             </StackPanel>
         </Border>

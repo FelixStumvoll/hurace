@@ -1,29 +1,18 @@
-﻿<Window x:Class="Hurace.RaceControl.Views.Windows.SimulatorWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels.WindowViewModels"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d"
-        SizeToContent="Height"
-        Width="500"
-        Title="SimulatorWindow" d:DataContext="{d:DesignInstance vm:SimulationWindowViewModel}">
+﻿<mah:MetroWindow x:Class="Hurace.RaceControl.Views.Windows.SimulatorWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:vm="clr-namespace:Hurace.RaceControl.ViewModels.WindowViewModels"
+                 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 mc:Ignorable="d"
+                 SizeToContent="Height"
+                 Width="500"
+                 Title="SimulatorWindow" d:DataContext="{d:DesignInstance vm:SimulationWindowViewModel}">
     <Grid IsEnabled="{Binding Enabled}">
         <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Margin" Value="5" />
-            </Style>
-
-            <Style TargetType="xctk:UIntegerUpDown">
-                <Setter Property="Margin" Value="5" />
-            </Style>
-
-            <Style TargetType="TextBlock">
-                <Setter Property="Margin" Value="5" />
-            </Style>
-
-            <Style TargetType="TextBox">
+            <Style TargetType="Border">
                 <Setter Property="Margin" Value="5" />
             </Style>
         </Grid.Resources>
@@ -44,59 +33,106 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <TextBlock Text="Nächster Sensor in:" />
-            <TextBlock Text="{Binding Countdown}" />
-        </StackPanel>
-        <Button Grid.Row="1" Grid.Column="0">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Margin" Value="5" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Running}" Value="True">
-                            <Setter Property="Content" Value="Pause Clock" />
-                            <Setter Property="Command" Value="{Binding PauseClockCommand}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Running}" Value="False">
-                            <Setter Property="Content" Value="Resume Clock" />
-                            <Setter Property="Command" Value="{Binding StartClockCommand}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <Button Grid.Row="1" Grid.Column="1" Command="{Binding RestartSenorCommand}" Content="Reset Clock" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Average" />
-        <xctk:UIntegerUpDown Grid.Row="3" Grid.Column="1"
-                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
-                             Value="{Binding Clock.Mean}" />
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Deviation" />
-        <xctk:UIntegerUpDown Grid.Row="4" Grid.Column="1"
-                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
-                             Value="{Binding Clock.Deviation}" />
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Sensor Count:" />
-        <xctk:UIntegerUpDown Grid.Row="5" Grid.Column="1"
-                             IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
-                             Value="{Binding Clock.SensorCount}" />
-        <Button Grid.Row="6" Grid.Column="0" Content="Skip Next Sensor" Command="{Binding SkipNextSensorCommand}" />
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1">
-            <TextBlock Text="Next Sensor:" />
-            <TextBlock Text="{Binding NextSensor}" />
-        </StackPanel>
-        <xctk:UIntegerUpDown Minimum="0" Maximum="{Binding Clock.SensorCount}" Value="{Binding SensorToTrigger}"
-                             Grid.Row="7" Grid.Column="0" />
-        <Button Grid.Row="7" Grid.Column="1" Content="Trigger Sensor" Command="{Binding TriggerSensorCommand}" />
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="Sensor Feed:" />
-        <ListBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Height="300" ItemsSource="{Binding SensorEntries}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding SensorId}" FontWeight="Bold" />
-                        <TextBlock Text="-" Margin="5,0" />
-                        <TextBlock Text="{Binding DateTime}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Nächster Sensor in:" />
+                <TextBlock Text="{Binding Countdown}" Margin="5,0,0,0" />
+            </StackPanel>
+        </Border>
+        
+
+        <!-- Start/Stop -->
+        <Border Grid.Row="1" Grid.Column="0">
+            <Button>
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Running}" Value="True">
+                                <Setter Property="Content" Value="Pause Clock" />
+                                <Setter Property="Command" Value="{Binding PauseClockCommand}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Running}" Value="False">
+                                <Setter Property="Content" Value="Resume Clock" />
+                                <Setter Property="Command" Value="{Binding StartClockCommand}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Border>
+
+        <!-- Reset -->
+        <Border Grid.Row="1" Grid.Column="1">
+            <Button Command="{Binding RestartSenorCommand}" Content="Reset Clock" />
+        </Border>
+
+        <Border Grid.Row="3" Grid.Column="0">
+            <TextBlock Text="Average" />
+        </Border>
+
+        <Border Grid.Row="3" Grid.Column="1">
+            <xctk:UIntegerUpDown
+                IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                Value="{Binding Clock.Mean}" />
+        </Border>
+
+        <Border Grid.Row="4" Grid.Column="0">
+            <TextBlock Text="Deviation" />
+        </Border>
+
+        <Border Grid.Row="4" Grid.Column="1">
+            <xctk:UIntegerUpDown
+                IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                Value="{Binding Clock.Deviation}" />
+        </Border>
+
+        <Border Grid.Row="5" Grid.Column="0">
+            <TextBlock Text="Sensor Count:" />
+        </Border>
+
+        <Border Grid.Row="5" Grid.Column="1">
+            <xctk:UIntegerUpDown
+                IsEnabled="{Binding Running, Converter={StaticResource BooleanReverser}}"
+                Value="{Binding Clock.SensorCount}" />
+        </Border>
+
+        <Border Grid.Row="6" Grid.Column="0">
+            <Button Content="Skip Next Sensor" Command="{Binding SkipNextSensorCommand}" />
+        </Border>
+
+        <Border Grid.Row="6" Grid.Column="1">
+            <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                <TextBlock Text="Next Sensor:" />
+                <TextBlock Text="{Binding NextSensor}" Margin="5,0,0,0" />
+            </StackPanel>
+        </Border>
+
+        <Border   Grid.Row="7" Grid.Column="0">
+            <xctk:UIntegerUpDown Minimum="0" Maximum="{Binding Clock.SensorCount}" Value="{Binding SensorToTrigger}"
+                                />
+        </Border>
+
+        <Border Grid.Row="7" Grid.Column="1">
+            <Button  Content="Trigger Sensor" Command="{Binding TriggerSensorCommand}" />
+        </Border>
+
+        <Border Grid.Row="8" Grid.Column="0">
+            <TextBlock  Text="Sensor Feed:" />
+        </Border>
+        <Border  Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2">
+            <ListBox Height="300" ItemsSource="{Binding SensorEntries}" BorderThickness="1">
+               <ListBox.ItemTemplate>
+                   <DataTemplate>
+                       <StackPanel Orientation="Horizontal">
+                           <TextBlock Text="{Binding SensorId}" FontWeight="Bold" />
+                           <TextBlock Text="-" Margin="5,0" />
+                           <TextBlock Text="{Binding DateTime}" />
+                       </StackPanel>
+                   </DataTemplate>
+               </ListBox.ItemTemplate>
+           </ListBox>
+        </Border>
+        
     </Grid>
-</Window>
+</mah:MetroWindow>

@@ -44,7 +44,8 @@
                                           Margin="0,0,5,0">
                             <ContentPresenter.Resources>
                                 <DataTemplate x:Key="SkierImageAvailable">
-                                    <Image Source="{Binding CurrentSkier.Skier.ImageUrl}" />
+                                    <Image
+                                        Source="{Binding CurrentSkier.Skier.ImageUrl, Converter={StaticResource DataUriImageConverter}}" />
                                 </DataTemplate>
 
                                 <DataTemplate x:Key="SkierNoImage">
@@ -75,7 +76,6 @@
                                     </Style.Triggers>
                                 </Style>
                             </ContentPresenter.Style>
-
                         </ContentPresenter>
 
                         <DockPanel Grid.Column="1" Grid.Row="1">

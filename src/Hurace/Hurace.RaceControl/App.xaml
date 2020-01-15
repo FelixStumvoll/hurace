@@ -6,82 +6,97 @@
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
              StartupUri="Views/Windows/MainWindow.xaml">
     <Application.Resources>
-        <!-- <ResourceDictionary x:Key="Mat"> -->
-        <!-- <ResourceDictionary.MergedDictionaries> -->
-        <!--     <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" /> -->
-        <!--     <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" /> -->
-        <!--     <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" /> -->
-        <!--     <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" /> -->
-        <!-- </ResourceDictionary.MergedDictionaries> -->
 
 
-        <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
-        <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
-        <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
-        <converters:IsNullConverter x:Key="IsNullConverter" />
-        <converters:IntIsOneConverter x:Key="IntIsOneConverter" />
-        <converters:TimespanDifferenceEnumConverter x:Key="TimespanToDifferenceEnumConverter" />
-        <converters:IsNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
-        <converters:BooleanReverser x:Key="BooleanReverser" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <!-- Accent and AppTheme setting -->
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
+                <ResourceDictionary>
 
-        <Style x:Key="ErrorMessage" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="Crimson" />
-        </Style>
+                    <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
+                    <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
+                    <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
+                    <converters:IsNullConverter x:Key="IsNullConverter" />
+                    <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+                    <converters:IntIsOneConverter x:Key="IntIsOneConverter" />
+                    <converters:TimespanDifferenceEnumConverter x:Key="TimespanToDifferenceEnumConverter" />
+                    <converters:IsNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
+                    <converters:BooleanReverser x:Key="BooleanReverser" />
+                    <converters:DataUriImageConverter x:Key="DataUriImageConverter" />
 
-        <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Country.CountryCode}" />
-                <TextBlock Margin="5,0" Text="-" />
-                <TextBlock Text="{Binding FirstName}" Margin="0,0,5,0" />
-                <TextBlock Text="{Binding LastName}" />
-            </StackPanel>
-        </DataTemplate>
+                    <Style x:Key="ErrorMessage" TargetType="TextBlock">
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Foreground" Value="Crimson" />
+                    </Style>
 
-        <DataTemplate DataType="{x:Type models:RaceRanking}">
-            <DockPanel LastChildFill="False">
-                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                    <TextBlock Text="{Binding Position}" Width="25" Margin="0,0,10,0" />
-                    <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
-                                      Content="{Binding StartList.Skier}" />
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                    <ContentPresenter Content="{Binding}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate x:Key="Disqualified">
-                                <TextBlock Text="Disqualified" />
-                            </DataTemplate>
-                            <DataTemplate x:Key="Valid">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
-                                        Margin="0,0,10,0" />
-                                    <TextBlock Text="+" />
-                                    <TextBlock
-                                        Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
+                    <DataTemplate x:Key="SkierTemplate" DataType="{x:Type dto:Skier}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Country.CountryCode}" />
+                            <TextBlock Margin="5,0" Text="-" />
+                            <TextBlock Text="{Binding FirstName}" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding LastName}" />
+                        </StackPanel>
+                    </DataTemplate>
 
-                        <ContentPresenter.Style>
-                            <Style TargetType="ContentPresenter">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Disqualified}" Value="True">
-                                        <Setter Property="ContentTemplate"
-                                                Value="{StaticResource Disqualified}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Disqualified}" Value="False">
-                                        <Setter Property="ContentTemplate"
-                                                Value="{StaticResource Valid}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ContentPresenter.Style>
-                    </ContentPresenter>
+                    <DataTemplate DataType="{x:Type models:RaceRanking}">
+                        <DockPanel LastChildFill="False">
+                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                                <TextBlock Text="{Binding Position}" FontWeight="Bold" Width="25" Margin="0,0,10,0" />
+                                <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                                                  Content="{Binding StartList.Skier}" />
+                            </StackPanel>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <ContentPresenter Content="{Binding}">
+                                    <ContentPresenter.Resources>
+                                        <DataTemplate x:Key="Disqualified">
+                                            <TextBlock Text="Disqualifiziert" />
+                                        </DataTemplate>
+                                        <DataTemplate x:Key="Valid">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                    Text="{Binding Time, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:mm}:{0:ss}:{0:fff}}"
+                                                    Margin="0,0,10,0" />
+                                                <TextBlock Text="+" />
+                                                <TextBlock
+                                                    Text="{Binding TimeToLeader, Converter={StaticResource IntToTimespanConverter}, StringFormat={}{0:ss}:{0:fff}}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ContentPresenter.Resources>
 
-                </StackPanel>
-            </DockPanel>
-        </DataTemplate>
-        <!-- </ResourceDictionary> -->
+                                    <ContentPresenter.Style>
+                                        <Style TargetType="ContentPresenter">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Disqualified}" Value="True">
+                                                    <Setter Property="ContentTemplate"
+                                                            Value="{StaticResource Disqualified}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Disqualified}" Value="False">
+                                                    <Setter Property="ContentTemplate"
+                                                            Value="{StaticResource Valid}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentPresenter.Style>
+                                </ContentPresenter>
+
+                            </StackPanel>
+                        </DockPanel>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type dto:StartList}">
+                        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Margin="0,0,10,0" FontWeight="Bold" Text="{Binding StartNumber}" />
+                            <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
+                                              Content="{Binding Skier}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
