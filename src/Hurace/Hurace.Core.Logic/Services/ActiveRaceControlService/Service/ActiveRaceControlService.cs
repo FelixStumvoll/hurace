@@ -77,20 +77,17 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
             if (sensorNumber == _maxSensorNr) await CurrentSkierFinished();
         }
 
-        private bool IsTimeInBoundAverage(int milliseconds, int average) =>
-            Math.Abs(milliseconds - average) < _sensorConfig.MaxDiffToAverage;
+
 
         private enum SensorSeriesResult
         {
-            Ok,
-            SensorMissing,
+            NeedsAverageValidation,
             SensorAlreadyHasValue,
             SensorAfterwardsSet
         }
 
         private SensorSeriesResult ValidSensorSeries(IEnumerable<TimeData> timeDataList, int sensorNumber)
         {
-            var sensorMissing = false;
             var tdList = timeDataList.OrderBy(td => td?.Sensor?.SensorNumber).ToList();
 
             for (var i = 0; i < _maxSensorNr; i++)
@@ -100,13 +97,13 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
 
                 if (sensorNumber < i && tdList.Any(td => td?.Sensor?.SensorNumber == i))
                     return SensorSeriesResult.SensorAfterwardsSet;
-
-                if (i == sensorNumber - 1 && tdList.All(td => td?.Sensor?.SensorNumber != i))
-                    sensorMissing = true;
             }
 
-            return sensorMissing ? SensorSeriesResult.SensorMissing : SensorSeriesResult.Ok;
+            return SensorSeriesResult.NeedsAverageValidation;
         }
+
+        private bool IsTimeInBoundAverage(int milliseconds, int average) =>
+            Math.Abs(milliseconds - average) < _sensorConfig.MaxDiffToAverage;
 
         private async Task<bool> ValidateSensorValue(int sensorNumber, DateTime dateTime)
         {
@@ -127,14 +124,11 @@ namespace Hurace.Core.Logic.Services.ActiveRaceControlService.Service
                 (await _timeDataDao
                     .GetTimeDataForStartList(currentSkier.SkierId, currentSkier.RaceId)).ToList();
 
-            bool CheckAverage() =>
-                IsTimeInBoundAverage((int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds,
-                    average);
-
             return ValidSensorSeries(timeDataList, sensorNumber) switch
             {
-                SensorSeriesResult.Ok => CheckAverage(),
-                SensorSeriesResult.SensorMissing => CheckAverage(),
+                SensorSeriesResult.NeedsAverageValidation => IsTimeInBoundAverage(
+                    (int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds,
+                    average),
                 SensorSeriesResult.SensorAlreadyHasValue => false,
                 SensorSeriesResult.SensorAfterwardsSet => false,
                 _ => false

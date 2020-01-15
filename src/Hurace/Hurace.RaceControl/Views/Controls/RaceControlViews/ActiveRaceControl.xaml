@@ -22,8 +22,11 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <!-- Current Skier -->
-        <subViews:CurrentSkierView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                            DataContext="{Binding CurrentSkierViewModel}" />
+        <Border Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <subViews:CurrentSkierView 
+                                       DataContext="{Binding CurrentSkierViewModel}" />
+        </Border>
+
         <!-- Controls -->
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
             <Button Height="25" VerticalAlignment="Center"
@@ -45,7 +48,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Startliste"  FontWeight="Bold"  />
+            <TextBlock Grid.Row="0" Text="Startliste" FontWeight="Bold" />
             <ListBox Grid.Row="1" x:Name="Sl" ItemsSource="{Binding StartList}" BorderThickness="1"
                      HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
@@ -53,14 +56,15 @@
                         <Border Padding="0,5,5,5">
                             <DockPanel LastChildFill="False">
                                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                                    <TextBlock FontWeight="Bold" Text="{Binding StartNumber}" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                    <TextBlock FontWeight="Bold" Text="{Binding StartNumber}"
+                                               VerticalAlignment="Center" Margin="0,0,5,0" />
                                     <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
-                                                  Content="{Binding Skier}" />
+                                                      Content="{Binding Skier}" />
                                 </StackPanel>
 
                                 <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel"
-                                    CommandParameter="{Binding Skier.Id}"
-                                    Command="{Binding ElementName=Sl, Path=DataContext.CancelSkierCommand}" />
+                                        CommandParameter="{Binding Skier.Id}"
+                                        Command="{Binding ElementName=Sl, Path=DataContext.CancelSkierCommand}" />
                             </DockPanel>
                         </Border>
                     </DataTemplate>
@@ -82,7 +86,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Rangliste"  FontWeight="Bold"  />
+            <TextBlock Grid.Row="0" Text="Rangliste" FontWeight="Bold" />
             <subViews:RankingView Grid.Row="1" DataContext="{Binding RankingViewModel}" />
         </Grid>
 
