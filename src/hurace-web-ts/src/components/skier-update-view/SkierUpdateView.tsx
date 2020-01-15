@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { UpdateViewWrapper } from '../shared/UpdateViewWrapper';
 import { ThemeContext } from 'styled-components';
 import {
@@ -12,16 +12,10 @@ import {
 import DatePicker from 'react-datepicker';
 import Select, { Theme } from 'react-select';
 import {
-    getAllCountries,
-    getAllGenders,
-    getAllDisciplines,
-    getSkierById,
-    getDisciplinesForSkier,
     updateSkier,
     createSkier,
     updateSkierDisciplines
 } from '../../common/api';
-import { SelectValue } from '../../interfaces/SelectValue';
 import { isNullOrEmpty } from '../../common/stringFunctions';
 import { isNullOrUndefined } from 'util';
 import { useHistory } from 'react-router-dom';
@@ -29,100 +23,16 @@ import { Formik, FormikErrors } from 'formik';
 import { FormWrapper } from '../shared/FormWrapper';
 import { SkierUpdateDto } from '../../models/SkierUpdateDto';
 import { SkierCreateDto } from '../../models/SkierCreateDto';
-
-type SkierFormValues = {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: Date;
-    selectedCountry?: SelectValue;
-    selectedGender?: SelectValue;
-    retired: boolean;
-    selectedDisciplines: SelectValue[];
-    imageUrl?: string;
-};
-
-type SkierFormErrors = {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    selectedCountry: string;
-    selectedGender: string;
-    imageUrl: string;
-};
+import { useSkierForm } from './useSkierForm';
+import { SkierFormValues, SkierFormErrors } from '../../types/forms/skier-form';
 
 export const SkierUpdateView: React.FC<{
     skierId?: number;
 }> = ({ skierId }) => {
-    //#region state
-
     const history = useHistory();
-
-    const [initialFormValue, setInitialFormValue] = useState<SkierFormValues>();
-    const [countries, setCountries] = useState<SelectValue[]>();
-    const [genders, setGenders] = useState<SelectValue[]>();
-    const [disciplines, setDisciplines] = useState<SelectValue[]>([]);
-
-    //#endregion
-
-    useEffect(() => {
-        const loadData = async () => {
-            let countries = (await getAllCountries()).map(c => ({
-                label: c.countryName,
-                value: c.id
-            }));
-
-            let genders = (await getAllGenders()).map(g => ({
-                label: g.genderDescription,
-                value: g.id
-            }));
-
-            let disciplines = (await getAllDisciplines()).map(d => ({
-                label: d.disciplineName,
-                value: d.id
-            }));
-
-            setCountries(countries);
-            setGenders(genders);
-            setDisciplines(disciplines);
-            if (skierId !== undefined) {
-                let skier = await getSkierById(skierId!);
-                let skierDisciplines = await getDisciplinesForSkier(skierId!);
-
-                if (skier === undefined) return;
-
-                setInitialFormValue({
-                    firstName: skier.firstName,
-                    lastName: skier.lastName,
-                    dateOfBirth: skier.dateOfBirth,
-                    imageUrl: skier.imageUrl,
-                    retired: skier.retired,
-                    selectedCountry: countries?.find(
-                        c => c.value === skier.countryId
-                    ),
-                    selectedDisciplines: disciplines?.filter(d =>
-                        skierDisciplines.some(sk => sk.id === d.value)
-                    ),
-                    selectedGender: genders?.find(
-                        g => g.value === skier.genderId
-                    )
-                });
-            } else
-                setInitialFormValue({
-                    firstName: '',
-                    lastName: '',
-                    retired: false,
-                    imageUrl: '',
-                    selectedGender: undefined,
-                    dateOfBirth: new Date(),
-                    selectedCountry: undefined,
-                    selectedDisciplines: []
-                });
-        };
-
-        loadData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
+    const [initialFormValue, genders, countries, disciplines] = useSkierForm(
+        skierId
+    );
     const huraceTheme = useContext(ThemeContext);
 
     const selectTheme = useCallback(
@@ -159,8 +69,8 @@ export const SkierUpdateView: React.FC<{
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const onCancel = useCallback(() => {
-        history.push('/skier');
-    }, [history]);
+        history.push(`/skier${skierId ? `/${skierId}` : ''}`);
+    }, [history, skierId]);
 
     const validateSkier = useCallback((values: SkierFormValues) => {
         const errors: FormikErrors<SkierFormErrors> = {};

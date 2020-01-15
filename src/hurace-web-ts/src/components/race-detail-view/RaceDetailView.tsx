@@ -3,14 +3,8 @@ import styled from 'styled-components';
 import { RaceDetailPanel } from '../shared/race/RaceDetailPanel';
 import { RaceListsPanel } from './RaceListsPanel';
 import { DetailViewWrapper } from '../shared/DetailViewWrapper';
-import { useStateAsync } from '../../hooks/useStateAsync';
-import { getRaceDetails, getWinnersForRace } from '../../common/api';
 import { RaceWinnersView } from './winners-view/RaceWinnersView';
-import {
-    ColumnFlex,
-    AlignRight,
-    RowFlex
-} from '../../theme/CustomComponents';
+import { ColumnFlex, AlignRight, RowFlex } from '../../theme/CustomComponents';
 
 const RaceDetails = styled(RowFlex)`
     margin-bottom: ${props => props.theme.gap};
@@ -25,9 +19,6 @@ export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
     raceId,
     seasonId
 }) => {
-    const [race] = useStateAsync(getRaceDetails, raceId);
-    const [winners] = useStateAsync(getWinnersForRace, raceId);
-
     return (
         <DetailViewWrapper
             url={`/season/${seasonId}`}
@@ -36,14 +27,12 @@ export const RaceDetailView: React.FC<{ raceId: number; seasonId: number }> = ({
             <ColumnFlex>
                 <RaceDetails>
                     <DetailPanelWrapper>
-                        {race && <RaceDetailPanel race={race} />}
+                        <RaceDetailPanel raceId={raceId} />
                     </DetailPanelWrapper>
 
-                    {winners && winners.length > 0 && (
-                        <AlignRight>
-                            <RaceWinnersView winners={winners} />
-                        </AlignRight>
-                    )}
+                    <AlignRight>
+                        <RaceWinnersView raceId={raceId} />
+                    </AlignRight>
                 </RaceDetails>
 
                 <RaceListsPanel raceId={raceId} />

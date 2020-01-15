@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RaceRanking } from '../../models/RaceRanking';
-import { Race } from '../../models/Race';
 import { StartList } from '../../models/StartList';
 import { TimeDifference } from '../../models/TimeDifference';
 import { RaceDetailPanel } from '../shared/race/RaceDetailPanel';
 import {
-    getRaceDetails,
     getRankingForRace,
     getRemainingStartListForRace,
     getSplittimesForCurrentSkier,
@@ -33,15 +31,12 @@ const ListGrid = styled.div`
 export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
     raceId
 }) => {
-    const [race, setRace] = useState<Race>();
     const [startList, setStartList] = useState<StartList[]>();
     const [ranking, setRanking] = useState<RaceRanking[]>();
     const [currentSkier, setCurrentSkier] = useState<StartList>();
     const [splitTimes, setSplitTimes] = useState<TimeDifference[]>();
 
     useEffect(() => {
-        const loadRace = async () => setRace(await getRaceDetails(raceId));
-
         const fetchRaceData = async () => {
             setRanking(await getRankingForRace(raceId));
             setStartList(await getRemainingStartListForRace(raceId));
@@ -53,7 +48,6 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
             );
         };
 
-        loadRace();
         fetchRaceData();
 
         const interval = setInterval(async () => {
@@ -68,7 +62,7 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
         <ColumnFlex>
             <RowFlex>
                 <DetailPanelWrapper>
-                    {race && <RaceDetailPanel race={race} />}
+                    <RaceDetailPanel raceId={raceId} />}
                 </DetailPanelWrapper>
 
                 <CurrentSkierPanel currentSkier={currentSkier} />

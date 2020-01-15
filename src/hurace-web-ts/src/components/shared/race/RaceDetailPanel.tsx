@@ -11,13 +11,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { HeaderCard } from '../HeaderCard';
 import { getTime, getDate } from '../../../common/timeConverter';
-import { Race } from '../../../models/Race';
 import {
     TextBold,
     ColumnFlex,
     WrapText,
     VerticallyAlignedText
 } from '../../../theme/CustomComponents';
+import { useAsync } from 'react-async-hook';
+import { getRaceDetails } from '../../../common/api';
+import { LoadingWrapper } from '../LoadingWrapper';
 
 const ContentRow = styled.div`
     display: grid;
@@ -59,48 +61,55 @@ const DetailIcon = styled(FontAwesomeIcon)<{ fontSize: number }>`
     margin: auto;
 `;
 
-export const RaceDetailPanel: React.FC<{ race: Race }> = ({ race }) => {
+export const RaceDetailPanel: React.FC<{ raceId: number }> = ({ raceId }) => {
+    const { loading, error, result: race } = useAsync(getRaceDetails, [raceId]);
+
     return (
         <HeaderCard headerText="Stammdaten">
-            <ContentRow>
-                <DetailGrid>
-                    <DetailIcon fontSize={25} icon={faLocationArrow} />
-                    <HeaderText>
-                        {race?.location.locationName}
-                        <CountryText>
-                            {' '}
-                            {race?.location.country.countryName}
-                        </CountryText>{' '}
-                    </HeaderText>
-                    <DetailIcon fontSize={16} icon={faSkiing} />
-                    <VerticallyAlignedText>
-                        {race?.discipline.disciplineName}
-                    </VerticallyAlignedText>
-                    <DetailIcon fontSize={16} icon={faFlagCheckered} />
-                    <VerticallyAlignedText>
-                        {race?.raceState.raceStateDescription}
-                    </VerticallyAlignedText>
-                    <DetailIcon fontSize={16} icon={faUser} />
-                    <VerticallyAlignedText>
-                        {race?.gender.genderDescription}
-                    </VerticallyAlignedText>
-                    <DetailIcon fontSize={16} icon={faCalendarDay} />
-                    <VerticallyAlignedText>
-                        {getDate(race?.raceDate)}
-                    </VerticallyAlignedText>
-                    <DetailIcon fontSize={16} icon={faClock} />
-                    <VerticallyAlignedText>
-                        {getTime(race?.raceDate)}
-                    </VerticallyAlignedText>
-                </DetailGrid>
+            <LoadingWrapper loading={loading} error={error}>
+                {race && (
+                    <ContentRow>
+                        <DetailGrid>
+                            <DetailIcon fontSize={25} icon={faLocationArrow} />
+                            <HeaderText>
+                                {race.location.locationName}
+                                <CountryText>
+                                    {race.location.country.countryName}
+                                </CountryText>
+                            </HeaderText>
+                            <DetailIcon fontSize={16} icon={faSkiing} />
+                            <VerticallyAlignedText>
+                                {race.discipline.disciplineName}
+                            </VerticallyAlignedText>
+                            <DetailIcon fontSize={16} icon={faFlagCheckered} />
+                            <VerticallyAlignedText>
+                                {race.raceState.raceStateDescription}
+                            </VerticallyAlignedText>
+                            <DetailIcon fontSize={16} icon={faUser} />
+                            <VerticallyAlignedText>
+                                {race.gender.genderDescription}
+                            </VerticallyAlignedText>
+                            <DetailIcon fontSize={16} icon={faCalendarDay} />
+                            <VerticallyAlignedText>
+                                {getDate(race.raceDate)}
+                            </VerticallyAlignedText>
+                            <DetailIcon fontSize={16} icon={faClock} />
+                            <VerticallyAlignedText>
+                                {getTime(race.raceDate)}
+                            </VerticallyAlignedText>
+                        </DetailGrid>
 
-                {race?.raceDescription && (
-                    <ColumnFlex>
-                        <DescriptionHeader>Beschreibung:</DescriptionHeader>
-                        <WrapText>{race?.raceDescription}</WrapText>
-                    </ColumnFlex>
+                        {race?.raceDescription && (
+                            <ColumnFlex>
+                                <DescriptionHeader>
+                                    Beschreibung:
+                                </DescriptionHeader>
+                                <WrapText>{race?.raceDescription}</WrapText>
+                            </ColumnFlex>
+                        )}
+                    </ContentRow>
                 )}
-            </ContentRow>
+            </LoadingWrapper>
         </HeaderCard>
     );
 };

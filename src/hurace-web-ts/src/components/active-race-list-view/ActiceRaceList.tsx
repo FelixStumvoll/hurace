@@ -1,22 +1,27 @@
 import React from 'react';
-import { useStateAsync } from '../../hooks/useStateAsync';
 import { getActiveRaces } from '../../common/api';
-import { ListViewWrapper } from '../shared/ListViewWrapper';
 import { RaceListViewItem } from '../shared/race/RaceListViewItem';
 import { DefaultLink, FlexWrap } from '../../theme/CustomComponents';
+import { LoadingWrapper } from '../shared/LoadingWrapper';
+import { useAsync } from 'react-async-hook';
 
 export const ActiceRaceList: React.FC = () => {
-    const [activeRaces] = useStateAsync(getActiveRaces);
+    const { loading, error, result: activeRaces } = useAsync(
+        getActiveRaces,
+        []
+    );
 
     return (
-        <ListViewWrapper>
+        <LoadingWrapper loading={loading} error={error}>
             <FlexWrap>
-                {activeRaces?.map(ar => (
-                    <DefaultLink key={ar.id} to={`/activeRace/${ar.id}`}>
-                        <RaceListViewItem race={ar} />
-                    </DefaultLink>
-                ))}
+                <FlexWrap>
+                    {activeRaces?.map(ar => (
+                        <DefaultLink key={ar.id} to={`/activeRace/${ar.id}`}>
+                            <RaceListViewItem race={ar} />
+                        </DefaultLink>
+                    ))}
+                </FlexWrap>
             </FlexWrap>
-        </ListViewWrapper>
+        </LoadingWrapper>
     );
 };

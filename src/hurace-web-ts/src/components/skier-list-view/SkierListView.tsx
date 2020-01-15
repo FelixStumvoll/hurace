@@ -5,7 +5,8 @@ import { getSkiers } from '../../common/api';
 import { SkierListViewItem } from './SkierListViewItem';
 import { ListViewWrapper } from '../shared/ListViewWrapper';
 import { SearchContext } from '../shared/ListViewWrapper';
-import { useStateAsync } from '../../hooks/useStateAsync';
+import { useAsync } from 'react-async-hook';
+import { LoadingWrapper } from '../shared/LoadingWrapper';
 
 const SkierList = styled.div`
     display: flex;
@@ -27,31 +28,33 @@ const skierFilter = (skier: Skier, searchTerm: string): boolean =>
         false);
 
 export const SkierListView: React.FC = () => {
-    const [skiers] = useStateAsync(getSkiers);
+    const { loading, error, result: skiers } = useAsync(getSkiers, []);
 
     return (
-        <ListViewWrapper
-            createConfig={{
-                createText: 'Rennfahrer erstellen',
-                createUrl: '/skier/new'
-            }}
-        >
-            <SearchContext.Consumer>
-                {search => (
-                    <SkierList>
-                        {skiers
-                            ?.sort((s1, s2) =>
-                                s1.lastName.localeCompare(s2.lastName)
-                            )
-                            .filter(s => skierFilter(s, search))
-                            .map(s => (
-                                <ListItemWrapper key={s.id}>
-                                    <SkierListViewItem skier={s} />
-                                </ListItemWrapper>
-                            ))}
-                    </SkierList>
-                )}
-            </SearchContext.Consumer>
-        </ListViewWrapper>
+        <LoadingWrapper loading={loading} error={error}>
+            <ListViewWrapper
+                createConfig={{
+                    createText: 'Rennfahrer erstellen',
+                    createUrl: '/skier/new'
+                }}
+            >
+                <SearchContext.Consumer>
+                    {search => (
+                        <SkierList>
+                            {skiers
+                                ?.sort((s1, s2) =>
+                                    s1.lastName.localeCompare(s2.lastName)
+                                )
+                                .filter(s => skierFilter(s, search))
+                                .map(s => (
+                                    <ListItemWrapper key={s.id}>
+                                        <SkierListViewItem skier={s} />
+                                    </ListItemWrapper>
+                                ))}
+                        </SkierList>
+                    )}
+                </SearchContext.Consumer>
+            </ListViewWrapper>
+        </LoadingWrapper>
     );
 };

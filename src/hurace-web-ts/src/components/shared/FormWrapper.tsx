@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DefaultButton } from '../../theme/CustomComponents';
+import { DefaultButton, FormErrorMessage } from '../../theme/CustomComponents';
 
 const CrudButton = styled(DefaultButton)`
     flex-grow: 1;
@@ -25,7 +25,7 @@ const SaveButton = styled(CrudButton)`
 const ButtonPanel = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 10px;
 `;
 
 const Form = styled.form`
@@ -33,14 +33,20 @@ const Form = styled.form`
     flex-direction: column;
 `;
 
+const ErrorMsg = styled(FormErrorMessage)`
+    margin: 10px 0 0 0;
+`;
+
 export const FormWrapper: React.FC<{
     onCancel: () => void;
     isSubmitting: boolean;
     onSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
-}> = ({ children, onCancel, isSubmitting, onSubmit }) => {
+    error?: string;
+}> = ({ children, onCancel, isSubmitting, onSubmit, error }) => {
     return (
         <Form onSubmit={onSubmit}>
             {children}
+            {error && <ErrorMsg>{error}</ErrorMsg>}
             <ButtonPanel>
                 <CancelButton onClick={onCancel}>Abbrechen</CancelButton>
                 <SaveButton disabled={isSubmitting} type="submit">

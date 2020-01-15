@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { getSeasonById, createSeason } from '../../common/api';
+import React, { useCallback, useState } from 'react';
+import { createSeason } from '../../common/api';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -17,60 +17,33 @@ import { Formik, FormikErrors } from 'formik';
 import { SeasonCreateDto } from '../../models/SeasonCreateDto';
 import { SeasonUpdateDto } from '../../models/SeasonUpdateDto';
 import { isNullOrUndefined } from 'util';
-
-type SeasonFormValues = {
-    startDate: Date;
-    endDate: Date;
-};
-
-type SeasonFormErrors = {
-    startDate: string;
-    endDate: string;
-};
+import { useSeasonForm } from './useSeasonForm';
 
 export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
     seasonId
 }) => {
-    const [initialFormValue, setInitialFormValue] = useState<
-        SeasonFormValues
-    >();
-
-    useEffect(() => {
-        const loadData = async () => {
-            if (!seasonId) {
-                setInitialFormValue({
-                    startDate: new Date(),
-                    endDate: new Date()
-                });
-            } else {
-                let season = await getSeasonById(seasonId);
-                setInitialFormValue({
-                    startDate: season.startDate,
-                    endDate: season.endDate
-                });
-            }
-        };
-
-        loadData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const [initialFormValue] = useSeasonForm(seasonId);
+    const [apiError, setApiError] = useState<string>();
 
     const history = useHistory();
 
     const onSave = useCallback(
         async (values: SeasonFormValues) => {
-            let id = seasonId;
+            try {
+                let id = seasonId;
 
-            let season: SeasonCreateDto | SeasonUpdateDto = {
-                startDate: values.startDate,
-                endDate: values.endDate
-            };
+                let season: SeasonCreateDto | SeasonUpdateDto = {
+                    startDate: values.startDate,
+                    endDate: values.endDate
+                };
 
-            if (id) {
-                await updateSeason({ id, ...season });
-            } else id = await createSeason(season);
+                if (id) await updateSeason({ id, ...season });
+                else id = await createSeason(season);
 
-            history.push(`/season/${id}`);
+                history.push(`/season/${id}`);
+            } catch (error) {
+                setApiError('Fehler beim Speichern der Saison');
+            }
         },
         [history, seasonId]
     );
@@ -127,6 +100,7 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
                             onSubmit={handleSubmit}
                             onCancel={onCancel}
                             isSubmitting={isSubmitting}
+                            error={apiError}
                         >
                             <FormFields rowCount={2}>
                                 <FormField>

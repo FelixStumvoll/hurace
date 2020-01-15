@@ -1,9 +1,7 @@
 import React from 'react';
-import { getSkierById } from '../../common/api';
 import styled from 'styled-components';
 import { SkierDetailPanel } from './SkierDetailPanel';
 import { DetailViewWrapper } from '../shared/DetailViewWrapper';
-import { useStateAsync } from '../../hooks/useStateAsync';
 import { RowFlex } from '../../theme/CustomComponents';
 
 const SkierGrid = styled(RowFlex)`
@@ -11,8 +9,6 @@ const SkierGrid = styled(RowFlex)`
 `;
 
 export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
-    const [skier] = useStateAsync(getSkierById, skierId);
-
     return (
         <DetailViewWrapper
             url="/skier"
@@ -22,7 +18,9 @@ export const SkierDetailView: React.FC<{ skierId: number }> = ({ skierId }) => {
                 editUrl: `/skier/${skierId}/update`
             }}
         >
-            <SkierGrid>{skier && <SkierDetailPanel skier={skier} />}</SkierGrid>
+            <SkierGrid>
+                <SkierDetailPanel skierId={skierId} />
+            </SkierGrid>
         </DetailViewWrapper>
     );
 };
