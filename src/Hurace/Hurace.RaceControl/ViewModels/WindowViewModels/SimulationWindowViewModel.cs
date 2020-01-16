@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using Hurace.Core.Logic;
+using Hurace.Core.Interface;
 using Hurace.Core.Simulation;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Util;
@@ -22,7 +22,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
 
         private bool _enabled = true;
         private bool _running;
-        private MockRaceClockV2 _clock;
+        private MockRaceClock _clock;
         private ICommand _startClockCommand;
         private ICommand _pauseClockCommand;
         private ICommand _skipNextSensorCommand;
@@ -35,7 +35,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         public ObservableCollection<SensorEntry> SensorEntries { get; set; } = new ObservableCollection<SensorEntry>();
         public int SensorToTrigger { get; set; }
 
-        public MockRaceClockV2 Clock
+        public MockRaceClock Clock
         {
             get => _clock;
             set => Set(ref _clock, value);
@@ -103,7 +103,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
         public async Task InitializeAsync()
         {
             var resolvedRace = await _raceClockProvider.GetRaceClock();
-            if (!(resolvedRace is MockRaceClockV2 mockRaceClock))
+            if (!(resolvedRace is MockRaceClock mockRaceClock))
             {
                 MessageBox.Show("Simulator kann nicht gestartet werden",
                                 "Fehler",

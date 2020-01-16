@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:u="clr-namespace:Hurace.RaceControl.ViewModels.Util"
-             xmlns:models="clr-namespace:Hurace.Core.Logic.Models;assembly=Hurace.Core.Logic"
              xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
+             xmlns:entities="clr-namespace:Hurace.Core.Interface.Entities;assembly=Hurace.Core.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance subViewModels:CurrentSkierViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <ListBox ItemsSource="{Binding SplitTimeList}" HorizontalContentAlignment="Stretch" BorderThickness="1">
         <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type models:TimeDifference}">
+            <DataTemplate DataType="{x:Type entities:TimeDifference}">
                 <Border Padding="0,5,5,5">
                     <DockPanel>
                         <DockPanel.Style>

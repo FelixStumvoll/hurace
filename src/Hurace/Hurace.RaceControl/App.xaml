@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dto="clr-namespace:Hurace.Dal.Domain;assembly=Hurace.Dal.Domain"
-             xmlns:models="clr-namespace:Hurace.Core.Logic.Models;assembly=Hurace.Core.Logic"
              xmlns:converters="clr-namespace:Hurace.RaceControl.Converters"
+             xmlns:entities="clr-namespace:Hurace.Core.Interface.Entities;assembly=Hurace.Core.Interface"
              StartupUri="Views/Windows/MainWindow.xaml">
     <Application.Resources>
 
@@ -43,7 +43,7 @@
                         </StackPanel>
                     </DataTemplate>
 
-                    <DataTemplate DataType="{x:Type models:RaceRanking}">
+                    <DataTemplate DataType="{x:Type entities:RaceRanking}">
                         <Border Margin="0,0,5,0">
                             <DockPanel LastChildFill="False">
 

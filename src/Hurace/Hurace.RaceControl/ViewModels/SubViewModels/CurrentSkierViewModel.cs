@@ -1,11 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.Models;
-using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
-using Hurace.Core.Logic.Services.ActiveRaceService;
-using Hurace.Core.Logic.Services.RaceStartListService;
-using Hurace.Core.Logic.Services.RaceStatService;
+using Hurace.Core.Interface;
+using Hurace.Core.Interface.Entities;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.Extensions;
 using Hurace.RaceControl.ViewModels.BaseViewModels;

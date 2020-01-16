@@ -2,9 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
-using Hurace.Core.Logic;
-using Hurace.Core.Logic.Services.RaceBaseDataService;
-using Hurace.Core.Logic.Services.SeasonService;
 using Hurace.RaceControl.Views.Windows;
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels

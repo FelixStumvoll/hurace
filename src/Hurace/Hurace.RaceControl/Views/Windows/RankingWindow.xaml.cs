@@ -1,10 +1,7 @@
 using System.Windows;
 using Autofac;
-using Hurace.Core.Logic;
-using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
-using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
-// using Hurace.Core.Logic.Services.ActiveRaceControlService.Resolver;
-using Hurace.Core.Logic.Services.RaceStatService;
+using Hurace.Core.Interface;
+// using Hurace.Core.Service.Services.ActiveRaceControlService.Resolver;
 using Hurace.RaceControl.ViewModels.SubViewModels;
 
 namespace Hurace.RaceControl.Views.Windows

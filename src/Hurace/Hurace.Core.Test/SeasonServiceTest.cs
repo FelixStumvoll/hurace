@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.Services.SeasonService;
+using Hurace.Core.Service;
 using Hurace.Dal.Interface;
 using Moq;
 using NUnit.Framework;

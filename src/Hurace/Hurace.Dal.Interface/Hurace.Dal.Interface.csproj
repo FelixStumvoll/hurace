@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Hurace.Dal.Common\Hurace.Dal.Common.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
     </ItemGroup>
 

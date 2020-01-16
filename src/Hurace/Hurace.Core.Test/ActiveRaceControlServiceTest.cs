@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hurace.Core.Logic;
-using Hurace.Core.Logic.Configs;
-using Hurace.Core.Logic.Services.ActiveRaceControlService.Service;
-using Hurace.Core.Logic.Services.ActiveRaceService;
+using Hurace.Core.Interface;
+using Hurace.Core.Service;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;

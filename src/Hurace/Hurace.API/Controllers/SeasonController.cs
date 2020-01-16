@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Hurace.API.Dtos;
 using Hurace.API.Dtos.SeasonDtos;
-using Hurace.Core.Logic.Services.SeasonService;
+using Hurace.Core.Interface;
 using Hurace.Dal.Domain;
 using Microsoft.AspNetCore.Mvc;
 

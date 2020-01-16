@@ -3,7 +3,7 @@
 ## Setup
 
 Um Hurace in Betrieb zu nehmen muss der zur Verfügung gestellte Docker Container gestartet werden.
-Im Verzeichnis `./db` befindet sich ein Docker-Compose Script, welches automatisch eine Produktivdatenbank sowie eine Testdatenbank mit den notwendigen Tabellen und Daten erstellt. Dieses ist lediglich mit `docker-compose up -b` auszuführen.
+Im Verzeichnis `./db` befindet sich ein Docker-Compose Script, welches automatisch eine Produktivdatenbank sowie eine Testdatenbank mit den notwendigen Tabellen und Daten erstellt. Dieses ist lediglich mit `docker-compose up -b` auszuführen. Falls der Docker Container nicht lokal (localhost) läuft müssen die Connection Strings in den `appsettings.json` der API sowie der RaceControl angepasst werden.
 
 ## Datenbank
 
@@ -337,6 +337,20 @@ Methoden welche nur Wrapper um die jeweiligen Methoden der DAL sind werden zwar 
 
 ### ActiveRaceResolver
 
+Dieser Service ist dafür da, aktive Rennen zu verwalten. Er wird im Dependency Provider als Singleton angelegt da dieser alle aktiven Rennen verwalten.
+
+#### InitializeActiveRaceHandler
+
+Diese Methode initialisiert den `ActiveRaceResolver`. Dabei werden alle aktiven Rennen aus der Datenbank geladen. Für jedes Rennen wird ein `ActiveRaceControlService` erstellt und zum Abfragen gespeichert. Zudem wird auf `OnRaceFinished` `OnRaceFinished` ein Delegate registriert, damit diese automatisch wieder entfernt werden.
+
+#### StartRace
+
+Diese Methode startet ein Rennen, dafür wird ein `ActiceRaceControlService` erzeugt und retourniert. Der erzeugte Service wird gespeichert, damit es für ein aktives Rennen immer nur einen Service gibt. Zudem wird auf `OnRaceFinished` `OnRaceFinished` ein Delegate registriert, damit diese automatisch wieder entfernt werden.
+
+#### Indexer
+
+Mittels des Indexers kann ein `ActiveRaceControlService` eines bereits laufenden Rennens geladen werden.
+
 ### ActiveRaceControlService
 
 In diesem Service werden zum einen Events definiert, welche über Ereignisse informieren und zum anderen werden Methoden definiert, welche für den Rennablauf benötigt werden.
@@ -390,28 +404,42 @@ Diese Methode disqualifiziert einen Läufer und beendet seine Fahrt. Zudem wird 
 
 Diese Methode disqualifiziert einen Läufer welcher seinen Lauf bereits beendet hat. Zudem wird `OnLateDisqualification` ausgelöst.
 
-##### GetPossiblePositionForCurrentSkier
-
-Diese Methode liefert die mögliche Position basierend auf der letzten Zwischenzeit.
-Dabei wird zuerst die Differenz zum aktuellen Führenden an der jeweiligen Zwischenzeit berechnet.
-Anschließend wird die Rangliste durchlaufen und die Differenzen verglichen um die Position zu ermitteln.
-
 ##### CancelRace
 
 Mit dieser Methode kann ein Rennen abgebrochen werden. Dabei wird `OnRaceCancelled` ausgelöst.
 
 ### ActiveRaceService
 
+Dieser Service stellt Methoden zur Verfügung welche Daten zu einem laufenden Rennen liefern.
+
+Wrapper Methode:
+
+-   `GetCurrentSkier`
+-   `GetActiveRaces`
+-   `GetRemainingStartList`
+
+##### GetPossiblePositionForCurrentSkier
+
+Diese Methode liefert die mögliche Position basierend auf der letzten Zwischenzeit.
+Dabei wird zuerst die Differenz zum aktuellen Führenden an der jeweiligen Zwischenzeit berechnet.
+Anschließend wird die Rangliste durchlaufen und die Differenzen verglichen um die Position zu ermitteln.
+
+##### GetSplitTimesForCurrentSkier
+
+Liefert alle Zwischenzeiten des aktuellen Fahrers
+
 ### CountryService
+
+Dieser Service stellt nur einen Wrapper um `ICountryDao` dar.
 
 ### GenderService
 
-### RaceBaseDataService
+Dieser Service stellt nur einen Wrapper um `IGenderDao` dar.
 
 ### RaceBaseDataService
 
 In diesem Service sind Methoden definiert, welche zum Modifizieren von Rennen benötigt werden.
-Wrapper Methoden
+Wrapper Methoden:
 
 -   `GetAllRaces`
 -   `GetRaceById`
@@ -438,97 +466,96 @@ Die Sensoren werden ebenfalls gelöscht.
 
 In diesem Service werden Methoden zum Manipulieren der Startliste definiert.
 
+Wrapper Methoden:
+
+-   `GetAvailableSkiersForRace`
+-   `GetStartListForRace`
+-   `GetStartListById`
+
 #### UpdateStartList
 
 In dieser Methode wird die Startliste eines Rennens aktualisiert. Dafür werden alle Einträge gelöscht. Anschließend werden die neuen Einträge eingefügt.
-
-#### GetAvailableSkiersForRace
-
-Liefert alle Skifahrer welche zu einer Startliste eines Rennens hinzugefügt werden können.
-
-#### GetStartListForRace
-
-Liefert die Startliste für ein Rennen
 
 #### IsStartListDefined
 
 Gibt an ob für ein Rennen eine Startliste definiert ist
 
-#### GetStartListById
-
-Liefert einen einzelnen Startlisteneintrag anhand dessen Id.
-
 ### RaceStatService
 
 In diesem Service sind Methoden definiert, mit welchen Statistikdaten eines Rennens abgerufen werden können.
 
+Wrapper Methoden:
+
+-   `GetDisqualifiedSkiers`
+-   `GetTimeDataForStartList`
+
 #### GetRankingForRace
 
-In dieser Methode wird das komplette Ranking eines Rennens retourniert. Dabei werden ausgeschiedene Fahrer am Ende angeführt.
+In dieser Methode wird das komplette Ranking eines Rennens retourniert. Dabei werden ausgeschiedene Fahrer am Ende angeführt. Hierfür werden [GetFinishedSkierRanking](#getfinishedskierranking) und [GetDisqualifiedSkiers](#getdisqualifiedskiers)
 
 #### GetFinishedSkierRanking
 
 Diese Methode liefert die Rangliste der Fahrer, welche das Rennen erfolgreich beendet haben. Dabei wird auch berücksichtigt, dass die Position entsprechend angepasst wird, falls zwei Fahrer die gleiche Zeit gefahren sind.
 
-#### GetDisqualifiedSkiers
-
-Liefert die Rennfahrer, welche ausgeschieden sind.
-
-#### GetTimeDataForStartList
-
-Liefert alle Sensorwerte für einen Schirennläufer.
-
 #### GetDifferenceToLeader
 
-Liefert für eine Sensorauslösung den Unterschied zum Führenden. Falls der Fahrer selbst der Führende ist, wird der Abstand zum nächsten retourniert.
+Liefert für eine Sensorauslösung den Unterschied zum Führenden. Falls der Fahrer selbst der Führende ist, wird der Vorspring zum zweiten retourniert.
 
 #### GetTimeDataForSkierWithDifference
 
-Liefert alle Zwischenzeiten, mit dem Abstand zum Führenden.
+Liefert alle Zwischenzeiten eines Rennfahrers, mit dem Abstand zum Führenden.
 
 #### GetStartTimeForSkier
 
 Liefert den Zeitpunkt bei welchem der Skier gestartet ist.
 
+#### GetWinnersForRace
+
+Liefert die drei Gewinner eines Rennens, falls es zwei drittplazierte gibt werden vier Rennläufer retourniert.
+
 ### SeasonService
 
 Dieser Service stellt Methoden zum Abfragen von Saisondaten zur Verfügung.
 
-#### GetRacesForSeason
+Wrapper Methoden:
 
-Liefert alle Rennen einer Saison
+-   `GetRacesForSeason`
+-   `GetAllSeasons`
+-   `GetSeasonById`
 
-#### GetAllSeasons
+#### InsertSeason
 
-Liefert alle Saisons.
+Diese Methode fügt eine neue Saison ein. Dabei wird geprüft ob das Startdatum vor dem Enddatum liegt.
 
-### ActiveRaceResolver
+#### UpdateSeason
 
-Dieser Service ist dafür da, aktive Rennen zu verwalten.
+Modifiziert eine bestehende Saison. Dabei wird geprüft ob das Startdatum vor dem Enddatum liegt.
 
-#### InitializeActiveRaceHandler
+### SkierService
 
-Diese Methode initialisiert den `ActiveRaceResolver`. Dabei werden alle aktiven Rennen aus der Datenbank geladen.
+Dieser Service dient zum Abfragen von Skierdaten sowie zum Modifizieren von Skiern.
 
-#### StartRace
+Wrapper Methoden:
+- `GetAllSkiers`
+- `GetSkierById`
+- `GetDisciplinesForSkier`
 
-Diese Methode startet ein Rennen, dafür wird ein `ActiceRaceControlService` erzeugt und retourniert.
+#### UpdateSkier
 
-#### Indexer
+Diese Methode modifiziert einen bestehenden Rennläufer. Dabei wird geprüft ob das angegebene Land sowie Geschlecht valide sind. Und es wird geprüft dass der Name nicht aus Whitespace besteht.
 
-Mittels des Indexers kann ein `ActiveRaceControlService` eines bereits laufenden Rennens geladen werden.
+#### CreateSkier
 
-#### EndRace
+Diese Methode fügt einen neuen Rennläufer in die Datenbank ein.Dabei wird geprüft ob das angegebene Land sowie Geschlecht valide sind. Und es wird geprüft dass der Name nicht aus Whitespace besteht.
 
-Beendet ein Rennen.
+#### UpdatePossibleDisciplines
 
-### ServiceProvider
+Diese Methode löscht alle bestehenden Disziplinen und fügt die übergebenen ein.
 
-Dieser Service dient als DI Provider, bei seiner Initialisierung werden alle Services sowie alle Daos geladen und können im Verlauf der Anwendung mittels Dependency Injection verwendet werden.
 
 ### RaceClockProvider
 
-Dieser Service ist für die Instanzierung der `IRaceClock` zuständig, dafür kann mittels einer Config der Name sowie das Assembly einer Implementierung angegeben werden, welche verwendet werden soll.
+Dieser Service ist für die Instanzierung der `IRaceClock` zuständig, dafür kann mittels einer Config der Name sowie das Assembly einer Implementierung angegeben werden, welche verwendet werden soll. Diese Implementierung wird asynchron instanziert und anschließend retourniert.
 
 ## Architekturüberblick
 
@@ -537,6 +564,11 @@ Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:
 -   Datenbankzugriffsschicht
 -   Service Schicht / Businesslogik
 -   View Model Schicht
+
+Die unterste Schicht bildet die Datenbankzugriffschicht, auf dieser baut die Service Schicht auf. Die Services werden sowohl von View Models als auch von Controllern der Web API verwendet.
+
+Die gesamte Anwendung ist auf die Verwendung von Dependency Injection ausgelegt. Diese wird in dieser Implementierung mittels Autofac realisiert. Nicht nur die Services sondern auch die View Models werden mit Dependency Injection injeziert.
+
 
 Im folgenden Bild ist zu sehen, wie diese miteinander kommunizieren.
 Die ViewModels kommunizieren ausschließlich mit den Services der Businesslogik, welche wiederum mit der Datenbankschicht kommunizieren.

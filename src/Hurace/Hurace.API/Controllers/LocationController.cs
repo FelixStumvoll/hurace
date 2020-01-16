@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.Services.RaceBaseDataService;
+using Hurace.Core.Interface;
 using Hurace.Dal.Domain;
 using Microsoft.AspNetCore.Mvc;
 

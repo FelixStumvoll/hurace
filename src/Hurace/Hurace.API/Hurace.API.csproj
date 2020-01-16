@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Hurace.Core.Logic\Hurace.Core.Logic.csproj" />
+      <ProjectReference Include="..\Hurace.Core.DependencyModule\Hurace.Core.DependencyModule.csproj" />
+      <ProjectReference Include="..\Hurace.Core.Interface\Hurace.Core.Interface.csproj" />
       <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
     </ItemGroup>
 

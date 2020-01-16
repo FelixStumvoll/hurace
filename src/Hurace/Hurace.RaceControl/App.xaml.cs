@@ -5,7 +5,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Autofac;
 using Autofac.Configuration;
-using Hurace.Core.Logic.Modules;
 using Hurace.RaceControl.ViewModels.SharedViewModels;
 using Hurace.RaceControl.ViewModels.Util;
 using Microsoft.Extensions.Configuration;

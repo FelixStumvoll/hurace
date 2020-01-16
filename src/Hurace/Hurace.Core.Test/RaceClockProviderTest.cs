@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hurace.Core.Logic;
-using Hurace.Core.Logic.Configs;
+using Hurace.Core.Interface.Configs;
+using Hurace.Core.Service;
 using Hurace.Core.Simulation;
 using NUnit.Framework;
 
@@ -21,7 +21,7 @@ namespace Hurace.Core.Test
             var clockConfig = new ClockConfig("Hurace.Core.Simulation", "MockRaceClockV2");
             var clockProvider = new RaceClockProvider(clockConfig);
             var clock = await clockProvider.GetRaceClock();
-            Assert.That(clock is MockRaceClockV2);
+            Assert.That(clock is MockRaceClock);
         }
         
         [Test]

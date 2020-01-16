@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Hurace.Core.Logic.Services.SkierService;
+using Hurace.Core.Service;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
 using Moq;

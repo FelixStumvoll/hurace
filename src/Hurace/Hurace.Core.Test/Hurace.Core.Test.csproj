@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Hurace.Core.Logic\Hurace.Core.Logic.csproj" />
+      <ProjectReference Include="..\Hurace.Core.Service\Hurace.Core.Service.csproj" />
       <ProjectReference Include="..\Hurace.Core.Simulation\Hurace.Core.Simulation.csproj" />
     </ItemGroup>
 

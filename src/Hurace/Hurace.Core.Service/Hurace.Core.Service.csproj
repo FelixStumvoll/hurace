@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Hurace.Core.Service</AssemblyName>
+        <RootNamespace>Hurace.Core.Service</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Core.Common\Core.Common.csproj" />
+      <ProjectReference Include="..\Hurace.Core.Interface\Hurace.Core.Interface.csproj" />
+      <ProjectReference Include="..\Hurace.Core.Timer\Hurace.Core.Timer.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+    
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Hurace.Core.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+</Project>

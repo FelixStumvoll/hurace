@@ -1,4 +1,4 @@
-﻿using Hurace.Core.Logic.Models;
+﻿using Hurace.Core.Interface.Entities;
 
 namespace Hurace.API.Dtos.TimeDifferenceDtos
 {

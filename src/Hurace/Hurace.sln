@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.Interface", "Hur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.DataGenerator.Client", "Hurace.Dal.DataGenerator.Client\Hurace.Dal.DataGenerator.Client.csproj", "{15EA6B62-492F-4481-879D-17ABB30ABE1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Logic", "Hurace.Core.Logic\Hurace.Core.Logic.csproj", "{6BBE3577-C761-47D9-B129-1551403E1F5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Service", "Hurace.Core.Service\Hurace.Core.Service.csproj", "{6BBE3577-C761-47D9-B129-1551403E1F5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.RaceControl", "Hurace.RaceControl\Hurace.RaceControl.csproj", "{B82366EE-B844-4EB6-BEAE-5FB32C81B7D4}"
 EndProject
@@ -29,6 +29,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.API", "Hurace.API\Hurace.API.csproj", "{BBBBAD83-65F4-468E-AB56-6704C5BD80F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.DataGenerator.Core", "Hurace.Dal.DataGenerator.Core\Hurace.Dal.DataGenerator.Core.csproj", "{742F454D-8B67-4DC2-8E79-15CFF49E2DF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Interface", "Hurace.Core.Interface\Hurace.Core.Interface.csproj", "{B7655CFC-2AC0-4951-8401-ACB5F306FFF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.DependencyModule", "Hurace.Core.DependencyModule\Hurace.Core.DependencyModule.csproj", "{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +92,14 @@ Global
 		{742F454D-8B67-4DC2-8E79-15CFF49E2DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{742F454D-8B67-4DC2-8E79-15CFF49E2DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{742F454D-8B67-4DC2-8E79-15CFF49E2DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{860C5D26-6D84-4424-990A-28857E249FBE} = {5BBA30A0-E50E-464E-B86E-944F86197B24}
@@ -101,5 +113,7 @@ Global
 		{F2D8BC8A-F789-4BEC-838B-B9281C0E9BA5} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
 		{9E9B89C4-438F-4FE7-8AA4-B51788BEF3C6} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
 		{742F454D-8B67-4DC2-8E79-15CFF49E2DF1} = {5BBA30A0-E50E-464E-B86E-944F86197B24}
+		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
+		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
 	EndGlobalSection
 EndGlobal

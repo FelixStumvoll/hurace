@@ -1,4 +1,4 @@
-﻿using Hurace.Core.Logic.Models;
+﻿using Hurace.Core.Interface.Entities;
 using Hurace.Dal.Domain;
 
 namespace Hurace.API.Dtos.RaceRankingDtos
