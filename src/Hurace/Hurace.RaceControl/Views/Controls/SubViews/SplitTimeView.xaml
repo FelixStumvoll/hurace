@@ -9,50 +9,55 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance subViewModels:CurrentSkierViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <ListBox ItemsSource="{Binding SplitTimeList}" HorizontalContentAlignment="Stretch" BorderThickness="1">
+    <ListBox ItemsSource="{Binding SplitTimeList}" HorizontalContentAlignment="Stretch" BorderBrush="Black" BorderThickness="1" >
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type entities:TimeDifference}">
-                <Border Padding="0,5,5,5">
-                    <DockPanel>
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Style.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding DifferenceToLeader, 
+                <Border Margin="-5,0,0,0" Height="37">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
                                                     Converter={StaticResource TimespanToDifferenceEnumConverter}}"
-                                        Value="{x:Static u:DifferenceType.Higher}">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="Crimson" Opacity="0.5" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger
-                                        Binding="{Binding DifferenceToLeader, 
+                                    Value="{x:Static u:DifferenceType.Higher}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="IndianRed" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
                                                     Converter={StaticResource TimespanToDifferenceEnumConverter}}"
-                                        Value="{x:Static u:DifferenceType.Lower}">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="ForestGreen" Opacity="0.5" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger
-                                        Binding="{Binding DifferenceToLeader, 
+                                    Value="{x:Static u:DifferenceType.Lower}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="SeaGreen" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding DifferenceToLeader, 
                                                     Converter={StaticResource TimespanToDifferenceEnumConverter}}"
-                                        Value="{x:Static u:DifferenceType.Equal}">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="ForestGreen" Opacity="0.5" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
+                                    Value="{x:Static u:DifferenceType.Equal}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="SeaGreen" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
 
+                    <DockPanel VerticalAlignment="Center">
+                        <DockPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="White" />
+                            </Style>
+                        </DockPanel.Resources>
                         <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                            <TextBlock Text="Sensor:" Margin="5,0,5,0" />
+                            <TextBlock Text="Zwischenzeit:" Margin="5,0" />
                             <TextBlock Text="{Binding TimeData.Sensor.SensorNumber}" />
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal">
@@ -61,7 +66,7 @@
                                     StringFormat={}{0:mm}:{0:ss}:{0:fff}}" />
                             <TextBlock Margin="10,0,0,0">
                                 <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                                         <Style.Triggers>
                                             <DataTrigger
                                                 Binding="{Binding DifferenceToLeader, 

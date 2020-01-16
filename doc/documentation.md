@@ -536,9 +536,10 @@ Modifiziert eine bestehende Saison. Dabei wird geprüft ob das Startdatum vor de
 Dieser Service dient zum Abfragen von Skierdaten sowie zum Modifizieren von Skiern.
 
 Wrapper Methoden:
-- `GetAllSkiers`
-- `GetSkierById`
-- `GetDisciplinesForSkier`
+
+-   `GetAllSkiers`
+-   `GetSkierById`
+-   `GetDisciplinesForSkier`
 
 #### UpdateSkier
 
@@ -551,7 +552,6 @@ Diese Methode fügt einen neuen Rennläufer in die Datenbank ein.Dabei wird gepr
 #### UpdatePossibleDisciplines
 
 Diese Methode löscht alle bestehenden Disziplinen und fügt die übergebenen ein.
-
 
 ### RaceClockProvider
 
@@ -566,10 +566,7 @@ Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:
 -   View Model Schicht
 
 Die unterste Schicht bildet die Datenbankzugriffschicht, auf dieser baut die Service Schicht auf. Die Services werden sowohl von View Models als auch von Controllern der Web API verwendet.
-
 Die gesamte Anwendung ist auf die Verwendung von Dependency Injection ausgelegt. Diese wird in dieser Implementierung mittels Autofac realisiert. Nicht nur die Services sondern auch die View Models werden mit Dependency Injection injeziert.
 
-
-Im folgenden Bild ist zu sehen, wie diese miteinander kommunizieren.
-Die ViewModels kommunizieren ausschließlich mit den Services der Businesslogik, welche wiederum mit der Datenbankschicht kommunizieren.
-![cursedImg](images/cursedStructure.png)
+Im folgenden Diagram ist zu sehen, welche Abhängigkeiten zwischen den Komponenten bestehen.
+![Package](images/Package.png)

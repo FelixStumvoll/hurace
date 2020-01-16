@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import { Card } from '../../theme/CustomComponents';
 
 const ModalHost = styled.div`
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background-color: rgba(128, 128, 128, 0.7);
-    position: absolute;
+    overflow: hidden;
     display: flex;
 `;
 

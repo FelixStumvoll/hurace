@@ -7,6 +7,7 @@ using Hurace.Core.Interface;
 using Hurace.Core.Interface.Entities;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
+using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
 namespace Hurace.Core.Service
 {
@@ -15,12 +16,15 @@ namespace Hurace.Core.Service
         private readonly ISensorDao _sensorDao;
         private readonly ITimeDataDao _timeDataDao;
         private readonly IStartListDao _startListDao;
+        private readonly IRaceDao _raceDao;
 
-        public RaceStatService(IStartListDao startListDao, ITimeDataDao timeDataDao, ISensorDao sensorDao)
+        public RaceStatService(IStartListDao startListDao, ITimeDataDao timeDataDao, ISensorDao sensorDao,
+            IRaceDao raceDao)
         {
             _startListDao = startListDao;
             _timeDataDao = timeDataDao;
             _sensorDao = sensorDao;
+            _raceDao = raceDao;
         }
 
         public async Task<IEnumerable<RaceRanking>> GetRankingForRace(int raceId)
@@ -109,7 +113,11 @@ namespace Hurace.Core.Service
         }
 
         [ExcludeFromCodeCoverage]
-        public Task<IEnumerable<RaceRanking>?> GetWinnersForRace(int raceId) =>
-            GetFinishedSkierRanking(raceId, 3);
+        public async Task<IEnumerable<RaceRanking>?> GetWinnersForRace(int raceId)
+        {
+            var race = await _raceDao.FindByIdAsync(raceId);
+            if (race.RaceStateId != (int) RaceState.Finished) return null;
+            return await GetFinishedSkierRanking(raceId, 3);
+        }
     }
 }

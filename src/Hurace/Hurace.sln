@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.Interface", "Hu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Core.DependencyModule", "Hurace.Core.DependencyModule\Hurace.Core.DependencyModule.csproj", "{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurace.Dal.DependencyModule", "Hurace.Dal.DependencyModule\Hurace.Dal.DependencyModule.csproj", "{698D50BE-BD55-4878-A9B5-3691F659A2E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{698D50BE-BD55-4878-A9B5-3691F659A2E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{698D50BE-BD55-4878-A9B5-3691F659A2E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{698D50BE-BD55-4878-A9B5-3691F659A2E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{698D50BE-BD55-4878-A9B5-3691F659A2E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{860C5D26-6D84-4424-990A-28857E249FBE} = {5BBA30A0-E50E-464E-B86E-944F86197B24}
@@ -115,5 +121,6 @@ Global
 		{742F454D-8B67-4DC2-8E79-15CFF49E2DF1} = {5BBA30A0-E50E-464E-B86E-944F86197B24}
 		{B7655CFC-2AC0-4951-8401-ACB5F306FFF1} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
 		{06ADC10A-A316-40A1-A91B-3DBBB2E006A0} = {CE9873EC-04EB-44EC-9187-DF414D79BC37}
+		{698D50BE-BD55-4878-A9B5-3691F659A2E6} = {5BBA30A0-E50E-464E-B86E-944F86197B24}
 	EndGlobalSection
 EndGlobal

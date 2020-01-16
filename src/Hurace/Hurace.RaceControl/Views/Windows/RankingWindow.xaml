@@ -5,15 +5,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:subViews="clr-namespace:Hurace.RaceControl.Views.Controls.SubViews"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
         mc:Ignorable="d"
-        Title="RankingWindow" Height="450" Width="800">
-    <Grid>
+        d:DataContext="{d:DesignInstance subViewModels:RankingViewModel}"
+        Title="Rangliste" Height="450" Width="800" x:Name="RankingWindowRoot" >
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Aktueller Zwischenstand:" FontSize="25" />
-        <subViews:RankingView Grid.Row="1" />
+        <TextBlock Grid.Row="0" Text="Rangliste:" FontSize="25" />
+        <subViews:RankingView Grid.Row="1" Margin="0,10,0,0" />
     </Grid>
 </mah:MetroWindow>

@@ -1,22 +1,26 @@
-import React, { useState, useCallback, useContext } from 'react';
-import styled, { ThemeContext } from 'styled-components';
-import { DefaultButton, AlignRight } from '../../theme/CustomComponents';
+import React, { useState, useCallback } from 'react';
+import styled from 'styled-components';
+import {
+    DefaultButton,
+    AlignRight,
+    RowFlex,
+    ColumnFlex
+} from '../../theme/CustomComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from './Modal';
 
-const PositiveButton = styled(DefaultButton)<{ marginLeft: string }>`
+const PositiveButton = styled(DefaultButton)`
     color: white;
     height: 100%;
-    margin-left: ${props => props.marginLeft};
     background-color: ${props => props.theme.positive};
 `;
 
-const NegativeButton = styled(DefaultButton)<{ marginLeft: string }>`
+const NegativeButton = styled(DefaultButton)`
     color: white;
     height: 100%;
-    margin-left: ${props => props.marginLeft};
     background-color: ${props => props.theme.negative};
+    margin-left: ${props => props.theme.gap};
 `;
 
 const DeleteIcon = styled(FontAwesomeIcon)`
@@ -24,9 +28,17 @@ const DeleteIcon = styled(FontAwesomeIcon)`
 `;
 
 const DeleteQuestion = styled.span`
-    margin-right: ${props => props.theme.gap};
     font-weight: bold;
+    width: fit-content;
+    margin: 0 auto ${props => props.theme.gap} auto;
 `;
+
+const DeleteFlex = styled(RowFlex)`
+    height: 35px;
+    justify-content: center;
+`;
+
+const ModalColumn = styled(ColumnFlex)``;
 
 export const DeleteBar: React.FC<{
     deleteText: string;
@@ -37,25 +49,25 @@ export const DeleteBar: React.FC<{
     const initDelete = useCallback(() => setDeleteChallenge(true), []);
     const cancelDelete = useCallback(() => setDeleteChallenge(false), []);
 
-    const theme = useContext(ThemeContext);
-
     return (
         <AlignRight>
             {deleteChallenge ? (
                 <Modal>
-                    <DeleteQuestion>Löschen ?</DeleteQuestion>
-                    <PositiveButton marginLeft={theme.gap} onClick={deleteFunc}>
-                        Ja
-                    </PositiveButton>
-                    <NegativeButton
-                        marginLeft={theme.gap}
-                        onClick={cancelDelete}
-                    >
-                        Nein
-                    </NegativeButton>
+                    <ModalColumn>
+                        <DeleteQuestion>Löschen ?</DeleteQuestion>
+
+                        <DeleteFlex>
+                            <PositiveButton onClick={deleteFunc}>
+                                Ja
+                            </PositiveButton>
+                            <NegativeButton onClick={cancelDelete}>
+                                Nein
+                            </NegativeButton>
+                        </DeleteFlex>
+                    </ModalColumn>
                 </Modal>
             ) : (
-                <NegativeButton marginLeft="0px" onClick={initDelete}>
+                <NegativeButton onClick={initDelete}>
                     <DeleteIcon icon={faTrash} />
                     {deleteText}
                 </NegativeButton>

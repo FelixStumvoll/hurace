@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="4.9.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Hurace.Dal.Common\Hurace.Dal.Common.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
+      <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
+    </ItemGroup>
+
+</Project>

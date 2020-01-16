@@ -23,8 +23,8 @@
         </Grid.ColumnDefinitions>
         <!-- Current Skier -->
         <Border Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <subViews:CurrentSkierView 
-                                       DataContext="{Binding CurrentSkierViewModel}" />
+            <subViews:CurrentSkierView
+                DataContext="{Binding CurrentSkierViewModel}" />
         </Border>
 
         <!-- Controls -->
@@ -62,7 +62,7 @@
                                                       Content="{Binding Skier}" />
                                 </StackPanel>
 
-                                <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Cancel"
+                                <Button DockPanel.Dock="Right" Margin="5,0,0,0" Content="Entfernen"
                                         CommandParameter="{Binding Skier.Id}"
                                         Command="{Binding ElementName=Sl, Path=DataContext.CancelSkierCommand}" />
                             </DockPanel>

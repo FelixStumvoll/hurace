@@ -13,7 +13,7 @@ import { faBan } from '@fortawesome/free-solid-svg-icons';
 
 const RankingItem = styled(ListItem)`
     display: grid;
-    grid-template-columns: 20px 0.5fr 1fr 1fr auto;
+    grid-template-columns: 20px 0.5fr 1fr 1fr 85px;
     gap: ${props => props.theme.gap};
 `;
 

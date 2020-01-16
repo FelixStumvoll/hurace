@@ -14,7 +14,7 @@
                 <DataTemplate x:Key="CurrentSkierSet">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="170" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
@@ -31,16 +31,14 @@
                                 <Setter Property="FontSize" Value="25" />
                             </Style>
 
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Margin" Value="5,0,0,0" />
-                            </Style>
-                            <Style TargetType="StackPanel">
-                                <Setter Property="Margin" Value="5,0,0,0" />
+                            <Style TargetType="Border">
+                                <Setter Property="Height" Value="45" />
+                                <Setter Property="Width" Value="45" />
                             </Style>
                         </Grid.Resources>
 
                         <ContentPresenter Content="{Binding}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="5"
-                                          Margin="0,0,5,0">
+                                          Margin="0,0,10,0">
                             <ContentPresenter.Resources>
                                 <DataTemplate x:Key="SkierImageAvailable">
                                     <Image
@@ -78,71 +76,115 @@
                         </ContentPresenter>
 
                         <DockPanel Grid.Column="1" Grid.Row="1">
-                            <TextBlock FontSize="25" Text="Startnummer:" />
-                            <TextBlock HorizontalAlignment="Right"
-                                       FontWeight="Bold" Width="40" TextAlignment="Center"
-                                       Text="{Binding CurrentSkier.StartNumber}" />
+                            <Border Width="Auto">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock FontSize="25" Text="Startnummer:" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border HorizontalAlignment="Right">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        Text="{Binding CurrentSkier.StartNumber}" />
+                                </StackPanel>
+                            </Border>
                         </DockPanel>
 
                         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding CurrentSkier.Skier.FirstName}" Margin="0,0,10,0" />
                             <TextBlock Text="{Binding CurrentSkier.Skier.LastName}" />
                         </StackPanel>
-                        <Separator Grid.Row="0" Grid.Column="1" Margin="5,10,0,0"
+                        <Separator Grid.Row="0" Grid.Column="1" Margin="0,5,0,0"
                                    VerticalAlignment="Bottom" />
 
-                        <ContentPresenter Grid.Column="1" Grid.Row="3" Margin="5,0,0,50"
+                        <ContentPresenter Grid.Column="1" Grid.Row="2"
                                           Content="{Binding}">
                             <ContentPresenter.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="Width" Value="45" />
+                                    <Setter Property="Height" Value="45" />
+                                </Style>
+
+
                                 <DataTemplate x:Key="SkierRunning">
                                     <DockPanel>
-                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
-                                                   Text="Vorläufige Position:" />
-                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
-                                                   HorizontalAlignment="Right" Width="40" TextAlignment="Center"
-                                                   Text="{Binding Position}" />
+                                        <Border Width="Auto">
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                           Text="Vorläufige Position:" />
+                                            </StackPanel>
+                                        </Border>
+
+
+                                        <Border HorizontalAlignment="Right" Height="45" Width="45">
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+
+                                                           Text="{Binding Position}" />
+                                            </StackPanel>
+                                        </Border>
                                     </DockPanel>
                                 </DataTemplate>
 
                                 <DataTemplate x:Key="SkierFinished">
                                     <DockPanel>
-                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
-                                                   Text="Position:" />
-                                        <TextBlock
-                                            Width="40" HorizontalAlignment="Right"
-                                            TextAlignment="Center"
-                                            Text="{Binding Position}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock"
-                                                       BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Border Width="Auto">
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                           Text="Position:" />
+                                            </StackPanel>
+
+                                        </Border>
+
+                                        <Border HorizontalAlignment="Right">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource {x:Type Border}}">
                                                     <Style.Triggers>
+
                                                         <DataTrigger
                                                             Binding="{Binding Position,
                                                             Converter={StaticResource IntIsOneConverter}}"
                                                             Value="True">
-                                                            <Setter Property="Background" Value="ForestGreen" />
-                                                            <Setter Property="Foreground" Value="White" />
+                                                            <Setter Property="Background" Value="SeaGreen" />
+
                                                         </DataTrigger>
                                                         <DataTrigger
                                                             Binding="{Binding Position,
                                                         Converter={StaticResource IntIsOneConverter}}"
                                                             Value="False">
-                                                            <Setter Property="Background" Value="Crimson" />
+                                                            <Setter Property="Background" Value="IndianRed" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
+                                            </Border.Style>
 
-                                        </TextBlock>
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <TextBlock
+                                                    Foreground="White" FontSize="25"
+                                                    Text="{Binding Position}" />
+                                            </StackPanel>
+
+                                        </Border>
                                     </DockPanel>
                                 </DataTemplate>
 
                                 <DataTemplate x:Key="SkierDisqualified">
                                     <DockPanel>
-                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
-                                                   Text="Ergebnis:" />
-                                        <TextBlock Style="{StaticResource {x:Type TextBlock}}"
-                                                   HorizontalAlignment="Right" Text="Ausgeschieden" />
+                                        <Border Width="Auto">
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                           Text="Ergebnis:" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border HorizontalAlignment="Right" Width="Auto">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Style="{StaticResource {x:Type TextBlock}}"
+                                                           Text="Ausgeschieden" />
+                                            </StackPanel>
+                                        </Border>
+
                                     </DockPanel>
                                 </DataTemplate>
                             </ContentPresenter.Resources>

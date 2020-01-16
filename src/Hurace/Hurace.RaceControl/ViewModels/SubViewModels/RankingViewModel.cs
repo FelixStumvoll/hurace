@@ -35,7 +35,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             _raceId = activeRaceControlService.RaceId;
             _statService = statService;
             activeRaceControlService.OnLateDisqualification += _ => UiExecutor.ExecuteInUiThreadAsync(LoadRanking);
-            activeRaceControlService.OnSkierCancelled += _ => UiExecutor.ExecuteInUiThreadAsync(LoadRanking);
+            activeRaceControlService.OnSkierCancelled += skier => UiExecutor.ExecuteInUiThreadAsync(() => LoadRankingWithSkier(skier));
             activeRaceControlService.OnCurrentSkierDisqualified += dqSkier => UiExecutor.ExecuteInUiThreadAsync(
                 () => LoadRankingWithSkier(dqSkier));
             activeRaceControlService.OnSkierFinished += finishedSkier =>

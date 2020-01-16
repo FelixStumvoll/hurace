@@ -10,9 +10,7 @@
     <ProjectReference Include="..\Hurace.Core.Interface\Hurace.Core.Interface.csproj" />
     <ProjectReference Include="..\Hurace.Core.Service\Hurace.Core.Service.csproj" />
     <ProjectReference Include="..\Hurace.Core.Timer\Hurace.Core.Timer.csproj" />
-    <ProjectReference Include="..\Hurace.Dal.Dao\Hurace.Dal.Dao.csproj" />
     <ProjectReference Include="..\Hurace.Dal.Domain\Hurace.Dal.Domain.csproj" />
-    <ProjectReference Include="..\Hurace.Dal.Interface\Hurace.Dal.Interface.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,6 +14,8 @@ namespace Hurace.RaceControl.Views.Windows
             var activeRaceResolver = container.Resolve<IActiveRaceResolver>();
             var vm = container.Resolve<RankingViewModel>(
                 new TypedParameter(typeof(IActiveRaceControlService), activeRaceResolver[raceId]));
+
+            DataContext = vm;
             InitializeComponent();
             Loaded += async (sender, args) => await vm.InitializeAsync();
         }

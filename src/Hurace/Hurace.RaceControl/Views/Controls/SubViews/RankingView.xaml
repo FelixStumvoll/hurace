@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance subViewModels:RankingViewModel}"
              d:DesignHeight="300" d:DesignWidth="300" x:Name="RankingViewRoot">
-    <ListBox ItemsSource="{Binding Ranking}" SelectedItem="{Binding SelectedRaceRanking}" BorderThickness="1"
+    <ListBox ItemsSource="{Binding Ranking}" BorderThickness="1"
              HorizontalContentAlignment="Stretch">
         <ListBox.ItemTemplate>
             <DataTemplate>
