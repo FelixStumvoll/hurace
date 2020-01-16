@@ -1,43 +1,42 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
 using Hurace.RaceControl.ViewModels.Commands;
 using Hurace.RaceControl.ViewModels.PageViewModels;
+using Hurace.RaceControl.Views.Windows;
 
 namespace Hurace.RaceControl.ViewModels.WindowViewModels
 {
-    public class MainViewModel : NotifyPropertyChanged
+    public class MainWindowViewModel : NotifyPropertyChanged
     {
-        private IPage _currentPage;
-        private bool _backVisible;
-        private readonly MainPageViewModel _mainPageViewModel;
-        public ICommand BackToMainCommand { get; set; }
+        private bool _canLaunchSimulator = true;
+        public RacePageViewModel RacePageViewModel { get; set; }
 
-        public bool BackVisible
+        public ICommand LaunchSimulatorCommand { get; set; }
+
+        public bool CanLaunchSimulator
         {
-            get => _backVisible;
-            set => Set(ref _backVisible, value);
+            get => _canLaunchSimulator;
+            set => Set(ref _canLaunchSimulator, value);
         }
 
-        public IPage CurrentPage
+        public MainWindowViewModel(RacePageViewModel racePageViewModel)
         {
-            get => _currentPage;
-            set => Set(ref _currentPage, value, true);
+            RacePageViewModel = racePageViewModel;
+            LaunchSimulatorCommand = new RelayCommand(() =>
+            {
+                CanLaunchSimulator = false;
+                var simWindow = new SimulatorWindow();
+                simWindow.Closed += (sender, args) => CanLaunchSimulator = true;
+                simWindow.Show();
+            }, () => CanLaunchSimulator);
         }
 
-        public MainViewModel(Func<Func<IPage, Task>, MainPageViewModel> mainPageVmFactory)
+        public async Task InitializeAsync()
         {
-            _mainPageViewModel = mainPageVmFactory(ChangePage);
-            CurrentPage = _mainPageViewModel;
-            BackToMainCommand = new AsyncCommand(async () => await ChangePage(_mainPageViewModel));
-        }
-
-        private async Task ChangePage(IPage vm)
-        {
-            BackVisible = vm != _mainPageViewModel;
-            await vm.SetupAsync();
-            CurrentPage = vm;
+            await RacePageViewModel.SetupAsync();
         }
     }
 }

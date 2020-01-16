@@ -7,13 +7,18 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:RaceDisplayViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <WrapPanel>
+    <WrapPanel Margin="5">
         <WrapPanel.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Margin" Value="0,0,10,0"></Setter>
+            <Style TargetType="Border">
+                <Setter Property="Margin" Value="0,0,10,0" />
             </Style>
         </WrapPanel.Resources>
-        <Button Height="50" Content="Aktueller Rennläufer" Command="{Binding OpenCurrentSkierWindowCommand}"/>
-        <Button Content="Rangliste" Command="{Binding OpenRankingWindowCommand}"/>
+        <Border>
+            <Button Height="50" Content="Aktueller Rennläufer" Command="{Binding OpenCurrentSkierWindowCommand}" />
+        </Border>
+        <Border>
+            <Button Content="Rangliste" Command="{Binding OpenRankingWindowCommand}" />
+        </Border>
+
     </WrapPanel>
 </UserControl>

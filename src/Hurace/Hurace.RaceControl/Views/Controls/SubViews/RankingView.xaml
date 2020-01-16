@@ -6,7 +6,46 @@
              xmlns:subViewModels="clr-namespace:Hurace.RaceControl.ViewModels.SubViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance subViewModels:RankingViewModel}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" x:Name="RankingViewRoot">
     <ListBox ItemsSource="{Binding Ranking}" SelectedItem="{Binding SelectedRaceRanking}" BorderThickness="1"
-             HorizontalContentAlignment="Stretch" />
+             HorizontalContentAlignment="Stretch">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <Border  Margin="0,5,5,5" Padding="5" >
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="BorderBrush" Value="DodgerBlue" />
+                                        <Setter Property="BorderThickness" Value="1" />
+                                    </DataTrigger.Setters>
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource LastSkierBoolConverter}">
+                                            <Binding Path="StartList.SkierId" />
+                                            <Binding ElementName="RankingViewRoot" Path="DataContext.LastSkier.SkierId" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                </DataTrigger>
+
+                                <DataTrigger Value="False">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                        <Setter Property="BorderThickness" Value="1" />
+                                    </DataTrigger.Setters>
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource LastSkierBoolConverter}">
+                                            <Binding Path="StartList.SkierId" />
+                                            <Binding ElementName="RankingViewRoot" Path="DataContext.LastSkier.SkierId" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <ContentPresenter Margin="0,0,5,0" ContentTemplate="{Binding .}" />
+                </Border>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

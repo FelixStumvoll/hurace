@@ -28,6 +28,7 @@
                     <converters:IsNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
                     <converters:BooleanReverser x:Key="BooleanReverser" />
                     <converters:DataUriImageConverter x:Key="DataUriImageConverter" />
+                    <converters:LastSkierBoolConverter x:Key="LastSkierBoolConverter" />
 
                     <Style x:Key="ErrorMessage" TargetType="TextBlock">
                         <Setter Property="FontWeight" Value="Bold" />
@@ -44,10 +45,8 @@
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type entities:RaceRanking}">
-                        <Border Margin="0,0,5,0">
+                        <Border>
                             <DockPanel LastChildFill="False">
-
-
                                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                                     <TextBlock Text="{Binding Position}" FontWeight="Bold" Width="25" Margin="0,0,10,0" />
                                     <ContentPresenter ContentTemplate="{StaticResource SkierTemplate}"
@@ -86,10 +85,10 @@
                                             </Style>
                                         </ContentPresenter.Style>
                                     </ContentPresenter>
-
                                 </StackPanel>
                             </DockPanel>
                         </Border>
+
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type dto:StartList}">

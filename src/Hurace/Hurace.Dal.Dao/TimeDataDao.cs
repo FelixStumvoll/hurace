@@ -33,7 +33,7 @@ namespace Hurace.Dal.Dao
                     .AddMapping<Country>(("countryId", nameof(Country.Id)))
                     .AddMapping<Skier>(("skierId", nameof(Skier.Id)))
                     .AddMapping<Gender>(("genderId", nameof(Gender.Id))), ("@rid", raceId),
-                ("@sid", sensorNumber), ("@ssid", (int)StartState.Finished));
+                ("@sid", sensorNumber), ("@ssid", (int) StartState.Finished));
         }
 
         public async Task<bool> DeleteAsync(int skierId, int raceId, int sensorId) =>
@@ -85,7 +85,7 @@ namespace Hurace.Dal.Dao
             join hurace.TimeData as td on se.id = td.skierEventId
             join hurace.Sensor as s on s.id = td.sensorId
             where s.sensorNumber = 0 and rd.eventTypeId = 8 and td.skierId = @sid and td.raceId = @rid",
-                                        queryParams: new QueryParam[] { ("@sid", skierId), ("@rid", raceId) }))
+                                        queryParams: new QueryParam[] {("@sid", skierId), ("@rid", raceId)}))
             .FirstOrDefault()?.EventDateTime;
     }
 }

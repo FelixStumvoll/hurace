@@ -77,7 +77,13 @@
         <ListBox BorderThickness="1" Margin="0,0,5,0" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding StartList}" />
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Rangliste" FontWeight="Bold" />
         <ListBox BorderThickness="1" Margin="5,0,0,0" Grid.Row="2" HorizontalContentAlignment="Stretch" Grid.Column="1"
-                 ItemsSource="{Binding Ranking}" />
+                 ItemsSource="{Binding Ranking}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <ContentPresenter Margin="0,0,5,0" Content="{Binding .}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
     </Grid>
 </UserControl>

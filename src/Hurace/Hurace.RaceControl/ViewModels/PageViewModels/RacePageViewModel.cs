@@ -15,7 +15,7 @@ using Hurace.RaceControl.ViewModels.Util;
 
 namespace Hurace.RaceControl.ViewModels.PageViewModels
 {
-    public class RacePageViewModel : NotifyPropertyChanged, IPage
+    public class RacePageViewModel : NotifyPropertyChanged
     {
         private RaceViewModel _selectedRace;
         private readonly IRaceBaseDataService _baseDataService;

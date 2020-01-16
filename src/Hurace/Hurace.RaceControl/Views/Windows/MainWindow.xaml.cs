@@ -14,8 +14,9 @@ namespace Hurace.RaceControl.Views.Windows
         {
             var container = ((App)Application.Current).Container;
             var s = container.Resolve<ISkierService>();
-            var vm = container.Resolve<MainViewModel>();
+            var vm = container.Resolve<MainWindowViewModel>();
             DataContext = vm;
+            Loaded += async (sender, args) => await vm.InitializeAsync();
 
             InitializeComponent();
         }

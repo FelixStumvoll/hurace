@@ -45,7 +45,7 @@
                     <Setter Property="Margin" Value="5,0,0,5" />
                 </Style>
             </Grid.Resources>
-            <TextBlock Grid.Row="0" Style="{StaticResource ListLabel}" Text="Saison:" />
+            <TextBlock Grid.Row="0" Margin="5,5,0,5" Style="{StaticResource ListLabel}" Text="Saison:" />
             <ComboBox Grid.Row="1" Margin="5,0,5,5" ItemsSource="{Binding Seasons}"
                       SelectedItem="{Binding SelectedSeason}">
                 <i:Interaction.Triggers>
