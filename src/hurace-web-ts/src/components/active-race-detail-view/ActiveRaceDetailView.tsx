@@ -62,7 +62,7 @@ export const ActiveRaceDetailView: React.FC<{ raceId: number }> = ({
         <ColumnFlex>
             <RowFlex>
                 <DetailPanelWrapper>
-                    <RaceDetailPanel raceId={raceId} />}
+                    <RaceDetailPanel raceId={raceId} />
                 </DetailPanelWrapper>
 
                 <CurrentSkierPanel currentSkier={currentSkier} />
