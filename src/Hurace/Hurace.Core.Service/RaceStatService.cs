@@ -116,7 +116,7 @@ namespace Hurace.Core.Service
         public async Task<IEnumerable<RaceRanking>?> GetWinnersForRace(int raceId)
         {
             var race = await _raceDao.FindByIdAsync(raceId);
-            if (race.RaceStateId != (int) RaceState.Finished) return null;
+            if (race == null || race.RaceStateId != (int) RaceState.Finished) return null;
             return await GetFinishedSkierRanking(raceId, 3);
         }
     }

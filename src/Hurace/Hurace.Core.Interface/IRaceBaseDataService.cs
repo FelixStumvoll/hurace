@@ -10,7 +10,7 @@ namespace Hurace.Core.Interface
         Task<Race?> GetRaceById(int raceId);
         Task<RaceModificationResult> InsertOrUpdateRace(Race race, int sensorCount);
         Task<int?> GetSensorCount(int raceId);
-        Task<bool> RemoveRace(Race race);
+        Task<bool> RemoveRace(int raceId);
         Task<IEnumerable<Gender>> GetGenders();
         Task<IEnumerable<Location>> GetLocations();
         Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId);

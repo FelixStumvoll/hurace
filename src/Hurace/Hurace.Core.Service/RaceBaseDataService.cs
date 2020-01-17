@@ -7,6 +7,7 @@ using Hurace.Core.Interface;
 using Hurace.Core.Service.Util;
 using Hurace.Dal.Domain;
 using Hurace.Dal.Interface;
+using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
 namespace Hurace.Core.Service
 {
@@ -19,8 +20,11 @@ namespace Hurace.Core.Service
         private readonly IGenderDao _genderDao;
         private readonly ILocationDao _locationDao;
         private readonly IDisciplineDao _disciplineDao;
+        private readonly IStartListDao _startListDao;
 
-        public RaceBaseDataService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao, IRaceStartListService startListService, IGenderDao genderDao, ILocationDao locationDao, IDisciplineDao disciplineDao)
+        public RaceBaseDataService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao,
+            IRaceStartListService startListService, IGenderDao genderDao, ILocationDao locationDao,
+            IDisciplineDao disciplineDao, IStartListDao startListDao)
         {
             _raceDao = raceDao;
             _sensorDao = sensorDao;
@@ -29,14 +33,15 @@ namespace Hurace.Core.Service
             _genderDao = genderDao;
             _locationDao = locationDao;
             _disciplineDao = disciplineDao;
+            _startListDao = startListDao;
         }
 
         [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Race>> GetAllRaces() => _raceDao.FindAllAsync();
-        
+
         [ExcludeFromCodeCoverage]
         public Task<Race?> GetRaceById(int raceId) => _raceDao.FindByIdAsync(raceId);
-        
+
         public async Task<RaceModificationResult> InsertOrUpdateRace(Race race, int sensorCount)
         {
             try
@@ -79,14 +84,17 @@ namespace Hurace.Core.Service
 
         public async Task<int?> GetSensorCount(int raceId) => (await _sensorDao.FindAllSensorsForRace(raceId))?.Count();
 
-        public async Task<bool> RemoveRace(Race race)
+        public async Task<bool> RemoveRace(int raceId)
         {
-            if (await _raceDao.FindByIdAsync(race.Id) == null ||
-                (await _startListService.IsStartListDefined(race.Id) ?? false) ||
-                await _timeDataDao.CountTimeDataForRace(race.Id) != 0)
-                return false;
+            var race = await _raceDao.FindByIdAsync(raceId);
+            if (race == null) return false;
+
+            if (race.RaceStateId != (int) RaceState.Upcoming) return false;
+            using var scope = ScopeBuilder.BuildTransactionScope();
             await _sensorDao.DeleteAllSensorsForRace(race.Id);
+            await _startListDao.DeleteAllForRace(race.Id);
             await _raceDao.DeleteAsync(race.Id);
+            scope.Complete();
             return true;
         }
 
@@ -95,7 +103,7 @@ namespace Hurace.Core.Service
 
         [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
-        
+
         [ExcludeFromCodeCoverage]
         public Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId) =>
             _locationDao.GetPossibleDisciplinesForLocation(locationId);

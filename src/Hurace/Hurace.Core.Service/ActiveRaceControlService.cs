@@ -61,8 +61,9 @@ namespace Hurace.Core.Service
         public async Task InitializeAsync()
         {
             var clock = await _raceClockProvider.GetRaceClock();
-            clock.TimingTriggered +=
-                async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
+            if (clock != null)
+                clock.TimingTriggered +=
+                    async (sensorNumber, dateTime) => await OnTimingTriggered(sensorNumber, dateTime);
             _maxSensorNr = await _sensorDao.GetLastSensorNumber(RaceId) ?? -1;
         }
 
@@ -75,7 +76,6 @@ namespace Hurace.Core.Service
 
             if (sensorNumber == _maxSensorNr) await CurrentSkierFinished();
         }
-
 
 
         private enum SensorSeriesResult
@@ -126,7 +126,7 @@ namespace Hurace.Core.Service
             return ValidSensorSeries(timeDataList, sensorNumber) switch
             {
                 SensorSeriesResult.NeedsAverageValidation => IsTimeInBoundAverage(
-                    (int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds,
+                    (int) (dateTime - (startTime ?? dateTime)).TotalMilliseconds,
                     average),
                 SensorSeriesResult.SensorAlreadyHasValue => false,
                 SensorSeriesResult.SensorAfterwardsSet => false,
@@ -151,7 +151,7 @@ namespace Hurace.Core.Service
                 SensorId = sensor.Id,
                 SkierId = currentSkier.SkierId,
                 SkierEventId = skierEventId.Value,
-                Time = (int)(dateTime - (startTime ?? dateTime)).TotalMilliseconds
+                Time = (int) (dateTime - (startTime ?? dateTime)).TotalMilliseconds
             });
             var ret = await _timeDataDao.FindByIdAsync(currentSkier.SkierId, RaceId, sensor.Id);
             scope.Complete();
@@ -175,7 +175,7 @@ namespace Hurace.Core.Service
         private async Task UpdateStartListState(StartList startList, RaceDataEvent eventType,
             StartState state)
         {
-            startList.StartStateId = (int)state;
+            startList.StartStateId = (int) state;
             await _startListDao.UpdateAsync(startList);
             var raceDataId = await InsertRaceData(eventType, RaceId);
             if (raceDataId.HasValue) await InsertSkierEvent(startList.SkierId, startList.RaceId, raceDataId.Value);
@@ -184,7 +184,7 @@ namespace Hurace.Core.Service
         private async Task<int?> InsertRaceData(RaceDataEvent eventType, int raceId) =>
             await _raceDataDao.InsertGetIdAsync(new RaceData
             {
-                EventTypeId = (int)eventType,
+                EventTypeId = (int) eventType,
                 RaceId = raceId,
                 EventDateTime = DateTime.Now
             });
@@ -206,7 +206,7 @@ namespace Hurace.Core.Service
             if (currentSkier == null) return;
 
             await UpdateStartListState(currentSkier, RaceDataEvent.SkierFinished,
-                StartState.Finished);
+                                       StartState.Finished);
             OnSkierFinished?.Invoke(currentSkier);
         }
 
@@ -232,7 +232,7 @@ namespace Hurace.Core.Service
         public async Task<bool> DisqualifyFinishedSkier(int skierId)
         {
             var skier = await _startListDao.FindByIdAsync(skierId, RaceId);
-            if (skier == null || skier.StartStateId != (int)StartState.Finished) return false;
+            if (skier == null || skier.StartStateId != (int) StartState.Finished) return false;
             await UpdateStartListState(skier, RaceDataEvent.SkierDisqualified, StartState.Disqualified);
             OnLateDisqualification?.Invoke(skier);
             return true;
@@ -251,11 +251,11 @@ namespace Hurace.Core.Service
             using var scope = ScopeBuilder.BuildTransactionScope();
             var race = await _raceDao.FindByIdAsync(raceId);
             if (race == null) return (false, null);
-            race.RaceStateId = (int)state;
+            race.RaceStateId = (int) state;
             await _raceDao.UpdateAsync(race);
             var raceData = new RaceData
             {
-                EventTypeId = (int)state,
+                EventTypeId = (int) state,
                 RaceId = race.Id,
                 EventDateTime = DateTime.Now
             };

@@ -18,7 +18,7 @@ namespace Hurace.Core.Test
             ITimeDataDao timeDataDao = null, IRaceStartListService startListService = null, IGenderDao genderDao = null,
             ILocationDao locationDao = null, IDisciplineDao disciplineDao = null) =>
             new RaceBaseDataService(raceDao, sensorDao, timeDataDao, startListService, genderDao, locationDao,
-                                    disciplineDao);
+                                    disciplineDao, null);
 
         [Test]
         public async Task InsertOrUpdateRaceNoIdTest()
@@ -125,10 +125,10 @@ namespace Hurace.Core.Test
 
         private static object[] _removeRaceTestSource =
         {
-            new object[] {null, true, 0, false },
-            new object[] {new Race(), true, 0, false },
-            new object[] {new Race(), false, 1, false },
-            new object[] {new Race(), false, 0, true }
+            new object[] {null, true, 0, false},
+            new object[] {new Race(), true, 0, false},
+            new object[] {new Race(), false, 1, false},
+            new object[] {new Race(), false, 0, true}
         };
 
         [Test]
@@ -149,8 +149,8 @@ namespace Hurace.Core.Test
             Assert.AreEqual(
                 result,
                 await new RaceBaseDataService(mockRaceDao.Object, mockSensorDao.Object, mockTimedataDao.Object,
-                                        mockStartListService.Object, null, null, null).RemoveRace(new Race{Id = 100}));
-            
+                                              mockStartListService.Object, null, null, null, null)
+                    .RemoveRace(100));
         }
     }
 }
