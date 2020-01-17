@@ -21,7 +21,7 @@ namespace Hurace.Core.Test
             mockSensorDao.Setup(sd => sd.GetLastSensorNumber(It.IsAny<int>())).ReturnsAsync((int?) null);
             Assert.AreEqual(
                 null,
-                await new RaceStatService(null, null, mockSensorDao.Object)
+                await new RaceStatService(null, null, mockSensorDao.Object, null)
                     .GetFinishedSkierRanking(1));
         }
 
@@ -40,7 +40,7 @@ namespace Hurace.Core.Test
                                new TimeData {Time = 4, StartList = new StartList {SkierId = 4}},
                            });
 
-            var ranking = (await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+            var ranking = (await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                 .GetFinishedSkierRanking(1)).ToList();
 
             Assert.AreEqual(1, ranking[0].Position);
@@ -74,7 +74,7 @@ namespace Hurace.Core.Test
                            .ReturnsAsync(new TimeData {Time = leaderTime});
 
             Assert.AreEqual(TimeSpan.FromMilliseconds(result),
-                            await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+                            await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                                 .GetDifferenceToLeader(new TimeData
                                                            {SkierId = 1, RaceId = 1, SensorId = 1, Time = time}));
         }
@@ -88,7 +88,8 @@ namespace Hurace.Core.Test
             mockTimeDataDao.Setup(tdd => tdd.GetRankingForSensor(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                            .ReturnsAsync(new List<TimeData>());
 
-            Assert.AreEqual(TimeSpan.Zero, await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+            Assert.AreEqual(TimeSpan.Zero,
+                            await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                                 .GetDifferenceToLeader(new TimeData
                                                            {SkierId = 1, RaceId = 1, SensorId = 1, Time = 0}));
         }
@@ -107,7 +108,7 @@ namespace Hurace.Core.Test
             mockTimeDataDao.Setup(tdd => tdd.FindByIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                            .ReturnsAsync((TimeData?) null);
 
-            Assert.AreEqual(null, await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+            Assert.AreEqual(null, await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                                 .GetDifferenceToLeader(new TimeData
                                                            {SkierId = 1, RaceId = 1, SensorId = 1, Time = 0}));
         }
@@ -128,7 +129,7 @@ namespace Hurace.Core.Test
                            .ReturnsAsync(new TimeData {Time = 10});
 
             Assert.AreEqual(TimeSpan.FromMilliseconds(-5),
-                            await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+                            await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                                 .GetDifferenceToLeader(new TimeData
                                                            {SkierId = 1, RaceId = 1, SensorId = 1, Time = 5}));
         }
@@ -160,7 +161,7 @@ namespace Hurace.Core.Test
                            .ReturnsAsync(new TimeData {Time = 10, SkierId = 1});
 
 
-            var result = (await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+            var result = (await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                 .GetTimeDataForSkierWithDifference(1, 1)).ToList();
             Assert.AreEqual(TimeSpan.FromMilliseconds(1), result[0].DifferenceToLeader);
             Assert.AreEqual(TimeSpan.FromMilliseconds(-1), result[1].DifferenceToLeader);
@@ -195,10 +196,9 @@ namespace Hurace.Core.Test
 
             Assert.AreEqual(
                 expected,
-                await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object)
+                await new RaceStatService(null, mockTimeDataDao.Object, mockSensorDao.Object, null)
                     .GetStartTimeForSkier(1, 1));
         }
-
 
 
         [Test]
@@ -222,8 +222,9 @@ namespace Hurace.Core.Test
                     new StartList {SkierId = 5}
                 });
 
-            var ranking = (await new RaceStatService(mockStartListDao.Object, mockTimeDataDao.Object, mockSensorDao.Object)
-                .GetRankingForRace(1)).ToList();
+            var ranking =
+                (await new RaceStatService(mockStartListDao.Object, mockTimeDataDao.Object, mockSensorDao.Object, null)
+                    .GetRankingForRace(1)).ToList();
 
             Assert.AreEqual(1, ranking[0].Position);
             Assert.AreEqual(1, ranking[0].StartList.SkierId);
@@ -236,7 +237,7 @@ namespace Hurace.Core.Test
 
             Assert.AreEqual(4, ranking[3].Position);
             Assert.AreEqual(4, ranking[3].StartList.SkierId);
-            
+
             Assert.AreEqual(5, ranking[4].StartList.SkierId);
             Assert.IsNull(ranking[4].Position);
         }

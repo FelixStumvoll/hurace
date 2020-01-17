@@ -1,27 +1,40 @@
 import { useState, useEffect } from 'react';
 
 import { getSeasonById } from '../../common/api';
+import { useCallState } from '../../hooks/useCallState';
+import { ApiState } from '../../interfaces/ApiState';
 
 export const useSeasonForm = (
     seasonId?: number
-): [SeasonFormValues | undefined] => {
+): [ApiState, SeasonFormValues | undefined] => {
     const [initialFormValue, setInitialFormValue] = useState<
         SeasonFormValues
     >();
 
+    const callState = useCallState();
+
     useEffect(() => {
         const loadData = async () => {
-            if (!seasonId) {
-                setInitialFormValue({
-                    startDate: new Date(),
-                    endDate: new Date()
-                });
-            } else {
-                let season = await getSeasonById(seasonId);
-                setInitialFormValue({
-                    startDate: season.startDate,
-                    endDate: season.endDate
-                });
+            callState.setError(undefined);
+            callState.setLoading(true);
+
+            try {
+                if (!seasonId) {
+                    setInitialFormValue({
+                        startDate: new Date(),
+                        endDate: new Date()
+                    });
+                } else {
+                    let season = await getSeasonById(seasonId);
+                    setInitialFormValue({
+                        startDate: season.startDate,
+                        endDate: season.endDate
+                    });
+                }
+            } catch (error) {
+                callState.setError(error);
+            } finally {
+                callState.setLoading(false);
             }
         };
 
@@ -29,5 +42,5 @@ export const useSeasonForm = (
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return [initialFormValue];
+    return [callState, initialFormValue];
 };

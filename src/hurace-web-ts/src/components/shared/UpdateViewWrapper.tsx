@@ -14,14 +14,11 @@ const HeaderCardWrapper = styled.div`
 
 export const UpdateViewWrapper: React.FC<{
     headerText: string;
-    errorText?: string;
 }> = ({ children, headerText }) => {
     return (
         <PageWrapper>
             <HeaderCardWrapper>
-                <HeaderCard headerText={headerText}>
-                    {children}
-                </HeaderCard>
+                <HeaderCard headerText={headerText}>{children}</HeaderCard>
             </HeaderCardWrapper>
         </PageWrapper>
     );

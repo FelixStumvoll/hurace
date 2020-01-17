@@ -33,8 +33,8 @@ const Form = styled.form`
     flex-direction: column;
 `;
 
-const ErrorMsg = styled(FormErrorMessage)`
-    margin: 10px 0 0 0;
+const FormError = styled(FormErrorMessage)`
+    margin-top: 10px;
 `;
 
 export const FormWrapper: React.FC<{
@@ -46,7 +46,8 @@ export const FormWrapper: React.FC<{
     return (
         <Form onSubmit={onSubmit}>
             {children}
-            {error && <ErrorMsg>{error}</ErrorMsg>}
+
+            {error && <FormError>{error}</FormError>}
             <ButtonPanel>
                 <CancelButton onClick={onCancel}>Abbrechen</CancelButton>
                 <SaveButton disabled={isSubmitting} type="submit">

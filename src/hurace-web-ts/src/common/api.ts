@@ -30,6 +30,9 @@ export const getSeasons = async (): Promise<Season[]> => {
     return response.data;
 };
 
+export const deleteSeason = async (seasonId: number): Promise<void> =>
+    await Axios.delete(`${env.apiUrl}/season/${seasonId}`);
+
 export const createSeason = async (
     season: SeasonCreateDto
 ): Promise<number> => {
@@ -171,7 +174,7 @@ export const getSplittimesForCurrentSkier = async (
     let response = await Axios.get<TimeDifference[]>(
         `${env.apiUrl}/race/active/${raceId}/currentSkier/splitTimes`
     );
-    
+
     if (response.status === 204) return [];
     return response.data;
 };

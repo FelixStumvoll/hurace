@@ -3,10 +3,14 @@ import { DetailViewWrapper } from '../shared/DetailViewWrapper';
 import { SeasonDetailPanel } from './SeasonDetailPanel';
 import { DisciplineView } from './discipline-view/DisciplineView';
 import { RowFlex, ColumnFlex } from '../../theme/CustomComponents';
+import { deleteSeason } from '../../common/api';
+import { useHistory } from 'react-router-dom';
 
 export const SeasonDetailView: React.FC<{ seasonId: number }> = ({
     seasonId
 }) => {
+    const history = useHistory();
+
     return (
         <DetailViewWrapper
             url="/season"
@@ -17,7 +21,10 @@ export const SeasonDetailView: React.FC<{ seasonId: number }> = ({
             }}
             deleteConfig={{
                 deleteText: 'Saison löschen',
-                deleteFunc: () => {}
+                deleteFunc: async () => {
+                    await deleteSeason(seasonId);
+                    history.push('/season');
+                }
             }}
         >
             <ColumnFlex>

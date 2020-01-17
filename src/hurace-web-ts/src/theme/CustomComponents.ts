@@ -96,7 +96,7 @@ export const FormField = styled.div`
     grid-template-areas: 'label input' 'error error';
 `;
 
-export const FormErrorMessage = styled.span`
+export const FormErrorMessage = styled.div`
     grid-area: error;
     background-color: #f8d7da;
     border-radius: 5px;

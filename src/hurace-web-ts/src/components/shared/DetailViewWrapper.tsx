@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPen } from '@fortawesome/free-solid-svg-icons';
-import { DefaultLink, RowFlex } from '../../theme/CustomComponents';
-import { DeleteBar } from './DeleteBar';
+import { DefaultLink, RowFlex, AlignRight } from '../../theme/CustomComponents';
 import { AuthContext } from '../Auth0Provider';
+import { DeleteModalHost } from './DeleteModalHost';
 
 const BackLinkPanel = styled.div`
     display: grid;
@@ -25,7 +25,6 @@ const EditLink = styled(DefaultLink)<{ deletepresent: number }>`
     background-color: #f0db4f;
     color: black;
     display: flex;
-    height: 35px;
 `;
 
 const EditIcon = styled(FontAwesomeIcon)`
@@ -46,6 +45,11 @@ const BackText = styled.div`
     height: fit-content;
 `;
 
+const ActionButtons = styled(AlignRight)`
+    height: 35px;
+    display: flex;
+`;
+
 export const DetailViewWrapper: React.FC<{
     backText: string;
     url: string;
@@ -56,7 +60,7 @@ export const DetailViewWrapper: React.FC<{
 
     deleteConfig?: {
         deleteText: string;
-        deleteFunc: () => void;
+        deleteFunc: () => Promise<void>;
     };
 }> = ({ backText, url, children, editConfig, deleteConfig }) => {
     return (
@@ -70,9 +74,9 @@ export const DetailViewWrapper: React.FC<{
                 <AuthContext.Consumer>
                     {({ isAuthenticated }) =>
                         isAuthenticated && (
-                            <>
+                            <ActionButtons>
                                 {deleteConfig && (
-                                    <DeleteBar
+                                    <DeleteModalHost
                                         deleteText={deleteConfig.deleteText}
                                         deleteFunc={deleteConfig.deleteFunc}
                                     />
@@ -88,7 +92,7 @@ export const DetailViewWrapper: React.FC<{
                                         </EditText>
                                     </EditLink>
                                 )}
-                            </>
+                            </ActionButtons>
                         )
                     }
                 </AuthContext.Consumer>

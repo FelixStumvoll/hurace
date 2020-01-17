@@ -100,7 +100,7 @@ Weiters wird seine Position in der Rangliste hervorgehoben.
 ![display](images/rc-doc/display.png)
 
 Mittels der Anzeigekontrolle können verschiedene Anzeigen gestartet werden, welche Live Daten darstellen.
-Derzeit stehen folgende 2 zur Verfügung.
+Derzeit stehen folgende zwei zur Verfügung.
 
 #### Aktueller Rennfahrer
 
