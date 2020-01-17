@@ -9,12 +9,12 @@ import {
 } from '../../common/api';
 import { SkierFormValues } from '../../types/forms/skier-form';
 import { useCallState } from '../../hooks/useCallState';
-import { ApiState } from '../../interfaces/ApiState';
+import { CallState } from '../../interfaces/CallState';
 
 export const useSkierForm = (
     skierId?: number
 ): [
-    ApiState,
+    CallState,
     SkierFormValues | undefined,
     SelectValue[] | undefined,
     SelectValue[] | undefined,

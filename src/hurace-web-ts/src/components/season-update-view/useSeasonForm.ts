@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 
 import { getSeasonById } from '../../common/api';
 import { useCallState } from '../../hooks/useCallState';
-import { ApiState } from '../../interfaces/ApiState';
+import { CallState } from '../../interfaces/CallState';
 
 export const useSeasonForm = (
     seasonId?: number
-): [ApiState, SeasonFormValues | undefined] => {
+): [CallState, SeasonFormValues | undefined] => {
     const [initialFormValue, setInitialFormValue] = useState<
         SeasonFormValues
     >();

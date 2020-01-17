@@ -21,12 +21,14 @@ import { validateSeason } from './seasonValidator';
 export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
     seasonId
 }) => {
-    const [apiState, initialFormValue] = useSeasonForm(seasonId);
+    const [callState, initialFormValue] = useSeasonForm(seasonId);
     const [saveError, setSaveError] = useState<string>();
     const history = useHistory();
 
     const onSave = useCallback(
         async (values: SeasonFormValues, setSubmitting: any) => {
+            setSaveError(undefined);
+
             try {
                 let id = seasonId;
 
@@ -57,8 +59,8 @@ export const SeasonUpdateView: React.FC<{ seasonId?: number }> = ({
             headerText={seasonId ? 'Saison bearbeiten' : 'Saison erstellen'}
         >
             <LoadingWrapper
-                loading={apiState.loading}
-                error={apiState.error}
+                loading={callState.loading}
+                error={callState.error}
                 errorMessage="Saison konnte nicht geladen werden"
             >
                 {initialFormValue && (

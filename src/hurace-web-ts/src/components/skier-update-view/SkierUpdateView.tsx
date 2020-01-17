@@ -28,7 +28,7 @@ export const SkierUpdateView: React.FC<{
     skierId?: number;
 }> = ({ skierId }) => {
     const [
-        apiState,
+        callState,
         initialFormValue,
         genders,
         countries,
@@ -40,6 +40,8 @@ export const SkierUpdateView: React.FC<{
 
     const onSave = useCallback(
         async (values: SkierFormValues, setSubmitting: any) => {
+            setSaveError(undefined);
+
             try {
                 let id = skierId;
 
@@ -80,8 +82,8 @@ export const SkierUpdateView: React.FC<{
             headerText={`Rennfahrer ${skierId ? 'bearbeiten' : 'erstellen'}`}
         >
             <LoadingWrapper
-                loading={apiState.loading}
-                error={apiState.error}
+                loading={callState.loading}
+                error={callState.error}
                 errorMessage="Rennläufer konnte nicht geladen werden"
             >
                 {initialFormValue && (
