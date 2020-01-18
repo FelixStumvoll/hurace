@@ -8,12 +8,27 @@ import { getWinnersForRace, getRaceDetails } from '../../../common/api';
 import { LoadingWrapper } from '../../shared/LoadingWrapper';
 import { RaceRanking } from '../../../models/RaceRanking';
 
+const WinnerFlex = styled(RowFlex)`
+    flex-wrap: wrap;
+    justify-content: center;
+    @media screen and (max-width: ${props => props.theme.mobileSize}) {
+        flex-direction: column;
+        align-items: center;
+    }
+`;
+
 const WinnerWrapper = styled.div`
-    margin-left: ${props => props.theme.gap};
+    margin-right: ${props => props.theme.gap};
+    margin-bottom: ${props => props.theme.gap};
     display: flex;
     flex-direction: column;
-    :first-child {
+    :last-child {
+        margin-right: 0;
+    }
+
+    @media screen and (max-width: ${props => props.theme.mobileSize}) {
         margin-left: 0;
+        margin-top: ${props => props.theme.gap};
     }
 `;
 
@@ -43,9 +58,12 @@ export const RaceWinnersView: React.FC<{ raceId: number }> = ({ raceId }) => {
     }, []);
 
     return (
-        <HeaderCard headerText="Sieger">
+        <HeaderCard
+            contentStyles={{ paddingBottom: '0px' }}
+            headerText="Sieger"
+        >
             <LoadingWrapper loading={loading} error={error}>
-                <RowFlex>
+                <WinnerFlex>
                     {winnerData && winnerData[0] === 3 ? (
                         winnerData[1]?.map(w => (
                             <WinnerWrapper key={w.position}>
@@ -56,7 +74,7 @@ export const RaceWinnersView: React.FC<{ raceId: number }> = ({ raceId }) => {
                     ) : (
                         <div>{winnerData && getErrorText(winnerData?.[0])}</div>
                     )}
-                </RowFlex>
+                </WinnerFlex>
             </LoadingWrapper>
         </HeaderCard>
     );

@@ -10,5 +10,7 @@ declare module 'styled-components' {
         positive: string;
         fontFamily: string;
         gap: string;
+        mobileSize: string;
+        tabletSize: string;
     }
 }

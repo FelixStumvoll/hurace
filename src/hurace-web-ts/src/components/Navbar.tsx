@@ -14,7 +14,13 @@ const Nav = styled.nav`
     display: grid;
     gap: ${props => props.theme.gap};
     grid-template-areas: 'season active skiers . name login';
-    grid-template-columns: auto auto auto 1fr auto;
+    grid-template-columns: auto auto auto 1fr auto auto;
+
+    @media screen and (max-width: ${props => props.theme.mobileSize}) {
+        grid-template-areas: 'season active skiers . login';
+        grid-template-columns: auto auto auto 1fr auto;
+        font-size: 12px;
+    }
 `;
 
 interface NavbarNavLinkProps {
@@ -27,6 +33,7 @@ const NavbarNavLink = styled(NavLink)<NavbarNavLinkProps>`
     color: white;
     border-bottom: 6px solid transparent;
     display: flex;
+    text-align: center;
 `;
 
 const NavbarContent = styled.div`
@@ -50,6 +57,10 @@ const Username = styled.div`
     color: white;
     height: fit-content;
     margin: auto;
+
+    @media screen and (max-width: ${props => props.theme.mobileSize}) {
+        display: none;
+    }
 `;
 
 export const Navbar: React.FC = () => {

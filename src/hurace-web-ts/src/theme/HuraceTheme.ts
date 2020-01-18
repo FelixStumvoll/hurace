@@ -10,5 +10,7 @@ export const HuraceTheme: DefaultTheme = {
     gap: '24px',
     fontFamily: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif`
+    'Helvetica Neue', sans-serif`,
+    mobileSize: '750px',
+    tabletSize: '1100px'
 };
