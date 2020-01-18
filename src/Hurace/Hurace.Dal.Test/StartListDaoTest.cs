@@ -71,21 +71,6 @@ namespace Hurace.Dal.Test
             Assert.NotNull(startList.Race);
         }
 
-        // [Test]
-        // public async Task DeleteTest()
-        // {
-        //     var startList = (await StartListDao.FindAllAsync()).First();
-        //     await StartListDao.DeleteAsync(startList.RaceId, startList.SkierId);
-        //     Assert.IsNull(await StartListDao.FindByIdAsync(startList.SkierId, startList.RaceId));
-        // }
-        //
-        // [Test]
-        // public async Task DeleteAllTest()
-        // {
-        //     await StartListDao.DeleteAllAsync();
-        //     Assert.AreEqual(0, (await StartListDao.FindAllAsync()).Count());
-        // }
-
         [Test]
         public async Task DeleteAllForRaceTest()
         {

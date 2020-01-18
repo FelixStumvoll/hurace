@@ -10,8 +10,7 @@ import {
 
 export const CurrentSkierPanel: React.FC<{
     currentSkier: StartList | undefined;
-}> = ({ currentSkier }) => {
-    return (
+}> = ({ currentSkier }) =>  (
         <AlignRight>
             <HeaderCard headerText="Aktueller Läufer">
                 <RowFlex>
@@ -26,4 +25,3 @@ export const CurrentSkierPanel: React.FC<{
             </HeaderCard>
         </AlignRight>
     );
-};

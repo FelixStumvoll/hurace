@@ -4,6 +4,7 @@ import { DisciplineViewItem } from './DisciplineViewItem';
 import { getRacesForSeason } from '../../../common/api';
 import { useAsync } from 'react-async-hook';
 import { LoadingWrapper } from '../../shared/LoadingWrapper';
+import { compareDiscipline } from '../../../common/compareFunctions';
 
 const DisciplinePanel = styled.div`
     margin-top: ${props => props.theme.gap};
@@ -23,13 +24,17 @@ export const DisciplineView: React.FC<{ seasonId: number }> = ({
     return (
         <DisciplinePanel>
             <LoadingWrapper loading={loading} error={error}>
-                {disciplineData?.map(d => (
-                    <DisciplineViewItem
-                        disciplineData={d}
-                        seasonId={seasonId}
-                        key={d.discipline.id}
-                    ></DisciplineViewItem>
-                ))}
+                {disciplineData
+                    ?.sort((d1, d2) =>
+                        compareDiscipline(d1.discipline, d2.discipline)
+                    )
+                    .map(d => (
+                        <DisciplineViewItem
+                            disciplineData={d}
+                            seasonId={seasonId}
+                            key={d.discipline.id}
+                        ></DisciplineViewItem>
+                    ))}
             </LoadingWrapper>
         </DisciplinePanel>
     );

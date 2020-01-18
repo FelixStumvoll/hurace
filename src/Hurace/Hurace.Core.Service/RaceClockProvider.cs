@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Core.Common.Configs;
 using Hurace.Core.Interface;
 using Hurace.Core.Timer;
 using ClockConfig = Hurace.Core.Interface.Configs.ClockConfig;

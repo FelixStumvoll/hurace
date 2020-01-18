@@ -18,7 +18,7 @@ namespace Hurace.Core.Test
         [Test]
         public async Task GetRaceClockTest()
         {
-            var clockConfig = new ClockConfig("Hurace.Core.Simulation", "MockRaceClockV2");
+            var clockConfig = new ClockConfig("Hurace.Core.Simulation", "MockRaceClock");
             var clockProvider = new RaceClockProvider(clockConfig);
             var clock = await clockProvider.GetRaceClock();
             Assert.That(clock is MockRaceClock);

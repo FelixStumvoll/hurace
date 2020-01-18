@@ -25,7 +25,7 @@ namespace Hurace.Dal.DataGenerator.Core
         private Season _season;
         private readonly Random _random = new Random();
         private readonly HashSet<DateTime> _usedRaceDates = new HashSet<DateTime>();
-        private readonly DateTime _raceBaseDate = new DateTime(2018, 10, 28, 12, 0, 0);
+        private readonly DateTime _raceBaseDate = new DateTime(2019, 10, 28, 12, 0, 0);
         private readonly DateTime _skierBaseDate = new DateTime(1985, 1, 1);
         private const int BaseSplitTime = 20000;
         private const int SplitTimeVariation = 1000;
@@ -109,7 +109,7 @@ namespace Hurace.Dal.DataGenerator.Core
 
         private DateTime GetRandomRaceDate()
         {
-            var newDate = _raceBaseDate.AddDays(_random.Next(160));
+            var newDate = _raceBaseDate.AddDays(_random.Next(141));
             if (_usedRaceDates.Contains(newDate)) GetRandomRaceDate();
             _usedRaceDates.Add(newDate);
             return newDate;

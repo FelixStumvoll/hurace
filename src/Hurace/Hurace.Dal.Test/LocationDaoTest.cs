@@ -45,23 +45,23 @@ namespace Hurace.Dal.Test
             Assert.AreEqual("AUT", location.Country?.CountryCode);
         }
 
-        // [Test]
-        // public void DeleteAllTest()
-        // {
-        //     Assert.ThrowsAsync<SqlException>(async () => await LocationDao.Del());
-        // }
-        //
-        // [Test]
-        // public async Task DeleteTest()
-        // {
-        //     var id = await LocationDao.InsertGetIdAsync(new Location
-        //     {
-        //         CountryId = (await CountryDao.FindAllAsync()).First().Id,
-        //         LocationName = "AAA"
-        //     });
-        //     await LocationDao.DeleteAsync(id.Value);
-        //     Assert.IsNull(await LocationDao.FindByIdAsync(id.Value));
-        // }
+        [Test]
+        public void DeleteAllTest()
+        {
+            Assert.ThrowsAsync<SqlException>(async () => await LocationDao.DeleteAllAsync());
+        }
+
+        [Test]
+        public async Task DeleteTest()
+        {
+            var id = await LocationDao.InsertGetIdAsync(new Location
+            {
+                CountryId = (await CountryDao.FindAllAsync()).First().Id,
+                LocationName = "AAA"
+            });
+            await LocationDao.DeleteAsync(id.Value);
+            Assert.IsNull(await LocationDao.FindByIdAsync(id.Value));
+        }
 
         [Test]
         public async Task FindAllTest()
@@ -85,7 +85,7 @@ namespace Hurace.Dal.Test
                 CountryId = countryId,
                 LocationName = "Name"
             });
-            
+
             Assert.AreEqual("Name", (await LocationDao.FindByIdAsync(locationId.Value))?.LocationName);
             Assert.NotNull((await LocationDao.FindByIdAsync(locationId.Value))?.Country);
         }

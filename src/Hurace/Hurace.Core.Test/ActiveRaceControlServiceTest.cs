@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Hurace.Core.Interface;
+using Hurace.Core.Interface.Configs;
 using Hurace.Core.Service;
 using Hurace.Core.Timer;
 using Hurace.Dal.Domain;
@@ -269,7 +270,6 @@ namespace Hurace.Core.Test
             mockRaceDataDao.Setup(rdd => rdd.InsertGetIdAsync(It.IsAny<RaceData>())).ReturnsAsync(raceDataId);
             mockRaceEventDao.Setup(red => red.InsertAsync(It.IsAny<RaceEvent>())).ReturnsAsync(raceEventResult);
 
-
             var service = new ActiveRaceControlService(1, mockRaceDao.Object, null, mockRaceEventDao.Object,
                                                        mockRaceDataDao.Object,
                                                        null, null, null, null, null,
@@ -278,18 +278,110 @@ namespace Hurace.Core.Test
             Assert.AreEqual(result, await service.EndRace());
         }
 
-        // [Test]
-        // public async Task TestSensorValidation(int sensorNumber, DateTime sensorDateTime, int diffToAverage, List<int> averageAssumption)
-        // {
-        //     var mockClockProvider = new Mock<IRaceClockProvider>();
-        //     var mockRaceClock = new Mock<IRaceClock>();
-        //     var mockActiveRaceService = new Mock<IActiveRaceService>();
-        //     var mockTimeDataDao = new Mock<ITimeDataDao>();
-        //     var sensorConfig = new SensorConfig(diffToAverage, averageAssumption);
-        //
-        //     var service = new ActiveRaceControlService(1, null, null, null, null,
-        //                                                null, mockTimeDataDao.Object, null, mockClockProvider.Object, sensorConfig,
-        //                                                mockActiveRaceService.Object);
-        // }
+        private static object[] _sensorValidationTestSource =
+        {
+            new object[]
+            {
+                3, new DateTime(), new StartList(), new DateTime(), 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0, 0, 0, 0}, 3, new Sensor(), true
+            },
+            new object[]
+            {
+                2, new DateTime(), new StartList(), null, 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0, 0, 0, 0}, 3, new Sensor(), false
+            },
+            new object[]
+            {
+                0, new DateTime(), new StartList(), new DateTime(), 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0}, 3, new Sensor(), true
+            },
+
+            new object[]
+            {
+                -1, new DateTime(), new StartList(), new DateTime(), 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0}, 3, new Sensor(), false
+            },
+            new object[]
+            {
+                4, new DateTime(), new StartList(), new DateTime(), 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0}, 3, new Sensor(), false
+            },
+            new object[]
+            {
+                0, new DateTime(), null, new DateTime(), 0, new List<TimeData>(), 0, new TimeData(), new List<int> {0},
+                3, new Sensor(), false
+            },
+            new object[]
+            {
+                1, new DateTime(), new StartList(), null, 0, new List<TimeData>(), 0, new TimeData(),
+                new List<int> {0}, 3, new Sensor(), false
+            },
+            new object[]
+            {
+                1, new DateTime(), new StartList(), new DateTime(), 0,
+                new List<TimeData> {new TimeData {Sensor = new Sensor {SensorNumber = 1}}}, 0, new TimeData(),
+                new List<int> {0, 0}, 3, new Sensor(), false
+            },
+            new object[]
+            {
+                1, new DateTime(), new StartList(), new DateTime(), 0,
+                new List<TimeData> {new TimeData {Sensor = new Sensor {SensorNumber = 2}}}, 0, new TimeData(),
+                new List<int> {0, 0, 0}, 3, new Sensor(), false
+            },
+        };
+
+        public class MockClock : IRaceClock
+        {
+            public event TimingTriggeredHandler TimingTriggered;
+
+            public void Trigger(int number, DateTime dateTime) => TimingTriggered?.Invoke(number, dateTime);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(_sensorValidationTestSource))]
+        public async Task TestSensorValidation(int sensorNumber, DateTime sensorDateTime, StartList? currentSkier,
+            DateTime? startTime, int average, List<TimeData> currentSkierTimes, int diffToAverage, TimeData? ret,
+            List<int> averageAssumption, int lastSensor, Sensor sensor, bool result)
+        {
+            var mockClockProvider = new Mock<IRaceClockProvider>();
+            var mockClock = new MockClock();
+            var mockActiveRaceService = new Mock<IActiveRaceService>();
+            var mockTimeDataDao = new Mock<ITimeDataDao>();
+            var mockSensorConfig = new SensorConfig(diffToAverage, averageAssumption);
+            var mockSensorDao = new Mock<ISensorDao>();
+            var mockRaceData = new Mock<IRaceDataDao>();
+            var mockRaceEventDao = new Mock<IRaceEventDao>();
+            var mockSkierEventDao = new Mock<ISkierEventDao>();
+            var mockStartListDao = new Mock<IStartListDao>();
+            mockSensorDao.Setup(sd => sd.GetLastSensorNumber(It.IsAny<int>())).ReturnsAsync(lastSensor);
+            mockSensorDao.Setup(sd => sd.GetSensorForSensorNumber(It.IsAny<int>(), It.IsAny<int>()))
+                         .ReturnsAsync(sensor);
+            mockActiveRaceService.Setup(rc => rc.GetCurrentSkier(It.IsAny<int>())).ReturnsAsync(currentSkier);
+            mockRaceData.Setup(rd => rd.InsertGetIdAsync(It.IsAny<RaceData>())).ReturnsAsync(1);
+            mockClockProvider.Setup(provider => provider.GetRaceClock()).ReturnsAsync(mockClock);
+
+            mockSkierEventDao.Setup(skd => skd.InsertGetIdAsync(It.IsAny<SkierEvent>())).ReturnsAsync(1);
+            mockTimeDataDao.Setup(tdd => tdd.FindByIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                           .ReturnsAsync(ret);
+            mockTimeDataDao.Setup(tdd => tdd.GetStartTimeForStartList(It.IsAny<int>(), It.IsAny<int>()))
+                           .ReturnsAsync(startTime);
+            mockTimeDataDao.Setup(dd => dd.GetTimeDataForStartList(It.IsAny<int>(), It.IsAny<int>()))
+                           .ReturnsAsync(currentSkierTimes);
+            var service = new ActiveRaceControlService(1, null, mockStartListDao.Object, mockRaceEventDao.Object,
+                                                       mockRaceData.Object,
+                                                       mockSkierEventDao.Object, mockTimeDataDao.Object,
+                                                       mockSensorDao.Object,
+                                                       mockClockProvider.Object,
+                                                       mockSensorConfig,
+                                                       mockActiveRaceService.Object);
+
+            await service.InitializeAsync();
+
+            var res = false;
+            service.OnSplitTime += _ => res = true;
+            mockClock.Trigger(sensorNumber, sensorDateTime);
+
+            Assert.AreEqual(result, res);
+        }
     }
 }

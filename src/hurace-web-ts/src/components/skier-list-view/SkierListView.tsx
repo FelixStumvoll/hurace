@@ -7,6 +7,7 @@ import { ListViewWrapper } from '../shared/ListViewWrapper';
 import { SearchContext } from '../shared/ListViewWrapper';
 import { useAsync } from 'react-async-hook';
 import { LoadingWrapper } from '../shared/LoadingWrapper';
+import { compareSkiers } from '../../common/compareFunctions';
 
 const SkierList = styled.div`
     display: flex;
@@ -42,9 +43,7 @@ export const SkierListView: React.FC = () => {
                     {search => (
                         <SkierList>
                             {skiers
-                                ?.sort((s1, s2) =>
-                                    s1.lastName.localeCompare(s2.lastName)
-                                )
+                                ?.sort(compareSkiers)
                                 .filter(s => skierFilter(s, search))
                                 .map(s => (
                                     <ListItemWrapper key={s.id}>

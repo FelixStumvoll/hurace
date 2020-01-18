@@ -6,6 +6,7 @@ import { ListViewWrapper, SearchContext } from '../shared/ListViewWrapper';
 import { FlexWrap } from '../../theme/CustomComponents';
 import { useAsync } from 'react-async-hook';
 import { LoadingWrapper } from '../shared/LoadingWrapper';
+import { compareSeasons } from '../../common/compareFunctions';
 
 const seasonFilter = (season: Season, searchTerm: string) =>
     season.startDate
@@ -35,6 +36,7 @@ export const SeasonListView: React.FC = () => {
                         <FlexWrap>
                             {seasons
                                 ?.filter(s => seasonFilter(s, searchTerm))
+                                .sort(compareSeasons)
                                 .map(s => (
                                     <SeasonListViewItem key={s.id} season={s} />
                                 ))}

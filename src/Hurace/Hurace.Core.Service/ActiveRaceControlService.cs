@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Common.Configs;
 using Hurace.Core.Interface;
 using Hurace.Core.Service.Util;
 using Hurace.Dal.Domain;
@@ -91,7 +90,7 @@ namespace Hurace.Core.Service
 
             for (var i = 0; i < _maxSensorNr; i++)
             {
-                if (i == sensorNumber && tdList.Any(td => td?.Sensor?.SensorNumber == i))
+                if (i == sensorNumber && tdList.Any(td => td?.Sensor?.SensorNumber == sensorNumber))
                     return SensorSeriesResult.SensorAlreadyHasValue;
 
                 if (sensorNumber < i && tdList.Any(td => td?.Sensor?.SensorNumber == i))
@@ -102,7 +101,7 @@ namespace Hurace.Core.Service
         }
 
         private bool IsTimeInBoundAverage(int milliseconds, int average) =>
-            Math.Abs(milliseconds - average) < _sensorConfig.MaxDiffToAverage;
+            Math.Abs(milliseconds - average) <= _sensorConfig.MaxDiffToAverage;
 
         private async Task<bool> ValidateSensorValue(int sensorNumber, DateTime dateTime)
         {
@@ -153,9 +152,8 @@ namespace Hurace.Core.Service
                 SkierEventId = skierEventId.Value,
                 Time = (int) (dateTime - (startTime ?? dateTime)).TotalMilliseconds
             });
-            var ret = await _timeDataDao.FindByIdAsync(currentSkier.SkierId, RaceId, sensor.Id);
             scope.Complete();
-            return ret;
+            return await _timeDataDao.FindByIdAsync(currentSkier.SkierId, RaceId, sensor.Id);
         }
 
         public async Task<bool> EnableRaceForSkier()

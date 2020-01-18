@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, useState } from 'react';
+import React, { useEffect, createContext, useState, useCallback } from 'react';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { useHistory } from 'react-router-dom';
@@ -27,21 +27,29 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
 
     const history = useHistory();
 
-    const loginRedirect = async () =>
-        await auth0Client?.loginWithRedirect({
-            redirect_uri: 'http://localhost:3000'
-        });
+    const checkAuthenticatedUser = useCallback(async (client: Auth0Client) => {
+        if (await client.isAuthenticated()) {
+            setToken(await client.getTokenSilently());
+            setUser(await client.getUser());
+        }
+    }, []);
 
-    const logout = () => {
+    const login = useCallback(async () => {
+        await auth0Client?.loginWithPopup();
+        auth0Client && (await checkAuthenticatedUser(auth0Client));
+    }, [auth0Client, checkAuthenticatedUser]);
+
+    const logout = useCallback(() => {
         auth0Client?.logout();
         setUser(undefined);
         setToken(undefined);
-    };
+    }, [auth0Client]);
 
     useEffect(() => {
         const initAuth = async () => {
             const client = await createAuth0Client(initOptions);
             setAuth0Client(client);
+
             if (window.location.search.includes('code=')) {
                 const { appState } = await client.handleRedirectCallback();
 
@@ -49,11 +57,11 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
                     appState && appState.targetUrl ? appState.targetUrl : '/'
                 );
             }
-
-            if (await client.isAuthenticated()) {
-                setToken(await client.getTokenSilently());
-                setUser(await client.getUser());
-            }
+            // if (await client.isAuthenticated()) {
+            //     setToken(await client.getTokenSilently());
+            //     setUser(await client.getUser());
+            // }
+            checkAuthenticatedUser(client);
         };
 
         initAuth();
@@ -67,7 +75,7 @@ export const Auth0Provider: React.FC<Auth0ClientOptions> = ({
                 isAuthenticated: user !== undefined,
                 token,
                 user,
-                login: () => loginRedirect(),
+                login,
                 logout
             }}
         >

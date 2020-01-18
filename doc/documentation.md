@@ -3,7 +3,9 @@
 ## Setup
 
 Um Hurace in Betrieb zu nehmen muss der zur Verfügung gestellte Docker Container gestartet werden.
-Im Verzeichnis `./db` befindet sich ein Docker-Compose Script, welches automatisch eine Produktivdatenbank sowie eine Testdatenbank mit den notwendigen Tabellen und Daten erstellt. Dieses ist lediglich mit `docker-compose up -b` auszuführen. Falls der Docker Container nicht lokal (localhost) läuft müssen die Connection Strings in den `appsettings.json` der API sowie der RaceControl angepasst werden.
+Im Verzeichnis `./db` befindet sich ein Docker-Compose Script, welches automatisch eine Produktivdatenbank sowie eine Testdatenbank mit den notwendigen Tabellen und Daten erstellt. Dieses ist lediglich mit `docker-compose up --build` auszuführen.
+Gegebenfalls muss die End-Of-Line Sequence der Dateien `entrypoint.sh` und `init.sh` auf `LF` geändert werden
+Falls der Docker Container nicht lokal (localhost) läuft müssen die Connection Strings in den `appsettings.json` der API sowie der RaceControl angepasst werden.
 
 ## Datenbank
 
@@ -568,5 +570,20 @@ Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:
 Die unterste Schicht bildet die Datenbankzugriffschicht, auf dieser baut die Service Schicht auf. Die Services werden sowohl von View Models als auch von Controllern der Web API verwendet.
 Die gesamte Anwendung ist auf die Verwendung von Dependency Injection ausgelegt. Diese wird in dieser Implementierung mittels Autofac realisiert. Nicht nur die Services sondern auch die View Models werden mit Dependency Injection injeziert.
 
-Im folgenden Diagram ist zu sehen, welche Abhängigkeiten zwischen den Komponenten bestehen.
+Im folgenden Diagram ist zu sehen, welche Abhängigkeiten zwischen den Paketen bestehen.
+
 ![Package](images/Package.png)
+
+### Kommunikation zwischen Komponenten
+
+#### Frontend Aufruf
+
+In folgendem Diagram ist zu sehen, wie eine Anfrage vom Frontend durch die einzelnen Komponenten durchläuft
+
+![allraces](images/allraces.png)
+
+#### Sensorvalidierung
+
+in folgendem Diagram ist zusehen, welche Aufrufe durchgeführt werden wenn eine Sensorauslösung auftritt.
+
+![sensorvalidation](images/sensorvalidation.png)
