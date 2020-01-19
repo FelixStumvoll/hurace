@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Hurace.Core.Interface;
@@ -32,16 +33,28 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
 
         public RankingViewModel(IActiveRaceControlService activeRaceControlService, IRaceStatService statService)
         {
+            static async Task ExceptionWrapper(Func<Task> func)
+            {
+                try
+                {
+                    await func();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+
             _raceId = activeRaceControlService.RaceId;
             _statService = statService;
-            activeRaceControlService.OnLateDisqualification += _ => UiExecutor.ExecuteInUiThreadAsync(LoadRanking);
-            activeRaceControlService.OnSkierCancelled += skier => UiExecutor.ExecuteInUiThreadAsync(() => LoadRankingWithSkier(skier));
+            activeRaceControlService.OnLateDisqualification += _ =>
+                UiExecutor.ExecuteInUiThreadAsync(() => ExceptionWrapper(LoadRanking));
+            activeRaceControlService.OnSkierCancelled += skier =>
+                UiExecutor.ExecuteInUiThreadAsync(() => ExceptionWrapper(() => LoadRankingWithSkier(skier)));
             activeRaceControlService.OnCurrentSkierDisqualified += dqSkier => UiExecutor.ExecuteInUiThreadAsync(
-                () => LoadRankingWithSkier(dqSkier));
+                () => ExceptionWrapper(() => LoadRankingWithSkier(dqSkier)));
             activeRaceControlService.OnSkierFinished += finishedSkier =>
-            {
-                UiExecutor.ExecuteInUiThreadAsync(() => LoadRankingWithSkier(finishedSkier));
-            };
+                UiExecutor.ExecuteInUiThreadAsync(() => ExceptionWrapper(() => LoadRankingWithSkier(finishedSkier)));
         }
 
         public async Task InitializeAsync() => await LoadRanking();

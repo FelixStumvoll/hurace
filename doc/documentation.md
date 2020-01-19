@@ -5,7 +5,7 @@
 Um Hurace in Betrieb zu nehmen muss der zur Verfügung gestellte Docker Container gestartet werden.
 Im Verzeichnis `./db` befindet sich ein Docker-Compose Script, welches automatisch eine Produktivdatenbank sowie eine Testdatenbank mit den notwendigen Tabellen und Daten erstellt. Dieses ist lediglich mit `docker-compose up --build` auszuführen.
 Gegebenfalls muss die End-Of-Line Sequence der Dateien `entrypoint.sh` und `init.sh` auf `LF` geändert werden
-Falls der Docker Container nicht lokal (localhost) läuft müssen die Connection Strings in den `appsettings.json` der API sowie der RaceControl angepasst werden.
+Falls der Docker Container nicht lokal (localhost) läuft müssen die Connection Strings in den `appsettings.json` der API sowie der RaceControl angepasst werden. Um Testdaten einzufügen, muss das CLI Tool `Hurace.Dal.DataGenerator.Client` mit dem Parameter `Insert` gestartet werden.
 
 ## Datenbank
 

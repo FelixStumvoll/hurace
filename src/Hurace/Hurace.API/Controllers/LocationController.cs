@@ -10,14 +10,14 @@ namespace Hurace.API.Controllers
     [Route("[controller]")]
     public class LocationController : ControllerBase
     {
-        private IRaceBaseDataService _baseDataService;
+        private readonly ILocationService _locationService;
 
-        public LocationController(IRaceBaseDataService baseDataService)
+        public LocationController(ILocationService locationService)
         {
-            _baseDataService = baseDataService;
+            _locationService = locationService;
         }
 
         [HttpGet]
-        public Task<IEnumerable<Location>> GetAll() => _baseDataService.GetLocations();
+        public Task<IEnumerable<Location>> GetAll() => _locationService.GetAllLocations();
     }
 }

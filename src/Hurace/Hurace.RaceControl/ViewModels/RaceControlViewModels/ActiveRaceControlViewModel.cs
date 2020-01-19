@@ -54,26 +54,26 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                  () =>
                                                      (_currentSkier == null || _currentSkier != null &&
                                                       (_currentSkier.StartStateId ==
-                                                       (int)StartState.Finished ||
+                                                       (int) StartState.Finished ||
                                                        _currentSkier.StartStateId ==
-                                                       (int)StartState.Disqualified)) &&
+                                                       (int) StartState.Disqualified)) &&
                                                      StartList.Any());
             CancelSkierCommand = new AsyncCommand<int>(async skierId => await CancelSkier(skierId));
             CancelRaceCommand = new AsyncCommand(CancelRace, () =>
                                                      RaceState.Race.RaceStateId ==
-                                                     (int)Dal.Domain.Enums.RaceState.Running);
+                                                     (int) Dal.Domain.Enums.RaceState.Running);
             EndRaceCommand =
                 new AsyncCommand(
                     EndRace,
                     () => (_currentSkier == null ||
-                           _currentSkier.StartStateId != (int)Dal.Domain.Enums.RaceState.Finished) &&
+                           _currentSkier.StartStateId != (int) Dal.Domain.Enums.RaceState.Finished) &&
                           StartList.Count == 0 &&
                           RaceState.Race.RaceStateId ==
-                          (int)Dal.Domain.Enums.RaceState.Running);
+                          (int) Dal.Domain.Enums.RaceState.Running);
             DisqualifyCurrentSkierCommand = new AsyncCommand(
-                async () => { await _activeRaceControlService.DisqualifyCurrentSkier(); }, () =>
+                async () => await _activeRaceControlService.DisqualifyCurrentSkier(), () =>
                     _currentSkier != null &&
-                    _currentSkier.StartStateId == (int)StartState.Running);
+                    _currentSkier.StartStateId == (int) StartState.Running);
 
             DisqualifyLateCommand = new AsyncCommand(() => _activeRaceControlService.DisqualifyFinishedSkier(
                                                          RankingViewModel.SelectedRaceRanking.StartList.SkierId), () =>
@@ -82,29 +82,23 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                                              .SelectedRaceRanking;
                                                          return selectedRanking != null &&
                                                                 selectedRanking.StartList.StartStateId ==
-                                                                (int)StartState.Finished;
+                                                                (int) StartState.Finished;
                                                      });
         }
 
         public async Task SetupAsync()
         {
-            if (!_eventsSetup) SetupRaceEvents();
-            await LoadData();
-            await CurrentSkierViewModel.InitializeAsync();
-            await RankingViewModel.InitializeAsync();
-        }
-
-        private async Task LoadData()
-        {
             try
             {
+                if (!_eventsSetup) SetupRaceEvents();
                 _currentSkier = await _activeRaceService.GetCurrentSkier(RaceState.Race.Id);
                 await LoadStartList();
+                await CurrentSkierViewModel.InitializeAsync();
+                await RankingViewModel.InitializeAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.StackTrace);
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Fehler beim Laden der Daten");
             }
         }
 
@@ -115,31 +109,35 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private void SetupRaceEvents()
         {
-            _activeRaceControlService.OnSkierStarted += async startList =>
+            static async Task ExceptionWrapper(Func<Task> func, string errorMessage)
             {
-                await UiExecutor.ExecuteInUiThreadAsync(async () =>
+                try
                 {
-                    try
-                    {
-                        await LoadStartList();
-                        _currentSkier = startList;
-                        InvokeButtonCanExecuteChanged();
-                    }
-                    catch (Exception)
-                    {
-                        ErrorNotifier.OnLoadError();
-                    }
-                });
-            };
+                    await func();
+                }
+                catch (Exception)
+                {
+                    MessageBoxUtil.Error(errorMessage);
+                }
+            }
+
+            _activeRaceControlService.OnSkierStarted += async startList => await UiExecutor.ExecuteInUiThreadAsync(
+                async () => await ExceptionWrapper(async () =>
+                {
+                    await LoadStartList();
+                    _currentSkier = startList;
+                    InvokeButtonCanExecuteChanged();
+                }, "Startliste konnte nicht geladen werden"));
             _activeRaceControlService.OnSkierCancelled +=
-                async _ => await UiExecutor.ExecuteInUiThreadAsync(LoadStartList);
+                async _ => await UiExecutor.ExecuteInUiThreadAsync(
+                    async () => await ExceptionWrapper(LoadStartList, "Startliste konnte nicht geladen werden"));
             _activeRaceControlService.OnCurrentSkierDisqualified += async _ =>
-                await UiExecutor.ExecuteInUiThreadAsync(async () =>
+                await UiExecutor.ExecuteInUiThreadAsync(async () => await ExceptionWrapper(async () =>
                 {
                     _currentSkier =
                         await _startListService.GetStartListById(_currentSkier.SkierId, _currentSkier.RaceId);
                     InvokeButtonCanExecuteChanged();
-                });
+                }, "Startliste konnte nicht geladen werden"));
             _activeRaceControlService.OnSkierFinished += finishedSkier =>
                 UiExecutor.ExecuteInUiThread(() =>
                 {
@@ -159,7 +157,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Strecke konnte nicht freigegeben werden");
             }
         }
 
@@ -169,8 +167,15 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                                 "Fahrer entfernen", MessageBoxButton.YesNo, MessageBoxImage.Warning) !=
                 MessageBoxResult.Yes) return;
 
-            await _activeRaceControlService.CancelSkier(skierId);
-            await LoadStartList();
+            try
+            {
+                await _activeRaceControlService.CancelSkier(skierId);
+                await LoadStartList();
+            }
+            catch (Exception)
+            {
+                MessageBoxUtil.Error("Rennläufer konnte nicht entfernt werden");
+            }
         }
 
         private async Task CancelRace()
@@ -185,7 +190,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnSaveError();
+                MessageBoxUtil.Error("Rennen konnte nicht abgebrochen werden");
             }
         }
 
@@ -201,7 +206,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnSaveError();
+                MessageBoxUtil.Error("Rennen konnte nicht beendet werden");
             }
         }
     }

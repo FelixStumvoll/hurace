@@ -54,13 +54,13 @@ In diesem Abschnitt werden alle Seiten der Anwendung erklärt und mit Screenshot
 
 ![seasonlist](images/web/seasonlist.png)
 
-In der Saisonübersicht werden alle Saisonen sortiert aufgelistet und durch anklicken können die Details der jeweiligen Saison angesehen werden ([Saisondetails](#saisondetails)). Ist ein Benutzer angemeldet, kann er mit dem rechten oberen Button eine neu Saison erstellen (beschrieben in [Saison erstellen](#saison-erstellen--bearbeiten)). Weiters kann nach Saisonen gesucht werden, die Suche beschränkt sich dabei auf das Startdatum bzw. das Enddatum.
+In der Saisonübersicht werden alle Saisonen sortiert aufgelistet und durch anklicken können die Details der jeweiligen Saison angesehen werden ([Saisondetails](#saisondetails)). Ist ein Benutzer angemeldet, kann er mit dem rechten oberen Button eine neu Saison erstellen (beschrieben in [Saison modifizieren](#saison-modifizieren)). Weiters kann nach Saisonen gesucht werden, die Suche beschränkt sich dabei auf das Startdatum bzw. das Enddatum.
 
 #### Saisondetails
 
 ![seasondetail](images/web/seasondetail.png)
 
-In den Saisondetails werden alle Rennen der ausgewählten Saisons sowie das Start und Enddatum der Saison angezeigt. Die Rennen werden nach den Disziplinen gruppiert und nach Datum sortiert. Mittels des bearbeiten Buttons können Saisonen bearbeitet werden (beschrieben in [Saison bearbeiten](#saison-erstellen--bearbeiten)).
+In den Saisondetails werden alle Rennen der ausgewählten Saisons sowie das Start und Enddatum der Saison angezeigt. Die Rennen werden nach den Disziplinen gruppiert und nach Datum sortiert. Mittels des bearbeiten Buttons können Saisonen bearbeitet werden (beschrieben in [Saison bearbeiten](#saison-modifizieren)).
 Durch den Löschen Button kann eine Saison gelöscht werden. Daraufhin wird folgendes Modal geöffnet. Dies ist jedoch nur möglich, wenn dies keine Rennen enthält.
 
 ![seasondelete](images/web/seasondelete.png)
@@ -75,7 +75,7 @@ In der Rennansicht werden rechts die Sieger des jeweiligen Rennens angezeigt. Mi
 
 Weiters werden die Startliste links unten, sowie die Rangliste rechts unten angezeigt, jeweils mit der Laufzeit sowie Abstand zum Sieger.
 
-#### Saison erstellen / bearbeiten
+#### Saison modifizieren
 
 ![seasonupdate](images/web/seasonupdate.png)
 
@@ -109,16 +109,16 @@ Die Daten werden im Abstand von 15 Sekunden vom Server abgefragt.
 
 ![skierlist](images/web/skierlist.png)
 
-In der Renfahrerliste werden alle Rennläufer angezeigt. Diese sind anhand des Nachnamens sortiert. Mittels der Suche können Schifahrer gefiltert werden. Die Suche bezieht sich auf den Namen als auch auf das Herkunftsland, es können also z.B. alle Rennläufer aus Schweden herausgefiltert werden. Mittels eines Klicks auf den Rennläufer, kann man dessen Detailansicht abrufen. Mittels des Erstellen Buttons kann ein Rennfahrer erstellt werden (beschrieben in [Rennfahrer erstellen / bearbeiten](#rennfahrer-erstellen--bearbeiten))
+In der Renfahrerliste werden alle Rennläufer angezeigt. Diese sind anhand des Nachnamens sortiert. Mittels der Suche können Schifahrer gefiltert werden. Die Suche bezieht sich auf den Namen als auch auf das Herkunftsland, es können also z.B. alle Rennläufer aus Schweden herausgefiltert werden. Mittels eines Klicks auf den Rennläufer, kann man dessen Detailansicht abrufen. Mittels des Erstellen Buttons kann ein Rennfahrer erstellt werden (beschrieben in [Rennfahrer modifizieren](#rennfahrer-modifizieren))
 
 #### Rennfahrerdetails
 
 ![skierdetail](images/web/skierdetail.png)
 
 In der Detailansicht werden alle Details des Skifahrers aufgelistet. 
-Mittels des Bearbeiten Buttons kann der Rennfahrer bearbeitet werden (beschrieben in [Rennfahrer erstellen / bearbeiten](#rennfahrer-erstellen--bearbeiten))
+Mittels des Bearbeiten Buttons kann der Rennfahrer bearbeitet werden (beschrieben in [Rennfahrer modifizieren](#rennfahrer-modifizieren))
 
-#### Rennfahrer erstellen / bearbeiten
+#### Rennfahrer modifizieren
 
 ![skierupdate](images/web/skierupdate.png)
 

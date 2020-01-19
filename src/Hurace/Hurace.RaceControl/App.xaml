@@ -19,7 +19,6 @@
                 <ResourceDictionary>
 
                     <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
-                    <converters:IntZeroBoolConverter x:Key="IntZeroBoolConverter" />
                     <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
                     <converters:IsNullConverter x:Key="IsNullConverter" />
                     <converters:IsNotNullConverter x:Key="IsNotNullConverter" />

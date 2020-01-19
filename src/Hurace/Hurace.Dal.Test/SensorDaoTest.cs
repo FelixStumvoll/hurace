@@ -53,7 +53,7 @@ namespace Hurace.Dal.Test
         public async Task GetLastSensorNumberTest()
         {
             var race = (await RaceDao.FindAllAsync()).First();
-            Assert.AreEqual(1, (await SensorDao.GetLastSensorNumber(race.Id)));
+            Assert.AreEqual(1, await SensorDao.GetLastSensorNumber(race.Id));
         }
         
         [Test]

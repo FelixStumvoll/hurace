@@ -18,8 +18,10 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
     public class RacePageViewModel : NotifyPropertyChanged
     {
         private RaceViewModel _selectedRace;
-        private readonly IRaceBaseDataService _baseDataService;
+        private readonly IRaceService _raceService;
         private readonly ISeasonService _seasonService;
+        private readonly ILocationService _locationService;
+        private readonly IGenderService _genderService;
         private readonly SharedRaceViewModel _sharedRaceViewModel;
         private Season _selectedSeason;
         private ICommand _seasonChangedCommand;
@@ -50,54 +52,54 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         public RacePageViewModel(Func<Race, bool, RaceViewModel> raceVmFactory,
             SharedRaceViewModel sharedRaceViewModel,
-            IRaceBaseDataService baseDataService,
-            ISeasonService seasonService)
+            IRaceService raceService,
+            ISeasonService seasonService, ILocationService locationService, IGenderService genderService)
         {
             _raceVmFactory = raceVmFactory;
-            _baseDataService = baseDataService;
+            _raceService = raceService;
             _seasonService = seasonService;
+            _locationService = locationService;
+            _genderService = genderService;
             _sharedRaceViewModel = sharedRaceViewModel;
             SetupCommands();
         }
 
-        public async Task SetupAsync()
+        private static async Task ExceptionWrapper(Func<Task> func)
         {
             try
+            {
+                if (func == null) return;
+                await func.Invoke();
+            }
+            catch (Exception)
+            {
+                MessageBoxUtil.Error("Rennen konnten nicht geladen werden");
+            }
+        }
+
+        public async Task SetupAsync() =>
+            await ExceptionWrapper(async () =>
             {
                 var seasons = await _seasonService.GetAllSeasons();
                 var seasonList = seasons.ToList();
                 if (!seasonList.Any()) return;
                 Seasons.Repopulate(seasonList.OrderByDescending(s => s.StartDate));
                 SelectedSeason = Seasons[0];
-                SeasonChangedCommand ??=
-                    new AsyncCommand(LoadRaces);
+                SeasonChangedCommand ??= new AsyncCommand(async () => await ExceptionWrapper(LoadRaces));
                 await LoadRaces();
-                _sharedRaceViewModel.Genders.UpdateDataSource(await _baseDataService.GetGenders());
-                _sharedRaceViewModel.Locations.UpdateDataSource(await _baseDataService.GetLocations());
-            }
-            catch (Exception)
-            {
-                ErrorNotifier.OnLoadError();
-            }
-        }
+                _sharedRaceViewModel.Genders.UpdateDataSource(await _genderService.GetAllGenders());
+                _sharedRaceViewModel.Locations.UpdateDataSource(await _locationService.GetAllLocations());
+            });
 
         private async Task LoadRaces()
         {
-            try
+            var races = await _seasonService.GetRacesForSeason(SelectedSeason.Id);
+            Races.Clear();
+            foreach (var raceViewModel in races
+                .Select(r => _raceVmFactory(r, false)))
             {
-                var races = await _seasonService.GetRacesForSeason(SelectedSeason.Id);
-                Races.Clear();
-                foreach (var raceViewModel in races
-                    .Select(r => _raceVmFactory(r, false)))
-                {
-                    raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
-                    Races.Add(raceViewModel);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.StackTrace);
-                ErrorNotifier.OnSaveError();
+                raceViewModel.OnDelete += async rvm => await DeleteRace(rvm);
+                Races.Add(raceViewModel);
             }
         }
 
@@ -132,20 +134,12 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
                                 "Löschen ?",
                                 MessageBoxButton.YesNo,
                                 MessageBoxImage.Information) != MessageBoxResult.Yes) return;
-            if (rvm.RaceState.Race.Id != -1 && !await _baseDataService.RemoveRace(rvm.RaceState.Race.Id))
+            if (rvm.RaceState.Race.Id != -1 && !await _raceService.RemoveRace(rvm.RaceState.Race.Id))
             {
-                MessageBox.Show("Rennen konnte nicht gelöscht werden!",
-                                "Fehler",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                MessageBoxUtil.Error("Rennen konnte nicht gelöscht werden");
                 return;
             }
 
-            DeleteRaceViewModel(rvm);
-        }
-
-        private void DeleteRaceViewModel(RaceViewModel rvm)
-        {
             Races.Remove(rvm);
             SelectedRace = null;
         }

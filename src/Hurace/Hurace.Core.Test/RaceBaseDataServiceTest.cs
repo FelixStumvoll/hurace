@@ -15,10 +15,10 @@ namespace Hurace.Core.Test
     [ExcludeFromCodeCoverage]
     public class RaceBaseDataServiceTest
     {
-        private static RaceBaseDataService CreateBaseDataService(IRaceDao raceDao = null, ISensorDao sensorDao = null,
+        private static RaceService CreateBaseDataService(IRaceDao raceDao = null, ISensorDao sensorDao = null,
             ITimeDataDao timeDataDao = null, IRaceStartListService startListService = null, IGenderDao genderDao = null,
             ILocationDao locationDao = null, IDisciplineDao disciplineDao = null) =>
-            new RaceBaseDataService(raceDao, sensorDao, timeDataDao, startListService, genderDao, locationDao,
+            new RaceService(raceDao, sensorDao, timeDataDao, startListService, genderDao, locationDao,
                                     disciplineDao, null);
 
         [Test]
@@ -144,7 +144,7 @@ namespace Hurace.Core.Test
             
             Assert.AreEqual(
                 result,
-                await new RaceBaseDataService(mockRaceDao.Object, mockSensorDao.Object,null,
+                await new RaceService(mockRaceDao.Object, mockSensorDao.Object,null,
                                               mockStartListService.Object, null, null, null, startListDao.Object)
                     .RemoveRace(100));
         }

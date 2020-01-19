@@ -14,7 +14,7 @@ namespace Hurace.Dal.Common.Mapper
         public MapperConfig AddMapping<T>(params (string srcName, string destName)[] config) where T : class, new()
         {
             if (!_mappingConfig.TryGetValue(typeof(T), out var configDict))
-                _mappingConfig[typeof(T)] = (configDict = new Dictionary<string, string>());
+                _mappingConfig[typeof(T)] = configDict = new Dictionary<string, string>();
             config.ToList().ForEach(cfg =>
             {
                 var (srcName, destName) = cfg;

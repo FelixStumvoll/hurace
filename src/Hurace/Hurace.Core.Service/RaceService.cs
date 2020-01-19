@@ -11,7 +11,7 @@ using RaceState = Hurace.Dal.Domain.Enums.RaceState;
 
 namespace Hurace.Core.Service
 {
-    public class RaceBaseDataService : IRaceBaseDataService
+    public class RaceService : IRaceService
     {
         private readonly IRaceDao _raceDao;
         private readonly ISensorDao _sensorDao;
@@ -22,7 +22,7 @@ namespace Hurace.Core.Service
         private readonly IDisciplineDao _disciplineDao;
         private readonly IStartListDao _startListDao;
 
-        public RaceBaseDataService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao,
+        public RaceService(IRaceDao raceDao, ISensorDao sensorDao, ITimeDataDao timeDataDao,
             IRaceStartListService startListService, IGenderDao genderDao, ILocationDao locationDao,
             IDisciplineDao disciplineDao, IStartListDao startListDao)
         {
@@ -78,7 +78,7 @@ namespace Hurace.Core.Service
         {
             var ogRace = await _raceDao.FindByIdAsync(race.Id);
             if (ogRace == null) return true;
-            var slDefined = (await _startListService.IsStartListDefined(race.Id)) ?? false;
+            var slDefined = await _startListService.IsStartListDefined(race.Id) ?? false;
             return slDefined && (ogRace.DisciplineId != race.DisciplineId || ogRace.GenderId != race.GenderId);
         }
 
@@ -97,18 +97,5 @@ namespace Hurace.Core.Service
             scope.Complete();
             return true;
         }
-
-        [ExcludeFromCodeCoverage]
-        public Task<IEnumerable<Gender>> GetGenders() => _genderDao.FindAllAsync();
-
-        [ExcludeFromCodeCoverage]
-        public Task<IEnumerable<Location>> GetLocations() => _locationDao.FindAllAsync();
-
-        [ExcludeFromCodeCoverage]
-        public Task<IEnumerable<Discipline>> GetDisciplinesForLocation(int locationId) =>
-            _locationDao.GetPossibleDisciplinesForLocation(locationId);
-
-        [ExcludeFromCodeCoverage]
-        public Task<IEnumerable<Discipline>> GetAllDisciplines() => _disciplineDao.FindAllAsync();
     }
 }

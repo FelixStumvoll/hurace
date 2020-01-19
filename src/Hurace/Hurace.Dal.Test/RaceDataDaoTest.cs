@@ -53,12 +53,12 @@ namespace Hurace.Dal.Test
         [Test]
         public async Task DeleteTest()
         {
-            var raceDataId = (await RaceDataDao.InsertGetIdAsync(new RaceData
+            var raceDataId = await RaceDataDao.InsertGetIdAsync(new RaceData
             {
                 RaceId = (await RaceDao.FindAllAsync()).First().Id,
                 EventDateTime = DateTime.Now,
                 EventTypeId = (await EventTypeDao.FindAllAsync()).First().Id
-            }));
+            });
             await RaceDataDao.DeleteAsync(raceDataId.Value);
             Assert.IsNull(await RaceDataDao.FindByIdAsync(raceDataId.Value));
         }

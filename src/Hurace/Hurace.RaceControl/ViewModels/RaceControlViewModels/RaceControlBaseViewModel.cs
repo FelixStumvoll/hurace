@@ -17,7 +17,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         private bool _startListDefined;
         private IActiveRaceControlService _activeRaceControlService;
         private readonly IActiveRaceResolver _activeRaceResolver;
-        private readonly IRaceBaseDataService _baseDataService;
+        private readonly IRaceService _raceService;
         private readonly IRaceStartListService _startListService;
         private IRaceControlViewModel _raceControlViewModel;
         private ActiveRaceControlViewModel _activeRaceControlViewModel;
@@ -48,11 +48,11 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
                 activeRaceControlVmFactory,
             Func<SharedRaceStateViewModel, ReadonlyRaceControlViewModel> readonlyRaceControlVmFactory,
-            SharedRaceStateViewModel raceState, IRaceBaseDataService baseDataService,
+            SharedRaceStateViewModel raceState, IRaceService raceService,
             IRaceStartListService startListService, IActiveRaceResolver activeRaceResolver)
         {
             RaceState = raceState;
-            _baseDataService = baseDataService;
+            _raceService = raceService;
             _startListService = startListService;
             _activeRaceResolver = activeRaceResolver;
 
@@ -66,17 +66,17 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             _activeRaceControlService ??= _activeRaceResolver[RaceState.Race.Id];
             switch (RaceState.Race.RaceStateId)
             {
-                case (int)Dal.Domain.Enums.RaceState.Upcoming:
+                case (int) Dal.Domain.Enums.RaceState.Upcoming:
                     StartListDefined = await _startListService.IsStartListDefined(RaceState.Race.Id) ?? false;
                     await SetRaceControlViewModel(ViewType.None);
                     return;
-                case (int)Dal.Domain.Enums.RaceState.Running:
+                case (int) Dal.Domain.Enums.RaceState.Running:
                     await SetRaceControlViewModel(ViewType.Active);
                     SetupRaceEndEvents();
 
                     return;
-                case (int)Dal.Domain.Enums.RaceState.Finished:
-                case (int)Dal.Domain.Enums.RaceState.Cancelled:
+                case (int) Dal.Domain.Enums.RaceState.Finished:
+                case (int) Dal.Domain.Enums.RaceState.Cancelled:
                     await SetRaceControlViewModel(ViewType.Readonly);
                     return;
             }
@@ -91,14 +91,14 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         private void SetupRaceEndEvents()
         {
-            async Task OnRaceEnd(Race race)
+            async Task RaceEnd(Race race)
             {
                 UiExecutor.ExecuteInUiThread(() => RaceState.Race = race);
                 await SetupAsync();
             }
 
-            _activeRaceControlService.OnRaceCancelled += async race => await OnRaceEnd(race);
-            _activeRaceControlService.OnRaceFinished += async race => await OnRaceEnd(race);
+            _activeRaceControlService.OnRaceCancelled += async race => await RaceEnd(race);
+            _activeRaceControlService.OnRaceFinished += async race => await RaceEnd(race);
         }
 
         private async Task SetRaceControlViewModel(ViewType type)
@@ -124,13 +124,13 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             try
             {
                 _activeRaceControlService = await _activeRaceResolver.StartRace(RaceState.Race.Id);
-                RaceState.Race = await _baseDataService.GetRaceById(RaceState.Race.Id);
+                RaceState.Race = await _raceService.GetRaceById(RaceState.Race.Id);
                 SetupRaceEndEvents();
                 await SetRaceControlViewModel(ViewType.Active);
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Rennen konnte nicht gestartet werden");
             }
         }
     }

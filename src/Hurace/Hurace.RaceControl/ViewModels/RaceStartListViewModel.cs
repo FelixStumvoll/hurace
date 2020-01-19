@@ -90,7 +90,7 @@ namespace Hurace.RaceControl.ViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Startliste konnte nicht geladen werden");
             }
         }
 
@@ -153,7 +153,7 @@ namespace Hurace.RaceControl.ViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnSaveError();
+                MessageBoxUtil.Error("Startliste konnte nicht gespeichert werden");
             }
         }
 

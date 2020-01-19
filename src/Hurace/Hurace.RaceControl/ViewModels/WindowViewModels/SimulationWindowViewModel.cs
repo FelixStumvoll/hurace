@@ -105,10 +105,7 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             var resolvedRace = await _raceClockProvider.GetRaceClock();
             if (!(resolvedRace is MockRaceClock mockRaceClock))
             {
-                MessageBox.Show("Simulator kann nicht gestartet werden",
-                                "Fehler",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                MessageBoxUtil.Error("Rennuhr konnte nicht geladen werden");
                 return;
             }
 

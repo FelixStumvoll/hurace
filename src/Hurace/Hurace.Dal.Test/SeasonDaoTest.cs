@@ -47,7 +47,7 @@ namespace Hurace.Dal.Test
         {
             var season = (await SeasonDao.FindAllAsync()).First();
 
-            Assert.AreEqual(2, (await SeasonDao.CountRacesForSeason(season.Id)));
+            Assert.AreEqual(2, await SeasonDao.CountRacesForSeason(season.Id));
         }
         
         // [Test]

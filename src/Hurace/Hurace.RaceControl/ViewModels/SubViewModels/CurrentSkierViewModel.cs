@@ -69,7 +69,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                     }
                     catch (Exception)
                     {
-                        ErrorNotifier.OnLoadError();
+                        // ignored
                     }
                 });
             };
@@ -108,7 +108,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                //ignored
             }
         }
 
@@ -140,7 +140,7 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Fahreransicht konnte nicht initialisiert werden");
             }
         }
     }

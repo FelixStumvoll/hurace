@@ -72,11 +72,6 @@ namespace Hurace.Dal.Test
         }
 
         [Test]
-        public async Task DeleteAllForRaceTest()
-        {
-        }
-
-        [Test]
         public async Task GetDisqualifiedSkierForRaceTest()
         {
             var startList = (await StartListDao.FindAllAsync()).First();
@@ -99,7 +94,7 @@ namespace Hurace.Dal.Test
         public async Task CountStartListForRaceTest()
         {
             var raceId = (await RaceDao.FindAllAsync()).First().Id;
-            Assert.AreEqual(5, (await StartListDao.CountStartListForRace(raceId)));
+            Assert.AreEqual(5, await StartListDao.CountStartListForRace(raceId));
         }
         
         [Test]

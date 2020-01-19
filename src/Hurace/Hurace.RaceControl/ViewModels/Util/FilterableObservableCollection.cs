@@ -38,7 +38,7 @@ namespace Hurace.RaceControl.ViewModels.Util
             ViewItems.Clear();
             var loweredSearch = SearchTerm?.ToLower();
             var filtered = DataSource
-                .Where(t => string.IsNullOrEmpty(SearchTerm) || _predicate(t, loweredSearch));
+                .Where(t => SearchTerm.IsNullOrEmpty() || _predicate(t, loweredSearch));
             ViewItems.AddRange(_modifiers?.Invoke(filtered) ?? filtered);
         }
 

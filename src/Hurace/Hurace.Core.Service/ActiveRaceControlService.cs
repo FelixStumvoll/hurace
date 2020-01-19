@@ -68,14 +68,20 @@ namespace Hurace.Core.Service
 
         private async Task OnTimingTriggered(int sensorNumber, DateTime dateTime)
         {
-            if (!await ValidateSensorValue(sensorNumber, dateTime)) return;
+            try
+            {
+                if (!await ValidateSensorValue(sensorNumber, dateTime)) return;
 
-            var timeData = await AddTimeData(sensorNumber, dateTime);
-            if (timeData != null) OnSplitTime?.Invoke(timeData);
+                var timeData = await AddTimeData(sensorNumber, dateTime);
+                if (timeData != null) OnSplitTime?.Invoke(timeData);
 
-            if (sensorNumber == _maxSensorNr) await CurrentSkierFinished();
+                if (sensorNumber == _maxSensorNr) await CurrentSkierFinished();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
-
 
         private enum SensorSeriesResult
         {
@@ -116,7 +122,7 @@ namespace Hurace.Core.Service
 
             //no startTime
             if (startTime == null && sensorNumber != 0) return false;
-            var average = (await _timeDataDao.GetAverageTimeForSensor(RaceId, sensorNumber)) ??
+            var average = await _timeDataDao.GetAverageTimeForSensor(RaceId, sensorNumber) ??
                           _sensorConfig.SensorAssumptions[sensorNumber];
             var timeDataList =
                 (await _timeDataDao

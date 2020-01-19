@@ -10,14 +10,11 @@ namespace Hurace.API.Controllers
     [Route("[controller]")]
     public class DisciplineController : ControllerBase
     {
-        private readonly IRaceBaseDataService _baseDataService;
+        private readonly IDisciplineService _disciplineService;
 
-        public DisciplineController(IRaceBaseDataService baseDataService)
-        {
-            _baseDataService = baseDataService;
-        }
+        public DisciplineController(IDisciplineService disciplineService) => _disciplineService = disciplineService;
 
         [HttpGet]
-        public Task<IEnumerable<Discipline>> GetAll() => _baseDataService.GetAllDisciplines();
+        public Task<IEnumerable<Discipline>> GetAll() => _disciplineService.GetAllDisciplines();
     }
 }

@@ -16,22 +16,22 @@ namespace Hurace.API.Controllers
     [Route("[controller]")]
     public class RaceController : ControllerBase
     {
-        private readonly IRaceBaseDataService _baseDataService;
+        private readonly IRaceService _raceService;
         private readonly IRaceStartListService _startListService;
         private readonly IRaceStatService _statService;
         private readonly IActiveRaceService _activeRaceService;
 
-        public RaceController(IRaceBaseDataService baseDataService, IRaceStartListService startListService,
+        public RaceController(IRaceService raceService, IRaceStartListService startListService,
             IRaceStatService statService, IActiveRaceService activeRaceService)
         {
-            _baseDataService = baseDataService;
+            _raceService = raceService;
             _startListService = startListService;
             _statService = statService;
             _activeRaceService = activeRaceService;
         }
 
         [HttpGet]
-        public Task<IEnumerable<Race>> GetAll() => _baseDataService.GetAllRaces();
+        public Task<IEnumerable<Race>> GetAll() => _raceService.GetAllRaces();
 
         [HttpGet("active")]
         public Task<IEnumerable<Race>> GetActiveRaces() => _activeRaceService.GetActiveRaces();
@@ -40,7 +40,7 @@ namespace Hurace.API.Controllers
         public Task<IEnumerable<Race>> GetActiveRaceById() => _activeRaceService.GetActiveRaces();
         
         [HttpGet("active/{id}/currentSkier")]
-        public Task<StartList> GetCurrentSkier(int id) => _activeRaceService.GetCurrentSkier(id);
+        public Task<StartList?> GetCurrentSkier(int id) => _activeRaceService.GetCurrentSkier(id);
         
         [HttpGet("active/{id}/currentSkier/splitTimes")]
         public async Task<IEnumerable<TimeDifferenceDto>> GetCurrentSkierSplitTimes(int id) =>
@@ -61,7 +61,7 @@ namespace Hurace.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var race = await _baseDataService.GetRaceById(id);
+            var race = await _raceService.GetRaceById(id);
             if (race == null) return NotFound();
             return Ok(race);
         }

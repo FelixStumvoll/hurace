@@ -8,11 +8,18 @@ namespace Hurace.API.Dtos.TimeDifferenceDtos
         public int SensorNumber { get; set; }
         public double DifferenceToLeader { get; set; }
 
-        public static TimeDifferenceDto FromTimeDifference(TimeDifference timeDifference) => new TimeDifferenceDto
+        private TimeDifferenceDto(int time, int sensorNumber, double differenceToLeader)
         {
-            Time = timeDifference.TimeData.Time,
-            SensorNumber =  timeDifference.TimeData.Sensor.SensorNumber,
-            DifferenceToLeader = timeDifference.DifferenceToLeader.TotalMilliseconds
-        };
+            Time = time;
+            SensorNumber = sensorNumber;
+            DifferenceToLeader = differenceToLeader;
+        }
+
+        public static TimeDifferenceDto FromTimeDifference(TimeDifference timeDifference) => new TimeDifferenceDto
+        (
+            timeDifference.TimeData.Time,
+            timeDifference.TimeData.Sensor?.SensorNumber ?? 0,
+            timeDifference.DifferenceToLeader.TotalMilliseconds
+        );
     }
 }

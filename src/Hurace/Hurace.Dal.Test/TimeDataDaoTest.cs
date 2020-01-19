@@ -116,7 +116,7 @@ namespace Hurace.Dal.Test
         public async Task GetAverageTimeForSensorTest()
         {
             var race = (await RaceDao.FindAllAsync()).First();
-            var timeDatas = (await TimeDataDao.FindAllAsync());
+            var timeDatas = await TimeDataDao.FindAllAsync();
             var tasks = timeDatas.Where(t => t.RaceId == race.Id && t.Sensor.SensorNumber == 1).Select(
                      async t =>
                      {
@@ -130,7 +130,7 @@ namespace Hurace.Dal.Test
         [Test]
         public async Task GetStartTimeForStartListTest()
         {
-            var skierEvents = (await SkierEventDao.FindAllAsync());
+            var skierEvents = await SkierEventDao.FindAllAsync();
 
             var startEvent = skierEvents.First(sk => sk.RaceData.EventTypeId == 8);
             startEvent.RaceData.EventDateTime = DateTime.Today;

@@ -34,9 +34,6 @@ namespace Hurace.RaceControl.ViewModels.WindowViewModels
             }, () => CanLaunchSimulator);
         }
 
-        public async Task InitializeAsync()
-        {
-            await RacePageViewModel.SetupAsync();
-        }
+        public async Task InitializeAsync() => await RacePageViewModel.SetupAsync();
     }
 }

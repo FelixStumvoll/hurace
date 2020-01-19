@@ -18,7 +18,8 @@ namespace Hurace.RaceControl.ViewModels
 {
     public class RaceBaseDataViewModel : ValidatorBase<RaceBaseDataViewModel, RaceValidator>
     {
-        private readonly IRaceBaseDataService _baseDataService;
+        private readonly IRaceService _raceService;
+        private readonly ILocationService _locationService;
         private int _sensorCount;
         private Discipline _selectedDiscipline;
         public event Action OnUnsavedCancel;
@@ -66,11 +67,12 @@ namespace Hurace.RaceControl.ViewModels
 
         public Season Season => RaceState.Race.Season;
 
-        public RaceBaseDataViewModel(SharedRaceStateViewModel raceState, SharedRaceViewModel svm, 
-            IRaceBaseDataService baseDataService)
+        public RaceBaseDataViewModel(SharedRaceStateViewModel raceState, SharedRaceViewModel svm,
+            IRaceService raceService, ILocationService locationService)
         {
             RaceState = raceState;
-            _baseDataService = baseDataService;
+            _raceService = raceService;
+            _locationService = locationService;
             SharedRaceViewModel = svm;
             SetupCommands();
             RegisterValidator(this);
@@ -87,17 +89,18 @@ namespace Hurace.RaceControl.ViewModels
 
         public async Task SetupAsync()
         {
-            ValidatorEnabled = false;
-            var sensorCount = await _baseDataService.GetSensorCount(RaceState.Race.Id);
-            if (sensorCount == null)
+            try
             {
-                ErrorNotifier.OnLoadError();
-                return;
+                ValidatorEnabled = false;
+                var sensorCount = await _raceService.GetSensorCount(RaceState.Race.Id);
+                SensorCount = sensorCount.Value;
+                await SetSelectedProps();
+                ValidatorEnabled = true;
             }
-
-            SensorCount = sensorCount.Value;
-            await SetSelectedProps();
-            ValidatorEnabled = true;
+            catch (Exception)
+            {
+                MessageBoxUtil.Error("Fehler beim Laden der Renndaten");
+            }
         }
 
         private async Task SetSelectedProps()
@@ -112,17 +115,10 @@ namespace Hurace.RaceControl.ViewModels
         private async Task SetDisciplinesForLocation()
         {
             if (SelectedLocation == null) return;
-            try
-            {
-                var disciplines = await _baseDataService.GetDisciplinesForLocation(SelectedLocation.Id);
-                Disciplines.Clear();
-                Disciplines.AddRange(disciplines);
-                SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
-            }
-            catch (Exception)
-            {
-                ErrorNotifier.OnLoadError();
-            }
+            var disciplines = await _locationService.GetDisciplinesForLocation(SelectedLocation.Id);
+            Disciplines.Clear();
+            Disciplines.AddRange(disciplines);
+            SelectedDiscipline = Disciplines.SingleOrDefault(d => d.Id == RaceState.Race.DisciplineId);
         }
 
         private void StartEdit() => RaceState.Edit = true;
@@ -144,24 +140,18 @@ namespace Hurace.RaceControl.ViewModels
         {
             RaceState.Race.DisciplineId = _selectedDiscipline.Id;
             RaceState.Race.Discipline = _selectedDiscipline;
-            switch (await _baseDataService.InsertOrUpdateRace(RaceState.Race, SensorCount))
+            switch (await _raceService.InsertOrUpdateRace(RaceState.Race, SensorCount))
             {
                 case RaceModificationResult.Ok:
                     RaceState.Edit = false;
                     await UpdateRace();
                     break;
                 case RaceModificationResult.Err:
-                    MessageBox.Show("Fehler beim Speichern des Rennens",
-                                    "Fehler",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
+                    MessageBoxUtil.Error("Fehler beim Speichern des Rennens");
                     break;
                 case RaceModificationResult.StartListDefined:
-                    MessageBox.Show("Geschlecht und Disziplin können nicht geändert werden, " +
-                                    "wenn eine Startliste definiert ist",
-                                    "Fehler",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
+                   MessageBoxUtil.Error("Geschlecht und Disziplin können nicht geändert werden, " +
+                                       "wenn eine Startliste definiert ist");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -172,11 +162,11 @@ namespace Hurace.RaceControl.ViewModels
         {
             try
             {
-                RaceState.Race = await _baseDataService.GetRaceById(RaceState.Race.Id);
+                RaceState.Race = await _raceService.GetRaceById(RaceState.Race.Id);
             }
             catch (Exception)
             {
-                ErrorNotifier.OnLoadError();
+                MessageBoxUtil.Error("Rennen konnte nicht geladen werden");
             }
         }
     }

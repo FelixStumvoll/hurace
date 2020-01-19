@@ -12,7 +12,7 @@ namespace Hurace.RaceControl.ViewModels.BaseViewModels
         protected void Set<T>(ref T field, T value, bool ignoreEqual = false,
             [CallerMemberName] string propertyName = "")
         {
-            if ((ignoreEqual == false && EqualityComparer<T>.Default.Equals(value, field))) return;
+            if (ignoreEqual == false && EqualityComparer<T>.Default.Equals(value, field)) return;
             field = value;
             InvokePropertyChanged(propertyName);
         }

@@ -15,7 +15,7 @@ namespace Hurace.Dal.Test
         public async Task FindByIdTest()
         {
             var raceEvent =(await RaceEventDao.FindAllAsync()).First();
-            var raceEventById = (await RaceEventDao.FindByIdAsync(raceEvent.Id));
+            var raceEventById = await RaceEventDao.FindByIdAsync(raceEvent.Id);
             Assert.NotNull(raceEventById);
             Assert.NotNull(raceEventById?.RaceData);
         }

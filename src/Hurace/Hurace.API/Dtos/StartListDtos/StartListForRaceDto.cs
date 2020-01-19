@@ -5,15 +5,21 @@ namespace Hurace.API.Dtos.StartListDtos
     public class StartListForRaceDto
     {
         public int StartNumber { get; set; }
-        public Skier Skier { get; set; }
+        public Skier? Skier { get; set; }
         public int StartStateId { get; set; }
-        
-        
-        public static StartListForRaceDto FromStartList(StartList sl) => new StartListForRaceDto
+
+
+        private StartListForRaceDto(int startNumber, Skier? skier, int startStateId)
         {
-            Skier = sl.Skier,
-            StartNumber = sl.StartNumber,
-            StartStateId = sl.StartStateId
-        };
+            StartNumber = startNumber;
+            Skier = skier;
+            StartStateId = startStateId;
+        }
+
+        public static StartListForRaceDto FromStartList(StartList sl) => new StartListForRaceDto(
+            sl.StartNumber,
+            sl.Skier,
+            sl.StartStateId
+        );
     }
 }

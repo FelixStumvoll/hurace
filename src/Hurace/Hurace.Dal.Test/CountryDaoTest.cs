@@ -36,7 +36,7 @@ namespace Hurace.Dal.Test
             var country = (await CountryDao.FindAllAsync()).First();
             country.CountryName = "TestABC";
             await CountryDao.UpdateAsync(country);
-            var updatedCountry = (await CountryDao.FindByIdAsync(country.Id));
+            var updatedCountry = await CountryDao.FindByIdAsync(country.Id);
             Assert.AreEqual(country.CountryName, updatedCountry?.CountryName);
         }
 
