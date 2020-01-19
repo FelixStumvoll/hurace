@@ -4,6 +4,9 @@ Race Control bietet die Möglichkeit Rennen zu bearbeiten bzw. neue anzulegen. F
 Ein weiteres Feature der Race Control ist es mittels eines Simulators einen Rennablauf zu simulieren.
 In den folgenden Absätzen wird erklärt wie diese zu verwenden ist.
 
+## Konfiguration
+Vor einem Rennen muss in der `appsettings.json` die Sensorvalidierung konfiguriert werden. Dafür gibt es zwei Werte, erstens den maximalen Abstand zur Durchschnittszeit, mit diesem wird festgelegt ab welchem Abstand zur Durchschnittszeit des jeweiligen Sensors eine Sensorauslösung als invalide zu rechten ist. Und zweitens die Durchschnittswerte welche als Durchschnittswerte der Sensoren dienen falls es noch keine Werte für die Sensoren gibt, diese müssen mit den definierten Sensoren übereinstimmen.
+
 ## Hauptseite
 
 ![Main](images/rc-doc/main.jpg)

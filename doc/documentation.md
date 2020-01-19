@@ -130,8 +130,6 @@ Jene Interfaces, welche nur von den Basis Interfaces erben und keine Methoden hi
 
 ![Interfaces](images/Dal.Interface.Diagram.png)
 
-<!-- TODO UPDATE -->
-
 #### Basis Interfaces
 
 ##### IReadonlyDao
@@ -434,20 +432,25 @@ Liefert alle Zwischenzeiten des aktuellen Fahrers
 
 Dieser Service stellt nur einen Wrapper um `ICountryDao` dar.
 
+### DisciplineService
+
+Dieser Service stellt nur einen Wrapper um `IDisciplineDao` dar.
+
 ### GenderService
 
 Dieser Service stellt nur einen Wrapper um `IGenderDao` dar.
 
-### RaceBaseDataService
+### LocationService
+
+Dieser Service stellt nur einen Wrapper um `ILocationDao` dar.
+
+### RaceService
 
 In diesem Service sind Methoden definiert, welche zum Modifizieren von Rennen benötigt werden.
 Wrapper Methoden:
 
 -   `GetAllRaces`
 -   `GetRaceById`
--   `GetLocations`
--   `GetDisciplinesForLocation`
--   `GetAllDisciplines`
 
 #### InsertOrUpdateRace
 
@@ -558,6 +561,9 @@ Diese Methode löscht alle bestehenden Disziplinen und fügt die übergebenen ei
 ### RaceClockProvider
 
 Dieser Service ist für die Instanzierung der `IRaceClock` zuständig, dafür kann mittels einer Config der Name sowie das Assembly einer Implementierung angegeben werden, welche verwendet werden soll. Diese Implementierung wird asynchron instanziert und anschließend retourniert.
+
+
+## Hurace API
 
 ## Architekturüberblick
 

@@ -105,7 +105,7 @@ namespace Hurace.RaceControl.ViewModels.PageViewModels
 
         private void SetupCommands()
         {
-            AddRaceCommand = new RelayCommand(AddRace);
+            AddRaceCommand = new RelayCommand(AddRace, () => SelectedSeason != null);
             SelectedRaceChangedCommand = new AsyncCommand(async () =>
             {
                 if (SelectedRace == null) return;
