@@ -565,6 +565,63 @@ Dieser Service ist für die Instanzierung der `IRaceClock` zuständig, dafür ka
 
 ## Hurace API
 
+Die Hurace API stellt eine Rest API zur Verfügung, mit welcher Daten von z.B. Rennen oder Rennläufern abgefragt werden können.
+Die API greift dabei ausschließlich auf Methoden der Service Schicht zu.
+Im folgenden sind die Controller mit den Methoden angeführt.
+
+### CountryController
+
+Methoden:
+- `GET` - Liefert alle Länder
+
+### DisciplineController
+
+Methoden:
+- `GET` - Liefert alle Disziplinen
+
+### GenderController
+
+Methoden:
+- `GET` - Liefert alle Geschlechter
+
+### LocationController
+
+Methoden: 
+- `GET` - Liefert alle Rennorte
+
+### RaceController
+
+Methoden:
+- `GET/active` - Liefert alle aktiven Rennen
+- `GET/active/:id/currentSkier` - Liefert den aktuellen Rennläufer eines Rennens
+- `GET/active/:id/currentSkier/splitTimes` - Liefert die Zwischenzeiten des aktuellen Läufers
+- `GET/active/:id/remainingStartlist` - Liefert die verbleibende Startliste
+- `GET/active/:id/currentSkier/possiblePosition` - Liefert die derzeit mögliche Position des Läufers
+- `GET/:id` - Liefert ein Rennen anhand der Id
+- `GET/:id/startList` - Liefert die Startliste eines Rennens
+- `GET/:id/ranking` - Liefert die Rangliste eines Rennens
+- `GET/:id/winners` - Liefert die Gewinner eines Rennens, falls das Rennen noch nicht vorbei ist wird Statuscode 400 retourniert
+
+### SeasonController
+
+Methoden: 
+- `GET` - Liefert alle Saisonen
+- `PUT` - Fügt eine neue Saison ein
+- `PUT/:id` - Aktualisiert eine Saison anhand der Id
+- `DELETE/:id` - Löscht eine Saison anhand der Id
+- `GET/:id` - Liefert eine Saison anhand der Id
+- `GET/:id/races` - Liefert alle Rennen einer Saison
+
+### SkierController
+
+Methoden: 
+- `GET` - Liefert alle Rennläufer
+- `GET/:id` - Liefert einen Rennläufer anhand der Id
+- `GET/:id/disciplines` - Liefert alle Disziplinen die ein Rennläufer fährt
+- `PUT/:id/disciplines` - aktualisiert alle Disziplinen die ein Rennläufer fährt
+- `PUT/:id` - aktualisiert einen Rennläufer anhand der Id
+- `PUT` - fügt einen neuen Rennläufer ein
+
 ## Architekturüberblick
 
 Die Architektur von Hurace lässt sich in folgende 3 Schichten aufteilen:

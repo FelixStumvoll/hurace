@@ -58,13 +58,5 @@ namespace Hurace.API.Controllers
             var retVal = await _skierService.GetSkierById(skierId.Value);
             return Created($"/skier/{skierId.Value}", retVal!);
         }
-        
-        
-        
-        // [HttpGet("{id}/results")]
-        // public async Task<IEnumerable<RaceRanking>> GetRankingsForSkier()
-        // {
-        //        
-        // }
     }
 }

@@ -36,9 +36,6 @@ namespace Hurace.API.Controllers
         [HttpGet("active")]
         public Task<IEnumerable<Race>> GetActiveRaces() => _activeRaceService.GetActiveRaces();
         
-        [HttpGet("active/{id}")]
-        public Task<IEnumerable<Race>> GetActiveRaceById() => _activeRaceService.GetActiveRaces();
-        
         [HttpGet("active/{id}/currentSkier")]
         public Task<StartList?> GetCurrentSkier(int id) => _activeRaceService.GetCurrentSkier(id);
         
