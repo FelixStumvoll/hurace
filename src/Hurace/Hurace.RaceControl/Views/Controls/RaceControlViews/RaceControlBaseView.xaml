@@ -14,9 +14,12 @@
             <DataTemplate x:Key="RaceNotStarted">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
                     <Button Command="{Binding StartRaceCommand}" Padding="10,0" Content="Rennen starten" />
-                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0"
+                    <TextBlock Text="Keine Startliste definiert" Margin="0,10,0,0" TextAlignment="Center"
                                Style="{StaticResource ErrorMessage}"
                                Visibility="{Binding StartListDefined, Converter={StaticResource StartListEmptyToVisibilityConverter}}" />
+                    <TextBlock Text="unterschiedliche Anzahl an Sensoren definiert als in der Konfiguration angegeben" Margin="0,10,0,0"
+                               Style="{StaticResource ErrorMessage}"
+                               Visibility="{Binding SensorMismatch, Converter={StaticResource SensorMismatchToVisibilityConverter}}" />
                 </StackPanel>
             </DataTemplate>
 

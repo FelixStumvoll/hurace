@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Hurace.Core.Interface;
+using Hurace.Core.Interface.Configs;
 // using Hurace.Core.Service.Services.ActiveRaceControlService.Resolver;
 using Hurace.Dal.Domain;
 using Hurace.RaceControl.ViewModels.BaseViewModels;
@@ -21,6 +22,7 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         private readonly IRaceStartListService _startListService;
         private IRaceControlViewModel _raceControlViewModel;
         private ActiveRaceControlViewModel _activeRaceControlViewModel;
+        private readonly SensorConfig _sensorConfig;
 
         private readonly Func<SharedRaceStateViewModel, IActiveRaceControlService, ActiveRaceControlViewModel>
             _activeRaceControlVmFactory;
@@ -30,12 +32,19 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
 
         public SharedRaceStateViewModel RaceState { get; set; }
         private ReadonlyRaceControlViewModel _readonlyRaceControlViewModel;
+        private bool _sensorMismatch;
         public ICommand StartRaceCommand { get; set; }
 
         public bool StartListDefined
         {
             get => _startListDefined;
             set => Set(ref _startListDefined, value);
+        }
+
+        public bool SensorMismatch
+        {
+            get => _sensorMismatch;
+            set => Set(ref _sensorMismatch, value);
         }
 
         public IRaceControlViewModel RaceControlViewModel
@@ -49,12 +58,13 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
                 activeRaceControlVmFactory,
             Func<SharedRaceStateViewModel, ReadonlyRaceControlViewModel> readonlyRaceControlVmFactory,
             SharedRaceStateViewModel raceState, IRaceService raceService,
-            IRaceStartListService startListService, IActiveRaceResolver activeRaceResolver)
+            IRaceStartListService startListService, IActiveRaceResolver activeRaceResolver, SensorConfig sensorConfig)
         {
             RaceState = raceState;
             _raceService = raceService;
             _startListService = startListService;
             _activeRaceResolver = activeRaceResolver;
+            _sensorConfig = sensorConfig;
 
             _activeRaceControlVmFactory = activeRaceControlVmFactory;
             _readonlyRaceControlVmFactory = readonlyRaceControlVmFactory;
@@ -64,6 +74,17 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
         public async Task SetupAsync()
         {
             _activeRaceControlService ??= _activeRaceResolver[RaceState.Race.Id];
+
+            try
+            {
+                SensorMismatch = _sensorConfig.SensorAssumptions.Count !=
+                                  await _raceService.GetSensorCount(RaceState.Race.Id);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             switch (RaceState.Race.RaceStateId)
             {
                 case (int) Dal.Domain.Enums.RaceState.Upcoming:

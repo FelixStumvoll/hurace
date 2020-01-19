@@ -20,6 +20,7 @@
 
                     <converters:IntToTimespanConverter x:Key="IntToTimespanConverter" />
                     <converters:StartListDefinedToVisibilityConverter x:Key="StartListEmptyToVisibilityConverter" />
+                    <converters:SensorMismatchToVisibilityConverter x:Key="SensorMismatchToVisibilityConverter" />
                     <converters:IsNullConverter x:Key="IsNullConverter" />
                     <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
                     <converters:IntIsOneConverter x:Key="IntIsOneConverter" />

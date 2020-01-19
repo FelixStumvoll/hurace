@@ -104,40 +104,7 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                        <!-- <Style x:Key="InputStyle" TargetType="{x:Type Control}"> -->
-                        <!--     <Setter Property="Height" Value="25" /> -->
-                        <!--     <Setter Property="Margin" Value="0,5,0,0" /> -->
-                        <!--     <Setter Property="Width" Value="250" /> -->
-                        <!-- -->
-                        <!--     <Style.Triggers> -->
-                        <!--         <DataTrigger Binding="{Binding RaceState.Edit}" Value="True"> -->
-                        <!--             <Setter Property="IsEnabled" Value="True" /> -->
-                        <!--         </DataTrigger> -->
-                        <!--         <DataTrigger Binding="{Binding RaceState.Edit}" Value="False"> -->
-                        <!--             <Setter Property="IsEnabled" Value="False" /> -->
-                        <!--         </DataTrigger> -->
-                        <!--     </Style.Triggers> -->
-                        <!-- </Style> -->
-                        <!-- -->
-                        <!-- <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}"> -->
-                        <!--     <Setter Property="VerticalContentAlignment" Value="Center" /> -->
-                        <!--     <Style.Triggers> -->
-                        <!--         <DataTrigger Binding="{Binding RaceState.Edit}" Value="True"> -->
-                        <!--             <Setter Property="BorderThickness" Value="1" /> -->
-                        <!--             <Setter Property="IsReadOnly" Value="False" /> -->
-                        <!--             <Setter Property="Padding" Value="0" /> -->
-                        <!--         </DataTrigger> -->
-                        <!--         <DataTrigger Binding="{Binding RaceState.Edit}" Value="False"> -->
-                        <!--             <Setter Property="BorderThickness" Value="0" /> -->
-                        <!--             <Setter Property="IsReadOnly" Value="True" /> -->
-                        <!--             <Setter Property="Padding" Value="1" /> -->
-                        <!--         </DataTrigger> -->
-                        <!--     </Style.Triggers> -->
-                        <!-- </Style> -->
-
-                        <!-- <Style TargetType="ComboBox" BasedOn="{StaticResource InputStyle}" /> -->
-                        <!-- <Style TargetType="xctk:UIntegerUpDown" BasedOn="{StaticResource InputStyle}" /> -->
-                        <!-- <Style TargetType="xctk:DateTimePicker" BasedOn="{StaticResource InputStyle}" /> -->
+                        
                     </StackPanel.Resources>
                     <!-- Race Description -->
                     <Border Margin="0">

@@ -3,6 +3,7 @@
 ## Implementierungsumfang und Aufwand
 
 Aufwand: ca 50 Stunden
+
 absichtlich nicht implementierte Features: 
 - Optionale Rennanalyse
 
