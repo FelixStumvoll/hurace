@@ -158,8 +158,10 @@ namespace Hurace.Core.Service
                 SkierEventId = skierEventId.Value,
                 Time = (int) (dateTime - (startTime ?? dateTime)).TotalMilliseconds
             });
+            
+            var res = await _timeDataDao.FindByIdAsync(currentSkier.SkierId, RaceId, sensor.Id);
             scope.Complete();
-            return await _timeDataDao.FindByIdAsync(currentSkier.SkierId, RaceId, sensor.Id);
+            return res;
         }
 
         public async Task<bool> EnableRaceForSkier()

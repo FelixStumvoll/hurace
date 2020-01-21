@@ -121,15 +121,16 @@ namespace Hurace.RaceControl.ViewModels.SubViewModels
                 CurrentSkier = await _activeRaceService.GetCurrentSkier(_activeRaceControlService.RaceId);
                 if (CurrentSkier != null)
                 {
+                    SplitTimeList.Repopulate(
+                        await _statService.GetTimeDataForSkierWithDifference(
+                            CurrentSkier.SkierId, CurrentSkier.RaceId));
                     if (SplitTimeList.Count > 1)
                         Position = await _activeRaceService.GetPossiblePositionForCurrentSkier(
                             _activeRaceControlService.RaceId);
 
                     _stopwatch.StartTime =
                         await _statService.GetStartTimeForSkier(CurrentSkier.SkierId, CurrentSkier.RaceId);
-                    SplitTimeList.Repopulate(
-                        await _statService.GetTimeDataForSkierWithDifference(
-                            CurrentSkier.SkierId, CurrentSkier.RaceId));
+                    
                     _stopwatch.Start();
                 }
                 else
