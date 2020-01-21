@@ -79,27 +79,27 @@ namespace Hurace.RaceControl.ViewModels.RaceControlViewModels
             {
                 SensorMismatch = _sensorConfig.SensorAssumptions.Count !=
                                   await _raceService.GetSensorCount(RaceState.Race.Id);
+                
+                switch (RaceState.Race.RaceStateId)
+                {
+                    case (int) Dal.Domain.Enums.RaceState.Upcoming:
+                        StartListDefined = await _startListService.IsStartListDefined(RaceState.Race.Id) ?? false;
+                        await SetRaceControlViewModel(ViewType.None);
+                        return;
+                    case (int) Dal.Domain.Enums.RaceState.Running:
+                        await SetRaceControlViewModel(ViewType.Active);
+                        SetupRaceEndEvents();
+
+                        return;
+                    case (int) Dal.Domain.Enums.RaceState.Finished:
+                    case (int) Dal.Domain.Enums.RaceState.Cancelled:
+                        await SetRaceControlViewModel(ViewType.Readonly);
+                        return;
+                }
             }
             catch (Exception)
             {
-                // ignored
-            }
-
-            switch (RaceState.Race.RaceStateId)
-            {
-                case (int) Dal.Domain.Enums.RaceState.Upcoming:
-                    StartListDefined = await _startListService.IsStartListDefined(RaceState.Race.Id) ?? false;
-                    await SetRaceControlViewModel(ViewType.None);
-                    return;
-                case (int) Dal.Domain.Enums.RaceState.Running:
-                    await SetRaceControlViewModel(ViewType.Active);
-                    SetupRaceEndEvents();
-
-                    return;
-                case (int) Dal.Domain.Enums.RaceState.Finished:
-                case (int) Dal.Domain.Enums.RaceState.Cancelled:
-                    await SetRaceControlViewModel(ViewType.Readonly);
-                    return;
+                MessageBoxUtil.Error("Renndaten konnten nicht geladen werden");
             }
         }
 
